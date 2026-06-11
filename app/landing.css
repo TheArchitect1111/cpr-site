@@ -158,3 +158,8 @@ a { text-decoration: none; color: inherit; }
   .sec-head h2::before, .sec-head h2::after { width: 26px; }
   .sec-head h2 { font-size: 26px; }
 }
+
+/* SUCCESS PROOF */
+.story.proof { padding: 0; overflow: hidden; }
+.proof-img { width: 100%; height: 300px; object-fit: cover; object-position: center top; display: block; }
+.proof-cap { font-size: 13.5px; font-weight: 600; color: var(--ink); padding: 16px 20px; margin: 0; font-style: normal; }

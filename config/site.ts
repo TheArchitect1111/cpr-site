@@ -28,7 +28,7 @@ export const site = {
     line2: "OPPORTUNITY",
     line3: "STARTS HERE.",
     sub: "We help Canadian student-athletes get noticed by college coaches and find the right school to compete and succeed.",
-    image: "/hero-athlete.png",
+    image: "/hero-committed.jpg",
   },
   process: {
     heading: ["OUR ", "RECRUITMENT", " PROCESS"],
@@ -98,9 +98,9 @@ export const site = {
   stories: {
     heading: "SUCCESS STORIES",
     items: [
-      { q: "Canadian Prospects Recruitment opened doors I never thought possible. Their support and connections helped me earn a scholarship and change my life.", n: "Liam O.", s: "University of Illinois", img: "/testi-1.png" },
-      { q: "The process was easy to follow and Mike and his team were unbelievable. They got me in front of the right coaches.", n: "Noah W.", s: "Syracuse University", img: "/testi-2.png" },
-      { q: "From mixtape to offer, they were with me every step. Couldn't have done it without CPR.", n: "Mason B.", s: "University of Kentucky", img: "/testi-3.png" },
+      { img: "/proof-canada.jpg", caption: "CPR athlete competing for Team Canada." },
+      { img: "/proof-champion.jpg", caption: "From CPR to a conference championship." },
+      { img: "/proof-team.jpg", caption: "CPR athletes showcasing at the next level." },
     ],
   },
   cta: {
