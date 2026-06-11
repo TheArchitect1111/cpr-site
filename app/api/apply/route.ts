@@ -72,9 +72,9 @@ export async function POST(req: NextRequest) {
         { status: 400 }
       );
     }
-    if (!process.env.AIRTABLE_API_KEY) {
+    if (!process.env.AIRTABLE_TOKEN) {
       return NextResponse.json(
-        { error: "Server is not configured. Missing AIRTABLE_API_KEY." },
+        { error: "Server is not configured. Missing AIRTABLE_TOKEN." },
         { status: 500 }
       );
     }
@@ -132,7 +132,7 @@ export async function POST(req: NextRequest) {
       {
         method: "POST",
         headers: {
-          Authorization: `Bearer ${process.env.AIRTABLE_API_KEY}`,
+          Authorization: `Bearer ${process.env.AIRTABLE_TOKEN}`,
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
