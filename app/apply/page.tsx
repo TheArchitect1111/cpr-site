@@ -1,131 +1,667 @@
-'use client';
-import '../landing.css';
-import '../forms.css';
-import { useState } from 'react';
-import { site } from '@/config/site';
+"use client";
 
-type F = Record<string, string>;
+import { useMemo, useState } from "react";
+
+type FormData = {
+  firstName: string;
+  lastName: string;
+  email: string;
+  phone: string;
+  dateOfBirth: string;
+  cityProvince: string;
+  sport: string;
+  position: string;
+  height: string;
+  weight: string;
+  wingspan: string;
+  currentSchool: string;
+  gradYear: string;
+  gpa: string;
+  satScore: string;
+  transcriptUrl: string;
+  parentName: string;
+  parentEmail: string;
+  parentPhone: string;
+  bio: string;
+  strengths: string;
+  highlightVideoUrl: string;
+  photoUrl: string;
+  gameplayVideoUrl: string;
+  feeStage1: boolean;
+  feeStage2: boolean;
+  feeStage3: boolean;
+  nilInterest: boolean;
+  termsAgreed: boolean;
+  digitalSignature: string;
+};
+
+const INITIAL: FormData = {
+  firstName: "",
+  lastName: "",
+  email: "",
+  phone: "",
+  dateOfBirth: "",
+  cityProvince: "",
+  sport: "Basketball",
+  position: "",
+  height: "",
+  weight: "",
+  wingspan: "",
+  currentSchool: "",
+  gradYear: "",
+  gpa: "",
+  satScore: "",
+  transcriptUrl: "",
+  parentName: "",
+  parentEmail: "",
+  parentPhone: "",
+  bio: "",
+  strengths: "",
+  highlightVideoUrl: "",
+  photoUrl: "",
+  gameplayVideoUrl: "",
+  feeStage1: false,
+  feeStage2: false,
+  feeStage3: false,
+  nilInterest: false,
+  termsAgreed: false,
+  digitalSignature: "",
+};
+
+const STEPS = [
+  "Personal Information",
+  "Athletic Profile",
+  "Academics",
+  "Parent / Guardian",
+  "Bio and Media",
+  "Program Acknowledgments",
+  "Review and Sign",
+];
+
+const URL_HINT = "Paste a link from YouTube, Vimeo, Google Drive, or Dropbox";
+
+const inputCls =
+  "w-full border border-neutral-300 bg-white px-4 py-3 text-sm text-neutral-900 placeholder-neutral-400 outline-none focus:border-[#CC0000] focus:ring-1 focus:ring-[#CC0000]";
+const labelCls =
+  "mb-1.5 block text-xs font-bold uppercase tracking-wider text-neutral-700";
+
+function Field({
+  label,
+  required,
+  children,
+  hint,
+}: {
+  label: string;
+  required?: boolean;
+  children: React.ReactNode;
+  hint?: string;
+}) {
+  return (
+    <div>
+      <label className={labelCls}>
+        {label}
+        {required ? <span className="text-[#CC0000]"> *</span> : null}
+      </label>
+      {children}
+      {hint ? <p className="mt-1 text-xs text-neutral-500">{hint}</p> : null}
+    </div>
+  );
+}
+
+function CheckRow({
+  checked,
+  onChange,
+  title,
+  body,
+}: {
+  checked: boolean;
+  onChange: (v: boolean) => void;
+  title: string;
+  body: string;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={() => onChange(!checked)}
+      className={`flex w-full items-start gap-4 border p-4 text-left transition-colors ${
+        checked ? "border-[#CC0000] bg-red-50" : "border-neutral-300 bg-white"
+      }`}
+    >
+      <span
+        className={`mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center border ${
+          checked
+            ? "border-[#CC0000] bg-[#CC0000] text-white"
+            : "border-neutral-400 bg-white"
+        }`}
+        aria-hidden
+      >
+        {checked ? "✓" : ""}
+      </span>
+      <span>
+        <span className="block text-sm font-bold text-neutral-900">{title}</span>
+        <span className="mt-1 block text-sm leading-relaxed text-neutral-600">
+          {body}
+        </span>
+      </span>
+    </button>
+  );
+}
 
 export default function ApplyPage() {
   const [step, setStep] = useState(0);
-  const [f, setF] = useState<F>({ sport: 'Basketball' });
-  const [busy, setBusy] = useState(false);
-  const [err, setErr] = useState('');
+  const [data, setData] = useState<FormData>(INITIAL);
+  const [error, setError] = useState("");
+  const [submitting, setSubmitting] = useState(false);
   const [done, setDone] = useState(false);
 
-  const set = (k: string) => (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) =>
-    setF(p => ({ ...p, [k]: e.target.value }));
-  const v = (k: string) => f[k] || '';
+  const set = <K extends keyof FormData>(key: K, value: FormData[K]) =>
+    setData((d) => ({ ...d, [key]: value }));
 
-  const stepValid = [
-    ['firstName', 'lastName', 'email'].every(k => v(k).trim()),
-    ['position', 'gradYear'].every(k => v(k).trim()),
-    true,
-  ][step];
+  const stepValid = useMemo(() => {
+    switch (step) {
+      case 0:
+        return (
+          data.firstName.trim() &&
+          data.lastName.trim() &&
+          /\S+@\S+\.\S+/.test(data.email) &&
+          data.phone.trim() &&
+          data.dateOfBirth &&
+          data.cityProvince.trim()
+        );
+      case 1:
+        return (
+          data.position.trim() &&
+          data.height.trim() &&
+          data.currentSchool.trim() &&
+          data.gradYear.trim()
+        );
+      case 2:
+        return data.gpa.trim().length > 0;
+      case 3:
+        return (
+          data.parentName.trim() &&
+          /\S+@\S+\.\S+/.test(data.parentEmail) &&
+          data.parentPhone.trim()
+        );
+      case 4:
+        return data.bio.trim() && data.highlightVideoUrl.trim();
+      case 5:
+        return data.feeStage1 && data.feeStage2 && data.feeStage3;
+      case 6:
+        return (
+          data.termsAgreed &&
+          data.digitalSignature.trim().toLowerCase() ===
+            `${data.firstName} ${data.lastName}`.trim().toLowerCase()
+        );
+      default:
+        return false;
+    }
+  }, [step, data]);
 
-  async function submit() {
-    setBusy(true); setErr('');
+  const next = () => {
+    if (!stepValid) {
+      setError("Complete the required fields above to continue.");
+      return;
+    }
+    setError("");
+    setStep((s) => Math.min(s + 1, STEPS.length - 1));
+    window.scrollTo({ top: 0 });
+  };
+
+  const back = () => {
+    setError("");
+    setStep((s) => Math.max(s - 1, 0));
+    window.scrollTo({ top: 0 });
+  };
+
+  const submit = async () => {
+    if (!stepValid) {
+      setError(
+        "Type your full name exactly as entered in Step 1 and agree to the terms."
+      );
+      return;
+    }
+    setSubmitting(true);
+    setError("");
     try {
-      const res = await fetch('/api/apply', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(f) });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || 'Submission failed');
+      const res = await fetch("/api/apply", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      });
+      const json = await res.json();
+      if (!res.ok) {
+        setError(json.error || "Submission failed. Please try again.");
+        setSubmitting(false);
+        return;
+      }
       setDone(true);
-    } catch (e) {
-      setErr(e instanceof Error ? e.message : 'Submission failed. Please try again.');
-    } finally { setBusy(false); }
+    } catch {
+      setError("Network error. Check your connection and try again.");
+      setSubmitting(false);
+    }
+  };
+
+  if (done) {
+    return (
+      <main className="min-h-screen bg-neutral-100">
+        <div className="bg-[#0A0A0A] px-6 py-10 text-center">
+          <h1 className="text-2xl font-extrabold uppercase tracking-widest text-[#CC0000]">
+            Canadian Prospects
+          </h1>
+          <p className="mt-1 text-xs uppercase tracking-widest text-white">
+            Recruitment
+          </p>
+        </div>
+        <div className="mx-auto max-w-xl px-6 py-20 text-center">
+          <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center bg-[#CC0000] text-3xl text-white">
+            ✓
+          </div>
+          <h2 className="text-2xl font-extrabold uppercase tracking-wide text-neutral-900">
+            Application received, {data.firstName}.
+          </h2>
+          <p className="mt-4 text-sm leading-relaxed text-neutral-600">
+            A confirmation is on its way to {data.email}. Our team reviews
+            every application and you will hear from us within 2 to 3 business
+            days.
+          </p>
+          <a
+            href="/"
+            className="mt-8 inline-block bg-[#0A0A0A] px-8 py-3 text-xs font-bold uppercase tracking-widest text-white"
+          >
+            Back to home
+          </a>
+        </div>
+      </main>
+    );
   }
 
-  const In = (k: string, label: string, req = false, type = 'text', hint = '') => (
-    <div className="fgroup">
-      <label>{label} {req && <span className="req">*</span>}</label>
-      <input type={type} value={v(k)} onChange={set(k)} />
-      {hint && <div className="fhint">{hint}</div>}
-    </div>
-  );
-
   return (
-    <>
-      <header className="nav">
-        <div className="nav-inner">
-          <a href="/"><img src={site.brand.logo} alt="CPR" className="nav-logo" /></a>
-          <div className="nav-brand display">
-            <div className="b1">{site.brand.nameLine1}</div>
-            <div className="b2">{site.brand.nameLine2}</div>
-            <div className="b3">{site.brand.tagline}</div>
+    <main className="min-h-screen bg-neutral-100 pb-20">
+      <div className="bg-[#0A0A0A] px-6 py-10 text-center">
+        <h1 className="text-2xl font-extrabold uppercase tracking-widest text-[#CC0000]">
+          Athlete Application
+        </h1>
+        <p className="mt-1 text-xs uppercase tracking-widest text-white">
+          Canadian Prospects Recruitment
+        </p>
+      </div>
+
+      <div className="mx-auto max-w-2xl px-6">
+        <div className="mt-8">
+          <div className="flex items-center justify-between">
+            <p className="text-xs font-bold uppercase tracking-widest text-neutral-500">
+              Step {step + 1} of {STEPS.length}
+            </p>
+            <p className="text-xs font-bold uppercase tracking-widest text-[#CC0000]">
+              {STEPS[step]}
+            </p>
+          </div>
+          <div className="mt-3 h-1.5 w-full bg-neutral-300">
+            <div
+              className="h-1.5 bg-[#CC0000] transition-all"
+              style={{ width: `${((step + 1) / STEPS.length) * 100}%` }}
+            />
           </div>
         </div>
-      </header>
-      <div className="form-hero">
-        <h1 className="display">PLAYER PROFILE APPLICATION</h1>
-        <p>Step 1 of the CPR process. Tell us who you are and how you play.</p>
-      </div>
-      <div className="form-wrap">
-        {!done && <div className="steps">{[0, 1, 2].map(i => <span key={i} className={i <= step ? 'on' : ''} />)}</div>}
-        <div className="fcard">
-          {done ? (
-            <div className="fsuccess">
-              <div className="big">&#127936;</div>
-              <h2 className="display">APPLICATION RECEIVED</h2>
-              <p>Your player profile is in. Our team reviews every application and will contact you at {v('email')}.<br />If CPR has instructed you to complete the Fee Structure Agreement, continue below.</p>
-              <a className="btn" href={`/agreement?email=${encodeURIComponent(v('email'))}`}>CONTINUE TO FEE AGREEMENT &nbsp;&#10140;</a>
-            </div>
-          ) : (
+
+        <div className="mt-8 space-y-5 border border-neutral-200 bg-white p-6 sm:p-8">
+          {step === 0 && (
             <>
-              {err && <div className="ferror">{err}</div>}
-              <div className="honeypot"><input value={v('website')} onChange={set('website')} tabIndex={-1} autoComplete="off" /></div>
-              {step === 0 && (
-                <>
-                  <h2 className="display">PERSONAL INFORMATION</h2>
-                  <p className="fsub">Required fields are marked <span className="req">*</span></p>
-                  <div className="frow">{In('firstName', 'First Name', true)}{In('lastName', 'Last Name', true)}</div>
-                  <div className="frow">{In('email', 'Email', true, 'email')}{In('phone', 'Phone')}</div>
-                  <div className="frow">{In('dob', 'Date of Birth', false, 'date')}{In('city', 'City / Province')}</div>
-                </>
-              )}
-              {step === 1 && (
-                <>
-                  <h2 className="display">ATHLETIC &amp; ACADEMIC</h2>
-                  <p className="fsub">What coaches see first.</p>
-                  <div className="frow">
-                    <div className="fgroup">
-                      <label>Sport</label>
-                      <select value={v('sport')} onChange={set('sport')}><option>Basketball</option></select>
-                    </div>
-                    {In('position', 'Position', true, 'text', 'e.g. Point Guard')}
-                  </div>
-                  <div className="frow">{In('height', 'Height', false, 'text', 'e.g. 6\'2"')}{In('weight', 'Weight (lbs)', false, 'number')}</div>
-                  <div className="frow">{In('wingspan', 'Wingspan (inches)', false, 'number')}{In('gradYear', 'Graduation Year', true, 'number')}</div>
-                  <div className="frow">{In('gpa', 'GPA', false, 'number')}{In('sat', 'SAT Score', false, 'number')}</div>
-                  {In('school', 'Current School')}
-                </>
-              )}
-              {step === 2 && (
-                <>
-                  <h2 className="display">STORY, VIDEO &amp; PARENT CONTACT</h2>
-                  <p className="fsub">Almost done.</p>
-                  {In('videoUrl', 'Highlight Video URL', false, 'url', 'YouTube or Vimeo link')}
-                  <div className="fgroup">
-                    <label>Player Bio</label>
-                    <textarea value={v('bio')} onChange={set('bio')} placeholder="Playing style, goals, what makes you different..." />
-                  </div>
-                  <div className="fgroup">
-                    <label>Strengths</label>
-                    <textarea value={v('strengths')} onChange={set('strengths')} placeholder="e.g. Court vision, 3PT shooting, leadership" />
-                  </div>
-                  {In('parentName', 'Parent / Guardian Name')}
-                  <div className="frow">{In('parentEmail', 'Parent Email', false, 'email')}{In('parentPhone', 'Parent Phone')}</div>
-                </>
-              )}
-              <div className="fbtns">
-                {step > 0 ? <button className="btn btn-ghost" onClick={() => setStep(step - 1)}>&#8592; BACK</button> : <span />}
-                {step < 2
-                  ? <button className="btn" disabled={!stepValid} onClick={() => setStep(step + 1)}>NEXT &#8594;</button>
-                  : <button className="btn" disabled={busy} onClick={submit}>{busy ? 'SUBMITTING...' : 'SUBMIT APPLICATION'}</button>}
+              <div className="grid gap-5 sm:grid-cols-2">
+                <Field label="First name" required>
+                  <input
+                    className={inputCls}
+                    value={data.firstName}
+                    onChange={(e) => set("firstName", e.target.value)}
+                    autoComplete="given-name"
+                  />
+                </Field>
+                <Field label="Last name" required>
+                  <input
+                    className={inputCls}
+                    value={data.lastName}
+                    onChange={(e) => set("lastName", e.target.value)}
+                    autoComplete="family-name"
+                  />
+                </Field>
+              </div>
+              <Field label="Email" required>
+                <input
+                  type="email"
+                  className={inputCls}
+                  value={data.email}
+                  onChange={(e) => set("email", e.target.value)}
+                  autoComplete="email"
+                />
+              </Field>
+              <div className="grid gap-5 sm:grid-cols-2">
+                <Field label="Phone" required>
+                  <input
+                    type="tel"
+                    className={inputCls}
+                    value={data.phone}
+                    onChange={(e) => set("phone", e.target.value)}
+                    autoComplete="tel"
+                  />
+                </Field>
+                <Field label="Date of birth" required>
+                  <input
+                    type="date"
+                    className={inputCls}
+                    value={data.dateOfBirth}
+                    onChange={(e) => set("dateOfBirth", e.target.value)}
+                  />
+                </Field>
+              </div>
+              <Field
+                label="City / Province"
+                required
+                hint="Example: Mississauga, Ontario"
+              >
+                <input
+                  className={inputCls}
+                  value={data.cityProvince}
+                  onChange={(e) => set("cityProvince", e.target.value)}
+                />
+              </Field>
+            </>
+          )}
+
+          {step === 1 && (
+            <>
+              <div className="grid gap-5 sm:grid-cols-2">
+                <Field label="Sport" required>
+                  <input
+                    className={inputCls}
+                    value={data.sport}
+                    onChange={(e) => set("sport", e.target.value)}
+                  />
+                </Field>
+                <Field label="Position" required hint="Example: Point Guard">
+                  <input
+                    className={inputCls}
+                    value={data.position}
+                    onChange={(e) => set("position", e.target.value)}
+                  />
+                </Field>
+              </div>
+              <div className="grid gap-5 sm:grid-cols-3">
+                <Field label="Height" required hint={'Example: 6\'4"'}>
+                  <input
+                    className={inputCls}
+                    value={data.height}
+                    onChange={(e) => set("height", e.target.value)}
+                  />
+                </Field>
+                <Field label="Weight (lbs)">
+                  <input
+                    type="number"
+                    inputMode="numeric"
+                    className={inputCls}
+                    value={data.weight}
+                    onChange={(e) => set("weight", e.target.value)}
+                  />
+                </Field>
+                <Field label="Wingspan (in)">
+                  <input
+                    type="number"
+                    inputMode="numeric"
+                    className={inputCls}
+                    value={data.wingspan}
+                    onChange={(e) => set("wingspan", e.target.value)}
+                  />
+                </Field>
+              </div>
+              <div className="grid gap-5 sm:grid-cols-2">
+                <Field label="Current school" required>
+                  <input
+                    className={inputCls}
+                    value={data.currentSchool}
+                    onChange={(e) => set("currentSchool", e.target.value)}
+                  />
+                </Field>
+                <Field label="Graduation year" required>
+                  <input
+                    type="number"
+                    inputMode="numeric"
+                    placeholder="2027"
+                    className={inputCls}
+                    value={data.gradYear}
+                    onChange={(e) => set("gradYear", e.target.value)}
+                  />
+                </Field>
               </div>
             </>
           )}
+
+          {step === 2 && (
+            <>
+              <div className="grid gap-5 sm:grid-cols-2">
+                <Field label="GPA" required hint="On a 4.0 scale">
+                  <input
+                    type="number"
+                    step="0.01"
+                    inputMode="decimal"
+                    className={inputCls}
+                    value={data.gpa}
+                    onChange={(e) => set("gpa", e.target.value)}
+                  />
+                </Field>
+                <Field label="SAT score" hint="Leave blank if not taken yet">
+                  <input
+                    type="number"
+                    inputMode="numeric"
+                    className={inputCls}
+                    value={data.satScore}
+                    onChange={(e) => set("satScore", e.target.value)}
+                  />
+                </Field>
+              </div>
+              <Field label="Transcript link" hint={URL_HINT}>
+                <input
+                  type="url"
+                  placeholder="https://"
+                  className={inputCls}
+                  value={data.transcriptUrl}
+                  onChange={(e) => set("transcriptUrl", e.target.value)}
+                />
+              </Field>
+            </>
+          )}
+
+          {step === 3 && (
+            <>
+              <Field label="Parent / guardian name" required>
+                <input
+                  className={inputCls}
+                  value={data.parentName}
+                  onChange={(e) => set("parentName", e.target.value)}
+                />
+              </Field>
+              <div className="grid gap-5 sm:grid-cols-2">
+                <Field label="Parent email" required>
+                  <input
+                    type="email"
+                    className={inputCls}
+                    value={data.parentEmail}
+                    onChange={(e) => set("parentEmail", e.target.value)}
+                  />
+                </Field>
+                <Field label="Parent phone" required>
+                  <input
+                    type="tel"
+                    className={inputCls}
+                    value={data.parentPhone}
+                    onChange={(e) => set("parentPhone", e.target.value)}
+                  />
+                </Field>
+              </div>
+            </>
+          )}
+
+          {step === 4 && (
+            <>
+              <Field
+                label="Bio"
+                required
+                hint="Tell coaches who you are: your story, your game, your goals"
+              >
+                <textarea
+                  rows={4}
+                  className={inputCls}
+                  value={data.bio}
+                  onChange={(e) => set("bio", e.target.value)}
+                />
+              </Field>
+              <Field
+                label="Strengths"
+                hint="What you do best on the court, in your own words"
+              >
+                <textarea
+                  rows={3}
+                  className={inputCls}
+                  value={data.strengths}
+                  onChange={(e) => set("strengths", e.target.value)}
+                />
+              </Field>
+              <Field label="Highlight video link" required hint={URL_HINT}>
+                <input
+                  type="url"
+                  placeholder="https://"
+                  className={inputCls}
+                  value={data.highlightVideoUrl}
+                  onChange={(e) => set("highlightVideoUrl", e.target.value)}
+                />
+              </Field>
+              <Field label="Photo link" hint={URL_HINT}>
+                <input
+                  type="url"
+                  placeholder="https://"
+                  className={inputCls}
+                  value={data.photoUrl}
+                  onChange={(e) => set("photoUrl", e.target.value)}
+                />
+              </Field>
+              <Field label="Full gameplay video link" hint={URL_HINT}>
+                <input
+                  type="url"
+                  placeholder="https://"
+                  className={inputCls}
+                  value={data.gameplayVideoUrl}
+                  onChange={(e) => set("gameplayVideoUrl", e.target.value)}
+                />
+              </Field>
+            </>
+          )}
+
+          {step === 5 && (
+            <>
+              <p className="text-sm leading-relaxed text-neutral-600">
+                CPR's program has three fee stages. Each one is collected only
+                when that stage of your recruitment begins. Acknowledge each
+                stage to continue.
+              </p>
+              <CheckRow
+                checked={data.feeStage1}
+                onChange={(v) => set("feeStage1", v)}
+                title="Stage 1 · Profile and Review"
+                body="I understand a Stage 1 fee applies when my application is accepted and my recruiting profile is built."
+              />
+              <CheckRow
+                checked={data.feeStage2}
+                onChange={(v) => set("feeStage2", v)}
+                title="Stage 2 · Coach Outreach"
+                body="I understand a Stage 2 fee applies when CPR begins sending my profile to college coaches."
+              />
+              <CheckRow
+                checked={data.feeStage3}
+                onChange={(v) => set("feeStage3", v)}
+                title="Stage 3 · Active Recruitment"
+                body="I understand a Stage 3 fee applies during active recruitment management and coach communication."
+              />
+              <CheckRow
+                checked={data.nilInterest}
+                onChange={(v) => set("nilInterest", v)}
+                title="NIL Interest (optional)"
+                body="I am interested in learning about Name, Image, and Likeness opportunities."
+              />
+            </>
+          )}
+
+          {step === 6 && (
+            <>
+              <div className="border border-neutral-200 bg-neutral-50 p-4 text-sm text-neutral-700">
+                <p className="font-bold uppercase tracking-wider text-neutral-900">
+                  {data.firstName} {data.lastName}
+                </p>
+                <p className="mt-1">
+                  {data.position} · {data.currentSchool} · Class of{" "}
+                  {data.gradYear}
+                </p>
+                <p className="mt-1 text-neutral-500">
+                  {data.email} · {data.cityProvince}
+                </p>
+              </div>
+              <CheckRow
+                checked={data.termsAgreed}
+                onChange={(v) => set("termsAgreed", v)}
+                title="Terms of Service"
+                body="I confirm the information in this application is accurate, and I agree to CPR's terms of service. If I am under 18, my parent or guardian has reviewed this application with me."
+              />
+              <Field
+                label="Digital signature"
+                required
+                hint={`Type your full name exactly: ${data.firstName} ${data.lastName}`}
+              >
+                <input
+                  className={inputCls}
+                  value={data.digitalSignature}
+                  onChange={(e) => set("digitalSignature", e.target.value)}
+                />
+              </Field>
+            </>
+          )}
+
+          {error ? (
+            <p className="border border-[#CC0000] bg-red-50 px-4 py-3 text-sm text-[#CC0000]">
+              {error}
+            </p>
+          ) : null}
+
+          <div className="flex items-center justify-between pt-2">
+            {step > 0 ? (
+              <button
+                type="button"
+                onClick={back}
+                className="px-6 py-3 text-xs font-bold uppercase tracking-widest text-neutral-500 hover:text-neutral-900"
+              >
+                ← Back
+              </button>
+            ) : (
+              <span />
+            )}
+            {step < STEPS.length - 1 ? (
+              <button
+                type="button"
+                onClick={next}
+                className="bg-[#CC0000] px-8 py-3 text-xs font-bold uppercase tracking-widest text-white hover:bg-[#a80000]"
+              >
+                Continue →
+              </button>
+            ) : (
+              <button
+                type="button"
+                onClick={submit}
+                disabled={submitting}
+                className="bg-[#CC0000] px-8 py-3 text-xs font-bold uppercase tracking-widest text-white hover:bg-[#a80000] disabled:opacity-60"
+              >
+                {submitting ? "Submitting..." : "Submit application"}
+              </button>
+            )}
+          </div>
         </div>
       </div>
-    </>
+    </main>
   );
 }

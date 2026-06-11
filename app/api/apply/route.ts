@@ -1,44 +1,189 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from "next/server";
 
-const BASE = 'appvVr6MVrJvEY0YJ';
-const TABLE = 'tblZwrZHi3WBR3NHZ';
+const AIRTABLE_BASE_ID = process.env.AIRTABLE_BASE_ID || "appvVr6MVrJvEY0YJ";
+const AIRTABLE_TABLE_ID = "tblZwrZHi3WBR3NHZ";
 
-export async function POST(req: Request) {
-  const token = process.env.AIRTABLE_TOKEN;
-  if (!token) return NextResponse.json({ error: 'Not configured' }, { status: 503 });
+// Field IDs for the Athlete Intake table. IDs survive renames, names do not.
+const F = {
+  firstName: "flduzR2GtsrnT7mIF",
+  lastName: "fldSpt1SLSr8KCl4P",
+  email: "fldgZ0kRnK1nPOzqb",
+  phone: "fldVwoXoi8ZkCteCC",
+  dateOfBirth: "fld521liSxX1tZBNE",
+  sport: "fldivx0pnW78OPKAQ",
+  position: "fldRV83rNpgxVJ60W",
+  height: "fldovHp3v0YaHqIhG",
+  weight: "fldib2VBmZIpCEwuk",
+  wingspan: "flds34BtvJNRHpW6p",
+  gpa: "fldMzCAvovhHj4cjB",
+  satScore: "fldeKcKSpVLgfRrvI",
+  currentSchool: "fldL1EmBdSCOWsO3X",
+  gradYear: "fldzSXdkJeLdkBrbT",
+  cityProvince: "fldsOVNkJMdUFbimR",
+  parentName: "fldJJ2xthmAQU0k8l",
+  parentEmail: "fldspIpyvbOycPBwX",
+  parentPhone: "fldE00ro5IpP5n5L2",
+  bio: "fldODAtRgFyaLrR8m",
+  strengths: "fld8i0s3hOXAVPw6N",
+  highlightVideoUrl: "fld43RH1X5KsaDMfs",
+  photoUrl: "fldZtAJHuCIoq27MM",
+  transcriptUrl: "fldU4gvPGNmWUtj7m",
+  gameplayVideoUrl: "fldJKWz4vP3vk1oUo",
+  feeStage1: "fldoi30EF4BI8m5g3",
+  feeStage2: "fldqUAGfXBDrkeMgw",
+  feeStage3: "flds19bdfw8p3qQtV",
+  nilInterest: "fld1gXFOlmAb2w6rR",
+  termsAgreed: "fldPmTQd6Q0X8sbVr",
+  digitalSignature: "fld2Ldqqycn5OCGTl",
+  submittedAt: "fldxY9CaMYia544vM",
+} as const;
 
-  const b = await req.json().catch(() => null);
-  if (!b || b.website) return NextResponse.json({ error: 'Bad request' }, { status: 400 }); // honeypot
-  const need = ['firstName', 'lastName', 'email', 'position', 'gradYear'];
-  for (const k of need) if (!String(b[k] || '').trim()) return NextResponse.json({ error: `Missing ${k}` }, { status: 400 });
+function num(v: unknown): number | undefined {
+  if (v === null || v === undefined || v === "") return undefined;
+  const n = Number(v);
+  return Number.isFinite(n) ? n : undefined;
+}
 
-  const fields: Record<string, unknown> = {
-    'First Name': String(b.firstName).trim(),
-    'Last Name': String(b.lastName).trim(),
-    'Email': String(b.email).trim(),
-    'Status': 'Pending',
-    'Submitted At': new Date().toISOString().slice(0, 10),
-  };
-  const map: [string, string][] = [
-    ['phone', 'Phone'], ['dob', 'Date of Birth'], ['sport', 'Sport'], ['position', 'Position'],
-    ['height', 'Height'], ['school', 'Current School'], ['city', 'City / Province'],
-    ['parentName', 'Parent Name'], ['parentEmail', 'Parent Email'], ['parentPhone', 'Parent Phone'],
-    ['bio', 'Bio'], ['strengths', 'Strengths'], ['videoUrl', 'Highlight Video URL'],
-  ];
-  for (const [k, f] of map) if (String(b[k] || '').trim()) fields[f] = String(b[k]).trim();
-  for (const [k, f] of [['weight', 'Weight'], ['wingspan', 'Wingspan'], ['gpa', 'GPA'], ['sat', 'SAT Score'], ['gradYear', 'Graduation Year']] as [string, string][]) {
-    const n = parseFloat(b[k]); if (!isNaN(n)) fields[f] = n;
+function str(v: unknown): string | undefined {
+  if (typeof v !== "string") return undefined;
+  const t = v.trim();
+  return t.length > 0 ? t : undefined;
+}
+
+export async function POST(req: NextRequest) {
+  try {
+    const body = await req.json();
+
+    const firstName = str(body.firstName);
+    const lastName = str(body.lastName);
+    const email = str(body.email);
+    const termsAgreed = body.termsAgreed === true;
+    const signature = str(body.digitalSignature);
+
+    if (!firstName || !lastName || !email) {
+      return NextResponse.json(
+        { error: "First name, last name, and email are required." },
+        { status: 400 }
+      );
+    }
+    if (!termsAgreed || !signature) {
+      return NextResponse.json(
+        { error: "Terms must be agreed and the application must be signed." },
+        { status: 400 }
+      );
+    }
+    if (!process.env.AIRTABLE_API_KEY) {
+      return NextResponse.json(
+        { error: "Server is not configured. Missing AIRTABLE_API_KEY." },
+        { status: 500 }
+      );
+    }
+
+    const fields: Record<string, unknown> = {
+      [F.firstName]: firstName,
+      [F.lastName]: lastName,
+      [F.email]: email,
+      [F.termsAgreed]: true,
+      [F.digitalSignature]: signature,
+      [F.submittedAt]: new Date().toISOString().slice(0, 10),
+      [F.feeStage1]: body.feeStage1 === true,
+      [F.feeStage2]: body.feeStage2 === true,
+      [F.feeStage3]: body.feeStage3 === true,
+      [F.nilInterest]: body.nilInterest === true,
+    };
+
+    const optionalText: Array<[keyof typeof F, unknown]> = [
+      ["phone", body.phone],
+      ["dateOfBirth", body.dateOfBirth],
+      ["sport", body.sport],
+      ["position", body.position],
+      ["height", body.height],
+      ["currentSchool", body.currentSchool],
+      ["cityProvince", body.cityProvince],
+      ["parentName", body.parentName],
+      ["parentEmail", body.parentEmail],
+      ["parentPhone", body.parentPhone],
+      ["bio", body.bio],
+      ["strengths", body.strengths],
+      ["highlightVideoUrl", body.highlightVideoUrl],
+      ["photoUrl", body.photoUrl],
+      ["transcriptUrl", body.transcriptUrl],
+      ["gameplayVideoUrl", body.gameplayVideoUrl],
+    ];
+    for (const [key, value] of optionalText) {
+      const v = str(value);
+      if (v) fields[F[key]] = v;
+    }
+
+    const optionalNumbers: Array<[keyof typeof F, unknown]> = [
+      ["weight", body.weight],
+      ["wingspan", body.wingspan],
+      ["gpa", body.gpa],
+      ["satScore", body.satScore],
+      ["gradYear", body.gradYear],
+    ];
+    for (const [key, value] of optionalNumbers) {
+      const v = num(value);
+      if (v !== undefined) fields[F[key]] = v;
+    }
+
+    const airtableRes = await fetch(
+      `https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/${AIRTABLE_TABLE_ID}`,
+      {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${process.env.AIRTABLE_API_KEY}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          records: [{ fields }],
+          typecast: true,
+        }),
+      }
+    );
+
+    if (!airtableRes.ok) {
+      const detail = await airtableRes.text();
+      console.error("Airtable create failed:", detail);
+      return NextResponse.json(
+        { error: "Your application could not be saved. Please try again." },
+        { status: 502 }
+      );
+    }
+
+    const airtableData = await airtableRes.json();
+    const recordId: string | undefined = airtableData?.records?.[0]?.id;
+
+    // Fire the Make webhook. Keys below match the scenario's Set Variables
+    // module exactly: firstName, lastName, email, recordId, position,
+    // currentSchool, gradYear. Do not rename them.
+    if (process.env.MAKE_CPR_WEBHOOK && recordId) {
+      try {
+        await fetch(process.env.MAKE_CPR_WEBHOOK, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            recordId,
+            firstName,
+            lastName,
+            email,
+            position: str(body.position) || "",
+            currentSchool: str(body.currentSchool) || "",
+            gradYear: str(String(body.gradYear ?? "")) || "",
+          }),
+        });
+      } catch (err) {
+        // The record is saved; automation failure should not fail the athlete.
+        console.error("Make webhook call failed:", err);
+      }
+    }
+
+    return NextResponse.json({ ok: true, recordId });
+  } catch (err) {
+    console.error("Apply route error:", err);
+    return NextResponse.json(
+      { error: "Something went wrong. Please try again." },
+      { status: 500 }
+    );
   }
-
-  const res = await fetch(`https://api.airtable.com/v0/${BASE}/${TABLE}`, {
-    method: 'POST',
-    headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
-    body: JSON.stringify({ records: [{ fields }], typecast: true }),
-  });
-  if (!res.ok) {
-    const detail = await res.text();
-    console.error('Airtable apply error:', detail);
-    return NextResponse.json({ error: 'Could not save application' }, { status: 502 });
-  }
-  return NextResponse.json({ ok: true });
 }
