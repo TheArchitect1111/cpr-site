@@ -79,7 +79,7 @@ export async function getAthlete(slug: string): Promise<Athlete | null> {
   // Coach Responses table is optional; ignore errors until it exists.
   try {
     const cr = await fetch(
-      `https://api.airtable.com/v0/${BASE}/${encodeURIComponent('Coach Responses')}?filterByFormula=${encodeURIComponent(`{Athlete Slug}='${safe}'`)}&sort%5B0%5D%5Bfield%5D=Response%20Date&sort%5B0%5D%5Bdirection%5D=desc`,
+      `https://api.airtable.com/v0/${BASE}/${encodeURIComponent('Coach Outreach')}?filterByFormula=${encodeURIComponent(`{Athlete Slug}='${safe}'`)}&sort%5B0%5D%5Bfield%5D=Response%20Date&sort%5B0%5D%5Bdirection%5D=desc`,
       { headers: { Authorization: `Bearer ${token}` }, next: { revalidate: 300 } },
     );
     if (cr.ok) {
