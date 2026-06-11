@@ -78,6 +78,10 @@ const STEPS = [
   "Review and Sign",
 ];
 
+const GRAD_YEARS = Array.from({ length: 7 }, (_, i) =>
+  String(new Date().getFullYear() + i)
+);
+
 const URL_HINT = "Paste a link from YouTube, Vimeo, Google Drive, or Dropbox";
 
 const inputCls =
@@ -424,14 +428,18 @@ export default function ApplyPage() {
                   />
                 </Field>
                 <Field label="Graduation year" required>
-                  <input
-                    type="number"
-                    inputMode="numeric"
-                    placeholder="2027"
+                  <select
                     className={inputCls}
                     value={data.gradYear}
                     onChange={(e) => set("gradYear", e.target.value)}
-                  />
+                  >
+                    <option value="">Select year</option>
+                    {GRAD_YEARS.map((y) => (
+                      <option key={y} value={y}>
+                        {y}
+                      </option>
+                    ))}
+                  </select>
                 </Field>
               </div>
             </>
@@ -560,33 +568,34 @@ export default function ApplyPage() {
           {step === 5 && (
             <>
               <p className="text-sm leading-relaxed text-neutral-600">
-                CPR's program has three fee stages. Each one is collected only
-                when that stage of your recruitment begins. Acknowledge each
-                stage to continue.
+                Joining CPR is not one single payment. The program happens in
+                three steps, and each step has its own fee. You only pay for a
+                step when we begin that step. Check each box to confirm you
+                understand.
               </p>
               <CheckRow
                 checked={data.feeStage1}
                 onChange={(v) => set("feeStage1", v)}
-                title="Stage 1 · Profile and Review"
-                body="I understand a Stage 1 fee applies when my application is accepted and my recruiting profile is built."
+                title="Step 1 · We build your profile"
+                body="If your application is accepted, we build your professional recruiting profile. The Step 1 fee is paid when this work begins."
               />
               <CheckRow
                 checked={data.feeStage2}
                 onChange={(v) => set("feeStage2", v)}
-                title="Stage 2 · Coach Outreach"
-                body="I understand a Stage 2 fee applies when CPR begins sending my profile to college coaches."
+                title="Step 2 · We contact coaches"
+                body="We send your profile directly to college coaches across North America. The Step 2 fee is paid when this outreach begins."
               />
               <CheckRow
                 checked={data.feeStage3}
                 onChange={(v) => set("feeStage3", v)}
-                title="Stage 3 · Active Recruitment"
-                body="I understand a Stage 3 fee applies during active recruitment management and coach communication."
+                title="Step 3 · We manage your recruitment"
+                body="As coaches respond, we manage the conversations and guide you and your family through every decision. The Step 3 fee is paid when this stage begins."
               />
               <CheckRow
                 checked={data.nilInterest}
                 onChange={(v) => set("nilInterest", v)}
                 title="NIL Interest (optional)"
-                body="I am interested in learning about Name, Image, and Likeness opportunities."
+                body="Check this if you want to learn how athletes can earn money from their Name, Image, and Likeness (NIL). This does not affect your application."
               />
             </>
           )}
