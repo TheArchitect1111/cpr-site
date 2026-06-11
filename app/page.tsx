@@ -126,7 +126,7 @@ export default function Home() {
                 {s.coachPanel.athlete.videos.map(v => <img key={v} src={v} alt="Highlight" />)}
               </div>
             </div>
-            <div className="panel-cta"><a className="btn" href={s.links.apply}>{s.coachPanel.cta}</a></div>
+            <div className="panel-cta"><a className="btn" href="/athletes/jayden-thompson">{s.coachPanel.cta}</a></div>
           </div>
         </div>
       </section>
@@ -168,17 +168,12 @@ export default function Home() {
           <div className="sec-head"><h2 className="display">{s.stories.heading}</h2></div>
           <div className="stories-grid">
             {s.stories.items.map(t => (
-              <div className="story" key={t.n}>
-                <div className="qm">&#8220;&#8220;</div>
-                <p>&#8220;{t.q}&#8221;</p>
-                <div className="story-by">
-                  <img src={t.img} alt={t.n} />
-                  <div><div className="n">&ndash; {t.n}</div><div className="s">{t.s}</div></div>
-                </div>
+              <div className="story proof" key={t.img}>
+                <img src={t.img} alt={t.caption} className="proof-img" />
+                <p className="proof-cap">{t.caption}</p>
               </div>
             ))}
           </div>
-          <div className="dots"><span className="on" /><span /><span /><span /></div>
         </div>
       </section>
 

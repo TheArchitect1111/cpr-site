@@ -5,7 +5,7 @@ import nextTs from "eslint-config-next/typescript";
 const eslintConfig = defineConfig([
   ...nextVitals,
   ...nextTs,
-  { rules: { "react/no-unescaped-entities": "off", "@next/next/no-img-element": "off", "@next/next/no-page-custom-font": "off" } },
+  { rules: { "react/no-unescaped-entities": "off", "@next/next/no-img-element": "off", "@next/next/no-page-custom-font": "off", "@next/next/no-html-link-for-pages": "off" } },
   // Override default ignores of eslint-config-next.
   globalIgnores([
     // Default ignores of eslint-config-next:
