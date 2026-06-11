@@ -569,27 +569,50 @@ export default function ApplyPage() {
             <>
               <p className="text-sm leading-relaxed text-neutral-600">
                 Joining CPR is not one single payment. The program happens in
-                three steps, and each step has its own fee. You only pay for a
-                step when we begin that step. Check each box to confirm you
-                understand.
+                three steps. Each step has its own fee, and you only pay for a
+                step when we begin that step.
               </p>
+              <div className="space-y-4 border-l-[3px] border-[#CC0000] pl-5">
+                <div>
+                  <p className="text-sm font-bold text-neutral-900">
+                    Step 1 · We build your profile
+                  </p>
+                  <p className="mt-0.5 text-sm leading-relaxed text-neutral-600">
+                    If your application is accepted, we build your professional
+                    recruiting profile. The Step 1 fee is paid when this work
+                    begins.
+                  </p>
+                </div>
+                <div>
+                  <p className="text-sm font-bold text-neutral-900">
+                    Step 2 · We contact coaches
+                  </p>
+                  <p className="mt-0.5 text-sm leading-relaxed text-neutral-600">
+                    We send your profile directly to college coaches across
+                    North America. The Step 2 fee is paid when this outreach
+                    begins.
+                  </p>
+                </div>
+                <div>
+                  <p className="text-sm font-bold text-neutral-900">
+                    Step 3 · We manage your recruitment
+                  </p>
+                  <p className="mt-0.5 text-sm leading-relaxed text-neutral-600">
+                    As coaches respond, we manage the conversations and guide
+                    you and your family through every decision. The Step 3 fee
+                    is paid when this stage begins.
+                  </p>
+                </div>
+              </div>
               <CheckRow
-                checked={data.feeStage1}
-                onChange={(v) => set("feeStage1", v)}
-                title="Step 1 · We build your profile"
-                body="If your application is accepted, we build your professional recruiting profile. The Step 1 fee is paid when this work begins."
-              />
-              <CheckRow
-                checked={data.feeStage2}
-                onChange={(v) => set("feeStage2", v)}
-                title="Step 2 · We contact coaches"
-                body="We send your profile directly to college coaches across North America. The Step 2 fee is paid when this outreach begins."
-              />
-              <CheckRow
-                checked={data.feeStage3}
-                onChange={(v) => set("feeStage3", v)}
-                title="Step 3 · We manage your recruitment"
-                body="As coaches respond, we manage the conversations and guide you and your family through every decision. The Step 3 fee is paid when this stage begins."
+                checked={data.feeStage1 && data.feeStage2 && data.feeStage3}
+                onChange={(v) => {
+                  set("feeStage1", v);
+                  set("feeStage2", v);
+                  set("feeStage3", v);
+                }}
+                title="I understand the three steps and their fees"
+                body="I understand CPR's program has three steps, each step has its own fee, and each fee is paid only when that step begins."
               />
               <CheckRow
                 checked={data.nilInterest}
