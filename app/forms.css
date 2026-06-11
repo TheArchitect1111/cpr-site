@@ -1,0 +1,39 @@
+.form-hero { background: var(--black); color: #fff; padding: 40px 0; text-align: center; }
+.form-hero h1 { font-size: 36px; margin: 0 0 8px; font-weight: 800; letter-spacing: 1px; }
+.form-hero p { margin: 0; color: #D9D9D9; font-size: 14.5px; }
+.form-wrap { max-width: 760px; margin: 0 auto; padding: 36px 20px 70px; }
+.steps { display: flex; gap: 8px; margin-bottom: 26px; }
+.steps span { flex: 1; height: 5px; border-radius: 3px; background: #E2E2E2; }
+.steps span.on { background: var(--red); }
+.fcard { background: #fff; border: 1px solid var(--line); border-radius: 10px; padding: 28px; }
+.fcard h2 { font-size: 20px; font-weight: 800; letter-spacing: .5px; margin: 0 0 4px; }
+.fcard .fsub { color: var(--gray); font-size: 13.5px; margin: 0 0 22px; }
+.frow { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.fgroup { margin-bottom: 16px; }
+.fgroup label { display: block; font-size: 12.5px; font-weight: 700; margin-bottom: 6px; }
+.fgroup label .req { color: var(--red); }
+.fgroup input, .fgroup select, .fgroup textarea {
+  width: 100%; padding: 11px 12px; border: 1px solid #D7D7D7; border-radius: 6px;
+  font-size: 14px; font-family: inherit; background: #fff;
+}
+.fgroup textarea { min-height: 96px; resize: vertical; }
+.fgroup input:focus, .fgroup select:focus, .fgroup textarea:focus { outline: 2px solid var(--red); border-color: var(--red); }
+.fhint { font-size: 11.5px; color: var(--gray); margin-top: 4px; }
+.fbtns { display: flex; justify-content: space-between; gap: 12px; margin-top: 24px; }
+.btn-ghost { background: #fff; color: var(--ink); border: 1px solid #CFCFCF; }
+.btn-ghost:hover { background: #F5F5F5; }
+.btn[disabled] { opacity: .55; cursor: not-allowed; }
+.ferror { background: #FADDDD; color: #A81D20; border-radius: 6px; padding: 10px 14px; font-size: 13px; margin-bottom: 14px; }
+.fsuccess { text-align: center; padding: 30px 10px; }
+.fsuccess .big { font-size: 46px; }
+.fsuccess h2 { margin: 10px 0 8px; }
+.fsuccess p { color: var(--gray); font-size: 14px; line-height: 1.6; }
+.agree-block { border: 1px solid var(--line); border-radius: 8px; padding: 16px 18px; margin-bottom: 16px; }
+.agree-block h4 { margin: 0 0 6px; font-size: 13.5px; font-weight: 800; letter-spacing: .4px; }
+.agree-block p { margin: 0 0 12px; font-size: 13px; color: #333; line-height: 1.55; }
+.agree-block .disclaim { font-style: italic; color: #6A6A6A; }
+.radios { display: flex; gap: 18px; }
+.radios label { display: flex; align-items: center; gap: 7px; font-size: 13px; font-weight: 600; cursor: pointer; }
+.radios input { width: auto; }
+.honeypot { position: absolute; left: -9999px; opacity: 0; height: 0; overflow: hidden; }
+@media (max-width: 640px) { .frow { grid-template-columns: 1fr; } .form-hero h1 { font-size: 27px; } }

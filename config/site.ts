@@ -17,7 +17,7 @@ export const site = {
     white: "#FFFFFF",
   },
   links: {
-    apply: "https://mississaugamagic.com/product/u14-boys/",
+    apply: "/apply",
     video: "https://youtu.be/iqietCwnCxc",
     instagram: "https://instagram.com/mississaugamagic",
     facebook: "https://www.facebook.com/mississaugamagic21",
