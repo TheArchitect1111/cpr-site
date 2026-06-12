@@ -112,7 +112,7 @@ export const site = {
     about: "We connect Canadian student-athletes with opportunities to play basketball at the next level.",
     quickLinks: ["About Us", "How It Works", "Success Stories", "FAQ", "Contact"],
     resources: ["For Athletes", "For Parents", "NCAA Recruiting Guide", "Fee Agreement"],
-    email: "mmagicman3223@gmail.com",
+    email: "mikecrpglobal@mississaugamagic.com",
     instagramLabel: "@mississaugamagic",
     location: "Mississauga, Ontario",
     copyright: "© 2026 Canadian Prospects Recruitment. All Rights Reserved.",
