@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { COUNTRIES, GLOBAL_CITIES } from "@/lib/countries";
 
 type FormData = {
   firstName: string;
@@ -8,7 +9,14 @@ type FormData = {
   email: string;
   phone: string;
   dateOfBirth: string;
-  cityProvince: string;
+  country: string;
+  stateProvince: string;
+  city: string;
+  postalCode: string;
+  citizenship: string;
+  dualCitizenship: boolean;
+  additionalCitizenship: string;
+  globalCities: string[];
   sport: string;
   position: string;
   height: string;
@@ -18,7 +26,6 @@ type FormData = {
   gradYear: string;
   gpa: string;
   satScore: string;
-  transcriptUrl: string;
   parentName: string;
   parentEmail: string;
   parentPhone: string;
@@ -41,7 +48,14 @@ const INITIAL: FormData = {
   email: "",
   phone: "",
   dateOfBirth: "",
-  cityProvince: "",
+  country: "",
+  stateProvince: "",
+  city: "",
+  postalCode: "",
+  citizenship: "",
+  dualCitizenship: false,
+  additionalCitizenship: "",
+  globalCities: [],
   sport: "Basketball",
   position: "",
   height: "",
@@ -51,7 +65,6 @@ const INITIAL: FormData = {
   gradYear: "",
   gpa: "",
   satScore: "",
-  transcriptUrl: "",
   parentName: "",
   parentEmail: "",
   parentPhone: "",
@@ -151,6 +164,30 @@ function CheckRow({
   );
 }
 
+function CityPill({
+  city,
+  selected,
+  onToggle,
+}: {
+  city: string;
+  selected: boolean;
+  onToggle: () => void;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onToggle}
+      className={`rounded px-3 py-1.5 text-xs font-semibold transition-colors ${
+        selected
+          ? "bg-[#CC0000] text-white"
+          : "border border-neutral-300 bg-white text-neutral-700 hover:border-[#CC0000]"
+      }`}
+    >
+      {city}
+    </button>
+  );
+}
+
 export default function ApplyPage() {
   const [step, setStep] = useState(0);
   const [data, setData] = useState<FormData>(INITIAL);
@@ -161,6 +198,15 @@ export default function ApplyPage() {
   const set = <K extends keyof FormData>(key: K, value: FormData[K]) =>
     setData((d) => ({ ...d, [key]: value }));
 
+  const toggleCity = (city: string) => {
+    setData(d => ({
+      ...d,
+      globalCities: d.globalCities.includes(city)
+        ? d.globalCities.filter(c => c !== city)
+        : [...d.globalCities, city],
+    }));
+  };
+
   const stepValid = useMemo(() => {
     switch (step) {
       case 0:
@@ -170,7 +216,9 @@ export default function ApplyPage() {
           /\S+@\S+\.\S+/.test(data.email) &&
           data.phone.trim() &&
           data.dateOfBirth &&
-          data.cityProvince.trim()
+          data.country.trim() &&
+          data.stateProvince.trim() &&
+          data.city.trim()
         );
       case 1:
         return (
@@ -284,7 +332,7 @@ export default function ApplyPage() {
   return (
     <main className="min-h-screen bg-neutral-100 pb-20">
       <div className="bg-[#0A0A0A] px-6 py-10 text-center">
-          <img src="/cpr-logo.png" alt="Canadian Prospects Recruitment" className="mx-auto mb-4 h-24 w-24" />
+        <img src="/cpr-logo.png" alt="Canadian Prospects Recruitment" className="mx-auto mb-4 h-24 w-24" />
         <h1 className="text-2xl font-extrabold uppercase tracking-widest text-[#CC0000]">
           Athlete Application
         </h1>
@@ -360,17 +408,76 @@ export default function ApplyPage() {
                   />
                 </Field>
               </div>
-              <Field
-                label="City / Province"
-                required
-                hint="Example: Mississauga, Ontario"
-              >
+              <Field label="Country" required>
+                <select
+                  className={inputCls}
+                  value={data.country}
+                  onChange={(e) => set("country", e.target.value)}
+                >
+                  <option value="">Select country</option>
+                  {COUNTRIES.map((c) => (
+                    <option key={c} value={c}>{c}</option>
+                  ))}
+                </select>
+              </Field>
+              <div className="grid gap-5 sm:grid-cols-2">
+                <Field label="State / Province / Region" required hint="Example: Ontario">
+                  <input
+                    className={inputCls}
+                    value={data.stateProvince}
+                    onChange={(e) => set("stateProvince", e.target.value)}
+                    autoComplete="address-level1"
+                  />
+                </Field>
+                <Field label="City" required hint="Example: Mississauga">
+                  <input
+                    className={inputCls}
+                    value={data.city}
+                    onChange={(e) => set("city", e.target.value)}
+                    autoComplete="address-level2"
+                  />
+                </Field>
+              </div>
+              <Field label="Postal / ZIP Code">
                 <input
                   className={inputCls}
-                  value={data.cityProvince}
-                  onChange={(e) => set("cityProvince", e.target.value)}
+                  value={data.postalCode}
+                  onChange={(e) => set("postalCode", e.target.value)}
+                  autoComplete="postal-code"
                 />
               </Field>
+              <div className="border-t border-neutral-200 pt-5">
+                <p className="mb-4 text-xs font-bold uppercase tracking-wider text-neutral-500">
+                  Citizenship (optional)
+                </p>
+                <Field label="Citizenship / Nationality" hint="Example: Canadian">
+                  <input
+                    className={inputCls}
+                    value={data.citizenship}
+                    onChange={(e) => set("citizenship", e.target.value)}
+                  />
+                </Field>
+                <div className="mt-4">
+                  <CheckRow
+                    checked={data.dualCitizenship}
+                    onChange={(v) => set("dualCitizenship", v)}
+                    title="I hold dual citizenship"
+                    body="Check this if you hold citizenship in more than one country. This can affect recruiting eligibility in some programs."
+                  />
+                </div>
+                {data.dualCitizenship && (
+                  <div className="mt-4">
+                    <Field label="Additional citizenship">
+                      <input
+                        className={inputCls}
+                        value={data.additionalCitizenship}
+                        onChange={(e) => set("additionalCitizenship", e.target.value)}
+                        placeholder="Example: American"
+                      />
+                    </Field>
+                  </div>
+                )}
+              </div>
             </>
           )}
 
@@ -435,9 +542,7 @@ export default function ApplyPage() {
                   >
                     <option value="">Select year</option>
                     {GRAD_YEARS.map((y) => (
-                      <option key={y} value={y}>
-                        {y}
-                      </option>
+                      <option key={y} value={y}>{y}</option>
                     ))}
                   </select>
                 </Field>
@@ -468,15 +573,6 @@ export default function ApplyPage() {
                   />
                 </Field>
               </div>
-              <Field label="Transcript link" hint={URL_HINT}>
-                <input
-                  type="url"
-                  placeholder="https://"
-                  className={inputCls}
-                  value={data.transcriptUrl}
-                  onChange={(e) => set("transcriptUrl", e.target.value)}
-                />
-              </Field>
             </>
           )}
 
@@ -562,6 +658,24 @@ export default function ApplyPage() {
                   onChange={(e) => set("gameplayVideoUrl", e.target.value)}
                 />
               </Field>
+              <div>
+                <label className={labelCls}>
+                  Global Cities of Interest
+                </label>
+                <p className="mb-3 text-xs text-neutral-500">
+                  Select cities where you are open to playing college basketball. Select all that apply.
+                </p>
+                <div className="flex flex-wrap gap-2">
+                  {GLOBAL_CITIES.map((city) => (
+                    <CityPill
+                      key={city}
+                      city={city}
+                      selected={data.globalCities.includes(city)}
+                      onToggle={() => toggleCity(city)}
+                    />
+                  ))}
+                </div>
+              </div>
             </>
           )}
 
@@ -634,7 +748,7 @@ export default function ApplyPage() {
                   {data.gradYear}
                 </p>
                 <p className="mt-1 text-neutral-500">
-                  {data.email} · {data.cityProvince}
+                  {data.email} · {data.city}{data.stateProvince ? `, ${data.stateProvince}` : ""}{data.country ? `, ${data.country}` : ""}
                 </p>
               </div>
               <CheckRow

@@ -1,18 +1,20 @@
-import '../landing.css';
-import './admin.css';
-import { getOutreach } from '@/lib/outreach';
+import '../../landing.css';
+import '../admin.css';
 import { site } from '@/config/site';
-import AdminClient from './AdminClient';
+import { adminNonce } from '@/lib/hash';
+import CreateClientForm from '../CreateClientForm';
 
 export const dynamic = 'force-dynamic';
 
 export const metadata = {
-  title: 'Coach Outreach & Recruitment Tracker · CPR Admin',
+  title: 'Create New Client | CPR Admin',
   robots: { index: false, follow: false },
 };
 
-export default async function AdminPage() {
-  const { rows, live } = await getOutreach();
+export default async function CreateClientPage() {
+  const pw = process.env.ADMIN_PASSWORD || '';
+  const nonce = adminNonce(pw);
+
   return (
     <div className="admin-shell">
       <aside className="aside">
@@ -25,7 +27,7 @@ export default async function AdminPage() {
         </div>
         <div className="aside-sec">RECRUITMENT</div>
         <nav>
-          <span className="aitem active">&#128226; Coach Outreach</span>
+          <a className="aitem" href="/admin">&#128226; Coach Outreach</a>
           <span className="aitem">&#127979; Schools</span>
           <span className="aitem">&#128202; Recruitment Tracker</span>
           <span className="aitem">&#128172; Responses</span>
@@ -33,7 +35,7 @@ export default async function AdminPage() {
         </nav>
         <div className="aside-sec">MANAGEMENT</div>
         <nav>
-          <a className="aitem" href="/admin/create-client">&#43; Create New Client</a>
+          <a className="aitem active" href="/admin/create-client">&#43; Create New Client</a>
           <span className="aitem">&#128196; Documents</span>
           <span className="aitem">&#128221; Fee Agreements</span>
           <span className="aitem">&#9993; Email Templates</span>
@@ -43,12 +45,11 @@ export default async function AdminPage() {
       <main className="amain">
         <header className="ahead">
           <div>
-            <h1 className="display">COACH OUTREACH &amp; RECRUITMENT TRACKER</h1>
-            <p>Send profiles to college coaches and track responses and results.</p>
+            <h1 className="display">CREATE NEW CLIENT</h1>
+            <p>Enroll a new athlete in the CPR system and send welcome credentials.</p>
           </div>
-          {!live && <span className="demo-pill">SAMPLE DATA &middot; connect Airtable to go live</span>}
         </header>
-        <AdminClient rows={rows} />
+        <CreateClientForm adminNonce={nonce} />
       </main>
     </div>
   );

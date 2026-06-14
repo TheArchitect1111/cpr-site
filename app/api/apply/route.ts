@@ -19,7 +19,14 @@ const F = {
   satScore: "fldeKcKSpVLgfRrvI",
   currentSchool: "fldL1EmBdSCOWsO3X",
   gradYear: "fldzSXdkJeLdkBrbT",
-  cityProvince: "fldsOVNkJMdUFbimR",
+  country: "fldorVoCEhLFWOCZR",
+  stateProvince: "fldZHbY3FfoBDszom",
+  city: "fldGyOOhlEMwbJhey",
+  postalCode: "fldurxfDCSHX0o2zx",
+  citizenship: "fldDAz7MEuYrZ4CDC",
+  dualCitizenship: "fldgXgaP3NBWFEqH1",
+  additionalCitizenship: "fldv7vQjhkMXfApMs",
+  globalCities: "fldmC2cJ0u6eSVyof",
   parentName: "fldJJ2xthmAQU0k8l",
   parentEmail: "fldspIpyvbOycPBwX",
   parentPhone: "fldE00ro5IpP5n5L2",
@@ -27,7 +34,6 @@ const F = {
   strengths: "fld8i0s3hOXAVPw6N",
   highlightVideoUrl: "fld43RH1X5KsaDMfs",
   photoUrl: "fldZtAJHuCIoq27MM",
-  transcriptUrl: "fldU4gvPGNmWUtj7m",
   gameplayVideoUrl: "fldJKWz4vP3vk1oUo",
   feeStage1: "fldoi30EF4BI8m5g3",
   feeStage2: "fldqUAGfXBDrkeMgw",
@@ -99,7 +105,12 @@ export async function POST(req: NextRequest) {
       ["position", body.position],
       ["height", body.height],
       ["currentSchool", body.currentSchool],
-      ["cityProvince", body.cityProvince],
+      ["country", body.country],
+      ["stateProvince", body.stateProvince],
+      ["city", body.city],
+      ["postalCode", body.postalCode],
+      ["citizenship", body.citizenship],
+      ["additionalCitizenship", body.additionalCitizenship],
       ["parentName", body.parentName],
       ["parentEmail", body.parentEmail],
       ["parentPhone", body.parentPhone],
@@ -107,12 +118,19 @@ export async function POST(req: NextRequest) {
       ["strengths", body.strengths],
       ["highlightVideoUrl", body.highlightVideoUrl],
       ["photoUrl", body.photoUrl],
-      ["transcriptUrl", body.transcriptUrl],
       ["gameplayVideoUrl", body.gameplayVideoUrl],
     ];
     for (const [key, value] of optionalText) {
       const v = str(value);
       if (v) fields[F[key]] = v;
+    }
+
+    fields[F.dualCitizenship] = body.dualCitizenship === true;
+
+    if (Array.isArray(body.globalCities) && body.globalCities.length > 0) {
+      fields[F.globalCities] = body.globalCities.filter(
+        (c: unknown) => typeof c === "string" && c.trim()
+      );
     }
 
     const optionalNumbers: Array<[keyof typeof F, unknown]> = [

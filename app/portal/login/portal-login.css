@@ -1,0 +1,135 @@
+.pl-page {
+  min-height: 100vh;
+  background: var(--black);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 32px 16px;
+}
+
+.pl-card {
+  background: #fff;
+  border-radius: 10px;
+  padding: 40px 36px;
+  width: 100%;
+  max-width: 420px;
+  box-shadow: 0 4px 32px rgba(0,0,0,.4);
+}
+
+.pl-logo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 28px;
+}
+
+.pl-logo img {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+}
+
+.pl-brand .b1 {
+  color: var(--red-bright);
+  font-size: 14px;
+  font-weight: 800;
+  letter-spacing: .8px;
+  line-height: 1.1;
+}
+.pl-brand .b2 {
+  color: var(--black);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 2.5px;
+}
+
+.pl-card h2 {
+  font-size: 20px;
+  font-weight: 800;
+  margin: 0 0 6px;
+  letter-spacing: .4px;
+}
+
+.pl-card .pl-sub {
+  font-size: 13px;
+  color: var(--gray);
+  margin: 0 0 24px;
+}
+
+.pl-field {
+  margin-bottom: 16px;
+}
+
+.pl-field label {
+  display: block;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .6px;
+  color: var(--gray);
+  margin-bottom: 6px;
+  text-transform: uppercase;
+}
+
+.pl-field input {
+  width: 100%;
+  padding: 11px 14px;
+  border: 1.5px solid var(--line);
+  border-radius: 6px;
+  font-size: 14px;
+  font-family: inherit;
+  color: var(--ink);
+  outline: none;
+  transition: border-color .15s;
+}
+
+.pl-field input:focus {
+  border-color: var(--red);
+}
+
+.pl-error {
+  background: #FADDDD;
+  color: #A81D20;
+  border-radius: 6px;
+  padding: 10px 14px;
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 16px;
+}
+
+.pl-btn {
+  width: 100%;
+  background: var(--red);
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 800;
+  letter-spacing: .6px;
+  padding: 13px;
+  cursor: pointer;
+  margin-top: 6px;
+  font-family: inherit;
+  transition: background .15s;
+}
+
+.pl-btn:hover:not(:disabled) {
+  background: var(--red-bright);
+}
+
+.pl-btn:disabled {
+  opacity: .6;
+  cursor: default;
+}
+
+.pl-footer {
+  text-align: center;
+  margin-top: 20px;
+  font-size: 12px;
+  color: #aaa;
+}
+
+.pl-footer a {
+  color: #aaa;
+  text-decoration: underline;
+}

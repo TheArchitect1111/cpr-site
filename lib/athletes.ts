@@ -9,23 +9,28 @@ export type CoachResponse = { school: string; coach: string; status: string; dat
 export type Athlete = {
   slug: string; firstName: string; lastName: string; position: string; height: string;
   weight: string; gradYear: string; gpa: string; sat: string; act: string; school: string;
-  location: string; email: string; phone: string; parentName: string; bio: string;
+  location: string; country: string; city: string;
+  email: string; phone: string; parentName: string; bio: string;
   strengths: string[]; videoUrl: string; photoUrl: string; status: string;
   team: string; jersey: string; vertical: string; reach: string; hand: string; ncaa: string;
   profileViews: string; offers: string; visits: string;
+  globalCities: string[];
   responses: CoachResponse[];
 };
 
 const sample: Athlete = {
   slug: 'jayden-thompson', firstName: 'Jayden', lastName: 'Thompson', position: 'Point Guard',
   height: "6'2\"", weight: '175 lbs', gradYear: '2026', gpa: '3.8', sat: '1180', act: '',
-  school: 'Lorne Park SS', location: 'Mississauga, Ontario', email: 'jaydent2026@email.com',
-  phone: '(416) 555-8932', parentName: 'Mark Thompson',
+  school: 'Lorne Park SS', location: 'Mississauga, Ontario',
+  country: 'Canada', city: 'Mississauga',
+  email: 'jaydent2026@email.com', phone: '(416) 555-8932', parentName: 'Mark Thompson',
   bio: 'Dynamic point guard with elite court vision, leadership and scoring ability. Strong handle, quick first step and excellent decision maker in transition and half court sets. Dedicated to academic success and athletic development.',
   strengths: ['Basketball IQ', 'Court Vision', 'Playmaking', '3PT Shooting', 'Leadership', 'Transition', 'Defense', 'Quick First Step'],
   videoUrl: 'https://youtu.be/iqietCwnCxc', photoUrl: '/hero-athlete.png', status: 'Active',
   team: 'Mississauga Magic U18 AAA', jersey: '1', vertical: '', reach: '', hand: 'Right', ncaa: '',
-  profileViews: '', offers: '', visits: '', responses: [],
+  profileViews: '', offers: '', visits: '',
+  globalCities: ['Toronto', 'New York', 'Los Angeles'],
+  responses: [],
 };
 
 function youTubeId(url: string): string | null {
@@ -38,6 +43,7 @@ export function embedUrl(url: string): string | null {
 }
 
 type AirtableRecord = { id: string; fields: Record<string, unknown> };
+
 const f = (r: AirtableRecord, name: string): string => {
   const v = r.fields[name];
   if (v === undefined || v === null) return '';
@@ -47,6 +53,12 @@ const f = (r: AirtableRecord, name: string): string => {
     return String(first ?? '');
   }
   return String(v);
+};
+
+const fArr = (r: AirtableRecord, name: string): string[] => {
+  const v = r.fields[name];
+  if (!Array.isArray(v)) return [];
+  return v.filter(Boolean).map(String);
 };
 
 export async function getAthlete(slug: string): Promise<Athlete | null> {
@@ -67,13 +79,16 @@ export async function getAthlete(slug: string): Promise<Athlete | null> {
     weight: f(r, 'Weight') ? `${f(r, 'Weight')} lbs` : '', gradYear: f(r, 'Graduation Year'),
     gpa: f(r, 'GPA'), sat: f(r, 'SAT Score'), act: f(r, 'ACT Score'),
     school: f(r, 'Current School'), location: f(r, 'City / Province'),
+    country: f(r, 'Country'), city: f(r, 'City'),
     email: f(r, 'Email'), phone: f(r, 'Phone'), parentName: f(r, 'Parent Name'),
     bio: f(r, 'Bio'), strengths: f(r, 'Strengths').split(/[,\n]/).map(s => s.trim()).filter(Boolean),
     videoUrl: f(r, 'Highlight Video URL'), photoUrl: f(r, 'Photo URL') || f(r, 'Photo') || '/hero-athlete.png',
     status: f(r, 'Status') || 'Active', team: f(r, 'Club Team'), jersey: f(r, 'Jersey Number'),
     vertical: f(r, 'Vertical Jump'), reach: f(r, 'Standing Reach'), hand: f(r, 'Dominant Hand'),
     ncaa: f(r, 'NCAA Eligibility'), profileViews: f(r, 'Profile Views'),
-    offers: f(r, 'Offers'), visits: f(r, 'Visits'), responses: [],
+    offers: f(r, 'Offers'), visits: f(r, 'Visits'),
+    globalCities: fArr(r, 'Global Cities of Interest'),
+    responses: [],
   };
 
   // Coach Responses table is optional; ignore errors until it exists.

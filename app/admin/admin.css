@@ -9,6 +9,8 @@
 .aitem.active { background: var(--red); color: #fff; font-weight: 700; }
 .aitem.back { margin-top: 22px; color: #fff; cursor: pointer; }
 .aitem.back:hover { background: rgba(255,255,255,.1); }
+a.aitem { cursor: pointer; }
+a.aitem:hover { background: rgba(255,255,255,.07); }
 
 .amain { padding: 26px 30px; }
 .ahead { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; margin-bottom: 20px; }
@@ -79,6 +81,195 @@
 .tops { list-style: none; margin: 0; padding: 0; font-size: 13px; }
 .tops li { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #F2F2F2; }
 .tops b { color: var(--red); }
+
+/* ── Create Client Form ── */
+.cc-form {
+  background: #fff;
+  border: 1px solid #E7E7E7;
+  border-radius: 8px;
+  padding: 28px;
+  max-width: 680px;
+}
+
+.cc-section-label {
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 1.4px;
+  color: var(--gray);
+  margin-bottom: 12px;
+}
+
+.cc-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+.cc-field {
+  margin-bottom: 14px;
+}
+
+.cc-field label {
+  display: block;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .5px;
+  color: #555;
+  margin-bottom: 5px;
+  text-transform: uppercase;
+}
+
+.cc-req { color: var(--red); }
+
+.cc-field input,
+.cc-field select {
+  width: 100%;
+  padding: 10px 13px;
+  border: 1.5px solid #DDD;
+  border-radius: 6px;
+  font-size: 13.5px;
+  font-family: inherit;
+  color: var(--ink);
+  outline: none;
+  background: #fff;
+  transition: border-color .15s;
+}
+
+.cc-field input:focus,
+.cc-field select:focus {
+  border-color: var(--red);
+}
+
+.cc-error {
+  background: #FADDDD;
+  color: #A81D20;
+  border-radius: 6px;
+  padding: 11px 14px;
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 16px;
+}
+
+.cc-submit-btn {
+  display: block;
+  margin-top: 22px;
+  background: var(--red);
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: .5px;
+  padding: 13px 26px;
+  cursor: pointer;
+  font-family: inherit;
+  transition: background .15s;
+}
+
+.cc-submit-btn:hover:not(:disabled) { background: var(--red-bright); }
+.cc-submit-btn:disabled { opacity: .6; cursor: default; }
+
+.cc-result {
+  background: #fff;
+  border: 1px solid #E7E7E7;
+  border-radius: 8px;
+  padding: 28px;
+  max-width: 680px;
+}
+
+.cc-success-banner {
+  background: #DCF2E2;
+  color: #1E7A38;
+  border-radius: 6px;
+  padding: 12px 16px;
+  font-size: 14px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.cc-success-icon { font-size: 18px; }
+
+.cc-warn-banner {
+  background: #FBF0D2;
+  color: #7A5B00;
+  border-radius: 6px;
+  padding: 12px 16px;
+  font-size: 13px;
+  margin-bottom: 16px;
+  line-height: 1.5;
+}
+
+.cc-cred-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  margin-bottom: 16px;
+}
+
+.cc-cred-block {
+  background: #F8F8F8;
+  border: 1px solid #EEE;
+  border-radius: 6px;
+  padding: 16px;
+}
+
+.cc-cred-label {
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 1.2px;
+  color: var(--gray);
+  margin-bottom: 10px;
+}
+
+.cc-cred-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 6px;
+  font-size: 12.5px;
+}
+
+.cc-cred-key { color: var(--gray); flex-shrink: 0; }
+.cc-cred-val { font-family: 'Courier New', monospace; font-size: 13px; font-weight: 700; }
+
+.cc-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 20px;
+  font-size: 12px;
+  color: var(--gray);
+  margin-bottom: 12px;
+}
+
+.cc-meta code { font-size: 12px; color: var(--ink); }
+.cc-email-ok { color: #1E7A38; font-weight: 600; }
+.cc-email-fail { color: var(--red); font-weight: 600; }
+
+.cc-login-link {
+  font-size: 12px;
+  color: var(--gray);
+  margin-bottom: 20px;
+}
+
+.cc-login-link a { color: var(--red); }
+
+.cc-reset-btn {
+  background: var(--black);
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: .4px;
+  padding: 11px 22px;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.cc-reset-btn:hover { background: #222; }
 
 @media (max-width: 1000px) {
   .admin-shell { grid-template-columns: 1fr; }

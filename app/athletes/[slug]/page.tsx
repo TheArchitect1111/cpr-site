@@ -3,6 +3,7 @@ import './profile.css';
 import { notFound } from 'next/navigation';
 import { getAthlete, embedUrl } from '@/lib/athletes';
 import { site } from '@/config/site';
+import CoachInquiryModal from './CoachInquiryModal';
 
 export const dynamic = 'force-dynamic';
 
@@ -77,10 +78,9 @@ export default async function AthleteProfile({ params }: { params: Promise<{ slu
               <span className="ptag">Profile ID: CPR{a.gradYear}-{a.slug.slice(0, 6).toUpperCase()}</span>
             </p>
             <div className="phero-contact">
-              {a.email && <span>&#9993; <a href={`mailto:${a.email}`}>{a.email}</a></span>}
-              {a.phone && <span>&#9742; {a.phone}</span>}
-              {a.location && <span>&#9873; {a.location}</span>}
-              {a.parentName && <span>&#128100; Parent: {a.parentName}</span>}
+              {(a.city || a.country || a.location) && (
+                <span>&#9873; {a.city && a.country ? `${a.city}, ${a.country}` : (a.city || a.country || a.location)}</span>
+              )}
             </div>
           </div>
         </div>
@@ -143,6 +143,12 @@ export default async function AthleteProfile({ params }: { params: Promise<{ slu
                 <div className="chips">{a.strengths.map(s => <span className="chip" key={s}>{s}</span>)}</div>
               </>
             )}
+            {a.globalCities.length > 0 && (
+              <>
+                <div className="hl-label display">CITIES OF INTEREST</div>
+                <div className="city-tags">{a.globalCities.map(c => <span className="city-tag" key={c}>{c}</span>)}</div>
+              </>
+            )}
           </div>
         </div>
       </section>
@@ -179,7 +185,7 @@ export default async function AthleteProfile({ params }: { params: Promise<{ slu
               <h2 className="display">YOUR NEXT OPPORTUNITY IS CLOSER THAN YOU THINK.</h2>
               <p>Interested in {a.firstName}? Reach out and we will connect you directly.</p>
             </div>
-            <a className="btn btn-white" href={`mailto:${site.footer.email}?subject=Recruiting inquiry: ${a.firstName} ${a.lastName} (${a.slug})`}>CONTACT CPR &nbsp;&#10140;</a>
+            <CoachInquiryModal athleteSlug={a.slug} />
           </div>
         </div>
       </section>
