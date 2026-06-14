@@ -1,0 +1,367 @@
+/* Resource pages: Recruiting Timeline, Eligibility Center, Scholarship Center */
+
+.res-main { max-width: 860px; }
+
+/* ── Back navigation ── */
+.res-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  margin-bottom: 24px;
+  color: var(--gray);
+  font-size: 13px;
+  font-weight: 600;
+  text-decoration: none;
+  letter-spacing: .2px;
+  transition: color .12s;
+}
+.res-back:hover { color: var(--ink); }
+
+/* ── Resource nav cards (on portal dashboards) ── */
+.res-nav-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+}
+
+.res-nav-card {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 20px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--off);
+  text-decoration: none;
+  color: inherit;
+  transition: border-color .14s, box-shadow .14s;
+}
+
+.res-nav-card:hover {
+  border-color: var(--red);
+  box-shadow: 0 2px 10px rgba(0,0,0,.07);
+}
+
+.res-nav-icon {
+  width: 34px;
+  height: 34px;
+  border-radius: 7px;
+  background: var(--red);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.res-nav-title {
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: .3px;
+  color: var(--ink);
+}
+
+.res-nav-desc {
+  font-size: 12px;
+  color: var(--gray);
+  line-height: 1.45;
+}
+
+.res-nav-arrow {
+  font-size: 12px;
+  color: var(--red);
+  font-weight: 700;
+  margin-top: 4px;
+}
+
+/* ── Recruiting Timeline ── */
+.res-intro {
+  font-size: 13px;
+  color: var(--gray);
+  margin: -10px 0 24px;
+  line-height: 1.5;
+}
+
+.res-timeline {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+.res-timeline::before {
+  content: '';
+  position: absolute;
+  left: 20px;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: var(--line);
+  z-index: 0;
+}
+
+.res-grade {
+  display: flex;
+  gap: 22px;
+  padding-bottom: 30px;
+  position: relative;
+  z-index: 1;
+}
+
+.res-grade:last-child { padding-bottom: 0; }
+
+.res-grade-indicator { flex-shrink: 0; }
+
+.res-grade-dot {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: #fff;
+  border: 2px solid #D0D0D0;
+  color: #BBBBBB;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 800;
+  position: relative;
+  z-index: 2;
+}
+
+.res-grade.active .res-grade-dot {
+  background: var(--red);
+  border-color: var(--red);
+  color: #fff;
+  box-shadow: 0 0 0 4px rgba(178,23,18,.13);
+}
+
+.res-grade.done .res-grade-dot {
+  background: #EEEEEE;
+  border-color: #CCCCCC;
+  color: #888;
+  font-size: 15px;
+}
+
+.res-grade-content { flex: 1; min-width: 0; }
+
+.res-grade-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding-top: 8px;
+  margin-bottom: 14px;
+  flex-wrap: wrap;
+}
+
+.res-grade-title {
+  font-size: 16px;
+  font-weight: 800;
+  letter-spacing: .3px;
+  color: var(--ink);
+}
+
+.res-grade.done .res-grade-title { color: #AAAAAA; }
+
+.res-grade-badge {
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  color: #fff;
+  background: var(--red);
+  border-radius: 4px;
+  padding: 3px 8px;
+  white-space: nowrap;
+}
+
+.res-grade-body {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.res-grade.done .res-grade-body { opacity: .5; }
+
+.res-category {
+  background: var(--off);
+  border-radius: 6px;
+  padding: 12px 14px;
+  border-left: 3px solid var(--line);
+}
+
+.res-grade.active .res-category { border-left-color: var(--red); }
+
+.res-category-label {
+  font-size: 9.5px;
+  font-weight: 800;
+  letter-spacing: .9px;
+  text-transform: uppercase;
+  color: var(--gray);
+  margin-bottom: 5px;
+}
+
+.res-grade.active .res-category-label { color: var(--red); }
+
+.res-grade.done .res-category-label { color: #BBBBBB; }
+
+.res-category-text {
+  font-size: 12.5px;
+  line-height: 1.55;
+  color: var(--ink);
+}
+
+/* ── Eligibility Center ── */
+.res-gov-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.res-gov-card {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.res-gov-header {
+  background: var(--black);
+  color: #fff;
+  padding: 14px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.res-gov-name {
+  font-size: 14px;
+  font-weight: 800;
+  letter-spacing: .5px;
+}
+
+.res-gov-link {
+  font-size: 11px;
+  color: rgba(255,255,255,.6);
+  font-weight: 700;
+  letter-spacing: .3px;
+  text-decoration: none;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.res-gov-link:hover { color: #fff; }
+
+.res-gov-body {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0;
+}
+
+.res-gov-item {
+  padding: 14px 20px;
+  border-bottom: 1px solid var(--line);
+  border-right: 1px solid var(--line);
+}
+
+.res-gov-item:nth-child(even) { border-right: none; }
+.res-gov-item:nth-last-child(-n+2) { border-bottom: none; }
+
+.res-gov-item-label {
+  font-size: 9.5px;
+  font-weight: 800;
+  letter-spacing: .8px;
+  text-transform: uppercase;
+  color: var(--gray);
+  margin-bottom: 4px;
+}
+
+.res-gov-item-val {
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--ink);
+}
+
+.res-gov-note {
+  padding: 12px 20px 14px;
+  font-size: 12.5px;
+  color: var(--gray);
+  line-height: 1.55;
+  border-top: 1px solid var(--line);
+  background: var(--off);
+}
+
+/* ── Scholarship Center ── */
+.res-aid-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.res-aid-card {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.res-aid-card-header {
+  background: var(--off);
+  border-bottom: 1px solid var(--line);
+  padding: 14px 20px;
+}
+
+.res-aid-title {
+  font-size: 14px;
+  font-weight: 800;
+  letter-spacing: .3px;
+  color: var(--ink);
+}
+
+.res-aid-sub {
+  font-size: 12px;
+  color: var(--gray);
+  margin-top: 3px;
+}
+
+.res-aid-body {
+  padding: 16px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 11px;
+}
+
+.res-aid-point {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.res-aid-bullet {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--red);
+  flex-shrink: 0;
+  margin-top: 7px;
+}
+
+.res-aid-text {
+  font-size: 13.5px;
+  line-height: 1.6;
+  color: var(--ink);
+}
+
+/* ── Mobile ── */
+@media (max-width: 700px) {
+  .res-nav-grid { grid-template-columns: 1fr; }
+
+  .res-timeline::before { left: 18px; }
+  .res-grade { gap: 14px; }
+  .res-grade-dot { width: 38px; height: 38px; font-size: 12px; }
+  .res-grade-body { grid-template-columns: 1fr; }
+
+  .res-gov-body { grid-template-columns: 1fr; }
+  .res-gov-item { border-right: none !important; }
+  .res-gov-item:nth-last-child(-n+2) { border-bottom: 1px solid var(--line); }
+  .res-gov-item:last-child { border-bottom: none; }
+
+  .res-gov-header { flex-direction: column; align-items: flex-start; gap: 6px; }
+}
