@@ -18,17 +18,31 @@ async function queryAirtable(token: string, formula: string): Promise<AirtableRe
   return data.records?.[0] ?? null;
 }
 
-async function patchLastLogin(token: string, recordId: string, field: string): Promise<void> {
-  await fetch(`https://api.airtable.com/v0/${BASE}/${TABLE}`, {
+async function patchActivityFields(
+  token: string,
+  record: AirtableRecord,
+  loginType: 'Athlete' | 'Parent'
+): Promise<void> {
+  const now = new Date().toISOString();
+  const currentLogins = Number(record.fields['Total Logins'] ?? 0);
+  const legacyField =
+    loginType === 'Athlete' ? 'Athlete Portal Last Login' : 'Parent Portal Last Login';
+
+  await fetch(`https://api.airtable.com/v0/${BASE}/${TABLE}/${record.id}`, {
     method: 'PATCH',
     headers: {
       Authorization: `Bearer ${token}`,
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
-      records: [{ id: recordId, fields: { [field]: new Date().toISOString() } }],
+      fields: {
+        'Last Login': now,
+        'Last Login Type': loginType,
+        'Total Logins': currentLogins + 1,
+        [legacyField]: now,
+      },
     }),
-  }).catch(() => {/* non-fatal */});
+  }).catch(() => { /* non-fatal */ });
 }
 
 export async function POST(req: NextRequest) {
@@ -60,7 +74,7 @@ export async function POST(req: NextRequest) {
     const storedHash = String(athleteRecord.fields['Athlete Password Hash'] ?? '');
     const slug = String(athleteRecord.fields['Slug'] ?? '');
     if (storedHash && slug && verifyPassword(password, storedHash)) {
-      void patchLastLogin(airtableToken, athleteRecord.id, 'Athlete Portal Last Login');
+      void patchActivityFields(airtableToken, athleteRecord, 'Athlete');
       const token = await signSession({ type: 'athlete', slug, exp: newExpiry() });
       const res = NextResponse.json({ ok: true, type: 'athlete', slug });
       res.cookies.set(makeSessionCookie(token));
@@ -77,7 +91,7 @@ export async function POST(req: NextRequest) {
     const storedHash = String(parentRecord.fields['Parent Password Hash'] ?? '');
     const slug = String(parentRecord.fields['Slug'] ?? '');
     if (storedHash && slug && verifyPassword(password, storedHash)) {
-      void patchLastLogin(airtableToken, parentRecord.id, 'Parent Portal Last Login');
+      void patchActivityFields(airtableToken, parentRecord, 'Parent');
       const token = await signSession({ type: 'parent', slug, exp: newExpiry() });
       const res = NextResponse.json({ ok: true, type: 'parent', slug });
       res.cookies.set(makeSessionCookie(token));

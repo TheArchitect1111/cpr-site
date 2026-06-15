@@ -1,11 +1,14 @@
 import '../landing.css';
 import './admin.css';
 import { getOutreach } from '@/lib/outreach';
-import { getAllTickets, getAllMessages } from '@/lib/sections-data';
+import { getAllTickets, getAllMessages, getResources, getUpcomingEvents } from '@/lib/sections-data';
+import { getAthleteActivity } from '@/lib/activity-data';
 import { site } from '@/config/site';
 import AdminClient from './AdminClient';
 import AdminTickets from './AdminTickets';
 import AdminMessages from './AdminMessages';
+import AdminActivity from './AdminActivity';
+import AdminContentRelevance from './AdminContentRelevance';
 
 export const dynamic = 'force-dynamic';
 
@@ -30,6 +33,26 @@ export default async function AdminPage({
   } else if (tab === 'messages') {
     const result = await getAllMessages();
     mainContent = <AdminMessages messages={result.messages} live={result.live} />;
+  } else if (tab === 'activity') {
+    const { athletes, live } = await getAthleteActivity();
+    mainContent = <AdminActivity athletes={athletes} live={live} />;
+  } else if (tab === 'content') {
+    const [resourcesResult, eventsResult, activityResult] = await Promise.all([
+      getResources(),
+      getUpcomingEvents(),
+      getAthleteActivity(),
+    ]);
+    const gradYears = [
+      ...new Set(activityResult.athletes.map((a) => a.gradYear).filter((y) => y > 0)),
+    ].sort((a, b) => a - b);
+    mainContent = (
+      <AdminContentRelevance
+        resources={resourcesResult.resources}
+        events={eventsResult.events}
+        gradYears={gradYears}
+        live={resourcesResult.live}
+      />
+    );
   } else {
     const { rows, live } = await getOutreach();
     liveOutreach = live;
@@ -87,6 +110,21 @@ export default async function AdminPage({
             href="/admin?tab=messages"
           >
             &#128172; Messaging Center
+          </a>
+        </nav>
+        <div className="aside-sec">ANALYTICS</div>
+        <nav>
+          <a
+            className={`aitem${activeTab === 'activity' ? ' active' : ''}`}
+            href="/admin?tab=activity"
+          >
+            &#128200; Athlete Activity
+          </a>
+          <a
+            className={`aitem${activeTab === 'content' ? ' active' : ''}`}
+            href="/admin?tab=content"
+          >
+            &#128203; Content Relevance
           </a>
         </nav>
         <div className="aside-sec">MANAGEMENT</div>

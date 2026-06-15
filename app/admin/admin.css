@@ -271,6 +271,8 @@ a.aitem:hover { background: rgba(255,255,255,.07); }
 
 .cc-reset-btn:hover { background: #222; }
 
+.sort-active { color: var(--red); }
+
 @media (max-width: 1000px) {
   .admin-shell { grid-template-columns: 1fr; }
   .aside { position: static; height: auto; }
