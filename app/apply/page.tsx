@@ -39,7 +39,6 @@ type FormData = {
   feeStage3: boolean;
   nilInterest: boolean;
   termsAgreed: boolean;
-  digitalSignature: string;
 };
 
 const INITIAL: FormData = {
@@ -78,7 +77,6 @@ const INITIAL: FormData = {
   feeStage3: false,
   nilInterest: false,
   termsAgreed: false,
-  digitalSignature: "",
 };
 
 const STEPS = [
@@ -88,7 +86,7 @@ const STEPS = [
   "Parent / Guardian",
   "Bio and Media",
   "Program Acknowledgments",
-  "Review and Sign",
+  "Review and Acknowledge",
 ];
 
 const GRAD_YEARS = Array.from({ length: 7 }, (_, i) =>
@@ -240,11 +238,7 @@ export default function ApplyPage() {
       case 5:
         return data.feeStage1 && data.feeStage2 && data.feeStage3;
       case 6:
-        return (
-          data.termsAgreed &&
-          data.digitalSignature.trim().toLowerCase() ===
-            `${data.firstName} ${data.lastName}`.trim().toLowerCase()
-        );
+        return data.termsAgreed;
       default:
         return false;
     }
@@ -269,7 +263,7 @@ export default function ApplyPage() {
   const submit = async () => {
     if (!stepValid) {
       setError(
-        "Type your full name exactly as entered in Step 1 and agree to the terms."
+        "Please review the acknowledgment and check the agreement box."
       );
       return;
     }
@@ -649,6 +643,29 @@ export default function ApplyPage() {
                   onChange={(e) => set("photoUrl", e.target.value)}
                 />
               </Field>
+              <Field label="Choose profile photo from phone gallery" hint="Mobile-friendly photo selection. If upload hosting is connected later, this image can be saved directly to the profile.">
+                <input
+                  type="file"
+                  accept="image/*"
+                  className={inputCls}
+                  onChange={(e) => {
+                    const file = e.target.files?.[0];
+                    if (!file) return;
+                    const reader = new FileReader();
+                    reader.onload = () => {
+                      if (typeof reader.result === "string") set("photoUrl", reader.result);
+                    };
+                    reader.readAsDataURL(file);
+                  }}
+                />
+              </Field>
+              {data.photoUrl ? (
+                <img
+                  src={data.photoUrl}
+                  alt="Selected profile preview"
+                  className="h-28 w-28 object-cover"
+                />
+              ) : null}
               <Field label="Full gameplay video link" hint={URL_HINT}>
                 <input
                   type="url"
@@ -757,17 +774,6 @@ export default function ApplyPage() {
                 title="Terms of Service"
                 body="I confirm the information in this application is accurate, and I agree to CPR's terms of service. If I am under 18, my parent or guardian has reviewed this application with me."
               />
-              <Field
-                label="Digital signature"
-                required
-                hint={`Type your full name exactly: ${data.firstName} ${data.lastName}`}
-              >
-                <input
-                  className={inputCls}
-                  value={data.digitalSignature}
-                  onChange={(e) => set("digitalSignature", e.target.value)}
-                />
-              </Field>
             </>
           )}
 

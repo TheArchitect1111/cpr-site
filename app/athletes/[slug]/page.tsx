@@ -81,6 +81,7 @@ export default async function AthleteProfile({ params }: { params: Promise<{ slu
               {(a.city || a.country || a.location) && (
                 <span>&#9873; {a.city && a.country ? `${a.city}, ${a.country}` : (a.city || a.country || a.location)}</span>
               )}
+              {a.parentName && <span>&#128100; Parent: {a.parentName}</span>}
             </div>
           </div>
         </div>

@@ -1,8 +1,13 @@
 import '../landing.css';
 import './admin.css';
+import { cookies } from 'next/headers';
+import { redirect } from 'next/navigation';
 import { getOutreach } from '@/lib/outreach';
 import { getAllTickets, getAllMessages, getResources, getUpcomingEvents } from '@/lib/sections-data';
 import { getAthleteActivity } from '@/lib/activity-data';
+import { getAthletes } from '@/lib/athletes';
+import { getCoaches } from '@/lib/coaches';
+import { verifyAdminSession } from '@/lib/admin-auth';
 import { site } from '@/config/site';
 import AdminClient from './AdminClient';
 import AdminTickets from './AdminTickets';
@@ -22,10 +27,13 @@ export default async function AdminPage({
 }: {
   searchParams: Promise<{ tab?: string }>;
 }) {
-  const { tab } = await searchParams;
+  const session = (await cookies()).get('cpr_admin_session')?.value || '';
+  const admin = verifyAdminSession(session);
+  if (!admin) redirect('/admin/login');
 
+  const { tab } = await searchParams;
+  const activeTab = tab ?? 'outreach';
   let mainContent: React.ReactNode;
-  let liveOutreach = true;
 
   if (tab === 'tickets') {
     const result = await getAllTickets();
@@ -54,8 +62,11 @@ export default async function AdminPage({
       />
     );
   } else {
-    const { rows, live } = await getOutreach();
-    liveOutreach = live;
+    const [outreach, athletes, coaches] = await Promise.all([
+      getOutreach(),
+      getAthletes(),
+      getCoaches(),
+    ]);
     mainContent = (
       <>
         <header className="ahead">
@@ -63,16 +74,15 @@ export default async function AdminPage({
             <h1 className="display">COACH OUTREACH &amp; RECRUITMENT TRACKER</h1>
             <p>Send profiles to college coaches and track responses and results.</p>
           </div>
-          {!liveOutreach && (
+          <a className="admin-logout" href="/api/admin/logout">Sign Out</a>
+          {(!outreach.live || !athletes.live || !coaches.live) && (
             <span className="demo-pill">SAMPLE DATA &middot; connect Airtable to go live</span>
           )}
         </header>
-        <AdminClient rows={rows} />
+        <AdminClient rows={outreach.rows} players={athletes.rows} coaches={coaches.rows} />
       </>
     );
   }
-
-  const activeTab = tab ?? 'outreach';
 
   return (
     <div className="admin-shell">
@@ -86,12 +96,10 @@ export default async function AdminPage({
         </div>
         <div className="aside-sec">RECRUITMENT</div>
         <nav>
-          <a
-            className={`aitem${activeTab === 'outreach' ? ' active' : ''}`}
-            href="/admin"
-          >
+          <a className={`aitem${activeTab === 'outreach' ? ' active' : ''}`} href="/admin">
             &#128226; Coach Outreach
           </a>
+          <span className="aitem">&#127936; Player Profiles</span>
           <span className="aitem">&#127979; Schools</span>
           <span className="aitem">&#128202; Recruitment Tracker</span>
           <span className="aitem">&#128172; Responses</span>
@@ -99,31 +107,19 @@ export default async function AdminPage({
         </nav>
         <div className="aside-sec">PORTAL</div>
         <nav>
-          <a
-            className={`aitem${activeTab === 'tickets' ? ' active' : ''}`}
-            href="/admin?tab=tickets"
-          >
+          <a className={`aitem${activeTab === 'tickets' ? ' active' : ''}`} href="/admin?tab=tickets">
             &#10067; Ask CPR Tickets
           </a>
-          <a
-            className={`aitem${activeTab === 'messages' ? ' active' : ''}`}
-            href="/admin?tab=messages"
-          >
+          <a className={`aitem${activeTab === 'messages' ? ' active' : ''}`} href="/admin?tab=messages">
             &#128172; Messaging Center
           </a>
         </nav>
         <div className="aside-sec">ANALYTICS</div>
         <nav>
-          <a
-            className={`aitem${activeTab === 'activity' ? ' active' : ''}`}
-            href="/admin?tab=activity"
-          >
+          <a className={`aitem${activeTab === 'activity' ? ' active' : ''}`} href="/admin?tab=activity">
             &#128200; Athlete Activity
           </a>
-          <a
-            className={`aitem${activeTab === 'content' ? ' active' : ''}`}
-            href="/admin?tab=content"
-          >
+          <a className={`aitem${activeTab === 'content' ? ' active' : ''}`} href="/admin?tab=content">
             &#128203; Content Relevance
           </a>
         </nav>

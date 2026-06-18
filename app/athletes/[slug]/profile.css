@@ -1,5 +1,6 @@
 /* ATHLETE PROFILE */
 .phero { background: var(--black); color: #fff; padding: 40px 0 0; }
+.coach-banner { background: rgba(200,16,46,.18); border: 1px solid rgba(255,255,255,.18); border-radius: 6px; color: #fff; font-size: 12px; font-weight: 800; letter-spacing: .5px; margin-bottom: 18px; padding: 9px 12px; text-transform: uppercase; }
 .phero-grid { display: grid; grid-template-columns: 220px 1fr; gap: 28px; align-items: center; padding-bottom: 30px; }
 .phero-photo { width: 220px; height: 270px; object-fit: cover; object-position: center top; border-radius: 8px; border: 2px solid rgba(255,255,255,.15); }
 .phero h1 { font-size: 44px; margin: 0 0 8px; font-weight: 800; letter-spacing: 1px; }
@@ -38,6 +39,13 @@
 .pmuted { color: var(--gray); font-size: 13px; }
 .chips { display: flex; flex-wrap: wrap; gap: 8px; }
 .chip { background: #DCF2E2; color: #1E7A38; font-size: 12px; font-weight: 600; padding: 5px 12px; border-radius: 5px; }
+.coach-thanks { background: #DCF2E2; color: #1E7A38; border-radius: 6px; font-size: 13px; font-weight: 800; margin: 0 0 14px; padding: 10px 12px; }
+.coach-response-form { display: grid; gap: 10px; margin: 14px 0; }
+.coach-response-buttons { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
+.coach-response-buttons button { border: 0; border-radius: 5px; background: var(--black); color: #fff; cursor: pointer; font-size: 11px; font-weight: 900; letter-spacing: .6px; padding: 10px; text-transform: uppercase; }
+.coach-response-buttons button:first-child { background: #1E7A38; }
+.coach-response-buttons button:last-child { background: #A81D20; }
+.coach-response-form textarea { border: 1px solid var(--line); border-radius: 6px; font: inherit; min-height: 84px; padding: 10px 12px; resize: vertical; width: 100%; }
 
 /* Global Cities of Interest */
 .city-tags { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
@@ -91,4 +99,5 @@
   .phero h1 { font-size: 32px; }
   .phero-tags, .phero-contact { justify-content: center; }
   .psection .trio { grid-template-columns: 1fr; }
+  .coach-response-buttons { grid-template-columns: 1fr; }
 }

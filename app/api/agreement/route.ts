@@ -11,6 +11,7 @@ export async function POST(req: Request) {
   if (!b || b.website) return NextResponse.json({ error: 'Bad request' }, { status: 400 });
   if (!String(b.email || '').trim()) return NextResponse.json({ error: 'Missing email' }, { status: 400 });
   if (b.terms !== 'Yes') return NextResponse.json({ error: 'Terms must be accepted' }, { status: 400 });
+  if (!String(b.programOption || '').trim()) return NextResponse.json({ error: 'Select a fee option' }, { status: 400 });
   if (!String(b.playerName || '').trim() || !String(b.parentName || '').trim()) {
     return NextResponse.json({ error: 'Player and parent names are required' }, { status: 400 });
   }
@@ -18,22 +19,14 @@ export async function POST(req: Request) {
   const email = String(b.email).trim();
   const noteLines = [
     `--- Fee Agreement submitted ${new Date().toISOString().slice(0, 16).replace('T', ' ')} ---`,
-    `Academic standing disclaimer acknowledged: ${b.academic === 'Yes' ? 'Yes' : 'No'}`,
+    `Selected fee option: ${String(b.programOption).trim()}`,
     b.transcriptUrl ? `Transcript link: ${String(b.transcriptUrl).trim()}` : '',
     b.filmUrl ? `Game film link: ${String(b.filmUrl).trim()}` : '',
-    `Fee Stage 1 ($500 outreach): ${b.fee1 === 'Yes' ? 'Acknowledged' : 'Declined'}`,
-    `Fee Stage 2 ($500 application): ${b.fee2 === 'Yes' ? 'Acknowledged' : 'Declined'}`,
-    `Fee Stage 3 ($500 approval): ${b.fee3 === 'Yes' ? 'Acknowledged' : 'Declined'}`,
-    `NIL / Branding interest: ${b.nil === 'Yes' ? 'Yes' : 'No'}`,
+    `Agreement acknowledged by parent/guardian and player: Yes`,
   ].filter(Boolean).join('\n');
 
   const fields: Record<string, unknown> = {
-    'Fee Stage 1 Acknowledged': b.fee1 === 'Yes',
-    'Fee Stage 2 Acknowledged': b.fee2 === 'Yes',
-    'Fee Stage 3 Acknowledged': b.fee3 === 'Yes',
-    'NIL Interest': b.nil === 'Yes',
     'Terms Agreed': true,
-    'Digital Signature': String(b.playerName).trim(),
     'Parent Name': String(b.parentName).trim(),
   };
 

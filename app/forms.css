@@ -32,6 +32,10 @@
 .agree-block h4 { margin: 0 0 6px; font-size: 13.5px; font-weight: 800; letter-spacing: .4px; }
 .agree-block p { margin: 0 0 12px; font-size: 13px; color: #333; line-height: 1.55; }
 .agree-block .disclaim { font-style: italic; color: #6A6A6A; }
+.fee-list { margin: 0 0 12px 18px; padding: 0; color: #333; font-size: 13px; line-height: 1.55; }
+.fee-list li { margin-bottom: 4px; }
+.radio-line { display: flex; align-items: flex-start; gap: 8px; font-size: 13px; font-weight: 700; line-height: 1.45; cursor: pointer; }
+.radio-line input { margin-top: 2px; }
 .radios { display: flex; gap: 18px; }
 .radios label { display: flex; align-items: center; gap: 7px; font-size: 13px; font-weight: 600; cursor: pointer; }
 .radios input { width: auto; }

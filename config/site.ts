@@ -69,8 +69,6 @@ export const site = {
         ["SAT (Est.)", "1180"],
         ["Position", "PG"],
         ["High School", "Lorne Park SS"],
-        ["Email", "jaydent2026@email.com"],
-        ["Phone", "(416) 555-8932"],
       ],
       videos: ["/video-main.png", "/video-2.png", "/video-3.png"],
     },

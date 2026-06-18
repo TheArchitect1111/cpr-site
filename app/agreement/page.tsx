@@ -5,19 +5,6 @@ import { useState, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { site } from '@/config/site';
 
-function YesNo({ k, f, set }: { k: string; f: Record<string, string>; set: (k: string, v: string) => void }) {
-  return (
-    <div className="radios">
-      {['Yes', 'No'].map(o => (
-        <label key={o}>
-          <input type="radio" name={k} checked={f[k] === o} onChange={() => set(k, o)} />
-          {o === 'Yes' ? (k === 'academic' || k === 'terms' ? 'Yes, I understand' : 'Yes, I understand and payment details will be sent') : 'No'}
-        </label>
-      ))}
-    </div>
-  );
-}
-
 function AgreementForm() {
   const params = useSearchParams();
   const [f, setF] = useState<Record<string, string>>({ email: params.get('email') || '' });
@@ -29,8 +16,7 @@ function AgreementForm() {
   const setE = (k: string) => (e: React.ChangeEvent<HTMLInputElement>) => set(k, e.target.value);
   const v = (k: string) => f[k] || '';
 
-  const answered = ['fee1', 'fee2', 'academic', 'fee3', 'nil'].every(k => v(k));
-  const ready = v('email').trim() && v('playerName').trim() && v('parentName').trim() && answered && v('terms') === 'Yes';
+  const ready = v('email').trim() && v('playerName').trim() && v('parentName').trim() && v('programOption').trim() && v('terms') === 'Yes';
 
   async function submit() {
     setBusy(true); setErr('');
@@ -57,7 +43,7 @@ function AgreementForm() {
     <div className="fcard">
       {err && <div className="ferror">{err}</div>}
       <div className="honeypot"><input value={v('website')} onChange={setE('website')} tabIndex={-1} autoComplete="off" /></div>
-      <h2 className="display">FEE STRUCTURE AGREEMENT</h2>
+      <h2 className="display">CANADIAN PROSPECTS RECRUITMENT FEE AGREEMENT</h2>
       <p className="fsub">Contact us at {site.footer.email} or message us on Instagram. Required questions are marked <span className="req">*</span></p>
 
       <div className="fgroup">
@@ -79,33 +65,51 @@ function AgreementForm() {
       </div>
 
       <div className="agree-block">
-        <h4>FIRST PAYMENT <span className="req">*</span></h4>
-        <p>At this point $500.00 is collected to start sending out your package to coaches.</p>
-        <YesNo k="fee1" f={f} set={set} />
+        <h4>PROGRAM OVERVIEW</h4>
+        <p>Canadian Prospects Recruitment ("CPR") provides recruiting support, college outreach, player promotion, and guidance throughout the recruitment process.</p>
+        <p>By submitting this agreement, the Parent/Guardian and Player acknowledge and agree to one of the following fee options.</p>
       </div>
 
       <div className="agree-block">
-        <h4>NEXT STEP <span className="req">*</span></h4>
-        <p>When we find a school that is interested in having you attend, the coach or coaches will then communicate with parent(s)/guardian(s) to begin the application process. At this point another payment of $500.00 is due.</p>
-        <YesNo k="fee2" f={f} set={set} />
+        <h4>OPTION 1: CANADIAN RECRUITMENT PROGRAM <span className="req">*</span></h4>
+        <p><strong>Total Fee: $1,500</strong></p>
+        <p>Choose one payment method: Pay in full: $1,500 OR three payments of $500.</p>
+        <ul className="fee-list">
+          <li>Payment 1: $500 to begin the recruitment process</li>
+          <li>Payment 2: $500 during the recruitment process</li>
+          <li>Payment 3: $500 upon completion of the recruitment process</li>
+        </ul>
+        <label className="radio-line"><input type="radio" name="programOption" checked={v('programOption') === 'Canadian Recruitment Program'} onChange={() => set('programOption', 'Canadian Recruitment Program')} /> I agree to the Canadian Recruitment Program fee structure.</label>
       </div>
 
       <div className="agree-block">
-        <h4>NEXT STEP <span className="req">*</span></h4>
-        <p>Once contact is established, our job is to provide applicants with aid until the process is complete. <span className="disclaim">Canadian Prospects Recruitment is not responsible for any issues or rejections related to academic standing.</span></p>
-        <YesNo k="academic" f={f} set={set} />
+        <h4>OPTION 2: INTERNATIONAL RECRUITMENT PROGRAM <span className="req">*</span></h4>
+        <p><strong>Total Fee: $2,500</strong></p>
+        <ul className="fee-list">
+          <li>Payment 1: $1,000 to begin the recruitment process</li>
+          <li>Payment 2: $1,000 during the recruitment process</li>
+          <li>Payment 3: $500 upon completion of the recruitment process</li>
+        </ul>
+        <label className="radio-line"><input type="radio" name="programOption" checked={v('programOption') === 'International Recruitment Program'} onChange={() => set('programOption', 'International Recruitment Program')} /> I agree to the International Recruitment Program fee structure.</label>
       </div>
 
       <div className="agree-block">
-        <h4>LAST STEP <span className="req">*</span></h4>
-        <p>Once the application has been approved by the school, the last payment of $500.00 is due. We will continue to aid with promoting you as a member of our program throughout your career.</p>
-        <YesNo k="fee3" f={f} set={set} />
+        <h4>OPTION 3: SCHOLARSHIP SUCCESS FEE PROGRAM <span className="req">*</span></h4>
+        <p><strong>No upfront recruitment fee.</strong></p>
+        <p>If CPR assists in securing a scholarship opportunity, the following success fees apply:</p>
+        <ul className="fee-list">
+          <li>Partial Scholarship Award: $500</li>
+          <li>Full Scholarship Award: $1,500</li>
+        </ul>
+        <p>Success fees are due upon acceptance and signing of the scholarship offer.</p>
+        <label className="radio-line"><input type="radio" name="programOption" checked={v('programOption') === 'Scholarship Success Fee Program'} onChange={() => set('programOption', 'Scholarship Success Fee Program')} /> I agree to the Scholarship Success Fee Program.</label>
       </div>
 
       <div className="agree-block">
-        <h4>NIL &amp; BRANDING <span className="req">*</span></h4>
-        <p>Would you like management help with NILs or Branding?</p>
-        <YesNo k="nil" f={f} set={set} />
+        <h4>IMPORTANT INFORMATION</h4>
+        <p>Canadian Prospects Recruitment will make reasonable efforts to promote the student-athlete and connect them with potential college opportunities.</p>
+        <p>CPR does not guarantee scholarship offers, college acceptance, athletic roster positions, or specific financial aid awards.</p>
+        <p>Admission, scholarship, and roster decisions are made solely by the college, university, and coaching staff.</p>
       </div>
 
       <div className="frow">
@@ -116,15 +120,14 @@ function AgreementForm() {
         <div className="fgroup">
           <label>Full name of player/applicant <span className="req">*</span></label>
           <input value={v('playerName')} onChange={setE('playerName')} />
-          <div className="fhint">Typing your full name acts as your digital signature.</div>
         </div>
       </div>
 
       <div className="agree-block">
-        <h4>TERMS <span className="req">*</span></h4>
-        <p>I understand the terms of this application and by selecting YES I am in agreement to start the recruitment process.</p>
+        <h4>ACKNOWLEDGMENT <span className="req">*</span></h4>
+        <p>I have read, understand, and agree to the terms of this Canadian Prospects Recruitment Fee Agreement.</p>
         <div className="radios">
-          <label><input type="radio" name="terms" checked={v('terms') === 'Yes'} onChange={() => set('terms', 'Yes')} />Yes</label>
+          <label><input type="checkbox" name="terms" checked={v('terms') === 'Yes'} onChange={e => set('terms', e.target.checked ? 'Yes' : '')} />I agree to the terms.</label>
         </div>
       </div>
 

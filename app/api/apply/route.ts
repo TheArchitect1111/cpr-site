@@ -62,9 +62,8 @@ export async function POST(req: NextRequest) {
 
     const firstName = str(body.firstName);
     const lastName = str(body.lastName);
-    const email = str(body.email);
-    const termsAgreed = body.termsAgreed === true;
-    const signature = str(body.digitalSignature);
+  const email = str(body.email);
+  const termsAgreed = body.termsAgreed === true;
 
     if (!firstName || !lastName || !email) {
       return NextResponse.json(
@@ -72,9 +71,9 @@ export async function POST(req: NextRequest) {
         { status: 400 }
       );
     }
-    if (!termsAgreed || !signature) {
+    if (!termsAgreed) {
       return NextResponse.json(
-        { error: "Terms must be agreed and the application must be signed." },
+        { error: "Terms must be acknowledged before the application can be submitted." },
         { status: 400 }
       );
     }
@@ -90,7 +89,6 @@ export async function POST(req: NextRequest) {
       [F.lastName]: lastName,
       [F.email]: email,
       [F.termsAgreed]: true,
-      [F.digitalSignature]: signature,
       [F.submittedAt]: new Date().toISOString().slice(0, 10),
       [F.feeStage1]: body.feeStage1 === true,
       [F.feeStage2]: body.feeStage2 === true,
