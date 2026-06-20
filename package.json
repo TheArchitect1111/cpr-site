@@ -6,9 +6,11 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "test:smoke": "playwright test --config=playwright.smoke.config.ts"
   },
   "dependencies": {
+    "@sentry/nextjs": "^10.59.0",
     "@vercel/blob": "^2.4.0",
     "next": "^15.5.19",
     "puppeteer-core": "^25.1.0",
@@ -17,6 +19,7 @@
     "stripe": "^22.2.1"
   },
   "devDependencies": {
+    "@playwright/test": "^1.61.0",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
     "@types/react": "^19",
