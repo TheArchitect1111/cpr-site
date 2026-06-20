@@ -1,5 +1,6 @@
 import './landing.css';
 import { site } from '@/config/site';
+import RotatingImagePanel from '@/app/components/RotatingImagePanel';
 
 const I = ({ d, className = 'icon' }: { d: string; className?: string }) => (
   <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round"><path d={d} /></svg>
@@ -88,6 +89,22 @@ export default function Home() {
         </div>
       </section>
 
+      {/* CAMPS & EXPOSURE */}
+      <section className="section spotlight spotlight-dark" id="camps">
+        <div className="container spotlight-grid">
+          <div className="spotlight-copy">
+            <p className="spotlight-eyebrow display">{s.camps.eyebrow}</p>
+            <h2 className="display">
+              {s.camps.heading[0]}<span className="red">{s.camps.heading[1]}</span>{s.camps.heading[2]}
+            </h2>
+            <p className="spotlight-tag display">{s.camps.tagline}</p>
+            <p className="spotlight-sub">{s.camps.sub}</p>
+            <a className="btn" href={s.links.apply}>{s.camps.cta}</a>
+          </div>
+          <RotatingImagePanel slides={s.camps.slides} />
+        </div>
+      </section>
+
       {/* SHOWCASE + COACH PANEL */}
       <section className="section" id="about-us" style={{ paddingTop: 0 }}>
         <div className="container duo">
@@ -159,6 +176,21 @@ export default function Home() {
               <div className="l">{st.l}</div>
             </div>
           ))}
+        </div>
+      </section>
+
+      {/* WINNING STANDARD */}
+      <section className="section spotlight spotlight-light">
+        <div className="container spotlight-grid reverse">
+          <div className="spotlight-copy">
+            <p className="spotlight-eyebrow display">{s.winning.eyebrow}</p>
+            <h2 className="display">
+              {s.winning.heading[0]}<span className="red">{s.winning.heading[1]}</span>{s.winning.heading[2]}
+            </h2>
+            <p className="spotlight-sub">{s.winning.sub}</p>
+            <a className="btn" href={s.links.apply}>{s.winning.cta}</a>
+          </div>
+          <RotatingImagePanel slides={s.winning.slides} />
         </div>
       </section>
 

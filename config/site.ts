@@ -74,6 +74,29 @@ export const site = {
     },
     cta: "VIEW SAMPLE PROFILE",
   },
+  camps: {
+    eyebrow: "CAMPS & EXPOSURE",
+    heading: ["CAMPS THAT PUT ", "DEVELOPMENT", " IN MOTION"],
+    tagline: "A Play To Win!",
+    sub: "From skill development camps to national showcases, CPR athletes train, compete, and get seen by the right coaches at the right events.",
+    cta: "START YOUR APPLICATION",
+    slides: [
+      { img: "/hero-athlete.png", caption: "CPR athletes sharpening skills on the court." },
+      { img: "/proof-team.jpg", caption: "Team camps that build chemistry and competition." },
+      { img: "/proof-canada.jpg", caption: "Exposure on national and international stages." },
+    ],
+  },
+  winning: {
+    eyebrow: "CHAMPIONSHIP MINDSET",
+    heading: ["WINNING IS A ", "STANDARD", ", NOT A SLOGAN"],
+    sub: "We develop athletes who compete with purpose — on the court, in the classroom, and in the recruiting process.",
+    cta: "APPLY NOW",
+    slides: [
+      { img: "/proof-champion.jpg", caption: "From CPR to conference championships." },
+      { img: "/hero-committed.jpg", caption: "Committed athletes. Serious results." },
+      { img: "/proof-canada.jpg", caption: "Representing Canada at the highest level." },
+    ],
+  },
   track: {
     heading: ["WE ", "TRACK", ". YOU STAY INFORMED."],
     sub: "We manage the outreach. You see the results.",
