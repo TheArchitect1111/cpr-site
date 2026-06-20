@@ -14,6 +14,7 @@ import AdminTickets from './AdminTickets';
 import AdminMessages from './AdminMessages';
 import AdminActivity from './AdminActivity';
 import AdminContentRelevance from './AdminContentRelevance';
+import AdminRegistrants from './AdminRegistrants';
 
 export const dynamic = 'force-dynamic';
 
@@ -32,8 +33,10 @@ export default async function AdminPage({
   if (!admin) redirect('/admin/login');
 
   const { tab } = await searchParams;
-  const activeTab = tab ?? 'outreach';
+  const activeTab = tab ?? 'registrants';
   let mainContent: React.ReactNode;
+
+  const athletesPromise = getAthletes();
 
   if (tab === 'tickets') {
     const result = await getAllTickets();
@@ -61,7 +64,20 @@ export default async function AdminPage({
         live={resourcesResult.live}
       />
     );
-  } else {
+  } else if (tab === 'registrants' || !tab) {
+    const athletes = await athletesPromise;
+    mainContent = (
+      <>
+        <header className="ahead ahead-compact">
+          <div>
+            <p className="admin-kicker">CPR Admin Portal</p>
+          </div>
+          <a className="admin-logout" href="/api/admin/logout">Sign Out</a>
+        </header>
+        <AdminRegistrants athletes={athletes.rows} live={athletes.live} />
+      </>
+    );
+  } else if (tab === 'outreach') {
     const [outreach, athletes, coaches] = await Promise.all([
       getOutreach(),
       getAthletes(),
@@ -82,6 +98,20 @@ export default async function AdminPage({
         <AdminClient rows={outreach.rows} players={athletes.rows} coaches={coaches.rows} />
       </>
     );
+  } else {
+    const athletes = await athletesPromise;
+    mainContent = (
+      <>
+        <header className="ahead">
+          <div>
+            <h1 className="display">CPR ADMIN PORTAL</h1>
+            <p>Registrants, progress, and recruiting operations in one place.</p>
+          </div>
+          <a className="admin-logout" href="/api/admin/logout">Sign Out</a>
+        </header>
+        <AdminRegistrants athletes={athletes.rows} live={athletes.live} />
+      </>
+    );
   }
 
   return (
@@ -94,12 +124,20 @@ export default async function AdminPage({
             <div className="ab2 display">RECRUITMENT</div>
           </div>
         </div>
+        <div className="aside-sec">REGISTRANTS</div>
+        <nav>
+          <a className={`aitem${activeTab === 'registrants' ? ' active' : ''}`} href="/admin">
+            &#128100; Registrants &amp; Progress
+          </a>
+        </nav>
         <div className="aside-sec">RECRUITMENT</div>
         <nav>
-          <a className={`aitem${activeTab === 'outreach' ? ' active' : ''}`} href="/admin">
+          <a className={`aitem${activeTab === 'outreach' ? ' active' : ''}`} href="/admin?tab=outreach">
             &#128226; Coach Outreach
           </a>
-          <span className="aitem">&#127936; Player Profiles</span>
+          <a className={`aitem${activeTab === 'outreach' ? ' active' : ''}`} href="/admin?tab=outreach#players">
+            &#127936; Player Profiles
+          </a>
           <span className="aitem">&#127979; Schools</span>
           <span className="aitem">&#128202; Recruitment Tracker</span>
           <span className="aitem">&#128172; Responses</span>

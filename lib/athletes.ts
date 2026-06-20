@@ -483,7 +483,7 @@ export async function getAthlete(slug: string, options: { includeHidden?: boolea
   if (!r) return null;
 
   const athlete: Athlete = athleteFromRecord(r);
-  if (!options.includeHidden && athlete.status !== 'Active') return null;
+  if (!options.includeHidden && athlete.status === 'Archived') return null;
 
   // Coach Responses table is optional; ignore errors until it exists.
   try {

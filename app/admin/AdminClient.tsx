@@ -909,7 +909,7 @@ export default function AdminClient({ rows, players, coaches }: { rows: Outreach
             </select>
           </div>
           <table className="otable admissions-table">
-            <thead><tr><th>Applicant</th><th>Agreement</th><th>Files</th><th>Payments</th><th>Next Action</th><th>Actions</th></tr></thead>
+            <thead><tr><th>Applicant</th><th>Profile</th><th>Agreement</th><th>Files</th><th>Payments</th><th>Next Action</th><th>Actions</th></tr></thead>
             <tbody>
               {admissionRows.map(p => {
                 const needsAgreement = !p.termsAgreed && !p.agreementSubmitted;
@@ -921,6 +921,13 @@ export default function AdminClient({ rows, players, coaches }: { rows: Outreach
                     <td>
                       <span className="bold">{p.firstName} {p.lastName}</span>
                       <div className="sub">{p.email || p.parentEmail || 'No email'} {p.submittedAt ? `- ${p.submittedAt}` : ''}</div>
+                    </td>
+                    <td>
+                      {p.slug ? (
+                        <a href={`/athletes/${p.slug}`} target="_blank" rel="noopener noreferrer" className="profile-link-btn">View →</a>
+                      ) : (
+                        <span className="no">Pending</span>
+                      )}
                     </td>
                     <td>
                       <span className={`pill st ${needsAgreement ? 'pending' : 'active'}`}>{needsAgreement ? 'NEEDED' : 'ON FILE'}</span>

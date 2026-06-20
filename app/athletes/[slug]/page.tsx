@@ -63,6 +63,12 @@ export default async function AthleteProfile({ params }: { params: Promise<{ slu
         </div>
       </header>
 
+      {a.status === 'Pending' && (
+        <div className="profile-pending-banner">
+          Recruiting profile in progress — visible to CPR staff. This profile goes fully live for coach outreach once enrollment is complete.
+        </div>
+      )}
+
       {/* PROFILE HERO */}
       <section className="phero">
         <div className="container phero-grid">

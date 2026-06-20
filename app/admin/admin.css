@@ -386,11 +386,58 @@ a.aitem:hover { background: rgba(255,255,255,.07); }
 
 .sort-active { color: var(--red); }
 
+.ahead-compact { padding-bottom: 0; margin-bottom: -8px; }
+.admin-kicker { margin: 0; font-size: 11px; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; color: var(--gray); }
+
+.registrant-stats { grid-template-columns: repeat(5, 1fr); }
+.registrant-progress-cell { min-width: 220px; }
+.registrant-progress-pct { font-size: 12px; font-weight: 800; color: var(--red); }
+.registrant-progress-bar {
+  margin-top: 6px;
+  height: 8px;
+  background: #eee;
+  border-radius: 99px;
+  overflow: hidden;
+}
+.registrant-progress-fill {
+  height: 100%;
+  background: var(--red);
+  border-radius: 99px;
+}
+.registrant-progress-steps {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-top: 8px;
+}
+.registrant-step {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  padding: 3px 6px;
+  border-radius: 999px;
+  background: #f3f3f3;
+  color: #888;
+}
+.registrant-step.done {
+  background: #ecfdf3;
+  color: #166534;
+}
+.profile-link-btn {
+  color: var(--red);
+  font-size: 12px;
+  font-weight: 800;
+  text-decoration: none;
+}
+.profile-link-btn:hover { text-decoration: underline; }
+
 @media (max-width: 1000px) {
   .admin-shell { grid-template-columns: 1fr; }
   .aside { position: static; height: auto; }
   .stat-row { grid-template-columns: repeat(2, 1fr); }
   .admission-stats { grid-template-columns: repeat(2, 1fr); }
+  .registrant-stats { grid-template-columns: repeat(2, 1fr); }
   .check-grid { grid-template-columns: 1fr; }
   .full-grid, .full-text { grid-template-columns: 1fr; }
   .review-fields { grid-template-columns: 1fr; }

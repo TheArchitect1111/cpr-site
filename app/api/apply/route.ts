@@ -1,7 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
+import { uniqueAthleteSlug } from "@/lib/slug";
+import { profileUrl } from "@/lib/registrant-progress";
 
 const AIRTABLE_BASE_ID = process.env.AIRTABLE_BASE_ID || "appvVr6MVrJvEY0YJ";
 const AIRTABLE_TABLE_ID = "tblZwrZHi3WBR3NHZ";
+const ACTIVITY_PREFIX = "[CPR_ACTIVITY]";
 
 // Field IDs for the Athlete Intake table. IDs survive renames, names do not.
 const F = {
@@ -42,6 +45,8 @@ const F = {
   termsAgreed: "fldPmTQd6Q0X8sbVr",
   digitalSignature: "fld2Ldqqycn5OCGTl",
   submittedAt: "fldxY9CaMYia544vM",
+  slug: "fldGsG5znXJWUPAvc",
+  status: "fldM1mJup7uxnaKfM",
 } as const;
 
 function num(v: unknown): number | undefined {
@@ -84,10 +89,17 @@ export async function POST(req: NextRequest) {
       );
     }
 
+    const token = process.env.AIRTABLE_TOKEN;
+    const slug = await uniqueAthleteSlug(token, firstName, lastName);
+    const activityLine = `${ACTIVITY_PREFIX} ${new Date().toISOString()} Application submitted online. Recruiting profile created.`;
+
     const fields: Record<string, unknown> = {
       [F.firstName]: firstName,
       [F.lastName]: lastName,
       [F.email]: email,
+      [F.slug]: slug,
+      [F.status]: "Pending",
+      Notes: activityLine,
       [F.termsAgreed]: true,
       [F.submittedAt]: new Date().toISOString().slice(0, 10),
       [F.feeStage1]: body.feeStage1 === true,
@@ -194,7 +206,12 @@ export async function POST(req: NextRequest) {
       }
     }
 
-    return NextResponse.json({ ok: true, recordId });
+    return NextResponse.json({
+      ok: true,
+      recordId,
+      slug,
+      profileUrl: profileUrl(slug),
+    });
   } catch (err) {
     console.error("Apply route error:", err);
     return NextResponse.json(

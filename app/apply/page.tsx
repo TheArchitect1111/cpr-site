@@ -192,6 +192,7 @@ export default function ApplyPage() {
   const [error, setError] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [done, setDone] = useState(false);
+  const [profileUrl, setProfileUrl] = useState("");
 
   const set = <K extends keyof FormData>(key: K, value: FormData[K]) =>
     setData((d) => ({ ...d, [key]: value }));
@@ -281,6 +282,7 @@ export default function ApplyPage() {
         setSubmitting(false);
         return;
       }
+      if (json.profileUrl) setProfileUrl(String(json.profileUrl));
       setDone(true);
     } catch {
       setError("Network error. Check your connection and try again.");
@@ -308,9 +310,18 @@ export default function ApplyPage() {
             Application received, {data.firstName}.
           </h2>
           <p className="mt-4 text-sm leading-relaxed text-neutral-600">
-            A confirmation is on its way to {data.email}. Our team reviews
-            every application and you will hear from us within 2 to 3 business
-            days.
+            A confirmation is on its way to {data.email}. Your recruiting profile has been created and Coach Mike can see your registration in the admin portal immediately.
+          </p>
+          {profileUrl && (
+            <p className="mt-4 text-sm leading-relaxed text-neutral-600">
+              Your profile page:{" "}
+              <a href={profileUrl} className="font-semibold text-[#CC0000] underline" target="_blank" rel="noopener noreferrer">
+                {profileUrl}
+              </a>
+            </p>
+          )}
+          <p className="mt-3 text-sm leading-relaxed text-neutral-600">
+            Our team reviews every application and you will hear from us within 2 to 3 business days with agreement and payment instructions.
           </p>
           <a
             href="/"

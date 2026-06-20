@@ -1,4 +1,14 @@
 /* ATHLETE PROFILE */
+.profile-pending-banner {
+  background: #fff7ed;
+  color: #9a3412;
+  border-bottom: 1px solid #fed7aa;
+  padding: 12px 24px;
+  text-align: center;
+  font-size: 13px;
+  font-weight: 600;
+}
+
 .phero { background: var(--black); color: #fff; padding: 40px 0 0; }
 .coach-banner { background: rgba(200,16,46,.18); border: 1px solid rgba(255,255,255,.18); border-radius: 6px; color: #fff; font-size: 12px; font-weight: 800; letter-spacing: .5px; margin-bottom: 18px; padding: 9px 12px; text-transform: uppercase; }
 .phero-grid { display: grid; grid-template-columns: 220px 1fr; gap: 28px; align-items: center; padding-bottom: 30px; }
