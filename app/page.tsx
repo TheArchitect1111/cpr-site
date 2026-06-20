@@ -69,6 +69,17 @@ export default function Home() {
         </div>
       </section>
 
+      {/* GLOBAL */}
+      <section className="section global" id="global">
+        <div className="container">
+          <div className="sec-head">
+            <h2 className="display global-head">{s.global.heading}</h2>
+          </div>
+          <img src={s.global.image} alt="Canadian Prospects athletes" className="global-img" />
+          <p className="global-caption">{s.global.caption}</p>
+        </div>
+      </section>
+
       {/* PROCESS */}
       <section className="section" id="how-it-works">
         <div className="container">
@@ -263,6 +274,7 @@ export default function Home() {
               <h5 className="display">CONTACT US</h5>
               <div className="contact-row"><I d={icons.mail} /><a href={`mailto:${s.footer.email}`}>{s.footer.email}</a></div>
               <div className="contact-row"><I d={icons.insta} /><a href={s.links.instagram}>{s.footer.instagramLabel}</a></div>
+              <div className="contact-row"><I d={icons.insta} /><a href={s.links.instagramProspects}>{s.footer.prospectsInstagramLabel}</a></div>
               <div className="contact-row"><I d={icons.pin} /><span>{s.footer.location}</span></div>
             </div>
           </div>

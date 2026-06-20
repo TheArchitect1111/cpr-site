@@ -20,6 +20,7 @@ export const site = {
     apply: "/apply",
     video: "https://youtu.be/iqietCwnCxc",
     instagram: "https://instagram.com/mississaugamagic",
+    instagramProspects: "https://instagram.com/prospects.ca",
     facebook: "https://www.facebook.com/mississaugamagic21",
   },
   nav: ["HOME", "ABOUT US", "HOW IT WORKS", "SUCCESS STORIES", "FAQ", "CONTACT"],
@@ -29,6 +30,12 @@ export const site = {
     line3: "STARTS HERE.",
     sub: "We help Canadian student-athletes get noticed by college coaches and find the right school to compete and succeed.",
     image: "/hero-committed.jpg",
+  },
+  global: {
+    heading: "Take the first step in making your Dreams a reality!",
+    image: "/proof-canada.jpg",
+    caption:
+      "Canadian Prospects has gone Global! We now assist kids anywhere in the world in finding unbelievable opportunities to showcase their talents in multiple sports!",
   },
   process: {
     heading: ["OUR ", "RECRUITMENT", " PROCESS"],
@@ -158,6 +165,7 @@ export const site = {
     resources: ["For Athletes", "For Parents", "NCAA Recruiting Guide", "Fee Agreement"],
     email: "mikecrpglobal@mississaugamagic.com",
     instagramLabel: "@mississaugamagic",
+    prospectsInstagramLabel: "@Prospects.ca",
     location: "Mississauga, Ontario",
     copyright: "© 2026 Canadian Prospects Recruitment. All Rights Reserved.",
   },
