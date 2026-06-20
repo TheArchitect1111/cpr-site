@@ -31,12 +31,17 @@ const icons: Record<string, string> = {
 };
 
 const id = (s: string) => s.toLowerCase().replace(/[^a-z]+/g, '-');
+const navHref = (label: string, i: number) => {
+  if (i === 0) return '#top';
+  if (label === 'PROGRAMS') return '#programs';
+  if (label === 'APPLY') return '#apply';
+  return `#${id(label)}`;
+};
 
 export default function Home() {
   const s = site;
   return (
     <>
-      {/* NAV */}
       <header className="nav">
         <div className="nav-inner">
           <img src={s.brand.logo} alt="Canadian Prospects Recruitment" className="nav-logo" />
@@ -45,21 +50,24 @@ export default function Home() {
             <div className="b2">{s.brand.nameLine2}</div>
             <div className="b3">{s.brand.tagline}</div>
           </div>
-          <nav className="nav-links">
+          <nav className="nav-links" aria-label="Main">
             {s.nav.map((n, i) => (
-              <a key={n} href={i === 0 ? '#top' : `#${id(n)}`} className={i === 0 ? 'active' : ''}>{n}</a>
+              <a key={n} href={navHref(n, i)} className={i === 0 ? 'active' : ''}>{n}</a>
             ))}
             <a className="btn" href={s.links.apply}>APPLY NOW</a>
           </nav>
+          <div className="nav-mobile-cta">
+            <a className="btn btn-nav-sm" href={s.links.apply}>APPLY NOW</a>
+          </div>
         </div>
       </header>
 
-      {/* HERO */}
       <section className="hero" id="top">
         <div className="hero-grid">
           <div className="hero-copy">
-            <h1 className="display">{s.hero.line1}<br /><span className="l2">{s.hero.line2}</span><br />{s.hero.line3}</h1>
-            <p>{s.hero.sub}</p>
+            <h1 className="display hero-headline">{s.hero.headline}</h1>
+            <p className="hero-sub">{s.hero.subheadline}</p>
+            <p className="hero-tag display">{s.hero.tagline}</p>
             <div className="hero-btns">
               <a className="btn" href={s.links.apply}>APPLY NOW</a>
               <a className="btn btn-outline" href={s.links.video}>&#9654;&nbsp; WATCH VIDEO</a>
@@ -69,18 +77,184 @@ export default function Home() {
         </div>
       </section>
 
-      {/* GLOBAL */}
-      <section className="section global" id="global">
+      <section className="section" id="testimonials">
         <div className="container">
-          <div className="sec-head">
-            <h2 className="display global-head">{s.global.heading}</h2>
+          <div className="sec-head"><h2 className="display">{s.testimonials.heading}</h2></div>
+          <div className="stories-grid">
+            {s.testimonials.items.map((t) => (
+              <div className="story" key={t.name}>
+                <div className="qm">&ldquo;</div>
+                <p>{t.quote}</p>
+                <div className="story-by">
+                  <img src={t.photo} alt={t.name} />
+                  <div>
+                    <div className="n">{t.name}</div>
+                    <div className="s">{t.role}</div>
+                  </div>
+                </div>
+              </div>
+            ))}
           </div>
-          <img src={s.global.image} alt="Canadian Prospects athletes" className="global-img" />
-          <p className="global-caption">{s.global.caption}</p>
         </div>
       </section>
 
-      {/* PROCESS */}
+      <section className="section goals" id="goals">
+        <div className="container goals-grid">
+          <div>
+            <div className="sec-head goals-head">
+              <h2 className="display">{s.goals.heading[0]}<span className="red">{s.goals.heading[1]}</span>{s.goals.heading[2]}</h2>
+              <p>{s.goals.sub}</p>
+            </div>
+            <ul className="goals-list">
+              {s.goals.points.map((point) => (
+                <li key={point}>{point}</li>
+              ))}
+            </ul>
+          </div>
+          <img src={s.goals.image} alt="CPR athletes on the global stage" className="goals-img" />
+        </div>
+      </section>
+
+      <section className="section" id="programs">
+        <div className="container">
+          <div className="sec-head">
+            <h2 className="display">{s.services.heading[0]}<span className="red">{s.services.heading[1]}</span>{s.services.heading[2]}</h2>
+            <p>{s.services.sub}</p>
+          </div>
+          <div className="services-grid">
+            {s.services.items.map((item) => (
+              <div className="service-card" key={item.title}>
+                <h3 className="display">{item.title}</h3>
+                <p>{item.desc}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="section spotlight spotlight-dark" id="camps">
+        <div className="container spotlight-grid">
+          <div className="spotlight-copy">
+            <p className="spotlight-eyebrow display">{s.camps.eyebrow}</p>
+            <h2 className="display">
+              {s.camps.heading[0]}<span className="red">{s.camps.heading[1]}</span>{s.camps.heading[2]}
+            </h2>
+            <p className="spotlight-tag display">{s.camps.tagline}</p>
+            <p className="spotlight-sub">{s.camps.sub}</p>
+            <a className="btn" href={s.links.apply}>{s.camps.cta}</a>
+          </div>
+          <RotatingImagePanel slides={s.camps.slides} />
+        </div>
+      </section>
+
+      <section className="section spotlight spotlight-light" id="championships">
+        <div className="container spotlight-grid reverse">
+          <div className="spotlight-copy">
+            <p className="spotlight-eyebrow display">{s.winning.eyebrow}</p>
+            <h2 className="display">
+              {s.winning.heading[0]}<span className="red">{s.winning.heading[1]}</span>{s.winning.heading[2]}
+            </h2>
+            <p className="spotlight-sub">{s.winning.sub}</p>
+            <a className="btn" href={s.links.apply}>{s.winning.cta}</a>
+          </div>
+          <RotatingImagePanel slides={s.winning.slides} />
+        </div>
+      </section>
+
+      <section className="section apply-band">
+        <div className="container">
+          <div className="cta-band">
+            <div>
+              <h2 className="display">{s.cta.heading}</h2>
+              <p>{s.cta.sub}</p>
+            </div>
+            <a className="btn btn-white" href={s.links.apply}>{s.cta.button} &nbsp;&#10140;</a>
+          </div>
+        </div>
+      </section>
+
+      <section className="section" id="placements">
+        <div className="container">
+          <div className="sec-head">
+            <h2 className="display">{s.placements.heading}</h2>
+            <p>{s.placements.sub}</p>
+          </div>
+          <div className="stories-grid">
+            {s.placements.items.map((t) => (
+              <div className="story proof" key={t.img}>
+                <img src={t.img} alt={t.caption} className="proof-img" />
+                <p className="proof-cap">{t.caption}</p>
+              </div>
+            ))}
+          </div>
+          <div className="panel-cta">
+            <a className="btn" href={s.placements.profileSlug}>{s.placements.profileCta}</a>
+          </div>
+        </div>
+      </section>
+
+      <section className="section enroll" id="apply">
+        <div className="container">
+          <div className="sec-head">
+            <h2 className="display">{s.enroll.heading}</h2>
+            <p>{s.enroll.sub}</p>
+          </div>
+          <div className="enroll-actions">
+            <a className="btn btn-enroll" href={s.enroll.agreementHref}>{s.enroll.agreementLabel}</a>
+            <a className="btn btn-enroll-outline" href={s.enroll.applyHref}>{s.enroll.applyLabel}</a>
+          </div>
+        </div>
+      </section>
+
+      <section className="section merchandise" id="merchandise">
+        <div className="container merch-grid">
+          <div>
+            <h2 className="display">{s.merchandise.heading}</h2>
+            <p className="merch-sub">{s.merchandise.sub}</p>
+            <p className="merch-note">{s.merchandise.note}</p>
+          </div>
+          <img src={s.merchandise.image} alt="CPR merchandise" className="merch-img" />
+        </div>
+      </section>
+
+      <section className="section bio" id="bio">
+        <div className="container bio-grid">
+          <img src={s.bio.image} alt={s.bio.heading} className="bio-img" />
+          <div>
+            <h2 className="display">{s.bio.heading}</h2>
+            <p className="bio-role">{s.bio.sub}</p>
+            {s.bio.paragraphs.map((para) => (
+              <p className="bio-text" key={para}>{para}</p>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="section tribute" id="tribute">
+        <div className="container tribute-grid">
+          <div className="tribute-copy">
+            <p className="tribute-eyebrow display">{s.tribute.eyebrow}</p>
+            <h2 className="display">{s.tribute.name}</h2>
+            <p className="tribute-meta display">{s.tribute.meta}</p>
+            <blockquote className="tribute-message">
+              {s.tribute.message.map((line) => (
+                <p key={line}>{line}</p>
+              ))}
+            </blockquote>
+            <p className="tribute-sign display">{s.tribute.sign}</p>
+          </div>
+          <RotatingImagePanel slides={s.tribute.slides} intervalMs={5500} />
+        </div>
+      </section>
+
+      <section className="section coach-pop" id="coach-pop">
+        <div className="container coach-pop-inner">
+          <p className="coach-pop-label display">{s.coachPop.heading}</p>
+          <blockquote className="coach-pop-quote">&ldquo;{s.coachPop.quote}&rdquo;</blockquote>
+          <p className="coach-pop-attr display">{s.coachPop.attribution}</p>
+        </div>
+      </section>
+
       <section className="section" id="how-it-works">
         <div className="container">
           <div className="sec-head">
@@ -100,23 +274,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* CAMPS & EXPOSURE */}
-      <section className="section spotlight spotlight-dark" id="camps">
-        <div className="container spotlight-grid">
-          <div className="spotlight-copy">
-            <p className="spotlight-eyebrow display">{s.camps.eyebrow}</p>
-            <h2 className="display">
-              {s.camps.heading[0]}<span className="red">{s.camps.heading[1]}</span>{s.camps.heading[2]}
-            </h2>
-            <p className="spotlight-tag display">{s.camps.tagline}</p>
-            <p className="spotlight-sub">{s.camps.sub}</p>
-            <a className="btn" href={s.links.apply}>{s.camps.cta}</a>
-          </div>
-          <RotatingImagePanel slides={s.camps.slides} />
-        </div>
-      </section>
-
-      {/* SHOWCASE + COACH PANEL */}
       <section className="section" id="about-us" style={{ paddingTop: 0 }}>
         <div className="container duo">
           <div className="panel">
@@ -159,7 +316,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* TRACK */}
       <section className="section track">
         <div className="container track-grid">
           <div>
@@ -178,7 +334,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* STATS */}
       <section className="stats">
         <div className="container stats-grid">
           {s.stats.map(st => (
@@ -190,22 +345,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* WINNING STANDARD */}
-      <section className="section spotlight spotlight-light">
-        <div className="container spotlight-grid reverse">
-          <div className="spotlight-copy">
-            <p className="spotlight-eyebrow display">{s.winning.eyebrow}</p>
-            <h2 className="display">
-              {s.winning.heading[0]}<span className="red">{s.winning.heading[1]}</span>{s.winning.heading[2]}
-            </h2>
-            <p className="spotlight-sub">{s.winning.sub}</p>
-            <a className="btn" href={s.links.apply}>{s.winning.cta}</a>
-          </div>
-          <RotatingImagePanel slides={s.winning.slides} />
-        </div>
-      </section>
-
-      {/* STORIES */}
       <section className="section" id="success-stories">
         <div className="container">
           <div className="sec-head"><h2 className="display">{s.stories.heading}</h2></div>
@@ -220,25 +359,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* TRIBUTE */}
-      <section className="section tribute" id="tribute">
-        <div className="container tribute-grid">
-          <div className="tribute-copy">
-            <p className="tribute-eyebrow display">{s.tribute.eyebrow}</p>
-            <h2 className="display">{s.tribute.name}</h2>
-            <p className="tribute-meta display">{s.tribute.meta}</p>
-            <blockquote className="tribute-message">
-              {s.tribute.message.map((line) => (
-                <p key={line}>{line}</p>
-              ))}
-            </blockquote>
-            <p className="tribute-sign display">{s.tribute.sign}</p>
-          </div>
-          <RotatingImagePanel slides={s.tribute.slides} intervalMs={5500} />
-        </div>
-      </section>
-
-      {/* CTA BAND */}
       <section className="section" id="faq" style={{ paddingTop: 0 }}>
         <div className="container">
           <div className="cta-band">
@@ -251,7 +371,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* FOOTER */}
       <footer className="footer" id="contact">
         <div className="container">
           <div className="footer-grid">

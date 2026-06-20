@@ -23,19 +23,99 @@ export const site = {
     instagramProspects: "https://instagram.com/prospects.ca",
     facebook: "https://www.facebook.com/mississaugamagic21",
   },
-  nav: ["HOME", "ABOUT US", "HOW IT WORKS", "SUCCESS STORIES", "FAQ", "CONTACT"],
+  nav: ["HOME", "TESTIMONIALS", "PROGRAMS", "CAMPS", "APPLY", "CONTACT"],
   hero: {
-    line1: "YOUR NEXT",
-    line2: "OPPORTUNITY",
-    line3: "STARTS HERE.",
-    sub: "We help Canadian student-athletes get noticed by college coaches and find the right school to compete and succeed.",
+    headline: "Canadian Prospects.ca has gone Global!",
+    subheadline: "We now service dreams for kids all over the world!",
+    tagline: "Take your first steps to make your dream come true!",
     image: "/hero-committed.jpg",
   },
-  global: {
-    heading: "Take the first step in making your Dreams a reality!",
+  testimonials: {
+    heading: "WHAT FAMILIES & PLAYERS ARE SAYING",
+    items: [
+      {
+        quote:
+          "CPR opened doors we did not know existed. The process was organized, honest, and always focused on our son's future.",
+        name: "Parent of CPR Athlete",
+        role: "Parent Testimonial",
+        photo: "/proof-team.jpg",
+      },
+      {
+        quote:
+          "From camps to coach outreach, CPR kept me prepared and confident. I always knew what the next step was.",
+        name: "Former CPR Player",
+        role: "Player Testimonial",
+        photo: "/hero-athlete.png",
+      },
+      {
+        quote:
+          "Mike and his team treated our family like more than a number. They cared about the person, not just the profile.",
+        name: "CPR Parent",
+        role: "Parent Testimonial",
+        photo: "/proof-champion.jpg",
+      },
+    ],
+  },
+  goals: {
+    heading: ["SITE GOALS & ", "COACHING PHILOSOPHY", ""],
+    sub: "The Global Game starts with development, discipline, and real opportunity.",
+    points: [
+      "Develop complete student-athletes on and off the court.",
+      "Build confidence through exposure, structure, and accountability.",
+      "Connect talent to real programs — locally and globally.",
+      "Serve families with honesty, communication, and results.",
+    ],
     image: "/proof-canada.jpg",
-    caption:
-      "Canadian Prospects has gone Global! We now assist kids anywhere in the world in finding unbelievable opportunities to showcase their talents in multiple sports!",
+  },
+  services: {
+    heading: ["SERVICES & ", "PROGRAMS", ""],
+    sub: "Everything CPR offers to help athletes reach the next level.",
+    items: [
+      { title: "Recruitment & Profile Building", desc: "Professional athlete profiles sent to the right coaches." },
+      { title: "Camps & Showcases", desc: "Development and exposure at events that matter." },
+      { title: "Coach Outreach", desc: "Structured communication and follow-up with programs." },
+      { title: "Parent & Athlete Support", desc: "Guidance through every step of the recruiting journey." },
+    ],
+  },
+  placements: {
+    heading: "PLAYER PROFILES & RECENT PLACEMENTS",
+    sub: "See how CPR athletes present themselves — and where they are heading.",
+    profileCta: "VIEW SAMPLE PROFILE",
+    profileSlug: "/athletes/jayden-thompson",
+    items: [
+      { img: "/proof-canada.jpg", caption: "CPR athlete competing for Team Canada." },
+      { img: "/proof-champion.jpg", caption: "From CPR to a conference championship." },
+      { img: "/jayden-photo.png", caption: "Recent CPR placement — next-level opportunity." },
+    ],
+  },
+  enroll: {
+    heading: "START YOUR CPR JOURNEY",
+    sub: "Review the fee agreement, complete your application, and take the first step.",
+    agreementLabel: "FEE AGREEMENT",
+    agreementHref: "/agreement",
+    applyLabel: "APPLICATION",
+    applyHref: "/apply",
+  },
+  merchandise: {
+    heading: "CPR MERCHANDISE",
+    sub: "Shirts and hoodies — rep Canadian Prospects on and off the court.",
+    note: "Merchandise ordering coming soon. Contact us for availability.",
+    image: "/proof-team.jpg",
+  },
+  bio: {
+    heading: "ABOUT MIKE McKENZIE",
+    sub: "Founder, Canadian Prospects Recruitment",
+    paragraphs: [
+      "Mike McKenzie built Canadian Prospects Recruitment to give student-athletes a real path to opportunity — with structure, integrity, and heart.",
+      "Through camps, coaching, and recruiting support, CPR has helped hundreds of families navigate the journey to the next level.",
+    ],
+    image: "/cpr-logo.png",
+  },
+  coachPop: {
+    heading: "COACH POP",
+    quote:
+      "It is not about any one person. It is about the standard you set every day — and the culture you build together.",
+    attribution: "— Coach Pop",
   },
   process: {
     heading: ["OUR ", "RECRUITMENT", " PROCESS"],
@@ -161,7 +241,7 @@ export const site = {
   },
   footer: {
     about: "We connect Canadian student-athletes with opportunities to play basketball at the next level.",
-    quickLinks: ["About Us", "How It Works", "Success Stories", "FAQ", "Contact"],
+    quickLinks: ["Testimonials", "Programs", "Camps", "Apply", "Contact"],
     resources: ["For Athletes", "For Parents", "NCAA Recruiting Guide", "Fee Agreement"],
     email: "mikecrpglobal@mississaugamagic.com",
     instagramLabel: "@mississaugamagic",

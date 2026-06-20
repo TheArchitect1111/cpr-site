@@ -2,8 +2,8 @@ import type { Metadata } from 'next';
 import './globals.css';
 
 export const metadata: Metadata = {
-  title: 'Canadian Prospects Recruitment · Your Next Opportunity Starts Here',
-  description: 'We help Canadian student-athletes get noticed by college coaches and find the right school to compete and succeed.',
+  title: 'Canadian Prospects Recruitment · Global Recruiting for Student-Athletes',
+  description: 'Canadian Prospects.ca has gone global. We help student-athletes worldwide get noticed by coaches and find the right school to compete and succeed.',
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
