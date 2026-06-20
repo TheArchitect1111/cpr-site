@@ -1,0 +1,126 @@
+.portal-header-stack {
+  flex-direction: column;
+  align-items: stretch;
+  gap: 14px;
+}
+
+.portal-header-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  width: 100%;
+}
+
+.portal-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.portal-nav-link {
+  display: inline-flex;
+  align-items: center;
+  padding: 8px 14px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  color: rgba(255, 255, 255, 0.82);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  text-decoration: none;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+}
+
+.portal-nav-link:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: #fff;
+}
+
+.portal-nav-link.active {
+  background: var(--red-bright);
+  border-color: var(--red-bright);
+  color: #fff;
+}
+
+.portal-hub-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.portal-hub-card {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 18px;
+  border-radius: 10px;
+  border: 1px solid var(--line);
+  background: linear-gradient(180deg, #fff 0%, #fafafa 100%);
+  text-decoration: none;
+  color: inherit;
+  transition: transform 0.15s, box-shadow 0.15s, border-color 0.15s;
+}
+
+.portal-hub-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.08);
+  border-color: rgba(178, 23, 18, 0.25);
+}
+
+.portal-hub-card strong {
+  font-size: 16px;
+  letter-spacing: 0.02em;
+}
+
+.portal-hub-card p {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--gray);
+  flex: 1;
+}
+
+.portal-hub-tag {
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--red);
+}
+
+.portal-hub-cta {
+  font-size: 12px;
+  font-weight: 800;
+  color: var(--red-bright);
+}
+
+.portal-hub-card-amplifi {
+  background: linear-gradient(145deg, #0c0c0a 0%, #1a0505 100%);
+  border-color: rgba(200, 16, 46, 0.35);
+  color: #fff;
+}
+
+.portal-hub-card-amplifi p,
+.portal-hub-card-amplifi .portal-hub-tag {
+  color: rgba(255, 255, 255, 0.72);
+}
+
+.portal-hub-card-amplifi .portal-hub-tag {
+  color: #ff6b6b;
+}
+
+.portal-hub-card-amplifi .portal-hub-cta {
+  color: #fff;
+}
+
+.portal-hub-card-updates {
+  background: linear-gradient(145deg, #fff 0%, #fff7f7 100%);
+}
+
+@media (max-width: 900px) {
+  .portal-hub-grid {
+    grid-template-columns: 1fr;
+  }
+}

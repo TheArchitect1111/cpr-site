@@ -25,7 +25,9 @@ function PortalLoginClient({ logo }: { logo: string }) {
         </div>
 
         <h2>Portal Login</h2>
-        <p className="pl-sub">Athletes and parents use the same login page.</p>
+        <p className="pl-sub">
+          Athletes and parents use the same login. Access the Parent Portal, Amplifi™ vision experience, and Update Portal after sign-in.
+        </p>
 
         <div id="pl-error" className="pl-error" style={{ display: 'none' }} aria-live="polite" />
 

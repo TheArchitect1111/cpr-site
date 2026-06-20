@@ -130,3 +130,9 @@ export async function getOpportunities(athleteRecordId: string): Promise<Opportu
 export function getYearsUntilGrad(gradYear: number, currentYear: number): number {
   return gradYear > 0 ? gradYear - currentYear : 99;
 }
+
+export function onboardingProgress(onboarding: OnboardingData): number {
+  const keys = Object.keys(onboarding) as (keyof OnboardingData)[];
+  const done = keys.filter((key) => onboarding[key]).length;
+  return keys.length ? Math.round((done / keys.length) * 100) : 0;
+}

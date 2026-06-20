@@ -1,0 +1,78 @@
+.update-portal-hero {
+  margin-bottom: 20px;
+}
+
+.update-portal-title {
+  font-size: clamp(24px, 4vw, 34px);
+  margin: 0 0 8px;
+  font-weight: 900;
+  letter-spacing: -0.02em;
+}
+
+.update-portal-sub {
+  margin: 0;
+  color: var(--gray);
+  line-height: 1.55;
+  max-width: 640px;
+}
+
+.update-portal-feed {
+  display: grid;
+  gap: 14px;
+}
+
+.update-portal-item {
+  background: #fff;
+  border: 1px solid var(--line);
+  border-left: 4px solid var(--red);
+  border-radius: 10px;
+  padding: 20px 22px;
+}
+
+.update-portal-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.update-portal-meta time {
+  font-size: 12px;
+  color: var(--gray);
+}
+
+.update-portal-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  background: var(--off);
+  color: var(--ink);
+}
+
+.update-portal-badge-opportunity { background: #fff4e5; color: #9a5b00; }
+.update-portal-badge-message { background: #eef4ff; color: #1d4ed8; }
+.update-portal-badge-recruiting { background: #ecfdf5; color: #047857; }
+.update-portal-badge-onboarding { background: #fdf2f8; color: #9d174d; }
+.update-portal-badge-system { background: #f3f4f6; color: #374151; }
+
+.update-portal-item h2 {
+  margin: 0 0 6px;
+  font-size: 17px;
+}
+
+.update-portal-item p {
+  margin: 0;
+  color: var(--gray);
+  line-height: 1.55;
+}
+
+.update-portal-empty {
+  text-align: center;
+  color: var(--gray);
+}

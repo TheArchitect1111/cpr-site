@@ -4,6 +4,8 @@ import '../../resources/resources.css';
 import { getParentPortalData, getOpportunities } from '@/lib/portal-data';
 import { site } from '@/config/site';
 import { notFound } from 'next/navigation';
+import PortalShell from '@/app/portal/components/PortalShell';
+import PortalHubCards from '@/app/portal/components/PortalHubCards';
 import OnboardingTracker from './OnboardingTracker';
 import RecruitingRoadmap from './RecruitingRoadmap';
 import MonthlyActionPlan from './MonthlyActionPlan';
@@ -31,17 +33,7 @@ export default async function ParentPortalPage({
 
   return (
     <div className="portal-page">
-      <header className="portal-header">
-        <div className="portal-header-inner">
-          <div className="portal-logo-row">
-            <img src={site.brand.logo} alt="CPR" className="portal-logo-img" />
-            <div>
-              <div className="display b1">CANADIAN PROSPECTS</div>
-              <div className="display b2">RECRUITMENT</div>
-            </div>
-          </div>
-        </div>
-      </header>
+      <PortalShell portalType="parent" slug={slug} active="home" />
 
       <main className="portal-main pp-main">
         <div className="pp-welcome">
@@ -55,6 +47,8 @@ export default async function ParentPortalPage({
             {portalData.gradYear ? ` Class of ${portalData.gradYear}.` : ''}
           </p>
         </div>
+
+        <PortalHubCards portalType="parent" slug={slug} />
 
         <OnboardingTracker
           onboarding={portalData.onboarding}
