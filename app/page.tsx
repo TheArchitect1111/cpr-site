@@ -209,6 +209,24 @@ export default function Home() {
         </div>
       </section>
 
+      {/* TRIBUTE */}
+      <section className="section tribute" id="tribute">
+        <div className="container tribute-grid">
+          <div className="tribute-copy">
+            <p className="tribute-eyebrow display">{s.tribute.eyebrow}</p>
+            <h2 className="display">{s.tribute.name}</h2>
+            <p className="tribute-meta display">{s.tribute.meta}</p>
+            <blockquote className="tribute-message">
+              {s.tribute.message.map((line) => (
+                <p key={line}>{line}</p>
+              ))}
+            </blockquote>
+            <p className="tribute-sign display">{s.tribute.sign}</p>
+          </div>
+          <RotatingImagePanel slides={s.tribute.slides} intervalMs={5500} />
+        </div>
+      </section>
+
       {/* CTA BAND */}
       <section className="section" id="faq" style={{ paddingTop: 0 }}>
         <div className="container">
