@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { hashPassword, generateTempPassword, verifyAdminNonce } from '@/lib/hash';
+import { getSiteUrl, portalLoginUrl } from '@/lib/site-url';
 
 const BASE = 'appvVr6MVrJvEY0YJ';
 const TABLE = 'tblZwrZHi3WBR3NHZ';
@@ -89,10 +90,12 @@ function emailParent(
   parentUsername: string,
   parentTempPassword: string,
 ): string {
+  const siteUrl = getSiteUrl();
+  const loginUrl = portalLoginUrl();
   return `
 <div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;color:#1A1A1A">
   <div style="background:#0C0C0A;padding:24px;text-align:center">
-    <img src="https://canadianprospectrecruitment.vercel.app/cpr-logo.png" alt="CPR" style="width:58px;height:58px;border-radius:50%" />
+    <img src="${siteUrl}/cpr-logo.png" alt="CPR" style="width:58px;height:58px;border-radius:50%" />
     <div style="color:#C8102E;font-size:18px;font-weight:800;letter-spacing:1px;margin-top:10px">CANADIAN PROSPECTS RECRUITMENT</div>
   </div>
   <div style="padding:32px 24px;background:#fff">
@@ -101,7 +104,7 @@ function emailParent(
     <p style="margin:0 0 20px">Your family has been enrolled in Canadian Prospects Recruitment for ${athleteName}. Your Parent Success Portal gives you visibility into your athlete's progress, onboarding checklist, and key milestones throughout the recruiting process.</p>
     <div style="background:#F7F7F7;border-left:4px solid #C8102E;padding:16px 20px;margin-bottom:24px">
       <div style="font-size:13px;font-weight:700;letter-spacing:.5px;margin-bottom:10px">YOUR LOGIN CREDENTIALS</div>
-      <div style="margin-bottom:6px"><strong>Login page:</strong> <a href="https://canadianprospectrecruitment.vercel.app/portal/login">canadianprospectrecruitment.vercel.app/portal/login</a></div>
+      <div style="margin-bottom:6px"><strong>Login page:</strong> <a href="${loginUrl}">${loginUrl.replace(/^https?:\/\//, '')}</a></div>
       <div style="margin-bottom:6px"><strong>Username:</strong> ${parentUsername}</div>
       <div><strong>Temporary password:</strong> ${parentTempPassword}</div>
     </div>
@@ -118,10 +121,12 @@ function emailAthlete(
   athleteUsername: string,
   athleteTempPassword: string,
 ): string {
+  const siteUrl = getSiteUrl();
+  const loginUrl = portalLoginUrl();
   return `
 <div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;color:#1A1A1A">
   <div style="background:#0C0C0A;padding:24px;text-align:center">
-    <img src="https://canadianprospectrecruitment.vercel.app/cpr-logo.png" alt="CPR" style="width:58px;height:58px;border-radius:50%" />
+    <img src="${siteUrl}/cpr-logo.png" alt="CPR" style="width:58px;height:58px;border-radius:50%" />
     <div style="color:#C8102E;font-size:18px;font-weight:800;letter-spacing:1px;margin-top:10px">CANADIAN PROSPECTS RECRUITMENT</div>
   </div>
   <div style="padding:32px 24px;background:#fff">
@@ -130,7 +135,7 @@ function emailAthlete(
     <p style="margin:0 0 20px">You are officially in the CPR system. Your recruiting portal is where Coach Mike tracks your progress and builds your profile for college coaches. Here is how to get started.</p>
     <div style="background:#F7F7F7;border-left:4px solid #C8102E;padding:16px 20px;margin-bottom:24px">
       <div style="font-size:13px;font-weight:700;letter-spacing:.5px;margin-bottom:10px">YOUR LOGIN CREDENTIALS</div>
-      <div style="margin-bottom:6px"><strong>Login page:</strong> <a href="https://canadianprospectrecruitment.vercel.app/portal/login">canadianprospectrecruitment.vercel.app/portal/login</a></div>
+      <div style="margin-bottom:6px"><strong>Login page:</strong> <a href="${loginUrl}">${loginUrl.replace(/^https?:\/\//, '')}</a></div>
       <div style="margin-bottom:6px"><strong>Username:</strong> ${athleteUsername}</div>
       <div><strong>Temporary password:</strong> ${athleteTempPassword}</div>
     </div>
