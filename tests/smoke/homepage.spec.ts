@@ -1,11 +1,20 @@
 import { expect, test } from '@playwright/test';
 
-test('homepage renders global hero and tribute sections', async ({ page }) => {
+test('homepage renders EA Landing Page Chassis sections', async ({ page }) => {
   await page.goto('/');
-  await expect(page.getByRole('heading', { name: /canadian prospects\.ca has gone global/i })).toBeVisible();
-  await expect(page.getByText(/take your first steps to make your dream come true/i)).toBeVisible();
-  await expect(page.getByRole('heading', { name: /george raveling/i })).toBeVisible();
+  await expect(page.getByRole('heading', { name: /what becomes possible/i })).toBeVisible();
+  await expect(page.getByText(/canadian prospects\.ca has gone global/i)).toBeVisible();
   await expect(page.getByRole('heading', { name: /what families & players are saying/i })).toBeVisible();
+  await expect(page.getByText(/good coaches get players through drills/i)).toBeVisible();
+  await expect(page.getByRole('heading', { name: /cpr family portal/i })).toBeVisible();
+  await expect(page.getByRole('heading', { name: /meet mike/i })).toBeVisible();
+});
+
+test('tribute page is off homepage', async ({ page }) => {
+  await page.goto('/');
+  await expect(page.getByRole('heading', { name: /george raveling/i })).toHaveCount(0);
+  await page.goto('/tribute');
+  await expect(page.getByRole('heading', { name: /george raveling/i })).toBeVisible();
 });
 
 test('apply flow entry page is reachable', async ({ page }) => {
