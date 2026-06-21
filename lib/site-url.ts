@@ -1,6 +1,6 @@
 export function getSiteUrl(): string {
   const raw =
-    process.env.NEXT_PUBLIC_SITE_URL || 'https://canadianprospectrecruitment.vercel.app';
+    process.env.NEXT_PUBLIC_SITE_URL || 'https://cpr-site.vercel.app';
   return raw.replace(/\/$/, '');
 }
 

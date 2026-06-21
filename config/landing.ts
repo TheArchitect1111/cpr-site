@@ -1,4 +1,5 @@
 import type { LandingPageConfig } from '@/lib/landing-chassis/types';
+import { site } from './site';
 
 /** CPR instance of EA Landing Page Chassis™ — swap config, keep framework. */
 export const landingConfig: LandingPageConfig = {
@@ -20,7 +21,7 @@ export const landingConfig: LandingPageConfig = {
     apply: '/apply',
     video: 'https://youtu.be/iqietCwnCxc',
     agreement: '/agreement',
-    schedule: 'mailto:mikecrpglobal@mississaugamagic.com?subject=Schedule%20a%20Conversation',
+    schedule: 'mailto:mikecprglobal@mississaugamagic.com?subject=Schedule%20a%20Conversation',
     instagram: 'https://instagram.com/mississaugamagic',
     instagramSecondary: 'https://instagram.com/prospects.ca',
     facebook: 'https://www.facebook.com/mississaugamagic21',
@@ -50,21 +51,21 @@ export const landingConfig: LandingPageConfig = {
           'CPR opened doors we did not know existed. The process was organized, honest, and always focused on our son\'s future.',
         name: 'Parent of CPR Athlete',
         role: 'Parent Testimonial',
-        photo: '/proof-team.jpg',
+        photo: '/testi-1.png',
       },
       {
         quote:
           'From camps to coach outreach, CPR kept me prepared and confident. I always knew what the next step was.',
         name: 'Former CPR Player',
         role: 'Player Testimonial',
-        photo: '/hero-athlete.png',
+        photo: '/testi-2.png',
       },
       {
         quote:
           'Mike and his team treated our family like more than a number. They cared about the person, not just the profile.',
         name: 'CPR Parent',
         role: 'Parent Testimonial',
-        photo: '/proof-champion.jpg',
+        photo: '/testi-3.png',
       },
     ],
   },
@@ -160,7 +161,7 @@ export const landingConfig: LandingPageConfig = {
     role: 'Founder, Canadian Prospects Recruitment',
     story:
       'Mike McKenzie built CPR to give student-athletes a real path to opportunity — with structure, integrity, and heart. One coach. One mission. Your family\'s guide to the next level.',
-    image: '/cpr-logo.png',
+    image: '/video-main.png',
   },
   finalCta: {
     heading: 'READY TO TAKE THE NEXT STEP?',
@@ -168,6 +169,14 @@ export const landingConfig: LandingPageConfig = {
     applyLabel: 'APPLY NOW',
     agreementLabel: 'FEE AGREEMENT',
     scheduleLabel: 'SCHEDULE A CONVERSATION',
+  },
+  tribute: {
+    eyebrow: site.tribute.eyebrow,
+    name: site.tribute.name,
+    meta: site.tribute.meta,
+    message: site.tribute.message,
+    sign: site.tribute.sign,
+    slides: site.tribute.slides.filter((_, i) => ![3, 4, 6].includes(i)),
   },
   footer: {
     about:
@@ -182,10 +191,10 @@ export const landingConfig: LandingPageConfig = {
       { label: 'Camps & Exposure', href: '/camps' },
       { label: 'Athlete Profiles', href: '/athletes/jayden-thompson' },
       { label: 'Merchandise', href: '/merchandise' },
-      { label: 'George Raveling Tribute', href: '/tribute' },
+      { label: 'George Raveling Tribute', href: '#tribute' },
       { label: 'Fee Agreement', href: '/agreement' },
     ],
-    email: 'mikecrpglobal@mississaugamagic.com',
+    email: 'mikecprglobal@mississaugamagic.com',
     instagramLabel: '@mississaugamagic',
     prospectsInstagramLabel: '@Prospects.ca',
     location: 'Mississauga, Ontario',

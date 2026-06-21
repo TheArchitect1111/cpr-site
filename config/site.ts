@@ -109,7 +109,7 @@ export const site = {
       "Mike McKenzie built Canadian Prospects Recruitment to give student-athletes a real path to opportunity — with structure, integrity, and heart.",
       "Through camps, coaching, and recruiting support, CPR has helped hundreds of families navigate the journey to the next level.",
     ],
-    image: "/cpr-logo.png",
+    image: "/video-main.png",
   },
   coachPop: {
     heading: "COACH POP",
@@ -243,7 +243,7 @@ export const site = {
     about: "We connect Canadian student-athletes with opportunities to play basketball at the next level.",
     quickLinks: ["Testimonials", "Programs", "Camps", "Apply", "Contact"],
     resources: ["For Athletes", "For Parents", "NCAA Recruiting Guide", "Fee Agreement"],
-    email: "mikecrpglobal@mississaugamagic.com",
+    email: "mikecprglobal@mississaugamagic.com",
     instagramLabel: "@mississaugamagic",
     prospectsInstagramLabel: "@Prospects.ca",
     location: "Mississauga, Ontario",

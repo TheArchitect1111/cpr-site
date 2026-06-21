@@ -103,7 +103,7 @@ function emailParent(
     <p style="margin:0 0 8px;font-size:13px;color:#555">Please log in and change your password at your earliest convenience. If you have any questions, reply to this email or contact Mike directly.</p>
   </div>
   <div style="background:#F4F4F4;padding:14px;text-align:center;font-size:11px;color:#888">
-    Canadian Prospects Recruitment &middot; mikecrpglobal@mississaugamagic.com
+    Canadian Prospects Recruitment &middot; mikecprglobal@mississaugamagic.com
   </div>
 </div>`;
 }
@@ -143,7 +143,7 @@ function emailAthlete(
     <p style="margin:0;font-size:13px;color:#555">Coach Mike will review your materials and reach out with next steps. Let us build your future together.</p>
   </div>
   <div style="background:#F4F4F4;padding:14px;text-align:center;font-size:11px;color:#888">
-    Canadian Prospects Recruitment &middot; mikecrpglobal@mississaugamagic.com
+    Canadian Prospects Recruitment &middot; mikecprglobal@mississaugamagic.com
   </div>
 </div>`;
 }

@@ -1,9 +1,12 @@
 # CPR Deploy Runbook
 
-Production URLs:
+Production URLs (all should show the same site):
 
-- https://cpr-site.vercel.app
-- https://canadianprospectrecruitment.vercel.app (alias — keep in sync with `NEXT_PUBLIC_SITE_URL`)
+- https://cpr-site.vercel.app (primary)
+- https://canadianprospectrecruitment.vercel.app (Mike alias)
+- https://template-sports-recruitment.vercel.app (redirects to primary)
+
+**Not the CPR recruitment site:** https://mississaugamagic.com (WordPress — basketball org only)
 
 ## Pre-deploy checklist
 

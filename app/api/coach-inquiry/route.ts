@@ -88,7 +88,7 @@ export async function POST(req: NextRequest) {
         },
         body: JSON.stringify({
           from: 'CPR Portal <noreply@canadianprospects.com>',
-          to: 'mikecrpglobal@mississaugamagic.com',
+          to: 'mikecprglobal@mississaugamagic.com',
           subject: `New coach inquiry for ${athleteName}`,
           html: `<p><strong>Coach / Contact:</strong> ${coachName.trim()}</p>
 <p><strong>Email:</strong> ${coachEmail.trim()}</p>

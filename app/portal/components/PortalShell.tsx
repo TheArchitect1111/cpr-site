@@ -3,7 +3,7 @@ import { site } from '@/config/site';
 import { HeaderPortalShell } from '@ea/portal-chassis/layout';
 import '../portal-nav.css';
 
-export type PortalTab = 'home' | 'parent' | 'amplifi' | 'updates';
+export type PortalTab = 'home' | 'parent' | 'amplifi' | 'updates' | 'resources' | 'messages';
 
 type Props = {
   portalType: 'athlete' | 'parent';
@@ -43,6 +43,8 @@ export default function PortalShell({
           },
           { id: 'amplifi', label: 'Amplifi™', href: `${base}/amplifi` },
           { id: 'updates', label: 'Update Portal', href: `${base}/updates` },
+          { id: 'resources', label: 'Resources', href: `${base}/resource-library` },
+          { id: 'messages', label: 'Messages', href: `${base}/messaging-center` },
         ]}
       />
     </div>

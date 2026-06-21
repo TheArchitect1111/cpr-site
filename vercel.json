@@ -1,0 +1,16 @@
+{
+  "redirects": [
+    {
+      "source": "/:path*",
+      "has": [{ "type": "host", "value": "template-sports-recruitment.vercel.app" }],
+      "destination": "https://cpr-site.vercel.app/:path*",
+      "permanent": true
+    },
+    {
+      "source": "/:path*",
+      "has": [{ "type": "host", "value": "template-sports-recruitment-the-architects-projects-cc813778.vercel.app" }],
+      "destination": "https://cpr-site.vercel.app/:path*",
+      "permanent": true
+    }
+  ]
+}

@@ -1,5 +1,6 @@
 import type { LandingPageConfig } from './types';
 import { LandingIcon, landingIcons } from './icons';
+import { TributeSection } from './TributeSection';
 
 type Props = { config: LandingPageConfig };
 
@@ -241,6 +242,8 @@ export function LandingPage({ config: c }: Props) {
           </div>
         </div>
       </section>
+
+      {c.tribute ? <TributeSection tribute={c.tribute} /> : null}
 
       <footer className="lc-footer" id="contact">
         <div className="lc-container">

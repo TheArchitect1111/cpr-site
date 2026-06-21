@@ -135,6 +135,15 @@ export type LandingPageConfig = {
     agreementLabel?: string;
     scheduleLabel?: string;
   };
+  /** Optional in-memoriam band (above footer contact) */
+  tribute?: {
+    eyebrow: string;
+    name: string;
+    meta: string;
+    message: string[];
+    sign: string;
+    slides: { img: string; caption?: string }[];
+  };
   footer: {
     about: string;
     quickLinks: NavItem[];
