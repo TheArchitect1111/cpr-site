@@ -5,7 +5,7 @@ import {
   CPR_PORTAL_SESSION,
 } from '@/lib/chassis/cpr-portal';
 
-const { middleware, config } = createHmacPortalMiddleware({
+const { middleware } = createHmacPortalMiddleware({
   cookieName: CPR_PORTAL_COOKIE,
   loginPath: '/portal/login',
   session: CPR_PORTAL_SESSION,
@@ -18,4 +18,12 @@ const { middleware, config } = createHmacPortalMiddleware({
 });
 
 export default middleware;
-export { config };
+
+export const config = {
+  matcher: [
+    '/admin',
+    '/admin/:path*',
+    '/portal/athlete/:path*',
+    '/portal/parent/:path*',
+  ],
+};

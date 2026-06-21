@@ -31,6 +31,7 @@ for (const item of ['dist', 'styles', 'package.json', 'README.md']) {
 
 const pkgPath = join(target, 'package.json');
 const pkg = JSON.parse(readFileSync(pkgPath, 'utf8'));
+pkg.name = '@ea/portal-chassis';
 delete pkg.scripts?.prepare;
 delete pkg.scripts?.prepublishOnly;
 writeFileSync(pkgPath, `${JSON.stringify(pkg, null, 2)}\n`);
