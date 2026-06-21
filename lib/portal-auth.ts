@@ -2,7 +2,10 @@
 // Uses the Web Crypto API so this file works in both Edge (middleware)
 // and Node.js (API routes) runtimes.
 
+import { isProductionDeploy } from '@/lib/env';
+
 export const PORTAL_COOKIE = 'cpr_portal_session';
+const DEV_SECRET = 'cpr-portal-dev-secret-change-in-prod';
 const TTL_MS = 24 * 60 * 60 * 1000; // 24 hours
 
 export type PortalSession = {
@@ -25,8 +28,16 @@ function fromB64url(s: string): Uint8Array {
   return Uint8Array.from(bin, (c) => c.charCodeAt(0));
 }
 
-async function getKey(): Promise<CryptoKey> {
-  const secret = process.env.PORTAL_SECRET || 'cpr-portal-dev-secret-change-in-prod';
+function portalSecret(): string | null {
+  const secret = process.env.PORTAL_SECRET?.trim();
+  if (secret) return secret;
+  if (isProductionDeploy()) return null;
+  return DEV_SECRET;
+}
+
+async function getKey(): Promise<CryptoKey | null> {
+  const secret = portalSecret();
+  if (!secret) return null;
   return globalThis.crypto.subtle.importKey(
     'raw',
     new TextEncoder().encode(secret),
@@ -36,10 +47,11 @@ async function getKey(): Promise<CryptoKey> {
   );
 }
 
-export async function signSession(session: PortalSession): Promise<string> {
+export async function signSession(session: PortalSession): Promise<string | null> {
   const payload = JSON.stringify(session);
   const payloadB64 = b64url(new TextEncoder().encode(payload));
   const key = await getKey();
+  if (!key) return null;
   const sig = await globalThis.crypto.subtle.sign('HMAC', key, new TextEncoder().encode(payloadB64));
   return `${payloadB64}.${b64url(sig)}`;
 }
@@ -51,6 +63,7 @@ export async function verifySession(token: string): Promise<PortalSession | null
     const payloadB64 = token.slice(0, dot);
     const sigB64 = token.slice(dot + 1);
     const key = await getKey();
+    if (!key) return null;
     const sigBytes = fromB64url(sigB64);
     const valid = await globalThis.crypto.subtle.verify(
       'HMAC',

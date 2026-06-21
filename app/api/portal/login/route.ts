@@ -76,6 +76,9 @@ export async function POST(req: NextRequest) {
     if (storedHash && slug && verifyPassword(password, storedHash)) {
       void patchActivityFields(airtableToken, athleteRecord, 'Athlete');
       const token = await signSession({ type: 'athlete', slug, exp: newExpiry() });
+      if (!token) {
+        return NextResponse.json({ error: 'Portal login is temporarily unavailable.' }, { status: 503 });
+      }
       const res = NextResponse.json({ ok: true, type: 'athlete', slug });
       res.cookies.set(makeSessionCookie(token));
       return res;
@@ -93,6 +96,9 @@ export async function POST(req: NextRequest) {
     if (storedHash && slug && verifyPassword(password, storedHash)) {
       void patchActivityFields(airtableToken, parentRecord, 'Parent');
       const token = await signSession({ type: 'parent', slug, exp: newExpiry() });
+      if (!token) {
+        return NextResponse.json({ error: 'Portal login is temporarily unavailable.' }, { status: 503 });
+      }
       const res = NextResponse.json({ ok: true, type: 'parent', slug });
       res.cookies.set(makeSessionCookie(token));
       return res;

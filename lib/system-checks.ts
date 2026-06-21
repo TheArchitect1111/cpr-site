@@ -67,6 +67,11 @@ export async function getSystemChecks(): Promise<SystemCheck[]> {
   return [
     { name: 'Admin users', ok: admins.length > 0, detail: process.env.ADMIN_USERS ? `${admins.length} configured in ADMIN_USERS.` : usingLegacy ? 'Using legacy ADMIN_USER/ADMIN_PASSWORD fallback.' : 'No admin users configured.' },
     { name: 'Admin auth secret', ok: Boolean(process.env.ADMIN_AUTH_SECRET || process.env.ADMIN_PASSWORD), detail: process.env.ADMIN_AUTH_SECRET ? 'ADMIN_AUTH_SECRET configured.' : 'Using ADMIN_PASSWORD as session secret fallback.' },
+    { name: 'Portal session secret', ok: Boolean(process.env.PORTAL_SECRET), detail: process.env.PORTAL_SECRET ? 'PORTAL_SECRET configured.' : 'Missing — portal login will fail in production.' },
+    { name: 'Resend API key', ok: Boolean(process.env.RESEND_API_KEY), detail: process.env.RESEND_API_KEY ? 'Application and enrollment emails can send.' : 'RESEND_API_KEY is missing.' },
+    { name: 'Apply webhook', ok: Boolean(process.env.MAKE_CPR_WEBHOOK), detail: process.env.MAKE_CPR_WEBHOOK ? 'MAKE_CPR_WEBHOOK configured (optional — in-app Resend also sends apply emails).' : 'Optional Make apply webhook not set.' },
+    { name: 'Enroll webhook', ok: Boolean(process.env.CPR_ENROLL_WEBHOOK_URL), detail: process.env.CPR_ENROLL_WEBHOOK_URL ? 'CPR_ENROLL_WEBHOOK_URL configured.' : 'CPR_ENROLL_WEBHOOK_URL is missing.' },
+    { name: 'Blob storage', ok: Boolean(process.env.BLOB_READ_WRITE_TOKEN), detail: process.env.BLOB_READ_WRITE_TOKEN ? 'Apply photo and document uploads enabled.' : 'BLOB_READ_WRITE_TOKEN is missing.' },
     { name: 'Stripe secret key', ok: Boolean(process.env.STRIPE_SECRET_KEY), detail: process.env.STRIPE_SECRET_KEY ? 'Stripe checkout can create sessions.' : 'STRIPE_SECRET_KEY is missing.' },
     { name: 'Stripe webhook secret', ok: Boolean(process.env.STRIPE_WEBHOOK_SECRET), detail: process.env.STRIPE_WEBHOOK_SECRET ? 'Stripe webhook can verify signatures.' : 'STRIPE_WEBHOOK_SECRET is missing.' },
     ...(await airtableSchemaChecks()),

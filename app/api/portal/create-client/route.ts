@@ -4,7 +4,6 @@ import { getSiteUrl, portalLoginUrl } from '@/lib/site-url';
 
 const BASE = 'appvVr6MVrJvEY0YJ';
 const TABLE = 'tblZwrZHi3WBR3NHZ';
-const ENROLL_WEBHOOK = 'https://hook.us2.make.com/kyx4lg6myqybtwlbiaom91nzj3sjg8ul';
 const FROM_EMAIL = 'mikecrpglobal@mississaugamagic.com';
 const MIKE_EMAIL = 'mikecrpglobal@mississaugamagic.com';
 
@@ -272,9 +271,11 @@ export async function POST(req: NextRequest) {
   const atData = (await atRes.json()) as { records: { id: string }[] };
   const recordId = atData.records?.[0]?.id;
 
-  // 5. Fire Make.com webhook (non-fatal if it fails)
-  try {
-    await fetch(ENROLL_WEBHOOK, {
+  // 5. Fire Make.com webhook when configured (non-fatal if it fails)
+  const enrollWebhook = process.env.CPR_ENROLL_WEBHOOK_URL?.trim();
+  if (enrollWebhook) {
+    try {
+      await fetch(enrollWebhook, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -292,8 +293,9 @@ export async function POST(req: NextRequest) {
         submittedAt: new Date().toISOString(),
       }),
     });
-  } catch (err) {
-    console.error('Make webhook error (non-fatal):', err);
+    } catch (err) {
+      console.error('Make webhook error (non-fatal):', err);
+    }
   }
 
   // 6. Send welcome emails via Resend

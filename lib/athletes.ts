@@ -3,6 +3,7 @@
 // Without a token, falls back to the built-in sample so the page is always demo-able.
 
 import { createHmac, timingSafeEqual } from 'crypto';
+import { allowSampleData } from '@/lib/env';
 
 const BASE = 'appvVr6MVrJvEY0YJ';
 const ATHLETES = 'tblZwrZHi3WBR3NHZ';
@@ -249,7 +250,10 @@ const athleteFromRecord = (r: AirtableRecord): AthleteAdmin => ({
 
 export async function getAthletes(): Promise<{ rows: AthleteAdmin[]; live: boolean }> {
   const token = process.env.AIRTABLE_TOKEN;
-  if (!token) return { rows: [{ ...sample, id: 'sample', submittedAt: '', parentEmail: '', parentPhone: '', feeStage1: false, feeStage2: false, feeStage3: false, nilInterest: false, termsAgreed: false, agreementSubmitted: '', programOption: '', editToken: '', notes: '', transcriptUrl: '', gameplayVideoUrl: '', pendingUpdates: [], activity: [] }], live: false };
+  if (!token) {
+    if (!allowSampleData()) return { rows: [], live: false };
+    return { rows: [{ ...sample, id: 'sample', submittedAt: '', parentEmail: '', parentPhone: '', feeStage1: false, feeStage2: false, feeStage3: false, nilInterest: false, termsAgreed: false, agreementSubmitted: '', programOption: '', editToken: '', notes: '', transcriptUrl: '', gameplayVideoUrl: '', pendingUpdates: [], activity: [] }], live: false };
+  }
   try {
     const rows: AthleteAdmin[] = [];
     let offset = '';
@@ -472,7 +476,7 @@ export async function deleteAthlete(recordId: string) {
 
 export async function getAthlete(slug: string, options: { includeHidden?: boolean } = {}): Promise<Athlete | null> {
   const token = process.env.AIRTABLE_TOKEN;
-  if (!token) return slug === sample.slug ? sample : null;
+  if (!token) return allowSampleData() && slug === sample.slug ? sample : null;
 
   const safe = slug.replace(/[^a-z0-9-]/g, '');
   const url = `https://api.airtable.com/v0/${BASE}/${ATHLETES}?maxRecords=1&filterByFormula=${encodeURIComponent(`{Slug}='${safe}'`)}`;

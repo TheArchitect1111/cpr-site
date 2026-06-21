@@ -1,6 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { uniqueAthleteSlug } from "@/lib/slug";
 import { profileUrl } from "@/lib/registrant-progress";
+import { normalizePhotoUrl } from "@/lib/blob-upload";
+import { sendApplyAdminAlert, sendApplyConfirmationEmail } from "@/lib/apply-notifications";
+import { isProductionDeploy } from "@/lib/env";
 
 const AIRTABLE_BASE_ID = process.env.AIRTABLE_BASE_ID || "appvVr6MVrJvEY0YJ";
 const AIRTABLE_TABLE_ID = "tblZwrZHi3WBR3NHZ";
@@ -88,10 +91,15 @@ export async function POST(req: NextRequest) {
         { status: 500 }
       );
     }
+    if (isProductionDeploy() && !process.env.PORTAL_SECRET?.trim()) {
+      console.error("Missing PORTAL_SECRET in production.");
+    }
 
     const token = process.env.AIRTABLE_TOKEN;
     const slug = await uniqueAthleteSlug(token, firstName, lastName);
     const activityLine = `${ACTIVITY_PREFIX} ${new Date().toISOString()} Application submitted online. Recruiting profile created.`;
+
+    const normalizedPhotoUrl = await normalizePhotoUrl(str(body.photoUrl), slug);
 
     const fields: Record<string, unknown> = {
       [F.firstName]: firstName,
@@ -127,13 +135,13 @@ export async function POST(req: NextRequest) {
       ["bio", body.bio],
       ["strengths", body.strengths],
       ["highlightVideoUrl", body.highlightVideoUrl],
-      ["photoUrl", body.photoUrl],
       ["gameplayVideoUrl", body.gameplayVideoUrl],
     ];
     for (const [key, value] of optionalText) {
       const v = str(value);
       if (v) fields[F[key]] = v;
     }
+    if (normalizedPhotoUrl) fields[F.photoUrl] = normalizedPhotoUrl;
 
     fields[F.dualCitizenship] = body.dualCitizenship === true;
 
@@ -181,10 +189,30 @@ export async function POST(req: NextRequest) {
 
     const airtableData = await airtableRes.json();
     const recordId: string | undefined = airtableData?.records?.[0]?.id;
+    const publicProfileUrl = profileUrl(slug);
 
-    // Fire the Make webhook. Keys below match the scenario's Set Variables
-    // module exactly: firstName, lastName, email, recordId, position,
-    // currentSchool, gradYear. Do not rename them.
+    const emailInput = {
+      recordId: recordId || slug,
+      firstName,
+      lastName,
+      email,
+      slug,
+      profileUrl: publicProfileUrl,
+      sport: str(body.sport),
+      position: str(body.position),
+      currentSchool: str(body.currentSchool),
+      gradYear: str(String(body.gradYear ?? "")),
+      parentEmail: str(body.parentEmail),
+    };
+
+    const [confirmationSent, adminAlertSent] = recordId
+      ? await Promise.all([
+          sendApplyConfirmationEmail(emailInput),
+          sendApplyAdminAlert(emailInput),
+        ])
+      : [false, false];
+
+    // Optional Make automation (non-fatal). Keys match the scenario Set Variables module.
     if (process.env.MAKE_CPR_WEBHOOK && recordId) {
       try {
         await fetch(process.env.MAKE_CPR_WEBHOOK, {
@@ -210,7 +238,9 @@ export async function POST(req: NextRequest) {
       ok: true,
       recordId,
       slug,
-      profileUrl: profileUrl(slug),
+      profileUrl: publicProfileUrl,
+      confirmationSent,
+      adminAlertSent,
     });
   } catch (err) {
     console.error("Apply route error:", err);

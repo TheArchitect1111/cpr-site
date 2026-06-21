@@ -654,7 +654,7 @@ export default function ApplyPage() {
                   onChange={(e) => set("photoUrl", e.target.value)}
                 />
               </Field>
-              <Field label="Choose profile photo from phone gallery" hint="Mobile-friendly photo selection. If upload hosting is connected later, this image can be saved directly to the profile.">
+              <Field label="Choose profile photo from phone gallery" hint="Select a photo from your phone. It uploads securely when you submit your application.">
                 <input
                   type="file"
                   accept="image/*"
