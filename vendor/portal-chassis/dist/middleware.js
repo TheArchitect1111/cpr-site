@@ -53,6 +53,33 @@ async function verifyHmacSession(token, config) {
 }
 
 // auth/hmac-middleware-factory.ts
+function createSlugPortalMiddleware(cfg) {
+  const portalPrefix = cfg.portalPrefix ?? "/portal/";
+  const publicPaths = cfg.publicPaths ?? [cfg.loginPath, "/api/portal/login"];
+  async function middleware(req) {
+    const { pathname } = req.nextUrl;
+    if (publicPaths.some((p) => pathname === p || pathname.startsWith(`${p}/`))) {
+      return NextResponse.next();
+    }
+    const slugMatch = pathname.match(/^\/portal\/([^/]+)/);
+    if (!slugMatch) return NextResponse.next();
+    const slug = slugMatch[1];
+    if (slug === "login") return NextResponse.next();
+    const cookieVal = req.cookies.get(cfg.cookieName)?.value ?? "";
+    const session = cookieVal ? await verifyHmacSession(cookieVal, cfg.session) : null;
+    if (!session) {
+      return NextResponse.redirect(new URL(cfg.loginPath, req.url));
+    }
+    if (session.slug !== slug) {
+      return NextResponse.redirect(new URL(`${portalPrefix}${session.slug}`, req.url));
+    }
+    return NextResponse.next();
+  }
+  return {
+    middleware,
+    config: { matcher: ["/portal/:slug", "/portal/:slug/:path*"] }
+  };
+}
 function createHmacPortalMiddleware(cfg) {
   const adminPrefix = cfg.adminPathPrefix ?? "/admin";
   const adminLogin = cfg.adminLoginPath ?? `${adminPrefix}/login`;
@@ -107,6 +134,6 @@ function createHmacPortalMiddleware(cfg) {
   };
 }
 
-export { createHmacPortalMiddleware };
+export { createHmacPortalMiddleware, createSlugPortalMiddleware };
 //# sourceMappingURL=middleware.js.map
 //# sourceMappingURL=middleware.js.map

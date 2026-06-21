@@ -24,6 +24,21 @@ type HmacPortalMiddlewareConfig = {
     adminPathPrefix?: string;
     adminPublicPaths?: string[];
 };
+/** EA client portal pattern: /portal/[slug] with slug-only session payload. */
+type SlugPortalMiddlewareConfig = {
+    cookieName: string;
+    loginPath: string;
+    session: HmacSessionConfig;
+    portalPrefix?: string;
+    /** Paths that skip auth checks (login page + API routes). */
+    publicPaths?: string[];
+};
+declare function createSlugPortalMiddleware(cfg: SlugPortalMiddlewareConfig): {
+    middleware: (req: NextRequest) => Promise<NextResponse<unknown>>;
+    config: {
+        matcher: string[];
+    };
+};
 declare function createHmacPortalMiddleware(cfg: HmacPortalMiddlewareConfig): {
     middleware: (req: NextRequest) => Promise<NextResponse<unknown>>;
     config: {
@@ -31,4 +46,4 @@ declare function createHmacPortalMiddleware(cfg: HmacPortalMiddlewareConfig): {
     };
 };
 
-export { type HmacPortalMiddlewareConfig, type SlugRoleRoute, createHmacPortalMiddleware };
+export { type HmacPortalMiddlewareConfig, type SlugPortalMiddlewareConfig, type SlugRoleRoute, createHmacPortalMiddleware, createSlugPortalMiddleware };
