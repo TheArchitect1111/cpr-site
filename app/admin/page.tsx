@@ -138,10 +138,10 @@ export default async function AdminPage({
           <a className={`aitem${activeTab === 'outreach' ? ' active' : ''}`} href="/admin?tab=outreach#players">
             &#127936; Player Profiles
           </a>
-          <span className="aitem">&#127979; Schools</span>
-          <span className="aitem">&#128202; Recruitment Tracker</span>
-          <span className="aitem">&#128172; Responses</span>
-          <span className="aitem">&#127942; Offers</span>
+          <span className="aitem coming-soon" title="Coming soon">&#127979; Schools</span>
+          <span className="aitem coming-soon" title="Coming soon">&#128202; Recruitment Tracker</span>
+          <span className="aitem coming-soon" title="Coming soon">&#128172; Responses</span>
+          <span className="aitem coming-soon" title="Coming soon">&#127942; Offers</span>
         </nav>
         <div className="aside-sec">PORTAL</div>
         <nav>
@@ -164,9 +164,9 @@ export default async function AdminPage({
         <div className="aside-sec">MANAGEMENT</div>
         <nav>
           <a className="aitem" href="/admin/create-client">&#43; Create New Client</a>
-          <span className="aitem">&#128196; Documents</span>
-          <span className="aitem">&#128221; Fee Agreements</span>
-          <span className="aitem">&#9993; Email Templates</span>
+          <span className="aitem coming-soon" title="Coming soon">&#128196; Documents</span>
+          <span className="aitem coming-soon" title="Coming soon">&#128221; Fee Agreements</span>
+          <span className="aitem coming-soon" title="Coming soon">&#9993; Email Templates</span>
         </nav>
         <a className="aitem back" href="/">&#8592; Back to Site</a>
       </aside>

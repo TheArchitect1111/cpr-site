@@ -13,3 +13,18 @@ test('apply flow entry page is reachable', async ({ page }) => {
   await expect(page.getByRole('heading', { name: /athlete application/i })).toBeVisible();
   await expect(page.locator('input[autocomplete="given-name"]')).toBeVisible();
 });
+
+test('legacy intake URL redirects to apply', async ({ page }) => {
+  await page.goto('/intake');
+  await expect(page).toHaveURL(/\/apply$/);
+});
+
+test('admin login page loads', async ({ page }) => {
+  await page.goto('/admin/login');
+  await expect(page.getByRole('heading', { name: /cpr admin/i })).toBeVisible();
+});
+
+test('portal login page loads', async ({ page }) => {
+  await page.goto('/portal/login');
+  await expect(page.getByRole('heading', { name: /portal login/i })).toBeVisible();
+});

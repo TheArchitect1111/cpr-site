@@ -3,6 +3,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
 import { PORTAL_COOKIE, verifySession } from '@/lib/portal-auth';
 import { createMessage, markMessagesRead, getMessagesBySlug } from '@/lib/sections-data';
+import { notifyAdminNewMessage } from '@/lib/portal-admin-notifications';
 
 export const dynamic = 'force-dynamic';
 
@@ -45,6 +46,13 @@ export async function POST(req: NextRequest) {
       { status: 500 }
     );
   }
+
+  void notifyAdminNewMessage({
+    athleteSlug: session.slug,
+    sender,
+    messageBody,
+    messageId: message.id,
+  });
 
   return NextResponse.json({ message }, { status: 201 });
 }

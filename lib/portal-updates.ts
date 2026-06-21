@@ -1,5 +1,6 @@
 import { getOpportunities, type Opportunity } from '@/lib/portal-data';
 import { getMessagesBySlug } from '@/lib/sections-data';
+import { allowSampleData } from '@/lib/env';
 
 const BASE = 'appvVr6MVrJvEY0YJ';
 const ATHLETES = 'tblZwrZHi3WBR3NHZ';
@@ -92,6 +93,7 @@ const SAMPLE_UPDATES: PortalUpdate[] = [
 export async function getPortalUpdates(slug: string): Promise<{ updates: PortalUpdate[]; live: boolean }> {
   const token = process.env.AIRTABLE_TOKEN;
   if (!token) {
+    if (!allowSampleData()) return { updates: [], live: false };
     return { updates: slug === 'jayden-thompson' ? SAMPLE_UPDATES : [], live: false };
   }
 

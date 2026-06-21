@@ -1,3 +1,5 @@
+import { allowSampleData } from '@/lib/env';
+
 const BASE = process.env.AIRTABLE_BASE_ID || 'appvVr6MVrJvEY0YJ';
 const TABLE = process.env.AIRTABLE_COACHES_TABLE_ID || 'Coach Directory';
 
@@ -73,7 +75,10 @@ export function coachFieldsFromInput(input: CoachInput) {
 
 export async function getCoaches(): Promise<{ rows: CoachContact[]; live: boolean }> {
   const token = process.env.AIRTABLE_TOKEN || process.env.AIRTABLE_API_KEY;
-  if (!token) return { rows: sampleCoaches, live: false };
+  if (!token) {
+    if (!allowSampleData()) return { rows: [], live: false };
+    return { rows: sampleCoaches, live: false };
+  }
   try {
     const rows: CoachContact[] = [];
     let offset = '';
@@ -82,14 +87,14 @@ export async function getCoaches(): Promise<{ rows: CoachContact[]; live: boolea
         `https://api.airtable.com/v0/${BASE}/${encodeURIComponent(TABLE)}?pageSize=100${offset ? `&offset=${offset}` : ''}`,
         { headers: { Authorization: `Bearer ${token}` }, next: { revalidate: 60 } },
       );
-      if (!res.ok) return { rows: sampleCoaches, live: false };
+      if (!res.ok) return { rows: allowSampleData() ? sampleCoaches : [], live: false };
       const data = (await res.json()) as { records: AirtableRecord[]; offset?: string };
       rows.push(...data.records.map(coachFromRecord));
       offset = data.offset || '';
     } while (offset);
-    return { rows: rows.length ? rows : sampleCoaches, live: rows.length > 0 };
+    return { rows: rows.length ? rows : (allowSampleData() ? sampleCoaches : []), live: rows.length > 0 };
   } catch {
-    return { rows: sampleCoaches, live: false };
+    return { rows: allowSampleData() ? sampleCoaches : [], live: false };
   }
 }
 

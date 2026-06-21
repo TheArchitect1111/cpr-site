@@ -3,6 +3,7 @@
 // Falls back to sample data when AIRTABLE_TOKEN or the table is missing.
 
 import { createHmac, timingSafeEqual } from 'crypto';
+import { allowSampleData } from '@/lib/env';
 
 const BASE = 'appvVr6MVrJvEY0YJ';
 const TABLE = 'Coach Outreach';
@@ -122,7 +123,10 @@ export function outreachFieldsFromInput(input: OutreachInput) {
 
 export async function getOutreach(): Promise<{ rows: Outreach[]; live: boolean }> {
   const token = process.env.AIRTABLE_TOKEN;
-  if (!token) return { rows: sampleOutreach, live: false };
+  if (!token) {
+    if (!allowSampleData()) return { rows: [], live: false };
+    return { rows: sampleOutreach, live: false };
+  }
   try {
     const rows: Outreach[] = [];
     let offset = '';
@@ -131,7 +135,7 @@ export async function getOutreach(): Promise<{ rows: Outreach[]; live: boolean }
         `https://api.airtable.com/v0/${BASE}/${encodeURIComponent('Coach Outreach')}?pageSize=100${offset ? `&offset=${offset}` : ''}`,
         { headers: { Authorization: `Bearer ${token}` }, next: { revalidate: 60 } },
       );
-      if (!res.ok) return { rows: sampleOutreach, live: false };
+      if (!res.ok) return { rows: allowSampleData() ? sampleOutreach : [], live: false };
       const data = (await res.json()) as { records: AirtableRecord[]; offset?: string };
       for (const r of data.records) {
         rows.push({
@@ -140,9 +144,9 @@ export async function getOutreach(): Promise<{ rows: Outreach[]; live: boolean }
       }
       offset = data.offset ?? '';
     } while (offset);
-    return rows.length ? { rows, live: true } : { rows: sampleOutreach, live: false };
+    return rows.length ? { rows, live: true } : { rows: allowSampleData() ? sampleOutreach : [], live: false };
   } catch {
-    return { rows: sampleOutreach, live: false };
+    return { rows: allowSampleData() ? sampleOutreach : [], live: false };
   }
 }
 

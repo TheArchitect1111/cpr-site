@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
 import { PORTAL_COOKIE, verifySession } from '@/lib/portal-auth';
 import { createTicket, getTicketsBySlug } from '@/lib/sections-data';
+import { notifyAdminNewTicket } from '@/lib/portal-admin-notifications';
 
 export const dynamic = 'force-dynamic';
 
@@ -47,6 +48,13 @@ export async function POST(req: NextRequest) {
       { status: 500 }
     );
   }
+
+  void notifyAdminNewTicket({
+    athleteSlug: session.slug,
+    subject,
+    message,
+    ticketId: ticket.id,
+  });
 
   return NextResponse.json({ ticket }, { status: 201 });
 }

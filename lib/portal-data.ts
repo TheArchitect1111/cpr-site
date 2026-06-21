@@ -1,3 +1,5 @@
+import { allowSampleData } from '@/lib/env';
+
 const BASE = 'appvVr6MVrJvEY0YJ';
 const ATHLETES = 'tblZwrZHi3WBR3NHZ';
 const OPPORTUNITIES = 'tblDQp0xesXvvpDBa';
@@ -72,7 +74,10 @@ const SAMPLE_OPPS: Opportunity[] = [
 
 export async function getParentPortalData(slug: string): Promise<ParentPortalData | null> {
   const token = process.env.AIRTABLE_TOKEN;
-  if (!token) return slug === 'jayden-thompson' ? SAMPLE_DATA : null;
+  if (!token) {
+    if (!allowSampleData()) return null;
+    return slug === 'jayden-thompson' ? SAMPLE_DATA : null;
+  }
 
   const safe = slug.replace(/[^a-z0-9-]/g, '');
   const url = `https://api.airtable.com/v0/${BASE}/${ATHLETES}?maxRecords=1&filterByFormula=${encodeURIComponent(`{Slug}='${safe}'`)}`;
@@ -105,7 +110,10 @@ export async function getParentPortalData(slug: string): Promise<ParentPortalDat
 
 export async function getOpportunities(athleteRecordId: string): Promise<Opportunity[]> {
   const token = process.env.AIRTABLE_TOKEN;
-  if (!token) return athleteRecordId === 'rec_sample' ? SAMPLE_OPPS : [];
+  if (!token) {
+    if (!allowSampleData()) return [];
+    return athleteRecordId === 'rec_sample' ? SAMPLE_OPPS : [];
+  }
 
   const formula = `FIND("${athleteRecordId}",ARRAYJOIN({Athlete}))`;
   const url =

@@ -11,6 +11,7 @@
 .aitem.back:hover { background: rgba(255,255,255,.1); }
 a.aitem { cursor: pointer; }
 a.aitem:hover { background: rgba(255,255,255,.07); }
+.aitem.coming-soon { opacity: 0.45; cursor: not-allowed; font-style: italic; }
 
 .amain { padding: 26px 30px; }
 .ahead { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; margin-bottom: 20px; }

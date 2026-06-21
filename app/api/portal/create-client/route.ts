@@ -1,11 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { hashPassword, generateTempPassword, verifyAdminNonce } from '@/lib/hash';
 import { getSiteUrl, portalLoginUrl } from '@/lib/site-url';
+import { sendEmail } from '@/lib/email';
+import { adminEmail } from '@/lib/env';
 
 const BASE = 'appvVr6MVrJvEY0YJ';
 const TABLE = 'tblZwrZHi3WBR3NHZ';
-const FROM_EMAIL = 'mikecrpglobal@mississaugamagic.com';
-const MIKE_EMAIL = 'mikecrpglobal@mississaugamagic.com';
 
 // Field IDs for new portal fields
 const PF = {
@@ -61,24 +61,17 @@ async function uniqueSlug(token: string, firstName: string, lastName: string): P
   return `${base}-${Date.now()}`;
 }
 
-async function sendResendEmail(
+async function sendEnrollEmail(
   to: string,
   subject: string,
   html: string,
+  idempotencyKey: string,
 ): Promise<boolean> {
-  const apiKey = process.env.RESEND_API_KEY;
-  if (!apiKey) return false;
   try {
-    const res = await fetch('https://api.resend.com/emails', {
-      method: 'POST',
-      headers: {
-        Authorization: `Bearer ${apiKey}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ from: FROM_EMAIL, to, subject, html }),
-    });
-    return res.ok;
-  } catch {
+    await sendEmail({ to, subject, html, idempotencyKey });
+    return true;
+  } catch (err) {
+    console.error('Enroll email failed:', err);
     return false;
   }
 }
@@ -302,23 +295,26 @@ export async function POST(req: NextRequest) {
   const athleteFullName = `${athleteFirstName} ${athleteLastName}`;
   const [parentOk, athleteOk, mikeOk] = await Promise.all([
     parentEmail
-      ? sendResendEmail(
+      ? sendEnrollEmail(
           parentEmail,
           'Welcome to CPR Parent Success Portal',
           emailParent(parentName, athleteFullName, parentUsername, parentTempPassword),
+          `cpr-enroll-parent-${recordId}`,
         )
       : Promise.resolve(false),
     athleteEmail
-      ? sendResendEmail(
+      ? sendEnrollEmail(
           athleteEmail,
           'Welcome to Your CPR Recruiting Portal',
           emailAthlete(athleteFirstName, athleteUsername, athleteTempPassword),
+          `cpr-enroll-athlete-${recordId}`,
         )
       : Promise.resolve(false),
-    sendResendEmail(
-      MIKE_EMAIL,
+    sendEnrollEmail(
+      adminEmail(),
       'New CPR Client Enrolled',
       emailMike(athleteFullName, parentName, parentEmail, athleteEmail, gradYear, sport, packagePurchased),
+      `cpr-enroll-admin-${recordId}`,
     ),
   ]);
 

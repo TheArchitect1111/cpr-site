@@ -1,3 +1,5 @@
+import { allowSampleData } from '@/lib/env';
+
 const BASE = 'appvVr6MVrJvEY0YJ';
 
 const TABLES = {
@@ -340,7 +342,7 @@ export async function getResources(): Promise<{ resources: Resource[]; live: boo
   const sort = encodeURIComponent('sort[0][field]') + '=' + encodeURIComponent('Date Added') +
     '&' + encodeURIComponent('sort[0][direction]') + '=desc';
   const rows = await atFetch(`${TABLES.resources}?${sort}`);
-  if (rows.length === 0 && !process.env.AIRTABLE_TOKEN) {
+  if (rows.length === 0 && !process.env.AIRTABLE_TOKEN && allowSampleData()) {
     return { resources: SAMPLE_RESOURCES, live: false };
   }
   return { resources: rows.map(rowToResource), live: true };
@@ -373,7 +375,7 @@ export async function getTicketsBySlug(
     encodeURIComponent('sort[0][direction]') +
     '=desc';
   const rows = await atFetch(`${TABLES.tickets}?filterByFormula=${formula}&${sort}`);
-  if (rows.length === 0 && !process.env.AIRTABLE_TOKEN) {
+  if (rows.length === 0 && !process.env.AIRTABLE_TOKEN && allowSampleData()) {
     const sample = SAMPLE_TICKETS.filter(
       (t) => t.athleteSlug === slug || slug === 'jayden-thompson'
     );
@@ -391,7 +393,7 @@ export async function getAllTickets(): Promise<{ tickets: Ticket[]; live: boolea
     encodeURIComponent('sort[0][direction]') +
     '=desc';
   const rows = await atFetch(`${TABLES.tickets}?${sort}`);
-  if (rows.length === 0 && !process.env.AIRTABLE_TOKEN) {
+  if (rows.length === 0 && !process.env.AIRTABLE_TOKEN && allowSampleData()) {
     return { tickets: SAMPLE_TICKETS, live: false };
   }
   return { tickets: rows.map(rowToTicket), live: true };
@@ -459,7 +461,7 @@ export async function getMessagesBySlug(
     encodeURIComponent('sort[0][direction]') +
     '=asc';
   const rows = await atFetch(`${TABLES.messages}?filterByFormula=${formula}&${sort}`);
-  if (rows.length === 0 && !process.env.AIRTABLE_TOKEN) {
+  if (rows.length === 0 && !process.env.AIRTABLE_TOKEN && allowSampleData()) {
     const sample = SAMPLE_MESSAGES.filter(
       (m) => m.athleteSlug === slug || slug === 'jayden-thompson'
     );
@@ -477,7 +479,7 @@ export async function getAllMessages(): Promise<{ messages: Message[]; live: boo
     encodeURIComponent('sort[0][direction]') +
     '=desc';
   const rows = await atFetch(`${TABLES.messages}?${sort}`);
-  if (rows.length === 0 && !process.env.AIRTABLE_TOKEN) {
+  if (rows.length === 0 && !process.env.AIRTABLE_TOKEN && allowSampleData()) {
     return { messages: SAMPLE_MESSAGES, live: false };
   }
   return { messages: rows.map(rowToMessage), live: true };
@@ -544,7 +546,7 @@ export async function getDocumentsBySlug(
     encodeURIComponent('sort[0][direction]') +
     '=desc';
   const rows = await atFetch(`${TABLES.documents}?filterByFormula=${formula}&${sort}`);
-  if (rows.length === 0 && !process.env.AIRTABLE_TOKEN) {
+  if (rows.length === 0 && !process.env.AIRTABLE_TOKEN && allowSampleData()) {
     const sample = SAMPLE_DOCS.filter((d) => {
       if (d.athleteSlug !== slug && slug !== 'jayden-thompson') return false;
       if (!portalType) return true;
@@ -587,7 +589,7 @@ export async function getUpcomingEvents(): Promise<{ events: PortalEvent[]; live
     encodeURIComponent('sort[0][direction]') +
     '=asc';
   const rows = await atFetch(`${TABLES.events}?filterByFormula=${formula}&${sort}`);
-  if (rows.length === 0 && !process.env.AIRTABLE_TOKEN) {
+  if (rows.length === 0 && !process.env.AIRTABLE_TOKEN && allowSampleData()) {
     return { events: SAMPLE_EVENTS, live: false };
   }
   return { events: rows.map(rowToEvent), live: true };
