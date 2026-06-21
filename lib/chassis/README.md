@@ -1,19 +1,21 @@
-# EA Portal Chassis (CPR copy)
+# CPR chassis binding
 
-Synced from `ea-operating-system/portal-core` — **commit a39442c**.
+CPR consumes **`@ea/portal-chassis`** from `vendor/portal-chassis` (Vercel-compatible vendored build).
 
-When chassis changes upstream, copy updated files into this folder and redeploy CPR.
+**Source of truth:** `ea-operating-system/portal-core`  
+**Sync before deploy when chassis changes:**
 
-| File | Purpose |
-|------|---------|
-| `env.ts` | Production guards, demo mode |
-| `auth/hmac-session.ts` | Signed portal cookies |
-| `auth/hmac-middleware-factory.ts` | Athlete/parent + admin route protection |
-| `layout/HeaderPortalShell.tsx` | Config-driven portal header |
-| `cpr-portal.ts` | CPR cookie names + secret env key |
+```bash
+npm run sync-chassis
+```
 
-CPR adapters (keep thin):
+Only CPR-specific config lives here:
 
-- `lib/portal-auth.ts` → wraps `hmac-session` + `cpr-portal.ts`
-- `middleware.ts` → uses `createHmacPortalMiddleware`
-- `app/portal/components/PortalShell.tsx` → wraps `HeaderPortalShell`
+- `cpr-portal.ts` — cookie names + `PORTAL_SECRET` env key
+
+Adapters (keep thin):
+
+- `lib/portal-auth.ts`
+- `lib/env.ts`
+- `middleware.ts`
+- `app/portal/components/PortalShell.tsx`

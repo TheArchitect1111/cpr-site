@@ -3,7 +3,7 @@ export {
   isDemoMode,
   allowSampleData,
   requireEnv,
-} from '@/lib/chassis/env';
+} from '@ea/portal-chassis/env';
 
 import { site } from '@/config/site';
 

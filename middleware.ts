@@ -1,4 +1,4 @@
-import { createHmacPortalMiddleware } from '@/lib/chassis/auth/hmac-middleware-factory';
+import { createHmacPortalMiddleware } from '@ea/portal-chassis/middleware';
 import {
   CPR_ADMIN_COOKIE,
   CPR_PORTAL_COOKIE,

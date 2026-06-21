@@ -1,11 +1,9 @@
-// CPR portal session adapter — EA Portal Chassis HMAC layer.
-
 import {
   signHmacSession,
   verifyHmacSession,
   makeSessionCookie as makeChassisSessionCookie,
   newSessionExpiry,
-} from '@/lib/chassis/auth/hmac-session';
+} from '@ea/portal-chassis/hmac';
 import { CPR_PORTAL_COOKIE, CPR_PORTAL_SESSION } from '@/lib/chassis/cpr-portal';
 
 export const PORTAL_COOKIE = CPR_PORTAL_COOKIE;

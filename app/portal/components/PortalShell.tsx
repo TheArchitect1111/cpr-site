@@ -1,6 +1,6 @@
 import type { CSSProperties } from 'react';
 import { site } from '@/config/site';
-import { HeaderPortalShell } from '@/lib/chassis/layout/HeaderPortalShell';
+import { HeaderPortalShell } from '@ea/portal-chassis/layout';
 import '../portal-nav.css';
 
 export type PortalTab = 'home' | 'parent' | 'amplifi' | 'updates';
