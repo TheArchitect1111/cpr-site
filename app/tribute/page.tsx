@@ -6,7 +6,9 @@ import RotatingImagePanel from '@/app/components/RotatingImagePanel';
 /** George Raveling tribute — moved off homepage per EA Landing Page Chassis™. */
 export default function TributePage() {
   const t = site.tribute;
-  const slides = t.slides.filter((_, i) => ![3, 4, 6].includes(i));
+  const slides = t.slides
+    .filter((slide) => !slide.img.includes('bill-russell'))
+    .map((slide) => ({ img: slide.img }));
 
   return (
     <main className="subpage">

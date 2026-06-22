@@ -205,16 +205,18 @@ export function LandingPage({ config: c }: Props) {
       </section>
 
       {/* 8. MEET FOUNDER */}
-      <section className="lc-section lc-founder" id="founder">
-        <div className="lc-container lc-founder-grid">
-          <img src={c.founder.image} alt={c.founder.heading} className="lc-founder-img" />
-          <div>
-            <h2 className="display">{c.founder.heading}</h2>
-            <p className="lc-founder-role">{c.founder.role}</p>
-            <p className="lc-founder-story">{c.founder.story}</p>
+      {c.founder ? (
+        <section className="lc-section lc-founder" id="founder">
+          <div className="lc-container lc-founder-grid">
+            <img src={c.founder.image} alt={c.founder.heading} className="lc-founder-img" />
+            <div>
+              <h2 className="display">{c.founder.heading}</h2>
+              <p className="lc-founder-role">{c.founder.role}</p>
+              <p className="lc-founder-story">{c.founder.story}</p>
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
+      ) : null}
 
       {/* 9. FINAL CTA */}
       <section className="lc-section lc-final" id="apply">

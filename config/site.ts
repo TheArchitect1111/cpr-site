@@ -35,24 +35,17 @@ export const site = {
     items: [
       {
         quote:
-          "CPR opened doors we did not know existed. The process was organized, honest, and always focused on our son's future.",
-        name: "Parent of CPR Athlete",
-        role: "Parent Testimonial",
-        photo: "/proof-team.jpg",
+          'To a coach who leads with integrity and who supports the youths and challenges the norm. He has been a support system by coaching my 3 boys, 1 daughter, and 4 cousins. He gave my son an opportunity to go to Florida for training and events. I have trusted him with my family, who is sacred to me, for over a decade!',
+        name: 'Nikki',
+        role: 'CPR Parent',
+        photo: '/testi-1.png',
       },
       {
         quote:
-          "From camps to coach outreach, CPR kept me prepared and confident. I always knew what the next step was.",
-        name: "Former CPR Player",
-        role: "Player Testimonial",
-        photo: "/hero-athlete.png",
-      },
-      {
-        quote:
-          "Mike and his team treated our family like more than a number. They cared about the person, not just the profile.",
-        name: "CPR Parent",
-        role: "Parent Testimonial",
-        photo: "/proof-champion.jpg",
+          'Basketball was my first real love. I still love it. Training and playing with some incredibly talented players was an amazing experience! We are all still friends to this day! BTW I could have gone Pro but I decided to go a different route...one with less running involved lol!',
+        name: 'Tresor Gray',
+        role: 'Former CPR Player',
+        photo: '/testi-2.png',
       },
     ],
   },
@@ -222,16 +215,15 @@ export const site = {
     ],
     sign: "— Mike, Canadian Prospects Recruitment",
     slides: [
-      { img: "/tribute/raveling-memorial.png", caption: "George Raveling — Basketball Hall of Fame, Class of 2015." },
-      { img: "/tribute/raveling-hall-of-fame.png", caption: "George Raveling at the Basketball Hall of Fame." },
-      { img: "/tribute/raveling-bill-russell.png", caption: "George Raveling with Bill Russell." },
-      { img: "/tribute/raveling-coaching-youth.png", caption: "Passing wisdom to the next generation." },
-      { img: "/tribute/raveling-gym-session.png", caption: "Teaching, mentoring, and leading on the court." },
-      { img: "/tribute/raveling-mentoring.png", caption: "A lifetime of mentorship and impact." },
-      { img: "/tribute/raveling-team.png", caption: "Standing with the athletes he believed in." },
-      { img: "/tribute/raveling-portrait.png", caption: "George Raveling." },
-      { img: "/tribute/raveling-family.png", caption: "Surrounded by those he lifted up." },
-      { img: "/tribute/raveling-dinner.png", caption: "A great man and a good man." },
+      { img: "/tribute/raveling-memorial.png" },
+      { img: "/tribute/raveling-hall-of-fame.png" },
+      { img: "/tribute/raveling-coaching-youth.png" },
+      { img: "/tribute/raveling-gym-session.png" },
+      { img: "/tribute/raveling-mentoring.png" },
+      { img: "/tribute/raveling-team.png" },
+      { img: "/tribute/raveling-portrait.png" },
+      { img: "/tribute/raveling-family.png" },
+      { img: "/tribute/raveling-dinner.png" },
     ],
   },
   cta: {

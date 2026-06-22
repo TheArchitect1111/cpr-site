@@ -120,8 +120,8 @@ export type LandingPageConfig = {
     profileCta: string;
     profileHref: string;
   };
-  /** 8. MEET FOUNDER */
-  founder: {
+  /** 8. MEET FOUNDER (optional) */
+  founder?: {
     heading: string;
     role: string;
     story: string;

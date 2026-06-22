@@ -48,24 +48,17 @@ export const landingConfig: LandingPageConfig = {
     items: [
       {
         quote:
-          'CPR opened doors we did not know existed. The process was organized, honest, and always focused on our son\'s future.',
-        name: 'Parent of CPR Athlete',
-        role: 'Parent Testimonial',
+          'To a coach who leads with integrity and who supports the youths and challenges the norm. He has been a support system by coaching my 3 boys, 1 daughter, and 4 cousins. He gave my son an opportunity to go to Florida for training and events. I have trusted him with my family, who is sacred to me, for over a decade!',
+        name: 'Nikki',
+        role: 'CPR Parent',
         photo: '/testi-1.png',
       },
       {
         quote:
-          'From camps to coach outreach, CPR kept me prepared and confident. I always knew what the next step was.',
-        name: 'Former CPR Player',
-        role: 'Player Testimonial',
+          'Basketball was my first real love. I still love it. Training and playing with some incredibly talented players was an amazing experience! We are all still friends to this day! BTW I could have gone Pro but I decided to go a different route...one with less running involved lol!',
+        name: 'Tresor Gray',
+        role: 'Former CPR Player',
         photo: '/testi-2.png',
-      },
-      {
-        quote:
-          'Mike and his team treated our family like more than a number. They cared about the person, not just the profile.',
-        name: 'CPR Parent',
-        role: 'Parent Testimonial',
-        photo: '/testi-3.png',
       },
     ],
   },
@@ -156,12 +149,15 @@ export const landingConfig: LandingPageConfig = {
     profileCta: 'VIEW SAMPLE PROFILE',
     profileHref: '/athletes/jayden-thompson',
   },
-  founder: {
-    heading: 'MEET MIKE',
-    role: 'Founder, Canadian Prospects Recruitment',
-    story:
-      'Mike McKenzie built CPR to give student-athletes a real path to opportunity — with structure, integrity, and heart. One coach. One mission. Your family\'s guide to the next level.',
-    image: '/video-main.png',
+  tribute: {
+    eyebrow: site.tribute.eyebrow,
+    name: site.tribute.name,
+    meta: site.tribute.meta,
+    message: site.tribute.message,
+    sign: site.tribute.sign,
+    slides: site.tribute.slides
+      .filter((slide) => !slide.img.includes('bill-russell'))
+      .map((slide) => ({ img: slide.img })),
   },
   finalCta: {
     heading: 'READY TO TAKE THE NEXT STEP?',
@@ -169,14 +165,6 @@ export const landingConfig: LandingPageConfig = {
     applyLabel: 'APPLY NOW',
     agreementLabel: 'FEE AGREEMENT',
     scheduleLabel: 'SCHEDULE A CONVERSATION',
-  },
-  tribute: {
-    eyebrow: site.tribute.eyebrow,
-    name: site.tribute.name,
-    meta: site.tribute.meta,
-    message: site.tribute.message,
-    sign: site.tribute.sign,
-    slides: site.tribute.slides.filter((_, i) => ![3, 4, 6].includes(i)),
   },
   footer: {
     about:

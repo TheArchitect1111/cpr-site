@@ -7,7 +7,7 @@ test('homepage renders EA Landing Page Chassis sections', async ({ page }) => {
   await expect(page.getByRole('heading', { name: /what families & players are saying/i })).toBeVisible();
   await expect(page.getByText(/good coaches get players through drills/i)).toBeVisible();
   await expect(page.getByRole('heading', { name: /cpr family portal/i })).toBeVisible();
-  await expect(page.getByRole('heading', { name: /meet mike/i })).toBeVisible();
+  await expect(page.getByRole('heading', { name: /meet mike/i })).toHaveCount(0);
 });
 
 test('George Raveling tribute appears above contact footer', async ({ page }) => {
@@ -15,6 +15,7 @@ test('George Raveling tribute appears above contact footer', async ({ page }) =>
   const tribute = page.locator('#tribute');
   await expect(tribute).toBeVisible();
   await expect(tribute.getByRole('heading', { name: /george raveling/i })).toBeVisible();
+  await expect(tribute.locator('.rotate-cap')).toHaveCount(0);
   const contact = page.locator('#contact');
   const tributeBox = await tribute.boundingBox();
   const contactBox = await contact.boundingBox();
@@ -22,6 +23,7 @@ test('George Raveling tribute appears above contact footer', async ({ page }) =>
 });
 
 test('tribute deep link page still works', async ({ page }) => {
+  await page.goto('/tribute');
   await expect(page.getByRole('heading', { name: /george raveling/i })).toBeVisible();
 });
 
