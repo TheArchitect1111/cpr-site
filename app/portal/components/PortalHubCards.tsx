@@ -1,4 +1,4 @@
-import { getPortalHubModules } from '@/lib/portal-hub-modules';
+import { getPortalHubModules, getHubCopy } from '@/lib/portal-hub-modules';
 
 type Props = {
   portalType: 'athlete' | 'parent';
@@ -8,14 +8,13 @@ type Props = {
 export default function PortalHubCards({ portalType, slug }: Props) {
   const base = `/portal/${portalType}/${slug}`;
   const modules = getPortalHubModules(base);
+  const copy = getHubCopy();
 
   return (
     <section className="pp-section portal-hub-cards">
-      <p className="pp-section-eyebrow">Your CPR Portals</p>
-      <h2 className="pp-section-title">Everything in one place</h2>
-      <p className="pp-section-sub portal-hub-intro">
-        Full EA Portal Chassis™ template — dashboard, Amplifi™, updates, learning, messaging, documents, and events.
-      </p>
+      <p className="pp-section-eyebrow">{copy.eyebrow}</p>
+      <h2 className="pp-section-title">{copy.title}</h2>
+      <p className="pp-section-sub portal-hub-intro">{copy.intro}</p>
       <div className="portal-hub-grid portal-hub-grid-full">
         {modules.map((mod) => (
           <a
