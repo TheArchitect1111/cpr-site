@@ -10,6 +10,7 @@ import OnboardingTracker from './OnboardingTracker';
 import RecruitingRoadmap from './RecruitingRoadmap';
 import MonthlyActionPlan from './MonthlyActionPlan';
 import OpportunityTracker from './OpportunityTracker';
+import CprPortalHomeExperience from '@/app/portal/components/CprPortalHomeExperience';
 
 export const dynamic = 'force-dynamic';
 
@@ -49,6 +50,13 @@ export default async function ParentPortalPage({
         </div>
 
         <PortalHubCards portalType="parent" slug={slug} />
+
+        <CprPortalHomeExperience
+          slug={slug}
+          portalType="parent"
+          onboarding={portalData.onboarding}
+          opportunityCount={opportunities.length}
+        />
 
         <OnboardingTracker
           onboarding={portalData.onboarding}
