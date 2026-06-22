@@ -48,6 +48,12 @@ export function getPortalHubModules(base: string): PortalHubModule[] {
     },
     {
       href: `${base}/video-learning-center`,
+      tag: 'Training Transformation™',
+      title: 'Training & learning',
+      description: 'Upload materials, watch modules, and track progress — chassis training pack.',
+    },
+    {
+      href: `${base}/video-learning-center`,
       tag: 'Athlete Services',
       title: 'Video learning center',
       description: 'Coach-curated videos on film, recruiting strategy, and skill development.',
