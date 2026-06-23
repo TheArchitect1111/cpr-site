@@ -7,12 +7,16 @@ export const metadata = {
   robots: { index: false, follow: false },
 };
 
-export default function PortalLoginPage() {
-  return <PortalLoginClient logo={site.brand.logo} />;
+export default async function PortalLoginPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ reset?: string }>;
+}) {
+  const params = await searchParams;
+  return <PortalLoginClient logo={site.brand.logo} reset={Boolean(params.reset)} />;
 }
 
-// Inline client component so we avoid a separate file for this small form
-function PortalLoginClient({ logo }: { logo: string }) {
+function PortalLoginClient({ logo, reset }: { logo: string; reset: boolean }) {
   return (
     <div className="pl-page">
       <div className="pl-card">
@@ -29,6 +33,7 @@ function PortalLoginClient({ logo }: { logo: string }) {
           Athletes and parents use the same login. Access the Parent Portal, Amplifi™ vision experience, and Update Portal after sign-in.
         </p>
 
+        {reset ? <div className="pl-success">Password updated. Sign in with your new password.</div> : null}
         <div id="pl-error" className="pl-error" style={{ display: 'none' }} aria-live="polite" />
 
         <div className="pl-field">
@@ -44,6 +49,8 @@ function PortalLoginClient({ logo }: { logo: string }) {
         <button id="pl-submit" type="button" className="pl-btn">Log In</button>
 
         <div className="pl-footer">
+          <a href="/portal/forgot-password">Forgot password?</a>
+          <span aria-hidden="true"> · </span>
           <a href="/">Back to CPR homepage</a>
         </div>
       </div>
@@ -63,7 +70,7 @@ function PortalLoginClient({ logo }: { logo: string }) {
       method:'POST',
       headers:{'Content-Type':'application/json'},
       body:JSON.stringify({username:username,password:password})
-    }).then(function(r){return r.json().then(function(d){return{ok:r.ok,data:d};});})
+    }).then(function(r){return r.json().then(function(d){return{ok:r.ok,status:r.status,data:d};});})
     .then(function(res){
       if(res.ok&&res.data.ok){
         window.location.href='/portal/'+res.data.type+'/'+res.data.slug;

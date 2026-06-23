@@ -1,7 +1,9 @@
 import '../../landing.css';
 import '../admin.css';
+import { cookies } from 'next/headers';
+import { redirect } from 'next/navigation';
 import { site } from '@/config/site';
-import { adminNonce } from '@/lib/hash';
+import { verifyAdminSession } from '@/lib/admin-auth';
 import CreateClientForm from '../CreateClientForm';
 
 export const dynamic = 'force-dynamic';
@@ -12,8 +14,8 @@ export const metadata = {
 };
 
 export default async function CreateClientPage() {
-  const pw = process.env.ADMIN_PASSWORD || '';
-  const nonce = adminNonce(pw);
+  const session = (await cookies()).get('cpr_admin_session')?.value || '';
+  if (!verifyAdminSession(session)) redirect('/admin/login?next=/admin/create-client');
 
   return (
     <div className="admin-shell">
@@ -36,6 +38,7 @@ export default async function CreateClientPage() {
         <div className="aside-sec">MANAGEMENT</div>
         <nav>
           <a className="aitem active" href="/admin/create-client">&#43; Create New Client</a>
+          <a className="aitem" href="/admin/account">Account Settings</a>
           <span className="aitem coming-soon" title="Coming soon">&#128196; Documents</span>
           <span className="aitem coming-soon" title="Coming soon">&#128221; Fee Agreements</span>
           <span className="aitem coming-soon" title="Coming soon">&#9993; Email Templates</span>
@@ -49,7 +52,7 @@ export default async function CreateClientPage() {
             <p>Enroll a new athlete in the CPR system and send welcome credentials.</p>
           </div>
         </header>
-        <CreateClientForm adminNonce={nonce} />
+        <CreateClientForm />
       </main>
     </div>
   );

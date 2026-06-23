@@ -20,8 +20,8 @@ export const landingConfig: LandingPageConfig = {
   links: {
     apply: '/apply',
     video: 'https://youtu.be/iqietCwnCxc',
-    agreement: '/agreement',
-    schedule: 'mailto:mikecprglobal@mississaugamagic.com?subject=Schedule%20a%20Conversation',
+    agreement: 'https://forms.gle/idrMWqU5FpebA1f46',
+    internationalAgreement: 'https://forms.gle/idrMWqU5FpebA1f46',
     instagram: 'https://instagram.com/mississaugamagic',
     instagramSecondary: 'https://instagram.com/prospects.ca',
     facebook: 'https://www.facebook.com/mississaugamagic21',
@@ -30,7 +30,7 @@ export const landingConfig: LandingPageConfig = {
     { label: 'HOME', href: '#top' },
     { label: 'TESTIMONIALS', href: '#testimonials' },
     { label: 'HOW IT WORKS', href: '#how-it-works' },
-    { label: 'PORTAL', href: '#portal' },
+    { label: 'CAMPS', href: '#camps' },
     { label: 'RESULTS', href: '#results' },
     { label: 'APPLY', href: '#apply' },
     { label: 'CONTACT', href: '#contact' },
@@ -38,9 +38,9 @@ export const landingConfig: LandingPageConfig = {
   possibility: {
     headline: 'What becomes possible when talent meets preparation, exposure, and guidance?',
     subheadline:
-      'Canadian Prospects.ca has gone global — we now help student-athletes pursue their dreams from all around the world.',
+      'Canadian Prospects.ca has gone global — we now help Student-Athletes pursue their dreams from all around the World.',
     supporting:
-      'Helping student-athletes and families navigate the journey to the next level. Take your first step toward making your dream a reality.',
+      'Helping Student-Athletes navigate the journey to the next level. Take your first step toward making your dream a reality.',
     image: '/hero-committed.jpg',
   },
   socialProof: {
@@ -48,7 +48,7 @@ export const landingConfig: LandingPageConfig = {
     items: [
       {
         quote:
-          'To a coach who leads with integrity and who supports the youths and challenges the norm. He has been a support system by coaching my 3 boys, 1 daughter, and 4 cousins. He gave my son an opportunity to go to Florida for training and events. I have trusted him with my family, who is sacred to me, for over a decade!',
+          'To a coach who leads with integrity and who supports the youths and challenge the norm. He has been a support system by coaching my 3 boys, 1 daughter, and 4 cousins. He gave my son an opportunity to go to Florida for training and an event. I have trusted him with my family, who is Sacred to me',
         name: 'Nikki',
         role: 'CPR Parent',
         photo: '/testi-1.png',
@@ -64,52 +64,16 @@ export const landingConfig: LandingPageConfig = {
   },
   philosophy: {
     label: 'COACHING PHILOSOPHY',
-    quote:
-      'Good coaches get players through drills... great coaches get players through life.',
+    quote: 'Good coaches get players through drills... great coaches get players through life.',
     attribution: '— Gregg Popovich',
-    points: [
-      'Develop complete student-athletes on and off the court.',
-      'Build confidence through exposure, structure, and accountability.',
-      'Connect talent to real programs — locally and globally.',
-      'Serve families with honesty, communication, and results.',
-    ],
   },
-  challenge: {
-    heading: 'THE CHALLENGE',
-    intro: 'Many athletes have talent. Most families do not know where to start or what steps matter most.',
-    painPoints: [
-      'Where to start the recruiting journey',
-      'Which opportunities actually fit their athlete',
-      'How recruiting works at each level',
-      'How to reach the right coaches',
-      'What steps matter most — and when',
-    ],
-  },
-  difference: {
-    heading: 'THE CPR DIFFERENCE',
-    subheading: 'CPR helps families navigate the entire journey — with structure, integrity, and real results.',
-    cards: [
-      {
-        title: 'Recruiting Support',
-        description: 'Professional profiles and a clear path to the programs that fit.',
-      },
-      {
-        title: 'Coach Outreach',
-        description: 'Structured communication and follow-up with coaches and programs.',
-      },
-      {
-        title: 'Development & Exposure',
-        description: 'Camps, showcases, and events that put athletes in front of the right people.',
-      },
-      {
-        title: 'Parent Guidance',
-        description: 'Honest guidance for families through every step of the process.',
-      },
-    ],
+  pathBand: {
+    text: 'A simple, organized path from application to opportunity.',
   },
   process: {
     heading: 'HOW IT WORKS',
     subheading: 'A simple, organized path from application to opportunity.',
+    subheadingEmphasis: true,
     steps: [
       { label: '1. APPLY', description: 'Complete your application and create your player profile.', icon: 'apply' },
       { label: '2. UPLOAD', description: 'Share film, photos, transcripts, and achievements.', icon: 'upload' },
@@ -118,17 +82,22 @@ export const landingConfig: LandingPageConfig = {
       { label: '5. OPPORTUNITIES', description: 'We present real opportunities and guide you forward.', icon: 'opportunities' },
     ],
   },
-  portal: {
-    heading: 'CPR FAMILY PORTAL',
-    subheading:
-      'Your dashboard for progress, outreach, updates, and next steps — built for athletes and families.',
-    features: [
-      { title: 'Family & Athlete Dashboards', description: 'One home for profiles, documents, and updates.', icon: 'manage' },
-      { title: 'Coach Outreach Tracking', description: 'See who received your profile and who responded.', icon: 'send' },
-      { title: 'Progress & Next Steps', description: 'Always know what to do next in the process.', icon: 'trackicon' },
-      { title: 'Real-Time Updates', description: 'Communication center with status you can trust.', icon: 'updates' },
-      { title: 'School Interest', description: 'Track which programs are engaging with your athlete.', icon: 'school' },
-      { title: 'Secure & Private', description: 'Your information shared only with approved coaches.', icon: 'lock' },
+  chipsAndDrip: {
+    heading: 'Chips and Drip',
+    body: 'Part of our program consists of training! Some of our players have gone on to some amazing achievements.',
+    slides: [
+      { img: '/hero-athlete.png', caption: 'CPR training in action.' },
+      { img: '/proof-team.jpg', caption: 'Team development and competition.' },
+      { img: '/proof-champion.jpg', caption: 'Championship-level preparation.' },
+    ],
+  },
+  campsExposure: {
+    heading: 'Camps and Exposure',
+    body: 'We are fortunate to be able to help kids into several high profile camps as part of our program. AAU is not the best form of exposure. Check out our All Star Camp performers!',
+    slides: [
+      { img: '/proof-canada.jpg', caption: 'National and international camp exposure.' },
+      { img: '/proof-team.jpg', caption: 'All Star Camp performers.' },
+      { img: '/hero-committed.jpg', caption: 'High-profile camp opportunities.' },
     ],
     dashboardImage: '/dashboard.png',
   },
@@ -142,29 +111,46 @@ export const landingConfig: LandingPageConfig = {
       { value: '$25M+', label: 'IN SCHOLARSHIP OPPORTUNITIES' },
     ],
     proofs: [
-      { image: '/proof-canada.jpg', caption: 'CPR athlete competing for Team Canada.' },
-      { image: '/proof-champion.jpg', caption: 'From CPR to a conference championship.' },
-      { image: '/jayden-photo.png', caption: 'Recent CPR placement — next-level opportunity.' },
+      {
+        image: '/proof-canada.jpg',
+        athleteName: 'Yohann Axel Sam',
+        caption: 'Competing for Canada 3v3 in Chile',
+      },
+      {
+        image: '/proof-champion.jpg',
+        athleteName: 'Nat Jack',
+        caption: 'Florida State',
+      },
+      {
+        image: '/jayden-photo.png',
+        athleteName: 'Third image pending',
+        caption: 'Caption pending',
+      },
     ],
-    profileCta: 'VIEW SAMPLE PROFILE',
-    profileHref: '/athletes/jayden-thompson',
+    playerProfiles: [
+      {
+        name: 'Jayden Thompson',
+        slug: 'jayden-thompson',
+        photo: '/jayden-photo.png',
+        meta: 'Point Guard · Class of 2026',
+      },
+    ],
   },
   tribute: {
     eyebrow: site.tribute.eyebrow,
     name: site.tribute.name,
     meta: site.tribute.meta,
     message: site.tribute.message,
-    sign: site.tribute.sign,
     slides: site.tribute.slides
       .filter((slide) => !slide.img.includes('bill-russell'))
       .map((slide) => ({ img: slide.img })),
   },
   finalCta: {
     heading: 'READY TO TAKE THE NEXT STEP?',
-    subheading: 'Start your application, review the fee agreement, or schedule a conversation.',
+    subheading: 'Start your application and review the fee agreements.',
     applyLabel: 'APPLY NOW',
     agreementLabel: 'FEE AGREEMENT',
-    scheduleLabel: 'SCHEDULE A CONVERSATION',
+    internationalAgreementLabel: 'INTERNATIONAL FEE AGREEMENT',
   },
   footer: {
     about:
@@ -172,15 +158,15 @@ export const landingConfig: LandingPageConfig = {
     quickLinks: [
       { label: 'Testimonials', href: '#testimonials' },
       { label: 'How It Works', href: '#how-it-works' },
-      { label: 'Portal', href: '#portal' },
+      { label: 'Camps & Exposure', href: '#camps' },
       { label: 'Apply', href: '#apply' },
     ],
     resources: [
-      { label: 'Camps & Exposure', href: '/camps' },
       { label: 'Athlete Profiles', href: '/athletes/jayden-thompson' },
       { label: 'Merchandise', href: '/merchandise' },
       { label: 'George Raveling Tribute', href: '#tribute' },
-      { label: 'Fee Agreement', href: '/agreement' },
+      { label: 'Fee Agreement', href: 'https://forms.gle/idrMWqU5FpebA1f46' },
+      { label: 'International Fee Agreement', href: 'https://forms.gle/idrMWqU5FpebA1f46' },
     ],
     email: 'mikecprglobal@mississaugamagic.com',
     instagramLabel: '@mississaugamagic',

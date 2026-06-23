@@ -1,5 +1,6 @@
 import { createHash, createHmac, randomBytes, timingSafeEqual } from 'crypto';
 import { NextRequest, NextResponse } from 'next/server';
+import { validatePasswordStrength } from '@/lib/password-policy';
 
 export type AdminUser = { email: string; password: string; role: string; name: string };
 type AirtableRecord = { id: string; fields: Record<string, unknown> };
@@ -209,7 +210,8 @@ export async function requestAdminPasswordReset(email: string, origin: string) {
 }
 
 export async function resetAdminPassword(email: string, token: string, password: string) {
-  if (password.length < 10) throw new Error('Password must be at least 10 characters.');
+  const validation = validatePasswordStrength(password);
+  if (!validation.ok) throw new Error(validation.message);
   const user = await findAirtableAdmin(email);
   if (!user) throw new Error('Reset link is invalid.');
   const headers = await airtableHeaders();
@@ -239,6 +241,41 @@ export async function resetAdminPassword(email: string, token: string, password:
     }),
   });
   if (!patch.ok) throw new Error(await patch.text());
+}
+
+export async function changeAdminPassword(
+  email: string,
+  currentPassword: string,
+  newPassword: string,
+): Promise<void> {
+  const validation = validatePasswordStrength(newPassword);
+  if (!validation.ok) throw new Error(validation.message);
+
+  const user = await authenticateAdminAsync(email, currentPassword);
+  if (!user) throw new Error('Current password is incorrect.');
+
+  const airtableUser = await findAirtableAdmin(email);
+  if (airtableUser) {
+    const headers = await airtableHeaders();
+    const patch = await fetch(`https://api.airtable.com/v0/${BASE}/${encodeURIComponent(ADMIN_USERS_TABLE)}`, {
+      method: 'PATCH',
+      headers,
+      body: JSON.stringify({
+        records: [{
+          id: airtableUser.id,
+          fields: {
+            'Password Hash': hashPassword(newPassword),
+            'Last Password Reset': new Date().toISOString(),
+          },
+        }],
+        typecast: true,
+      }),
+    });
+    if (!patch.ok) throw new Error(await patch.text());
+    return;
+  }
+
+  throw new Error('Password change is only available for admin accounts stored in Airtable Admin Users.');
 }
 
 export function adminFromRequest(req: NextRequest) {

@@ -11,10 +11,21 @@ export type LandingLinks = {
   apply: string;
   video: string;
   agreement?: string;
+  /** @deprecated use internationalAgreement */
   schedule?: string;
+  internationalAgreement?: string;
   instagram?: string;
   instagramSecondary?: string;
   facebook?: string;
+};
+
+export type GallerySlide = { img: string; caption?: string };
+
+export type PlayerProfileCard = {
+  name: string;
+  slug: string;
+  photo: string;
+  meta?: string;
 };
 
 export type NavItem = { label: string; href: string };
@@ -46,6 +57,7 @@ export type PortalFeature = {
 export type ProofItem = {
   image: string;
   caption: string;
+  athleteName?: string;
 };
 
 export type StatItem = {
@@ -86,26 +98,42 @@ export type LandingPageConfig = {
     attribution: string;
     points?: string[];
   };
-  /** 3. THE CHALLENGE */
-  challenge: {
+  /** Optional path statement band (replaces legacy difference section) */
+  pathBand?: { text: string };
+  /** @deprecated removed from CPR homepage */
+  challenge?: {
     heading: string;
     intro: string;
     painPoints: string[];
   };
-  /** 4. THE DIFFERENCE — four solution cards */
-  difference: {
+  /** @deprecated removed from CPR homepage */
+  difference?: {
     heading: string;
     subheading: string;
     cards: DifferenceCard[];
+  };
+  /** Training achievements gallery */
+  chipsAndDrip?: {
+    heading: string;
+    body: string;
+    slides: GallerySlide[];
   };
   /** 5. HOW IT WORKS */
   process: {
     heading: string;
     subheading: string;
+    subheadingEmphasis?: boolean;
     steps: ProcessStep[];
   };
-  /** 6. PORTAL DIFFERENTIATOR */
-  portal: {
+  /** Camps & exposure (replaces family portal section) */
+  campsExposure?: {
+    heading: string;
+    body: string;
+    slides: GallerySlide[];
+    dashboardImage?: string;
+  };
+  /** @deprecated use campsExposure */
+  portal?: {
     heading: string;
     subheading: string;
     features: PortalFeature[];
@@ -117,8 +145,9 @@ export type LandingPageConfig = {
     subheading: string;
     stats: StatItem[];
     proofs: ProofItem[];
-    profileCta: string;
-    profileHref: string;
+    playerProfiles?: PlayerProfileCard[];
+    profileCta?: string;
+    profileHref?: string;
   };
   /** 8. MEET FOUNDER (optional) */
   founder?: {
@@ -134,6 +163,7 @@ export type LandingPageConfig = {
     applyLabel: string;
     agreementLabel?: string;
     scheduleLabel?: string;
+    internationalAgreementLabel?: string;
   };
   /** Optional in-memoriam band (above footer contact) */
   tribute?: {
@@ -141,7 +171,7 @@ export type LandingPageConfig = {
     name: string;
     meta: string;
     message: string[];
-    sign: string;
+    sign?: string;
     slides: { img: string; caption?: string }[];
   };
   footer: {
