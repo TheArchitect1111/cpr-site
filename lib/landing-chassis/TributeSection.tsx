@@ -22,7 +22,7 @@ export function TributeSection({ tribute }: Props) {
           ))}
           {tribute.sign ? <p className="lc-tribute-sign display">{tribute.sign}</p> : null}
         </div>
-        <RotatingImagePanel slides={tribute.slides.map((s) => ({ img: s.img }))} intervalMs={5500} />
+        <RotatingImagePanel slides={tribute.slides.map((s) => ({ img: s.img }))} intervalMs={3000} />
       </div>
     </section>
   );

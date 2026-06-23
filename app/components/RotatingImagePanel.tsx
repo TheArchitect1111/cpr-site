@@ -6,7 +6,7 @@ type Slide = { img: string; caption?: string };
 
 export default function RotatingImagePanel({
   slides,
-  intervalMs = 4500,
+  intervalMs = 3000,
 }: {
   slides: Slide[];
   intervalMs?: number;

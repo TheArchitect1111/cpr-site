@@ -51,7 +51,7 @@ export const landingConfig: LandingPageConfig = {
           'To a coach who leads with integrity and who supports the youths and challenge the norm. He has been a support system by coaching my 3 boys, 1 daughter, and 4 cousins. He gave my son an opportunity to go to Florida for training and an event. I have trusted him with my family, who is Sacred to me',
         name: 'Nikki',
         role: 'CPR Parent',
-        photo: '/testi-1.png',
+        photo: '/testimonial-nikki-blessed.jpg',
       },
       {
         quote:
@@ -86,18 +86,27 @@ export const landingConfig: LandingPageConfig = {
     heading: 'Chips and Drip',
     body: 'Part of our program consists of training! Some of our players have gone on to some amazing achievements.',
     slides: [
-      { img: '/hero-athlete.png', caption: 'CPR training in action.' },
-      { img: '/proof-team.jpg', caption: 'Team development and competition.' },
-      { img: '/proof-champion.jpg', caption: 'Championship-level preparation.' },
+      { img: '/galleries/chips-and-drip/chips-01.jpg', caption: 'Training, growth, and player development.' },
+      { img: '/galleries/chips-and-drip/chips-02.jpg', caption: 'Players building toward the next level.' },
+      { img: '/galleries/chips-and-drip/chips-03.jpg', caption: 'Achievements earned through preparation.' },
+      { img: '/galleries/chips-and-drip/chips-04.jpg', caption: 'CPR athletes putting in the work.' },
+      { img: '/galleries/chips-and-drip/chips-05.jpg', caption: 'Training is part of the journey.' },
+      { img: '/galleries/chips-and-drip/chips-06.jpg', caption: 'Momentum, confidence, and progress.' },
+      { img: '/galleries/chips-and-drip/chips-07.jpg', caption: 'Program pride and player growth.' },
+      { img: '/galleries/chips-and-drip/chips-08.jpg', caption: 'The work behind the opportunity.' },
     ],
   },
   campsExposure: {
     heading: 'Camps and Exposure',
-    body: 'We are fortunate to be able to help kids into several high profile camps as part of our program. AAU is not the best form of exposure. Check out our All Star Camp performers!',
+    body: 'We are fortunate to be able to help kids into several high profile Invite Only Camps as part of our program. Check out our All Star Camp performers!',
     slides: [
-      { img: '/proof-canada.jpg', caption: 'National and international camp exposure.' },
-      { img: '/proof-team.jpg', caption: 'All Star Camp performers.' },
-      { img: '/hero-committed.jpg', caption: 'High-profile camp opportunities.' },
+      { img: '/galleries/camps-exposure/camp-01.jpg', caption: 'Invite-only camp exposure.' },
+      { img: '/galleries/camps-exposure/camp-02.jpg', caption: 'All Star Camp performers.' },
+      { img: '/galleries/camps-exposure/camp-03.jpg', caption: 'Competing where coaches are watching.' },
+      { img: '/galleries/camps-exposure/camp-04.jpg', caption: 'High-profile opportunities through preparation.' },
+      { img: '/galleries/camps-exposure/camp-05.jpg', caption: 'Exposure moments that matter.' },
+      { img: '/galleries/camps-exposure/camp-06.jpg', caption: 'Student-athletes earning visibility.' },
+      { img: '/galleries/camps-exposure/camp-07.jpg', caption: 'The path from work to opportunity.' },
     ],
     dashboardImage: '/dashboard.png',
   },
@@ -112,7 +121,7 @@ export const landingConfig: LandingPageConfig = {
     ],
     proofs: [
       {
-        image: '/proof-canada.jpg',
+        image: '/proof-yohann-axel-sam.jpg',
         athleteName: 'Yohann Axel Sam',
         caption: 'Competing for Canada 3v3 in Chile',
       },

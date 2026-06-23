@@ -149,7 +149,7 @@ export function LandingPage({ config: c }: Props) {
               <h2 className="display">{c.chipsAndDrip.heading}</h2>
               <p className="lc-lead">{c.chipsAndDrip.body}</p>
             </div>
-            <RotatingImagePanel slides={c.chipsAndDrip.slides} intervalMs={5000} />
+            <RotatingImagePanel slides={c.chipsAndDrip.slides} intervalMs={3000} />
           </div>
         </section>
       ) : null}
@@ -182,7 +182,7 @@ export function LandingPage({ config: c }: Props) {
             <div>
               <h2 className="display">{c.campsExposure.heading}</h2>
               <p className="lc-lead">{c.campsExposure.body}</p>
-              <RotatingImagePanel slides={c.campsExposure.slides} intervalMs={5000} />
+              <RotatingImagePanel slides={c.campsExposure.slides} intervalMs={3000} />
             </div>
             {c.campsExposure.dashboardImage ? (
               <img
