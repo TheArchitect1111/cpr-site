@@ -113,6 +113,15 @@ const MODULE_CATALOG: Record<
         ? 'Family events, workshops, and gatherings.'
         : 'Showcases, camps, and workshops curated for CPR athletes.',
   },
+  'opportunities-resources': {
+    path: '/opportunities-resources',
+    tag: 'Opportunities & Resources',
+    title: activeTenant.id === 'family-hub' ? 'Trusted family resources' : 'Curated opportunities',
+    description:
+      activeTenant.id === 'family-hub'
+        ? 'Recommended partners, resources, benefits, and support options curated for your family.'
+        : 'Scholarships, training, trusted partners, offers, and opportunities curated for your path.',
+  },
   'family-calendar': {
     path: '/upcoming-events',
     tag: 'Family Hub',

@@ -14,7 +14,8 @@ export type HubModuleId =
   | 'messaging'
   | 'documents'
   | 'events'
-  | 'family-calendar';
+  | 'family-calendar'
+  | 'opportunities-resources';
 
 export type TenantPreset = {
   id: string;
@@ -26,7 +27,18 @@ export type TenantPreset = {
 
 export const CPR_TENANT: TenantPreset = {
   id: 'cpr',
-  modules: ['recruiting', 'documents', 'events', 'messaging', 'updates', 'training', 'video-learning', 'assessments', 'amplifi'],
+  modules: [
+    'recruiting',
+    'documents',
+    'events',
+    'messaging',
+    'updates',
+    'training',
+    'video-learning',
+    'assessments',
+    'amplifi',
+    'opportunities-resources',
+  ],
   hubModuleIds: [
     'dashboard',
     'amplifi',
@@ -41,6 +53,7 @@ export const CPR_TENANT: TenantPreset = {
     'messaging',
     'documents',
     'events',
+    'opportunities-resources',
   ],
   hubTitle: 'Everything in one place',
   hubIntro:
@@ -49,7 +62,16 @@ export const CPR_TENANT: TenantPreset = {
 
 export const FAMILY_HUB_TENANT: TenantPreset = {
   id: 'family-hub',
-  modules: ['training', 'video-learning', 'documents', 'assessments', 'updates', 'messaging', 'events'],
+  modules: [
+    'training',
+    'video-learning',
+    'documents',
+    'assessments',
+    'updates',
+    'messaging',
+    'events',
+    'opportunities-resources',
+  ],
   hubModuleIds: [
     'dashboard',
     'updates',
@@ -61,6 +83,7 @@ export const FAMILY_HUB_TENANT: TenantPreset = {
     'documents',
     'events',
     'family-calendar',
+    'opportunities-resources',
   ],
   hubTitle: 'Your family command center',
   hubIntro:
