@@ -1,5 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { verifyPassword } from '@/lib/hash';
+import {
+  checkLoginAllowed,
+  clearLoginGuard,
+  recordLoginFailure,
+} from '@/lib/login-rate-limit';
 import { signSession, makeSessionCookie, newExpiry, PORTAL_COOKIE } from '@/lib/portal-auth';
 
 const BASE = 'appvVr6MVrJvEY0YJ';
@@ -64,6 +69,11 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Username and password are required.' }, { status: 400 });
   }
 
+  const guardCheck = checkLoginAllowed(req, 'portal', username);
+  if (!guardCheck.allowed) {
+    return NextResponse.json({ error: guardCheck.message }, { status: 429 });
+  }
+
   // Try athlete credentials
   const safeUser = username.replace(/'/g, "\\'");
   const athleteRecord = await queryAirtable(
@@ -81,6 +91,7 @@ export async function POST(req: NextRequest) {
       }
       const res = NextResponse.json({ ok: true, type: 'athlete', slug });
       res.cookies.set(makeSessionCookie(token));
+      clearLoginGuard(res, 'portal');
       return res;
     }
   }
@@ -101,12 +112,14 @@ export async function POST(req: NextRequest) {
       }
       const res = NextResponse.json({ ok: true, type: 'parent', slug });
       res.cookies.set(makeSessionCookie(token));
+      clearLoginGuard(res, 'portal');
       return res;
     }
   }
 
-  // Same response for wrong username OR wrong password (no enumeration)
-  return NextResponse.json({ error: 'Invalid username or password.' }, { status: 401 });
+  const res = NextResponse.json({ error: 'Invalid username or password.' }, { status: 401 });
+  const failure = recordLoginFailure(req, res, 'portal', username);
+  return NextResponse.json({ error: failure.message }, { status: 401, headers: res.headers });
 }
 
 export async function DELETE() {

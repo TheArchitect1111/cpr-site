@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { hashPassword, generateTempPassword, verifyAdminNonce } from '@/lib/hash';
+import { hashPassword, generateTempPassword } from '@/lib/hash';
+import { adminFromRequest } from '@/lib/admin-auth';
 import { getSiteUrl, portalLoginUrl } from '@/lib/site-url';
 import { sendEmail } from '@/lib/email';
 import { adminEmail } from '@/lib/env';
@@ -100,7 +101,7 @@ function emailParent(
       <div style="margin-bottom:6px"><strong>Username:</strong> ${parentUsername}</div>
       <div><strong>Temporary password:</strong> ${parentTempPassword}</div>
     </div>
-    <p style="margin:0 0 8px;font-size:13px;color:#555">Please log in and change your password at your earliest convenience. If you have any questions, reply to this email or contact Mike directly.</p>
+    <p style="margin:0 0 8px;font-size:13px;color:#555">After your first login, open <strong>Account Settings</strong> in your portal to set a new password. If you forget your password later, use <a href="${siteUrl}/portal/forgot-password">Forgot Password</a> on the portal login page.</p>
   </div>
   <div style="background:#F4F4F4;padding:14px;text-align:center;font-size:11px;color:#888">
     Canadian Prospects Recruitment &middot; mikecprglobal@mississaugamagic.com
@@ -140,6 +141,7 @@ function emailAthlete(
         <li>Upload your transcript (unofficial is fine to start)</li>
       </ol>
     </div>
+    <p style="margin:0 0 8px;font-size:13px;color:#555">After your first login, open <strong>Account Settings</strong> in your portal to set a new password. If you forget your password later, use <a href="${siteUrl}/portal/forgot-password">Forgot Password</a> on the portal login page.</p>
     <p style="margin:0;font-size:13px;color:#555">Coach Mike will review your materials and reach out with next steps. Let us build your future together.</p>
   </div>
   <div style="background:#F4F4F4;padding:14px;text-align:center;font-size:11px;color:#888">
@@ -186,9 +188,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Server not configured.' }, { status: 503 });
   }
 
-  // Verify admin nonce
-  const nonce = req.headers.get('x-cpr-admin') ?? '';
-  if (!verifyAdminNonce(nonce)) {
+  if (!adminFromRequest(req)) {
     return NextResponse.json({ error: 'Unauthorized.' }, { status: 401 });
   }
 

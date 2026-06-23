@@ -97,6 +97,16 @@
   margin-bottom: 16px;
 }
 
+.pl-success {
+  background: #E8F5E9;
+  color: #1B5E20;
+  border-radius: 6px;
+  padding: 10px 14px;
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 16px;
+}
+
 .pl-btn {
   width: 100%;
   background: var(--red);

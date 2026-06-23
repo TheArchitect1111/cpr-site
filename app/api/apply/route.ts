@@ -4,6 +4,7 @@ import { profileUrl } from "@/lib/registrant-progress";
 import { normalizePhotoUrl } from "@/lib/blob-upload";
 import { sendApplyAdminAlert, sendApplyConfirmationEmail } from "@/lib/apply-notifications";
 import { isProductionDeploy } from "@/lib/env";
+import { findApplicantByEmail } from "@/lib/portal-credentials";
 
 const AIRTABLE_BASE_ID = process.env.AIRTABLE_BASE_ID || "appvVr6MVrJvEY0YJ";
 const AIRTABLE_TABLE_ID = "tblZwrZHi3WBR3NHZ";
@@ -93,6 +94,18 @@ export async function POST(req: NextRequest) {
     }
     if (isProductionDeploy() && !process.env.PORTAL_SECRET?.trim()) {
       console.error("Missing PORTAL_SECRET in production.");
+    }
+
+    const existingApplicant = await findApplicantByEmail(email);
+    if (existingApplicant) {
+      console.warn(`Duplicate application attempt blocked for ${email} (record ${existingApplicant.id}).`);
+      return NextResponse.json(
+        {
+          error:
+            "An application with this email address already exists. If you need help accessing your profile or updating your application, please contact CPR support.",
+        },
+        { status: 409 }
+      );
     }
 
     const token = process.env.AIRTABLE_TOKEN;

@@ -1,6 +1,7 @@
 import type { LandingPageConfig } from './types';
 import { LandingIcon, landingIcons } from './icons';
 import { TributeSection } from './TributeSection';
+import RotatingImagePanel from '@/app/components/RotatingImagePanel';
 
 type Props = { config: LandingPageConfig };
 
@@ -100,43 +101,67 @@ export function LandingPage({ config: c }: Props) {
         </section>
       ) : null}
 
-      {/* 3. THE CHALLENGE */}
-      <section className="lc-section lc-challenge" id="challenge">
-        <div className="lc-container lc-challenge-inner">
-          <h2 className="display lc-challenge-head">{c.challenge.heading}</h2>
-          <p className="lc-challenge-intro">{c.challenge.intro}</p>
-          <ul className="lc-challenge-list">
-            {c.challenge.painPoints.map((point) => (
-              <li key={point}>{point}</li>
-            ))}
-          </ul>
-        </div>
-      </section>
+      {c.pathBand ? (
+        <section className="lc-section lc-path-band" id="path">
+          <div className="lc-container">
+            <p className="display lc-path-band-text">{c.pathBand.text}</p>
+          </div>
+        </section>
+      ) : null}
 
-      {/* 4. THE DIFFERENCE */}
-      <section className="lc-section" id="difference">
-        <div className="lc-container">
-          <div className="lc-sec-head">
-            <h2 className="display">{c.difference.heading}</h2>
-            <p>{c.difference.subheading}</p>
+      {c.challenge ? (
+        <section className="lc-section lc-challenge" id="challenge">
+          <div className="lc-container lc-challenge-inner">
+            <h2 className="display lc-challenge-head">{c.challenge.heading}</h2>
+            <p className="lc-challenge-intro">{c.challenge.intro}</p>
+            <ul className="lc-challenge-list">
+              {c.challenge.painPoints.map((point) => (
+                <li key={point}>{point}</li>
+              ))}
+            </ul>
           </div>
-          <div className="lc-cards">
-            {c.difference.cards.map((card) => (
-              <div className="lc-card" key={card.title}>
-                <h3 className="display">{card.title}</h3>
-                <p>{card.description}</p>
-              </div>
-            ))}
+        </section>
+      ) : null}
+
+      {c.difference ? (
+        <section className="lc-section" id="difference">
+          <div className="lc-container">
+            <div className="lc-sec-head">
+              <h2 className="display">{c.difference.heading}</h2>
+              <p>{c.difference.subheading}</p>
+            </div>
+            <div className="lc-cards">
+              {c.difference.cards.map((card) => (
+                <div className="lc-card" key={card.title}>
+                  <h3 className="display">{card.title}</h3>
+                  <p>{card.description}</p>
+                </div>
+              ))}
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
+      ) : null}
+
+      {c.chipsAndDrip ? (
+        <section className="lc-section lc-gallery-section" id="chips-and-drip">
+          <div className="lc-container lc-gallery-grid">
+            <div>
+              <h2 className="display">{c.chipsAndDrip.heading}</h2>
+              <p className="lc-lead">{c.chipsAndDrip.body}</p>
+            </div>
+            <RotatingImagePanel slides={c.chipsAndDrip.slides} intervalMs={5000} />
+          </div>
+        </section>
+      ) : null}
 
       {/* 5. HOW IT WORKS */}
       <section className="lc-section lc-off" id="how-it-works">
         <div className="lc-container">
           <div className="lc-sec-head">
             <h2 className="display">{c.process.heading}</h2>
-            <p>{c.process.subheading}</p>
+            <p className={c.process.subheadingEmphasis ? 'lc-process-sub-emphasis' : undefined}>
+              {c.process.subheading}
+            </p>
           </div>
           <div className="lc-process">
             {c.process.steps.map((step, i) => (
@@ -151,27 +176,45 @@ export function LandingPage({ config: c }: Props) {
         </div>
       </section>
 
-      {/* 6. FAMILY PORTAL */}
-      <section className="lc-section lc-portal" id="portal">
-        <div className="lc-container lc-portal-grid">
-          <div>
-            <h2 className="display">{c.portal.heading}</h2>
-            <p className="lc-lead">{c.portal.subheading}</p>
-            <div className="lc-feat-grid">
-              {c.portal.features.map((f) => (
-                <div className="lc-feat" key={f.title}>
-                  <LandingIcon d={landingIcons[f.icon]} />
-                  <div>
-                    <h4>{f.title}</h4>
-                    <p>{f.description}</p>
-                  </div>
-                </div>
-              ))}
+      {c.campsExposure ? (
+        <section className="lc-section lc-portal lc-gallery-section" id="camps">
+          <div className="lc-container lc-portal-grid">
+            <div>
+              <h2 className="display">{c.campsExposure.heading}</h2>
+              <p className="lc-lead">{c.campsExposure.body}</p>
+              <RotatingImagePanel slides={c.campsExposure.slides} intervalMs={5000} />
             </div>
+            {c.campsExposure.dashboardImage ? (
+              <img
+                src={c.campsExposure.dashboardImage}
+                alt="Recruiting dashboard"
+                className="lc-portal-shot"
+              />
+            ) : null}
           </div>
-          <img src={c.portal.dashboardImage} alt="Family portal dashboard" className="lc-portal-shot" />
-        </div>
-      </section>
+        </section>
+      ) : c.portal ? (
+        <section className="lc-section lc-portal" id="portal">
+          <div className="lc-container lc-portal-grid">
+            <div>
+              <h2 className="display">{c.portal.heading}</h2>
+              <p className="lc-lead">{c.portal.subheading}</p>
+              <div className="lc-feat-grid">
+                {c.portal.features.map((f) => (
+                  <div className="lc-feat" key={f.title}>
+                    <LandingIcon d={landingIcons[f.icon]} />
+                    <div>
+                      <h4>{f.title}</h4>
+                      <p>{f.description}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+            <img src={c.portal.dashboardImage} alt="Family portal dashboard" className="lc-portal-shot" />
+          </div>
+        </section>
+      ) : null}
 
       {/* 7. RESULTS */}
       <section className="lc-section" id="results">
@@ -191,16 +234,38 @@ export function LandingPage({ config: c }: Props) {
           <div className="lc-proofs">
             {c.results.proofs.map((proof) => (
               <div className="lc-proof" key={proof.image}>
-                <img src={proof.image} alt={proof.caption} />
-                <p>{proof.caption}</p>
+                <img src={proof.image} alt={proof.athleteName || proof.caption} />
+                {proof.athleteName ? (
+                  <>
+                    <p className="lc-proof-name display">{proof.athleteName}</p>
+                    <p className="lc-proof-cap">{proof.caption}</p>
+                  </>
+                ) : (
+                  <p>{proof.caption}</p>
+                )}
               </div>
             ))}
           </div>
-          <div className="lc-cta-row">
-            <a className="lc-btn" href={c.results.profileHref}>
-              {c.results.profileCta}
-            </a>
-          </div>
+          {c.results.playerProfiles?.length ? (
+            <div className="lc-player-profiles">
+              {c.results.playerProfiles.map((profile) => (
+                <a className="lc-player-card" href={`/athletes/${profile.slug}`} key={profile.slug}>
+                  <img src={profile.photo} alt={profile.name} />
+                  <div>
+                    <h3 className="display">{profile.name}</h3>
+                    {profile.meta ? <p>{profile.meta}</p> : null}
+                  </div>
+                </a>
+              ))}
+            </div>
+          ) : null}
+          {c.results.profileCta && c.results.profileHref ? (
+            <div className="lc-cta-row">
+              <a className="lc-btn" href={c.results.profileHref}>
+                {c.results.profileCta}
+              </a>
+            </div>
+          ) : null}
         </div>
       </section>
 
@@ -235,7 +300,11 @@ export function LandingPage({ config: c }: Props) {
                   {c.finalCta.agreementLabel}
                 </a>
               ) : null}
-              {c.finalCta.scheduleLabel && c.links.schedule ? (
+              {c.finalCta.internationalAgreementLabel && c.links.internationalAgreement ? (
+                <a className="lc-btn lc-btn-white-outline" href={c.links.internationalAgreement}>
+                  {c.finalCta.internationalAgreementLabel}
+                </a>
+              ) : c.finalCta.scheduleLabel && c.links.schedule ? (
                 <a className="lc-btn lc-btn-white-outline" href={c.links.schedule}>
                   {c.finalCta.scheduleLabel}
                 </a>

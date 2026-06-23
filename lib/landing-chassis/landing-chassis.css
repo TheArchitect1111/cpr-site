@@ -101,7 +101,16 @@
 .lc-process-step .icon { width: 46px; height: 46px; margin: 0 auto 14px; color: var(--lc-primary); }
 .lc-process-step h3 { font-size: 14px; font-weight: 800; margin: 0 0 8px; letter-spacing: .5px; }
 .lc-process-step p { font-size: 12px; color: var(--lc-gray); line-height: 1.5; margin: 0; }
+.lc-process-sub-emphasis { font-size: 20px !important; font-weight: 800 !important; color: var(--lc-ink) !important; max-width: 720px !important; }
 .lc-arrow { position: absolute; right: -22px; top: 50%; transform: translateY(-50%); font-size: 18px; z-index: 2; }
+
+/* PATH BAND */
+.lc-path-band { background: var(--lc-off); padding: 40px 0; text-align: center; }
+.lc-path-band-text { margin: 0; font-size: 28px; font-weight: 800; color: var(--lc-ink); max-width: 820px; margin-left: auto; margin-right: auto; line-height: 1.35; }
+
+/* GALLERY SECTIONS */
+.lc-gallery-section .lc-gallery-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: center; }
+.lc-gallery-section h2 { font-size: 34px; margin: 0 0 12px; }
 
 /* PORTAL */
 .lc-portal { background: var(--lc-off); }
@@ -123,6 +132,14 @@
 .lc-proof { border-radius: 8px; overflow: hidden; border: 1px solid var(--lc-line); background: #fff; }
 .lc-proof img { width: 100%; height: 280px; object-fit: cover; display: block; }
 .lc-proof p { margin: 0; padding: 16px 18px; font-size: 13px; font-weight: 600; }
+.lc-proof-name { margin: 0; padding: 16px 18px 4px; font-size: 16px; font-weight: 800; color: var(--lc-ink); }
+.lc-proof-cap { padding: 0 18px 16px !important; font-weight: 500 !important; color: var(--lc-gray) !important; }
+.lc-player-profiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 20px; margin-bottom: 28px; }
+.lc-player-card { display: flex; gap: 14px; align-items: center; border: 1px solid var(--lc-line); border-radius: 8px; padding: 16px; background: #fff; text-decoration: none; color: inherit; transition: box-shadow .2s ease; }
+.lc-player-card:hover { box-shadow: 0 12px 28px rgba(0,0,0,.08); }
+.lc-player-card img { width: 72px; height: 72px; border-radius: 8px; object-fit: cover; flex-shrink: 0; }
+.lc-player-card h3 { margin: 0 0 4px; font-size: 16px; color: var(--lc-ink); }
+.lc-player-card p { margin: 0; font-size: 12px; color: var(--lc-gray); }
 .lc-cta-row { text-align: center; }
 
 /* FOUNDER */
@@ -176,7 +193,7 @@
 @media (max-width: 900px) {
   .lc-nav-links { display: none; }
   .lc-nav-mobile-cta { display: flex; }
-  .lc-hero-grid, .lc-portal-grid, .lc-founder-grid, .lc-philosophy-grid { grid-template-columns: 1fr; }
+  .lc-hero-grid, .lc-portal-grid, .lc-founder-grid, .lc-philosophy-grid, .lc-gallery-section .lc-gallery-grid { grid-template-columns: 1fr; }
   .lc-hero-img { min-height: 300px; order: -1; }
   .lc-hero-copy { padding: 40px 20px 48px; text-align: center; }
   .lc-hero-headline { font-size: 36px; }

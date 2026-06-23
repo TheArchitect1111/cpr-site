@@ -16,7 +16,7 @@ type SuccessData = {
   credentials: Credentials;
 };
 
-export default function CreateClientForm({ adminNonce }: { adminNonce: string }) {
+export default function CreateClientForm() {
   const [fields, setFields] = useState({
     athleteFirstName: '',
     athleteLastName: '',
@@ -49,7 +49,6 @@ export default function CreateClientForm({ adminNonce }: { adminNonce: string })
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'x-cpr-admin': adminNonce,
         },
         body: JSON.stringify(fields),
       });

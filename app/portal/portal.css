@@ -164,3 +164,81 @@
     font-size: 22px;
   }
 }
+
+.account-main {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 32px 24px 48px;
+  width: 100%;
+}
+
+.account-card {
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 32px 28px;
+}
+
+.account-card h2 {
+  margin: 0 0 10px;
+  font-size: 22px;
+}
+
+.account-card p {
+  margin: 0 0 20px;
+  color: var(--gray);
+  line-height: 1.6;
+}
+
+.account-card label {
+  display: block;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.4px;
+  margin-bottom: 16px;
+}
+
+.account-card input {
+  display: block;
+  width: 100%;
+  margin-top: 6px;
+  padding: 11px 14px;
+  border: 1.5px solid var(--line);
+  border-radius: 6px;
+  font: inherit;
+}
+
+.account-card button {
+  margin-top: 8px;
+  background: var(--red);
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 12px 18px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.account-card button:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+.account-success,
+.account-error {
+  border-radius: 6px;
+  padding: 10px 14px;
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 16px;
+}
+
+.account-success {
+  background: #E8F5E9;
+  color: #1B5E20;
+}
+
+.account-error {
+  background: #FADDDD;
+  color: #A81D20;
+}
