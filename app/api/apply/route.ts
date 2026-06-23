@@ -3,6 +3,7 @@ import { uniqueAthleteSlug } from "@/lib/slug";
 import { profileUrl } from "@/lib/registrant-progress";
 import { normalizePhotoUrl } from "@/lib/blob-upload";
 import { sendApplyAdminAlert, sendApplyConfirmationEmail } from "@/lib/apply-notifications";
+import { forwardPulseEvent } from "@/lib/ea-pulse-forward";
 import { isProductionDeploy } from "@/lib/env";
 import { findApplicantByEmail } from "@/lib/portal-credentials";
 
@@ -245,6 +246,19 @@ export async function POST(req: NextRequest) {
         // The record is saved; automation failure should not fail the athlete.
         console.error("Make webhook call failed:", err);
       }
+    }
+
+    if (recordId) {
+      void forwardPulseEvent({
+        product: "cpr",
+        type: "apply.submitted",
+        title: `CPR apply — ${firstName} ${lastName}`,
+        detail: email,
+        priority: "medium",
+        href: publicProfileUrl,
+        tenantId: slug,
+        objectId: recordId,
+      });
     }
 
     return NextResponse.json({
