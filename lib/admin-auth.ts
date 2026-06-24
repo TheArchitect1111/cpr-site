@@ -1,5 +1,6 @@
 import { createHash, createHmac, randomBytes, timingSafeEqual } from 'crypto';
 import { NextRequest, NextResponse } from 'next/server';
+import { getAdminSessionSecret } from '@/lib/admin-session-secret';
 import { validatePasswordStrength } from '@/lib/password-policy';
 
 export type AdminUser = { email: string; password: string; role: string; name: string };
@@ -10,7 +11,7 @@ const BASE = process.env.AIRTABLE_BASE_ID || 'appvVr6MVrJvEY0YJ';
 const ADMIN_USERS_TABLE = process.env.AIRTABLE_ADMIN_USERS_TABLE_ID || '';
 
 function secret() {
-  return process.env.ADMIN_AUTH_SECRET || process.env.ADMIN_PASSWORD || '';
+  return getAdminSessionSecret() || '';
 }
 
 function b64url(input: string) {
@@ -152,8 +153,11 @@ export function createAdminSession(user: AdminUser) {
 }
 
 export function verifyAdminSession(token: string): Omit<AdminUser, 'password'> | null {
-  const [payload, sig] = token.split('.');
-  const expected = sign(payload || '');
+  const dot = token.lastIndexOf('.');
+  if (dot < 0) return null;
+  const payload = token.slice(0, dot);
+  const sig = token.slice(dot + 1);
+  const expected = sign(payload);
   if (!payload || !sig || !expected) return null;
   const a = Buffer.from(sig);
   const b = Buffer.from(expected);

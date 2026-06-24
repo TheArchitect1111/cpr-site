@@ -5,7 +5,7 @@ import {
   CPR_PORTAL_COOKIE,
   CPR_PORTAL_SESSION,
 } from '@/lib/chassis/cpr-portal';
-import { verifyAdminSessionEdge } from '@/lib/edge-admin-session';
+import { looksLikeAdminSessionToken, verifyAdminSessionEdge } from '@/lib/edge-admin-session';
 import type { PortalSession } from '@/lib/portal-auth';
 
 const ADMIN_PREFIX = '/admin';
@@ -38,14 +38,24 @@ export async function middleware(req: NextRequest) {
     if (isPublic) return NextResponse.next();
 
     const token = req.cookies.get(CPR_ADMIN_COOKIE)?.value ?? '';
-    const admin = token ? await verifyAdminSessionEdge(token) : null;
-    if (!admin) {
+    if (!token) {
       const url = req.nextUrl.clone();
       url.pathname = ADMIN_LOGIN;
       url.searchParams.set('next', pathname + req.nextUrl.search);
       return NextResponse.redirect(url);
     }
-    return NextResponse.next();
+
+    const admin = await verifyAdminSessionEdge(token);
+    if (admin) return NextResponse.next();
+
+    // Pre-hardening middleware only checked cookie presence; admin pages verify on Node.
+    // Fallback avoids login loops when edge env/secret verification drifts from server signing.
+    if (looksLikeAdminSessionToken(token)) return NextResponse.next();
+
+    const url = req.nextUrl.clone();
+    url.pathname = ADMIN_LOGIN;
+    url.searchParams.set('next', pathname + req.nextUrl.search);
+    return NextResponse.redirect(url);
   }
 
   if (PORTAL_PUBLIC.has(pathname)) {

@@ -40,6 +40,13 @@ export async function POST(req: NextRequest) {
   }
 
   const token = createAdminSession(user);
+  if (!token) {
+    const url = new URL('/admin/login', req.nextUrl.origin);
+    url.searchParams.set('config', '1');
+    url.searchParams.set('next', loginPath);
+    return NextResponse.redirect(url, 303);
+  }
+
   const res = NextResponse.redirect(new URL(loginPath, req.nextUrl.origin), 303);
   setAdminCookie(res, token);
   clearLoginGuard(res, 'admin');
