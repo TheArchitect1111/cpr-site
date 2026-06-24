@@ -10,7 +10,14 @@ export const metadata = {
 export default async function AdminLogin({
   searchParams,
 }: {
-  searchParams: Promise<{ error?: string; next?: string; reset?: string; locked?: string; retry?: string }>;
+  searchParams: Promise<{
+    error?: string;
+    next?: string;
+    reset?: string;
+    locked?: string;
+    retry?: string;
+    config?: string;
+  }>;
 }) {
   const params = await searchParams;
   const retryMinutes = params.retry ? Math.max(1, Math.ceil(Number(params.retry) / 60)) : 15;
@@ -21,8 +28,15 @@ export default async function AdminLogin({
         <h1 className="display">CPR ADMIN</h1>
         <p>Sign in with your admin account.</p>
         {params.reset && <div className="login-success">Password updated. Sign in with the new password.</div>}
+        {params.config && (
+          <div className="login-error">
+            Admin session signing is not configured. Set ADMIN_AUTH_SECRET (or ADMIN_PASSWORD) on Vercel Production.
+          </div>
+        )}
         {params.locked && <div className="login-error">Too many failed attempts. Try again in about {retryMinutes} minutes.</div>}
-        {params.error && !params.locked && <div className="login-error">Invalid email or password.</div>}
+        {params.error && !params.locked && !params.config && (
+          <div className="login-error">Invalid email or password.</div>
+        )}
         <input type="hidden" name="next" value={params.next || '/admin'} />
         <label>Email<input name="email" type="email" autoComplete="username" required /></label>
         <label>Password<input name="password" type="password" autoComplete="current-password" required /></label>

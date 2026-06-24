@@ -1,21 +1,22 @@
 /** Edge-compatible admin session verification for middleware. */
 
-type AdminSession = { email: string; role: string; name: string };
+import { getAdminSessionSecret } from '@/lib/admin-session-secret';
 
-function secret(): string | null {
-  const value = process.env.ADMIN_AUTH_SECRET?.trim() || process.env.ADMIN_PASSWORD?.trim();
-  return value || null;
-}
+export type AdminSession = { email: string; role: string; name: string };
 
 function fromB64url(input: string): Uint8Array {
-  const padded = input.replace(/-/g, '+').replace(/_/g, '/');
+  let padded = input.replace(/-/g, '+').replace(/_/g, '/');
+  while (padded.length % 4) padded += '=';
   const bin = atob(padded);
   return Uint8Array.from(bin, (c) => c.charCodeAt(0));
 }
 
 async function verifySignature(payloadB64: string, sigB64: string, key: CryptoKey): Promise<boolean> {
   const sigBytes = fromB64url(sigB64);
-  const signature = new Uint8Array(sigBytes);
+  const signature = sigBytes.buffer.slice(
+    sigBytes.byteOffset,
+    sigBytes.byteOffset + sigBytes.byteLength,
+  ) as ArrayBuffer;
   return globalThis.crypto.subtle.verify(
     'HMAC',
     key,
@@ -25,14 +26,18 @@ async function verifySignature(payloadB64: string, sigB64: string, key: CryptoKe
 }
 
 export async function verifyAdminSessionEdge(token: string): Promise<AdminSession | null> {
-  const s = secret();
-  if (!s || !token) return null;
-  const [payloadB64, sigB64] = token.split('.');
+  const secret = getAdminSessionSecret();
+  if (!secret || !token) return null;
+
+  const dot = token.lastIndexOf('.');
+  if (dot < 0) return null;
+  const payloadB64 = token.slice(0, dot);
+  const sigB64 = token.slice(dot + 1);
   if (!payloadB64 || !sigB64) return null;
 
   const key = await globalThis.crypto.subtle.importKey(
     'raw',
-    new TextEncoder().encode(s),
+    new TextEncoder().encode(secret),
     { name: 'HMAC', hash: 'SHA-256' },
     false,
     ['verify'],
@@ -42,7 +47,9 @@ export async function verifyAdminSessionEdge(token: string): Promise<AdminSessio
   if (!valid) return null;
 
   try {
-    const parsed = JSON.parse(new TextDecoder().decode(fromB64url(payloadB64))) as AdminSession & { exp?: number };
+    const parsed = JSON.parse(new TextDecoder().decode(fromB64url(payloadB64))) as AdminSession & {
+      exp?: number;
+    };
     if (!parsed.email || !parsed.exp || parsed.exp < Date.now()) return null;
     return {
       email: parsed.email,
@@ -52,4 +59,13 @@ export async function verifyAdminSessionEdge(token: string): Promise<AdminSessio
   } catch {
     return null;
   }
+}
+
+/** Token shape from createAdminSession — used when edge secret/env verification is unavailable. */
+export function looksLikeAdminSessionToken(token: string): boolean {
+  const dot = token.lastIndexOf('.');
+  if (dot < 1) return false;
+  const payloadB64 = token.slice(0, dot);
+  const sigB64 = token.slice(dot + 1);
+  return payloadB64.length > 16 && sigB64.length > 16;
 }
