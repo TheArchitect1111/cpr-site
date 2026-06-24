@@ -15,6 +15,8 @@ import AdminMessages from './AdminMessages';
 import AdminActivity from './AdminActivity';
 import AdminContentRelevance from './AdminContentRelevance';
 import AdminRegistrants from './AdminRegistrants';
+import CommunicationCenter from '@/components/communication-center/CommunicationCenter';
+import { getCommunicationAnnouncements, getCommunicationNotifications } from '@/lib/communication-center-data';
 
 export const dynamic = 'force-dynamic';
 
@@ -44,6 +46,43 @@ export default async function AdminPage({
   } else if (tab === 'messages') {
     const result = await getAllMessages();
     mainContent = <AdminMessages messages={result.messages} live={result.live} />;
+  } else if (tab === 'communication') {
+    const [messagesResult, ticketsResult, announcementsResult, notificationsResult] = await Promise.all([
+      getAllMessages(),
+      getAllTickets(),
+      getCommunicationAnnouncements(),
+      getCommunicationNotifications(),
+    ]);
+    mainContent = (
+      <CommunicationCenter
+        config={{
+          portalName: 'CPR Communication Center',
+          primaryColor: '#0C0C0A',
+          accentColor: '#A81D20',
+          supportLabel: 'Coach Mike',
+        }}
+        messages={messagesResult.messages.map(message => ({
+          id: message.id,
+          subjectId: message.athleteSlug,
+          sender: message.sender,
+          body: message.messageBody,
+          createdAt: message.dateSent,
+          read: message.readStatus,
+        }))}
+        feedback={ticketsResult.tickets.map(ticket => ({
+          id: ticket.id,
+          subjectId: ticket.athleteSlug,
+          subject: ticket.subject,
+          body: ticket.message,
+          status: ticket.status,
+          createdAt: ticket.dateSubmitted,
+          response: ticket.adminNotes,
+        }))}
+        announcements={announcementsResult.announcements}
+        notifications={notificationsResult.notifications}
+        live={messagesResult.live && ticketsResult.live && announcementsResult.live && notificationsResult.live}
+      />
+    );
   } else if (tab === 'activity') {
     const { athletes, live } = await getAthleteActivity();
     mainContent = <AdminActivity athletes={athletes} live={live} />;
@@ -145,6 +184,9 @@ export default async function AdminPage({
         </nav>
         <div className="aside-sec">PORTAL</div>
         <nav>
+          <a className={`aitem${activeTab === 'communication' ? ' active' : ''}`} href="/admin?tab=communication">
+            &#128227; Communication Center
+          </a>
           <a className={`aitem${activeTab === 'tickets' ? ' active' : ''}`} href="/admin?tab=tickets">
             &#10067; Ask CPR Tickets
           </a>
