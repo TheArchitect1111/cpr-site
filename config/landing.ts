@@ -34,6 +34,7 @@ export const landingConfig: LandingPageConfig = {
     { label: 'RESULTS', href: '#results' },
     { label: 'APPLY', href: '#apply' },
     { label: 'CONTACT', href: '#contact' },
+    { label: 'POSSIBILITIES', href: '/possibilities' },
   ],
   possibility: {
     headline: 'What becomes possible when talent meets preparation, exposure, and guidance?',
