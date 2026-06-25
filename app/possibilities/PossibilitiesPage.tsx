@@ -66,66 +66,70 @@ const OUTCOMES = [
   },
 ];
 
+/* eslint-disable max-len */
+const POLL = (prompt: string, seed: number, h = 1080) =>
+  `https://image.pollinations.ai/prompt/${encodeURIComponent(prompt)}?width=1920&height=${h}&seed=${seed}&nologo=true&model=flux`;
+
 const INDUSTRIES = [
   {
     name: 'Restaurant',
     sentence: 'From reservations to reviews, your dining experience runs itself.',
     indicator: 'Table Booked',
-    bg: 'radial-gradient(ellipse at 30% 70%, rgba(160,60,10,0.45) 0%, transparent 55%), radial-gradient(ellipse at 80% 20%, rgba(100,30,5,0.3) 0%, transparent 50%), linear-gradient(160deg, #0e0800 0%, #1c1000 50%, #100b00 100%)',
+    bg: `linear-gradient(rgba(0,0,0,0.6),rgba(0,0,0,0.45)), radial-gradient(ellipse at 30% 70%, rgba(160,60,10,0.35) 0%, transparent 55%), url('${POLL('upscale elegant restaurant interior romantic candlelit tables dark warm amber glow cinematic photography', 401)}') center/cover no-repeat`,
   },
   {
     name: 'Sports',
     sentence: 'Build teams, manage rosters, and grow programs — all in one system.',
     indicator: 'Season Scheduled',
-    bg: 'radial-gradient(ellipse at 70% 30%, rgba(20,60,140,0.45) 0%, transparent 55%), linear-gradient(160deg, #000814 0%, #001226 50%, #000c1a 100%)',
+    bg: `linear-gradient(rgba(0,0,0,0.58),rgba(0,0,0,0.42)), radial-gradient(ellipse at 70% 30%, rgba(20,60,140,0.35) 0%, transparent 55%), url('${POLL('dramatic sports stadium at night floodlights on atmospheric cinematic wide angle photography', 402)}') center/cover no-repeat`,
   },
   {
     name: 'Construction',
     sentence: 'Projects move forward, crews stay informed, and clients stay happy.',
     indicator: 'Milestone Logged',
-    bg: 'radial-gradient(ellipse at 40% 60%, rgba(120,80,10,0.4) 0%, transparent 55%), linear-gradient(160deg, #0a0800 0%, #161000 50%, #100c00 100%)',
+    bg: `linear-gradient(rgba(0,0,0,0.6),rgba(0,0,0,0.42)), radial-gradient(ellipse at 40% 60%, rgba(120,80,10,0.3) 0%, transparent 55%), url('${POLL('building construction site golden hour dramatic sky workers silhouettes cinematic photography', 403)}') center/cover no-repeat`,
   },
   {
     name: 'Photography',
     sentence: 'Capture the moment. Let the system handle everything else.',
     indicator: 'Gallery Delivered',
-    bg: 'radial-gradient(ellipse at 60% 40%, rgba(80,80,80,0.3) 0%, transparent 60%), linear-gradient(160deg, #080808 0%, #141414 50%, #0c0c0c 100%)',
+    bg: `linear-gradient(rgba(0,0,0,0.62),rgba(0,0,0,0.45)), url('${POLL('professional photographer in action outdoors golden hour bokeh background cinematic portrait moody', 404)}') center/cover no-repeat`,
   },
   {
     name: 'Church',
     sentence: 'Connect your community, manage volunteers, and amplify your mission.',
     indicator: 'Event Confirmed',
-    bg: 'radial-gradient(ellipse at 50% 50%, rgba(60,40,120,0.35) 0%, transparent 55%), linear-gradient(160deg, #060510 0%, #0e0b1e 50%, #080612 100%)',
+    bg: `linear-gradient(rgba(0,0,0,0.6),rgba(0,0,0,0.42)), radial-gradient(ellipse at 50% 50%, rgba(60,40,120,0.25) 0%, transparent 55%), url('${POLL('beautiful cathedral interior golden light streaming through stained glass windows spiritual cinematic photography', 405)}') center/cover no-repeat`,
   },
   {
     name: 'Nonprofit',
     sentence: 'Focus on impact. The systems handle the operations.',
     indicator: 'Donation Recorded',
-    bg: 'radial-gradient(ellipse at 30% 60%, rgba(10,80,40,0.4) 0%, transparent 55%), linear-gradient(160deg, #030a06 0%, #061410 50%, #040c08 100%)',
+    bg: `linear-gradient(rgba(0,0,0,0.55),rgba(0,0,0,0.38)), radial-gradient(ellipse at 30% 60%, rgba(10,80,40,0.3) 0%, transparent 55%), url('${POLL('diverse volunteers working together outdoors smiling community spirit warm daylight cinematic documentary photography', 406)}') center/cover no-repeat`,
   },
   {
     name: 'Education',
     sentence: 'Students learn. Administrators thrive. Parents stay connected.',
     indicator: 'Assignment Complete',
-    bg: 'radial-gradient(ellipse at 70% 30%, rgba(50,20,100,0.4) 0%, transparent 55%), linear-gradient(160deg, #06030f 0%, #100618 50%, #090410 100%)',
+    bg: `linear-gradient(rgba(0,0,0,0.6),rgba(0,0,0,0.42)), radial-gradient(ellipse at 70% 30%, rgba(50,20,100,0.28) 0%, transparent 55%), url('${POLL('modern university library with dramatic lighting students studying cinematic photography', 407)}') center/cover no-repeat`,
   },
   {
     name: 'Healthcare',
     sentence: 'Patients feel cared for before they walk in the door.',
     indicator: 'Appointment Ready',
-    bg: 'radial-gradient(ellipse at 40% 60%, rgba(10,80,100,0.35) 0%, transparent 55%), linear-gradient(160deg, #030a0e 0%, #05141a 50%, #04100e 100%)',
+    bg: `linear-gradient(rgba(0,0,0,0.55),rgba(0,0,0,0.38)), radial-gradient(ellipse at 40% 60%, rgba(10,80,100,0.28) 0%, transparent 55%), url('${POLL('clean modern hospital corridor warm lighting professional medical environment cinematic photography', 408)}') center/cover no-repeat`,
   },
   {
     name: 'Horse Racing',
     sentence: 'Manage entries, communicate with owners, and run operations at full speed.',
     indicator: 'Entry Submitted',
-    bg: 'radial-gradient(ellipse at 60% 50%, rgba(40,60,10,0.4) 0%, transparent 55%), linear-gradient(160deg, #070900 0%, #111500 50%, #0c1000 100%)',
+    bg: `linear-gradient(rgba(0,0,0,0.58),rgba(0,0,0,0.4)), radial-gradient(ellipse at 60% 50%, rgba(40,60,10,0.3) 0%, transparent 55%), url('${POLL('thoroughbred horses racing at golden sunset dramatic motion blur wide angle cinematic photography', 409)}') center/cover no-repeat`,
   },
   {
     name: 'Real Estate',
     sentence: 'From first inquiry to final signature — every step automated.',
     indicator: 'Showing Confirmed',
-    bg: 'radial-gradient(ellipse at 50% 40%, rgba(100,60,10,0.35) 0%, transparent 55%), linear-gradient(160deg, #0a0700 0%, #181000 50%, #100c00 100%)',
+    bg: `linear-gradient(rgba(0,0,0,0.58),rgba(0,0,0,0.4)), radial-gradient(ellipse at 50% 40%, rgba(100,60,10,0.28) 0%, transparent 55%), url('${POLL('stunning luxury modern home exterior at dusk with warm interior lights architectural photography cinematic', 410)}') center/cover no-repeat`,
   },
 ];
 
