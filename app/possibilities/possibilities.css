@@ -1,0 +1,1175 @@
+/* EA Experience Book — /possibilities */
+
+/* ─── Reset & Base ─────────────────────────────────────────────────────── */
+.poss-page {
+  font-family: 'Inter', Arial, sans-serif;
+  color: #fff;
+  background: #000;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ─── Scroll animation utility ────────────────────────────────────────── */
+.poss-anim {
+  opacity: 0;
+  transform: translateY(40px);
+  transition: opacity 0.9s cubic-bezier(0.16, 1, 0.3, 1), transform 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.poss-anim.poss-visible { opacity: 1; transform: translateY(0); }
+.poss-anim-delay-1 { transition-delay: 0.1s; }
+.poss-anim-delay-2 { transition-delay: 0.2s; }
+.poss-anim-delay-3 { transition-delay: 0.3s; }
+.poss-anim-delay-4 { transition-delay: 0.4s; }
+.poss-anim-delay-5 { transition-delay: 0.5s; }
+.poss-anim-delay-6 { transition-delay: 0.6s; }
+
+/* ─── Navigation ──────────────────────────────────────────────────────── */
+.poss-nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  background: rgba(0, 0, 0, 0.72);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  transition: background 0.3s ease;
+}
+.poss-nav-inner {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 28px;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+.poss-nav-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  flex-shrink: 0;
+}
+.poss-nav-ea {
+  background: #B21712;
+  color: #fff;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 1.5px;
+  padding: 3px 7px;
+  border-radius: 3px;
+}
+.poss-nav-name {
+  color: #fff;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+}
+.poss-nav-links {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+  margin-left: auto;
+}
+.poss-nav-links a {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.4px;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+.poss-nav-links a:hover { color: #fff; }
+.poss-nav-cta {
+  background: #B21712 !important;
+  color: #fff !important;
+  padding: 8px 18px;
+  border-radius: 4px;
+  font-weight: 700 !important;
+  letter-spacing: 0.6px !important;
+  transition: background 0.2s !important;
+}
+.poss-nav-cta:hover { background: #C8102E !important; }
+.poss-nav-mobile-cta { display: none; }
+.poss-mobile-menu-btn {
+  display: none;
+  background: none;
+  border: none;
+  color: #fff;
+  cursor: pointer;
+  padding: 4px;
+}
+
+/* ─── Screen 1: Hero ─────────────────────────────────────────────────── */
+.poss-hero {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+  padding: 100px 24px 80px;
+}
+.poss-hero-bg {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse at 20% 20%, rgba(178, 23, 18, 0.18) 0%, transparent 55%),
+    radial-gradient(ellipse at 80% 80%, rgba(40, 20, 80, 0.25) 0%, transparent 55%),
+    radial-gradient(ellipse at 50% 50%, #0d0d14 0%, #05050a 100%);
+  z-index: 0;
+}
+.poss-hero-bg::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.015'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+}
+.poss-hero-content {
+  position: relative;
+  z-index: 1;
+  text-align: center;
+  max-width: 1100px;
+  width: 100%;
+}
+.poss-hero-eyebrow {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 3px;
+  color: rgba(255, 255, 255, 0.4);
+  text-transform: uppercase;
+  margin: 0 0 24px;
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.8s ease, transform 0.8s ease;
+}
+.poss-hero-eyebrow.hero-visible { opacity: 1; transform: translateY(0); }
+.poss-hero-h1 {
+  font-family: 'Barlow Condensed', Arial, sans-serif;
+  font-size: clamp(52px, 8vw, 96px);
+  font-weight: 800;
+  line-height: 0.95;
+  letter-spacing: -1px;
+  margin: 0 0 64px;
+  color: #fff;
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.9s ease 0.1s, transform 0.9s ease 0.1s;
+}
+.poss-hero-h1.hero-visible { opacity: 1; transform: translateY(0); }
+
+/* ─── Outcome Cards (Screen 1) ─────────────────────────────────────── */
+.poss-outcome-cards {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 12px;
+}
+.poss-outcome-card {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  padding: 24px 16px;
+  cursor: default;
+  transition: background 0.3s ease, border-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+  opacity: 0;
+  transform: translateY(24px);
+  text-align: center;
+}
+.poss-outcome-card.card-visible { opacity: 1; transform: translateY(0); }
+.poss-outcome-card:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.18);
+  transform: translateY(-4px);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+}
+.poss-card-icon {
+  display: block;
+  font-size: 22px;
+  margin-bottom: 10px;
+  opacity: 0.6;
+}
+.poss-card-label {
+  display: block;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  color: rgba(255, 255, 255, 0.8);
+  line-height: 1.3;
+}
+
+/* ─── Hero Scroll Indicator ──────────────────────────────────────────── */
+.poss-hero-scroll {
+  position: absolute;
+  bottom: 32px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  opacity: 0;
+  animation: fadeInUp 1s ease 1.8s forwards;
+}
+.poss-hero-scroll span {
+  font-size: 9px;
+  letter-spacing: 2.5px;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.3);
+  text-transform: uppercase;
+}
+.poss-scroll-line {
+  width: 1px;
+  height: 40px;
+  background: linear-gradient(to bottom, rgba(255,255,255,0.3), transparent);
+  animation: scrollPulse 2s ease-in-out infinite;
+}
+@keyframes scrollPulse {
+  0%, 100% { opacity: 0.3; transform: scaleY(1); }
+  50% { opacity: 0.7; transform: scaleY(1.1); }
+}
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateX(-50%) translateY(10px); }
+  to { opacity: 1; transform: translateX(-50%) translateY(0); }
+}
+
+/* ─── Section Utility ──────────────────────────────────────────────── */
+.poss-section {
+  padding: 120px 24px;
+}
+.poss-container {
+  max-width: 1100px;
+  margin: 0 auto;
+}
+.poss-container-sm {
+  max-width: 760px;
+  margin: 0 auto;
+}
+.poss-eyebrow {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 3px;
+  color: #B21712;
+  text-transform: uppercase;
+  margin: 0 0 20px;
+  display: block;
+}
+
+/* ─── Screen 2: Outcomes ─────────────────────────────────────────────── */
+.poss-outcomes {
+  background: #fff;
+  color: #0C0C0A;
+  padding: 120px 24px;
+}
+.poss-outcomes-h2 {
+  font-family: 'Barlow Condensed', Arial, sans-serif;
+  font-size: clamp(38px, 5vw, 64px);
+  font-weight: 800;
+  line-height: 0.95;
+  letter-spacing: -0.5px;
+  margin: 0 0 72px;
+  color: #0C0C0A;
+  text-align: center;
+}
+.poss-outcomes-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2px;
+  background: #E4E4E4;
+  border-radius: 16px;
+  overflow: hidden;
+}
+.poss-outcome-item {
+  background: #fff;
+  padding: 48px 36px;
+  position: relative;
+  transition: background 0.2s ease;
+}
+.poss-outcome-item:hover { background: #F7F7F7; }
+.poss-outcome-num {
+  font-family: 'Barlow Condensed', Arial, sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  color: #B21712;
+  margin: 0 0 14px;
+  display: block;
+}
+.poss-outcome-item h3 {
+  font-family: 'Barlow Condensed', Arial, sans-serif;
+  font-size: 26px;
+  font-weight: 800;
+  margin: 0 0 12px;
+  color: #0C0C0A;
+  line-height: 1;
+}
+.poss-outcome-item p {
+  font-size: 14px;
+  line-height: 1.7;
+  color: #555;
+  margin: 0;
+}
+
+/* ─── Screen 3: Lifestyle ────────────────────────────────────────────── */
+.poss-lifestyle {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+  padding: 120px 24px;
+}
+.poss-lifestyle-bg {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse at 70% 40%, rgba(180, 120, 20, 0.22) 0%, transparent 55%),
+    radial-gradient(ellipse at 20% 70%, rgba(120, 60, 10, 0.18) 0%, transparent 50%),
+    linear-gradient(160deg, #120b00 0%, #1c1000 30%, #0e0900 70%, #070500 100%);
+  z-index: 0;
+}
+.poss-lifestyle-bg::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 50% 0%, rgba(220, 160, 40, 0.08) 0%, transparent 60%);
+}
+.poss-lifestyle-content {
+  position: relative;
+  z-index: 1;
+  text-align: center;
+  max-width: 900px;
+}
+.poss-lifestyle-h2 {
+  font-family: 'Barlow Condensed', Arial, sans-serif;
+  font-size: clamp(44px, 6.5vw, 84px);
+  font-weight: 800;
+  line-height: 0.95;
+  letter-spacing: -0.5px;
+  margin: 0 0 32px;
+  color: #fff;
+}
+.poss-lifestyle-h2 em {
+  font-style: normal;
+  color: rgba(220, 160, 60, 0.85);
+}
+.poss-lifestyle-sub {
+  font-size: 17px;
+  line-height: 1.65;
+  color: rgba(255, 255, 255, 0.5);
+  margin: 0;
+  max-width: 480px;
+  margin-left: auto;
+  margin-right: auto;
+}
+/* Ambient light particles */
+.poss-lifestyle-glow {
+  position: absolute;
+  width: 600px;
+  height: 600px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(200, 120, 20, 0.08) 0%, transparent 70%);
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  z-index: 0;
+  animation: glowPulse 6s ease-in-out infinite;
+}
+@keyframes glowPulse {
+  0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 0.5; }
+  50% { transform: translate(-50%, -50%) scale(1.15); opacity: 1; }
+}
+
+/* ─── Screen 4: Invisible System ─────────────────────────────────────── */
+.poss-invisible {
+  background: #05050a;
+  padding: 120px 24px;
+}
+.poss-invisible-header {
+  text-align: center;
+  margin-bottom: 80px;
+}
+.poss-invisible-header h2 {
+  font-family: 'Barlow Condensed', Arial, sans-serif;
+  font-size: clamp(36px, 5vw, 60px);
+  font-weight: 800;
+  letter-spacing: -0.3px;
+  margin: 0;
+  color: #fff;
+}
+.poss-scenes {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  max-width: 960px;
+  margin: 0 auto;
+}
+.poss-scene {
+  position: relative;
+  height: 240px;
+  border-radius: 16px;
+  overflow: hidden;
+  display: flex;
+  align-items: flex-end;
+}
+.poss-scene-bg {
+  position: absolute;
+  inset: 0;
+}
+.poss-scene-1 .poss-scene-bg {
+  background: radial-gradient(ellipse at 30% 60%, rgba(30, 60, 120, 0.4) 0%, transparent 60%),
+    linear-gradient(135deg, #08101e 0%, #0d1a2e 50%, #121f38 100%);
+}
+.poss-scene-2 .poss-scene-bg {
+  background: radial-gradient(ellipse at 70% 40%, rgba(20, 80, 40, 0.4) 0%, transparent 60%),
+    linear-gradient(135deg, #050e08 0%, #0a1a10 50%, #0f2018 100%);
+}
+.poss-scene-3 .poss-scene-bg {
+  background: radial-gradient(ellipse at 50% 30%, rgba(80, 30, 20, 0.4) 0%, transparent 60%),
+    linear-gradient(135deg, #0e0808 0%, #1a0f0d 50%, #221310 100%);
+}
+.poss-scene-visual {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  padding-left: 56px;
+  gap: 20px;
+}
+.poss-scene-icon {
+  width: 64px;
+  height: 64px;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.poss-scene-1 .poss-scene-icon { background: rgba(50, 100, 200, 0.2); border: 1px solid rgba(80, 140, 255, 0.2); }
+.poss-scene-2 .poss-scene-icon { background: rgba(20, 120, 60, 0.2); border: 1px solid rgba(40, 180, 90, 0.2); }
+.poss-scene-3 .poss-scene-icon { background: rgba(160, 60, 30, 0.2); border: 1px solid rgba(220, 80, 40, 0.2); }
+.poss-scene-icon svg { opacity: 0.6; }
+.poss-scene-desc {
+  font-size: 20px;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.25);
+  letter-spacing: -0.2px;
+}
+.poss-scene-indicator {
+  position: absolute;
+  bottom: 24px;
+  right: 32px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(12px);
+  border-radius: 100px;
+  padding: 8px 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.8);
+  letter-spacing: 0.2px;
+  white-space: nowrap;
+}
+.poss-indicator-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #22c55e;
+  flex-shrink: 0;
+  animation: dotPulse 2s ease-in-out infinite;
+}
+@keyframes dotPulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.6; transform: scale(0.85); }
+}
+
+/* ─── Screen 5: Control Center ───────────────────────────────────────── */
+.poss-control {
+  background: #F7F7F7;
+  padding: 120px 24px;
+  color: #0C0C0A;
+}
+.poss-control-header {
+  text-align: center;
+  margin-bottom: 72px;
+}
+.poss-control-header h2 {
+  font-family: 'Barlow Condensed', Arial, sans-serif;
+  font-size: clamp(36px, 5vw, 60px);
+  font-weight: 800;
+  letter-spacing: -0.3px;
+  margin: 0 0 14px;
+  color: #0C0C0A;
+}
+.poss-control-header p {
+  font-size: 17px;
+  color: #555;
+  margin: 0;
+  line-height: 1.6;
+}
+.poss-control-devices {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 32px;
+  align-items: start;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+/* Desktop Pulse mockup */
+.poss-pulse-desktop {
+  background: #1a1a1f;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 40px 80px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(255,255,255,0.06);
+}
+.poss-pulse-desktop-bar {
+  background: #111116;
+  padding: 12px 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+.poss-pulse-dot { width: 10px; height: 10px; border-radius: 50%; }
+.poss-pulse-dot-r { background: #ff5f56; }
+.poss-pulse-dot-y { background: #ffbd2e; }
+.poss-pulse-dot-g { background: #27c93f; }
+.poss-pulse-title {
+  margin-left: 8px;
+  font-size: 12px;
+  font-weight: 600;
+  color: rgba(255,255,255,0.4);
+  letter-spacing: 0.3px;
+}
+.poss-pulse-body {
+  padding: 24px;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 0;
+}
+.poss-pulse-metric-card {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 10px;
+  padding: 18px;
+}
+.poss-pulse-metric-label {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1.2px;
+  color: rgba(255,255,255,0.35);
+  text-transform: uppercase;
+  display: block;
+  margin-bottom: 8px;
+}
+.poss-pulse-metric-value {
+  font-family: 'Barlow Condensed', Arial, sans-serif;
+  font-size: 32px;
+  font-weight: 800;
+  color: #fff;
+  display: block;
+  line-height: 1;
+  margin-bottom: 6px;
+}
+.poss-pulse-metric-change {
+  font-size: 11px;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+}
+.poss-pulse-metric-change.up { color: #22c55e; }
+.poss-pulse-metric-change.neutral { color: rgba(255,255,255,0.35); }
+.poss-pulse-feed {
+  padding: 0 24px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.poss-pulse-feed-head {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  color: rgba(255,255,255,0.25);
+  text-transform: uppercase;
+  padding: 12px 0 10px;
+}
+.poss-pulse-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  transition: background 0.15s;
+}
+.poss-pulse-row:hover { background: rgba(255,255,255,0.04); }
+.poss-pulse-row-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.poss-row-green { background: #22c55e; }
+.poss-row-blue { background: #3b82f6; }
+.poss-row-amber { background: #f59e0b; }
+.poss-row-purple { background: #8b5cf6; }
+.poss-pulse-row-text {
+  font-size: 13px;
+  color: rgba(255,255,255,0.7);
+  flex: 1;
+}
+.poss-pulse-row-time {
+  font-size: 11px;
+  color: rgba(255,255,255,0.25);
+  white-space: nowrap;
+}
+/* Mobile Pulse mockup */
+.poss-pulse-mobile {
+  width: 200px;
+  flex-shrink: 0;
+  background: #1a1a1f;
+  border-radius: 28px;
+  overflow: hidden;
+  box-shadow: 0 30px 60px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(255,255,255,0.08);
+  border: 3px solid #2a2a30;
+  position: relative;
+}
+.poss-pulse-mobile-notch {
+  background: #111116;
+  height: 32px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding-bottom: 4px;
+}
+.poss-pulse-mobile-notch-bar {
+  width: 60px;
+  height: 4px;
+  background: rgba(255,255,255,0.15);
+  border-radius: 2px;
+}
+.poss-pulse-mobile-body {
+  padding: 16px;
+}
+.poss-pulse-mobile-head {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  color: rgba(255,255,255,0.3);
+  text-transform: uppercase;
+  margin-bottom: 12px;
+  display: block;
+}
+.poss-mobile-metric {
+  margin-bottom: 16px;
+}
+.poss-mobile-metric-label {
+  font-size: 9px;
+  color: rgba(255,255,255,0.3);
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  display: block;
+  margin-bottom: 4px;
+}
+.poss-mobile-metric-value {
+  font-family: 'Barlow Condensed', Arial, sans-serif;
+  font-size: 26px;
+  font-weight: 800;
+  color: #fff;
+  display: block;
+}
+.poss-mobile-rows {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.poss-mobile-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 6px;
+  border-radius: 6px;
+  background: rgba(255,255,255,0.03);
+}
+.poss-mobile-row-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.poss-mobile-row-text {
+  font-size: 10px;
+  color: rgba(255,255,255,0.6);
+  flex: 1;
+  line-height: 1.3;
+}
+.poss-mobile-row-time {
+  font-size: 9px;
+  color: rgba(255,255,255,0.2);
+}
+.poss-control-caption {
+  text-align: center;
+  margin-top: 48px;
+}
+.poss-control-caption p {
+  font-size: 14px;
+  color: #777;
+  margin: 0;
+}
+.poss-pulse-brand {
+  font-weight: 700;
+  color: #B21712;
+}
+
+/* ─── Screen 6: Industries ───────────────────────────────────────────── */
+.poss-industries {
+  position: relative;
+  height: 100vh;
+  overflow: hidden;
+}
+.poss-industry-panel {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  opacity: 0;
+  transform: scale(0.98);
+  transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1), transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+  pointer-events: none;
+}
+.poss-industry-panel.ind-active {
+  opacity: 1;
+  transform: scale(1);
+  pointer-events: auto;
+}
+.poss-industry-content {
+  text-align: center;
+  max-width: 700px;
+  z-index: 1;
+}
+.poss-industry-num {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 3px;
+  color: rgba(255,255,255,0.35);
+  text-transform: uppercase;
+  margin-bottom: 20px;
+  display: block;
+}
+.poss-industry-name {
+  font-family: 'Barlow Condensed', Arial, sans-serif;
+  font-size: clamp(56px, 9vw, 110px);
+  font-weight: 800;
+  line-height: 0.9;
+  letter-spacing: -1px;
+  color: #fff;
+  margin: 0 0 28px;
+}
+.poss-industry-sentence {
+  font-size: 18px;
+  color: rgba(255,255,255,0.55);
+  line-height: 1.5;
+  margin: 0 0 36px;
+  max-width: 480px;
+  margin-left: auto;
+  margin-right: auto;
+}
+.poss-industry-indicator {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(255,255,255,0.07);
+  border: 1px solid rgba(255,255,255,0.12);
+  backdrop-filter: blur(12px);
+  border-radius: 100px;
+  padding: 10px 20px;
+  font-size: 12px;
+  font-weight: 600;
+  color: rgba(255,255,255,0.7);
+  letter-spacing: 0.2px;
+}
+.poss-industry-check {
+  color: #22c55e;
+  font-size: 13px;
+}
+/* Industry navigation */
+.poss-industry-nav {
+  position: absolute;
+  bottom: 40px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+.poss-industry-prev,
+.poss-industry-next {
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.12);
+  color: #fff;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.2s, border-color 0.2s;
+  font-size: 14px;
+}
+.poss-industry-prev:hover,
+.poss-industry-next:hover {
+  background: rgba(255,255,255,0.15);
+  border-color: rgba(255,255,255,0.25);
+}
+.poss-industry-dots {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+.poss-industry-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.25);
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  transition: background 0.2s, transform 0.2s;
+}
+.poss-industry-dot.ind-dot-active {
+  background: #fff;
+  transform: scale(1.3);
+}
+/* Industry section label */
+.poss-industries-eyebrow {
+  position: absolute;
+  top: 32px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 3px;
+  color: rgba(255,255,255,0.3);
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+/* ─── Screen 7: How It Works ─────────────────────────────────────────── */
+.poss-how {
+  background: #08090B;
+  padding: 120px 24px;
+}
+.poss-how-header {
+  text-align: center;
+  margin-bottom: 80px;
+}
+.poss-how-header h2 {
+  font-family: 'Barlow Condensed', Arial, sans-serif;
+  font-size: clamp(36px, 5vw, 60px);
+  font-weight: 800;
+  color: #fff;
+  margin: 0;
+  letter-spacing: -0.3px;
+}
+.poss-flow {
+  max-width: 600px;
+  margin: 0 auto;
+  position: relative;
+}
+.poss-flow-item {
+  display: flex;
+  gap: 28px;
+  align-items: flex-start;
+  position: relative;
+}
+.poss-flow-item:not(:last-child) {
+  padding-bottom: 0;
+}
+.poss-flow-left {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex-shrink: 0;
+  width: 40px;
+}
+.poss-flow-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #B21712;
+  border: 2px solid rgba(178, 23, 18, 0.4);
+  box-shadow: 0 0 0 4px rgba(178, 23, 18, 0.1);
+  flex-shrink: 0;
+  margin-top: 4px;
+  position: relative;
+  z-index: 1;
+}
+.poss-flow-line {
+  width: 1px;
+  height: 72px;
+  background: linear-gradient(to bottom, rgba(178, 23, 18, 0.4), rgba(178, 23, 18, 0.1));
+  margin-top: 4px;
+  flex-shrink: 0;
+  position: relative;
+  overflow: hidden;
+}
+.poss-flow-line::after {
+  content: '';
+  position: absolute;
+  top: -100%;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(to bottom, transparent, #B21712, transparent);
+  animation: flowLine 3s ease-in-out infinite;
+}
+@keyframes flowLine {
+  0% { top: -100%; }
+  100% { top: 200%; }
+}
+.poss-flow-right {
+  padding-bottom: 72px;
+  flex: 1;
+}
+.poss-flow-item:last-child .poss-flow-right { padding-bottom: 0; }
+.poss-flow-step {
+  font-size: 22px;
+  font-weight: 700;
+  color: #fff;
+  margin: 0 0 6px;
+  line-height: 1.2;
+}
+.poss-flow-desc {
+  font-size: 14px;
+  color: rgba(255,255,255,0.35);
+  margin: 0;
+  line-height: 1.6;
+}
+
+/* ─── Screen 8: Capabilities ─────────────────────────────────────────── */
+.poss-capabilities {
+  background: #F7F7F7;
+  padding: 120px 24px;
+  color: #0C0C0A;
+}
+.poss-capabilities-header {
+  text-align: center;
+  margin-bottom: 64px;
+}
+.poss-capabilities-header h2 {
+  font-family: 'Barlow Condensed', Arial, sans-serif;
+  font-size: clamp(36px, 5vw, 60px);
+  font-weight: 800;
+  margin: 0;
+  color: #0C0C0A;
+  letter-spacing: -0.3px;
+}
+.poss-cap-accordion {
+  max-width: 900px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.poss-cap-item {
+  background: #fff;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid #E4E4E4;
+  transition: border-color 0.2s;
+}
+.poss-cap-item.cap-open { border-color: #0C0C0A; }
+.poss-cap-trigger {
+  width: 100%;
+  background: none;
+  border: none;
+  padding: 24px 28px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  cursor: pointer;
+  text-align: left;
+  transition: background 0.15s;
+}
+.poss-cap-trigger:hover { background: #F7F7F7; }
+.poss-cap-icon-wrap {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  flex-shrink: 0;
+}
+.poss-cap-title {
+  font-family: 'Barlow Condensed', Arial, sans-serif;
+  font-size: 22px;
+  font-weight: 800;
+  color: #0C0C0A;
+  flex: 1;
+  letter-spacing: 0.2px;
+}
+.poss-cap-chevron {
+  width: 20px;
+  height: 20px;
+  color: #555;
+  transition: transform 0.3s ease;
+  flex-shrink: 0;
+}
+.cap-open .poss-cap-chevron { transform: rotate(180deg); }
+.poss-cap-body {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.cap-open .poss-cap-body { max-height: 400px; }
+.poss-cap-cards {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  padding: 0 24px 24px;
+}
+.poss-cap-card {
+  background: #F7F7F7;
+  border-radius: 8px;
+  padding: 14px 16px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #333;
+  border: 1px solid #E4E4E4;
+  transition: background 0.15s, border-color 0.15s;
+}
+.poss-cap-card:hover {
+  background: #fff;
+  border-color: #ccc;
+}
+
+/* ─── Screen 9: Final CTA ────────────────────────────────────────────── */
+.poss-cta {
+  min-height: 80vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+  padding: 120px 24px;
+}
+.poss-cta-bg {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse at 50% 100%, rgba(178, 23, 18, 0.2) 0%, transparent 60%),
+    radial-gradient(ellipse at 20% 20%, rgba(40, 20, 80, 0.2) 0%, transparent 50%),
+    linear-gradient(160deg, #050507 0%, #0a0a0f 50%, #08080d 100%);
+  z-index: 0;
+}
+.poss-cta-content {
+  position: relative;
+  z-index: 1;
+  text-align: center;
+  max-width: 700px;
+}
+.poss-cta-h2 {
+  font-family: 'Barlow Condensed', Arial, sans-serif;
+  font-size: clamp(52px, 8vw, 96px);
+  font-weight: 800;
+  line-height: 0.92;
+  letter-spacing: -1px;
+  margin: 0 0 28px;
+  color: #fff;
+}
+.poss-cta-sub {
+  font-size: 17px;
+  color: rgba(255,255,255,0.45);
+  margin: 0 0 48px;
+  line-height: 1.6;
+}
+.poss-cta-btn {
+  display: inline-block;
+  background: #B21712;
+  color: #fff;
+  font-size: 14px;
+  font-weight: 800;
+  letter-spacing: 0.6px;
+  padding: 18px 40px;
+  border-radius: 6px;
+  text-decoration: none;
+  transition: background 0.2s, transform 0.2s, box-shadow 0.2s;
+}
+.poss-cta-btn:hover {
+  background: #C8102E;
+  transform: translateY(-2px);
+  box-shadow: 0 16px 32px rgba(178, 23, 18, 0.35);
+}
+/* Footer in CTA */
+.poss-footer {
+  border-top: 1px solid rgba(255,255,255,0.06);
+  padding: 24px;
+  text-align: center;
+}
+.poss-footer p {
+  font-size: 11px;
+  color: rgba(255,255,255,0.2);
+  margin: 0;
+  letter-spacing: 0.3px;
+}
+.poss-footer a {
+  color: rgba(255,255,255,0.35);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+.poss-footer a:hover { color: rgba(255,255,255,0.6); }
+
+/* ─── Responsive ─────────────────────────────────────────────────────── */
+@media (max-width: 900px) {
+  .poss-nav-links { display: none; }
+  .poss-nav-mobile-cta { display: flex; margin-left: auto; }
+  .poss-nav-mobile-cta a {
+    background: #B21712;
+    color: #fff;
+    font-size: 12px;
+    font-weight: 700;
+    padding: 8px 14px;
+    border-radius: 4px;
+    text-decoration: none;
+  }
+  .poss-outcome-cards { grid-template-columns: repeat(3, 1fr); }
+  .poss-outcomes-grid { grid-template-columns: 1fr; }
+  .poss-outcome-item { padding: 32px 24px; }
+  .poss-control-devices { grid-template-columns: 1fr; }
+  .poss-pulse-mobile { display: none; }
+  .poss-cap-cards { grid-template-columns: repeat(2, 1fr); }
+  .poss-pulse-body { grid-template-columns: 1fr 1fr; }
+}
+@media (max-width: 600px) {
+  .poss-section { padding: 80px 20px; }
+  .poss-outcome-cards { grid-template-columns: repeat(2, 1fr); }
+  .poss-outcomes { padding: 80px 20px; }
+  .poss-lifestyle { padding: 80px 20px; }
+  .poss-invisible { padding: 80px 20px; }
+  .poss-control { padding: 80px 20px; }
+  .poss-how { padding: 80px 20px; }
+  .poss-capabilities { padding: 80px 20px; }
+  .poss-cta { padding: 80px 20px; }
+  .poss-scene { height: 180px; }
+  .poss-scene-desc { font-size: 15px; }
+  .poss-cap-cards { grid-template-columns: 1fr; }
+  .poss-pulse-body { grid-template-columns: 1fr; }
+  .poss-industry-name { font-size: 52px; }
+}
