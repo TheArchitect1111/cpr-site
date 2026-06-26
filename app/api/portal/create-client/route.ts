@@ -89,12 +89,12 @@ function emailParent(
 <div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;color:#1A1A1A">
   <div style="background:#0C0C0A;padding:24px;text-align:center">
     <img src="${siteUrl}/cpr-logo.png" alt="CPR" style="width:58px;height:58px;border-radius:50%" />
-    <div style="color:#C8102E;font-size:18px;font-weight:800;letter-spacing:1px;margin-top:10px">CANADIAN PROSPECTS RECRUITMENT</div>
+    <div style="color:#C8102E;font-size:18px;font-weight:800;letter-spacing:1px;margin-top:10px">CPR GLOBAL PROSPECTS</div>
   </div>
   <div style="padding:32px 24px;background:#fff">
     <h2 style="margin:0 0 16px;font-size:22px">Welcome to the CPR Parent Success Portal</h2>
     <p style="margin:0 0 12px">Hello ${parentName},</p>
-    <p style="margin:0 0 20px">Your family has been enrolled in Canadian Prospects Recruitment for ${athleteName}. Your Parent Success Portal gives you visibility into your athlete's progress, onboarding checklist, and key milestones throughout the recruiting process.</p>
+    <p style="margin:0 0 20px">Your family has been enrolled in CPR Global Prospects for ${athleteName}. Your Parent Success Portal gives you visibility into your athlete's progress, onboarding checklist, and key milestones throughout the recruiting process.</p>
     <div style="background:#F7F7F7;border-left:4px solid #C8102E;padding:16px 20px;margin-bottom:24px">
       <div style="font-size:13px;font-weight:700;letter-spacing:.5px;margin-bottom:10px">YOUR LOGIN CREDENTIALS</div>
       <div style="margin-bottom:6px"><strong>Login page:</strong> <a href="${loginUrl}">${loginUrl.replace(/^https?:\/\//, '')}</a></div>
@@ -104,7 +104,7 @@ function emailParent(
     <p style="margin:0 0 8px;font-size:13px;color:#555">After your first login, open <strong>Account Settings</strong> in your portal to set a new password. If you forget your password later, use <a href="${siteUrl}/portal/forgot-password">Forgot Password</a> on the portal login page.</p>
   </div>
   <div style="background:#F4F4F4;padding:14px;text-align:center;font-size:11px;color:#888">
-    Canadian Prospects Recruitment &middot; mikecprglobal@mississaugamagic.com
+    CPR Global Prospects &middot; mikecprglobal@mississaugamagic.com
   </div>
 </div>`;
 }
@@ -120,7 +120,7 @@ function emailAthlete(
 <div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;color:#1A1A1A">
   <div style="background:#0C0C0A;padding:24px;text-align:center">
     <img src="${siteUrl}/cpr-logo.png" alt="CPR" style="width:58px;height:58px;border-radius:50%" />
-    <div style="color:#C8102E;font-size:18px;font-weight:800;letter-spacing:1px;margin-top:10px">CANADIAN PROSPECTS RECRUITMENT</div>
+    <div style="color:#C8102E;font-size:18px;font-weight:800;letter-spacing:1px;margin-top:10px">CPR GLOBAL PROSPECTS</div>
   </div>
   <div style="padding:32px 24px;background:#fff">
     <h2 style="margin:0 0 16px;font-size:22px">Welcome to Your CPR Recruiting Portal</h2>
@@ -145,7 +145,7 @@ function emailAthlete(
     <p style="margin:0;font-size:13px;color:#555">Coach Mike will review your materials and reach out with next steps. Let us build your future together.</p>
   </div>
   <div style="background:#F4F4F4;padding:14px;text-align:center;font-size:11px;color:#888">
-    Canadian Prospects Recruitment &middot; mikecprglobal@mississaugamagic.com
+    CPR Global Prospects &middot; mikecprglobal@mississaugamagic.com
   </div>
 </div>`;
 }

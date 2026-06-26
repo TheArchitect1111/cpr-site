@@ -34,7 +34,7 @@ function AgreementForm() {
     <div className="fcard"><div className="fsuccess">
       <div className="big">&#9989;</div>
       <h2 className="display">AGREEMENT RECEIVED</h2>
-      <p>Thank you. Your Fee Structure Agreement is on file with Canadian Prospects Recruitment.<br />Payment details for the first stage will be sent to you directly. Questions: {site.footer.email}</p>
+      <p>Thank you. Your Fee Structure Agreement is on file with CPR Global Prospects.<br />Payment details for the first stage will be sent to you directly. Questions: {site.footer.email}</p>
       <a className="btn" href="/">BACK TO HOME</a>
     </div></div>
   );
@@ -43,7 +43,7 @@ function AgreementForm() {
     <div className="fcard">
       {err && <div className="ferror">{err}</div>}
       <div className="honeypot"><input value={v('website')} onChange={setE('website')} tabIndex={-1} autoComplete="off" /></div>
-      <h2 className="display">CANADIAN PROSPECTS RECRUITMENT FEE AGREEMENT</h2>
+      <h2 className="display">CPR GLOBAL PROSPECTS FEE AGREEMENT</h2>
       <p className="fsub">Contact us at {site.footer.email} or message us on Instagram. Required questions are marked <span className="req">*</span></p>
 
       <div className="fgroup">
@@ -66,7 +66,7 @@ function AgreementForm() {
 
       <div className="agree-block">
         <h4>PROGRAM OVERVIEW</h4>
-        <p>Canadian Prospects Recruitment ("CPR") provides recruiting support, college outreach, player promotion, and guidance throughout the recruitment process.</p>
+        <p>CPR Global Prospects ("CPR") provides recruiting support, college outreach, player promotion, and guidance throughout the recruitment process.</p>
         <p>By submitting this agreement, the Parent/Guardian and Player acknowledge and agree to one of the following fee options.</p>
       </div>
 
@@ -107,7 +107,7 @@ function AgreementForm() {
 
       <div className="agree-block">
         <h4>IMPORTANT INFORMATION</h4>
-        <p>Canadian Prospects Recruitment will make reasonable efforts to promote the student-athlete and connect them with potential college opportunities.</p>
+        <p>CPR Global Prospects will make reasonable efforts to promote the student-athlete and connect them with potential college opportunities.</p>
         <p>CPR does not guarantee scholarship offers, college acceptance, athletic roster positions, or specific financial aid awards.</p>
         <p>Admission, scholarship, and roster decisions are made solely by the college, university, and coaching staff.</p>
       </div>
@@ -125,7 +125,7 @@ function AgreementForm() {
 
       <div className="agree-block">
         <h4>ACKNOWLEDGMENT <span className="req">*</span></h4>
-        <p>I have read, understand, and agree to the terms of this Canadian Prospects Recruitment Fee Agreement.</p>
+        <p>I have read, understand, and agree to the terms of this CPR Global Prospects Fee Agreement.</p>
         <div className="radios">
           <label><input type="checkbox" name="terms" checked={v('terms') === 'Yes'} onChange={e => set('terms', e.target.checked ? 'Yes' : '')} />I agree to the terms.</label>
         </div>
@@ -154,7 +154,7 @@ export default function AgreementPage() {
       </header>
       <div className="form-hero">
         <h1 className="display">FEE STRUCTURE AGREEMENT</h1>
-        <p>Canadian Prospects Recruitment. Complete this to activate your profile.</p>
+        <p>CPR Global Prospects. Complete this to activate your profile.</p>
       </div>
       <div className="form-wrap">
         <Suspense fallback={<div className="fcard"><p className="fsub">Loading...</p></div>}>

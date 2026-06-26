@@ -30,8 +30,8 @@ export async function POST(
             html: emailPage(
               approved ? 'Profile updates approved' : 'Profile updates reviewed',
               approved
-                ? `<p>Hi ${athlete.firstName || 'there'},</p><p>Your submitted profile updates for ${athleteName} have been approved and published by Canadian Prospects Recruitment.</p><p>You can continue to use your private edit link whenever future updates are needed.</p>`
-                : `<p>Hi ${athlete.firstName || 'there'},</p><p>Canadian Prospects Recruitment reviewed the submitted updates for ${athleteName}. The changes were not published at this time.</p><p>Please contact us if you have questions or want to resubmit corrected information.</p>`,
+                ? `<p>Hi ${athlete.firstName || 'there'},</p><p>Your submitted profile updates for ${athleteName} have been approved and published by CPR Global Prospects.</p><p>You can continue to use your private edit link whenever future updates are needed.</p>`
+                : `<p>Hi ${athlete.firstName || 'there'},</p><p>CPR Global Prospects reviewed the submitted updates for ${athleteName}. The changes were not published at this time.</p><p>Please contact us if you have questions or want to resubmit corrected information.</p>`,
             ),
             text: approved
               ? `Your submitted CPR profile updates for ${athleteName} were approved and published.`

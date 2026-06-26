@@ -3,8 +3,8 @@ import { ClerkProvider } from '@clerk/nextjs';
 import './globals.css';
 
 export const metadata: Metadata = {
-  title: 'Canadian Prospects Recruitment · Global Recruiting for Student-Athletes',
-  description: 'Canadian Prospects.ca has gone global. We help student-athletes worldwide get noticed by coaches and find the right school to compete and succeed.',
+  title: 'CPR Global Prospects · Global Recruiting for Student-Athletes',
+  description: 'CPR Global Prospects has gone global. We help student-athletes worldwide get noticed by coaches and find the right school to compete and succeed.',
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

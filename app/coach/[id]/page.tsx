@@ -48,7 +48,7 @@ export default async function CoachShareProfile({
     <>
       <header className="nav">
         <div className="nav-inner">
-          <a href="/"><img src={site.brand.logo} alt="Canadian Prospects Recruitment" className="nav-logo" /></a>
+          <a href="/"><img src={site.brand.logo} alt="CPR Global Prospects" className="nav-logo" /></a>
           <div className="nav-brand display">
             <div className="b1">{site.brand.nameLine1}</div>
             <div className="b2">{site.brand.nameLine2}</div>

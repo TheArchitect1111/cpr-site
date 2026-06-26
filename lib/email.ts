@@ -8,7 +8,7 @@ type SendEmailInput = {
   idempotencyKey?: string;
 };
 
-const fromEmail = () => process.env.RESEND_FROM_EMAIL || `Canadian Prospects Recruitment <${site.footer.email}>`;
+const fromEmail = () => process.env.RESEND_FROM_EMAIL || `CPR Global Prospects <${site.footer.email}>`;
 
 export async function sendEmail(input: SendEmailInput) {
   const apiKey = process.env.RESEND_API_KEY;
@@ -44,7 +44,7 @@ export function emailPage(title: string, body: string) {
     <div style="font-family:Arial,sans-serif;line-height:1.6;color:#151515;max-width:620px;margin:0 auto;padding:24px">
       <h1 style="font-size:22px;margin:0 0 16px;color:#0C0C0A">${title}</h1>
       ${body}
-      <p style="margin-top:24px;color:#555;font-size:13px">Canadian Prospects Recruitment<br><a href="mailto:${site.footer.email}">${site.footer.email}</a></p>
+      <p style="margin-top:24px;color:#555;font-size:13px">CPR Global Prospects<br><a href="mailto:${site.footer.email}">${site.footer.email}</a></p>
     </div>
   `;
 }

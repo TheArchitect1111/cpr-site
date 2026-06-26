@@ -10,9 +10,9 @@ export const dynamic = 'force-dynamic';
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   const a = await getAthlete(slug);
-  if (!a) return { title: 'Athlete Not Found · Canadian Prospects Recruitment' };
+  if (!a) return { title: 'Athlete Not Found · CPR Global Prospects' };
   return {
-    title: `${a.firstName} ${a.lastName} · Canadian Prospects Recruitment`,
+    title: `${a.firstName} ${a.lastName} · CPR Global Prospects`,
     description: `${a.position} | Class of ${a.gradYear} | ${a.school}. Official CPR recruiting profile.`,
   };
 }
@@ -50,7 +50,7 @@ export default async function AthleteProfile({ params }: { params: Promise<{ slu
     <>
       <header className="nav">
         <div className="nav-inner">
-          <a href="/"><img src={site.brand.logo} alt="Canadian Prospects Recruitment" className="nav-logo" /></a>
+          <a href="/"><img src={site.brand.logo} alt="CPR Global Prospects" className="nav-logo" /></a>
           <div className="nav-brand display">
             <div className="b1">{site.brand.nameLine1}</div>
             <div className="b2">{site.brand.nameLine2}</div>

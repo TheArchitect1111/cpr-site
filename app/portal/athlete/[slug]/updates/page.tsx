@@ -32,7 +32,7 @@ export default async function AthleteUpdatesPage({
       </main>
       <footer className="portal-footer">
         <p>
-          Canadian Prospects Recruitment &middot;{' '}
+          CPR Global Prospects &middot;{' '}
           <a href={`mailto:${site.footer.email}`}>{site.footer.email}</a>
         </p>
       </footer>

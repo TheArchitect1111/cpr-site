@@ -42,5 +42,5 @@ export function paymentAmountCents(stage: PaymentStage, athlete?: Pick<AthleteAd
 
 export function paymentDescription(stage: PaymentStage, athlete?: Pick<AthleteAdmin, 'firstName' | 'lastName'>) {
   const name = [athlete?.firstName, athlete?.lastName].filter(Boolean).join(' ') || 'CPR applicant';
-  return `Canadian Prospects Recruitment ${paymentStageLabel(stage)} payment for ${name}`;
+  return `CPR Global Prospects ${paymentStageLabel(stage)} payment for ${name}`;
 }

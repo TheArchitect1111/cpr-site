@@ -6,8 +6,8 @@ import { emailPage, sendEmail } from '@/lib/email';
 
 const templates: Record<string, { subject: string; body: string }> = {
   initial: {
-    subject: '{athleteName} - Canadian Prospects recruiting profile',
-    body: 'Canadian Prospects Recruitment is sharing {athleteName}\'s private recruiting profile for your review{schoolText}. If you would like transcripts, full game film, or an introduction, reply to this email and we will coordinate the next step.',
+    subject: '{athleteName} - CPR Global Prospects recruiting profile',
+    body: 'CPR Global Prospects is sharing {athleteName}\'s private recruiting profile for your review{schoolText}. If you would like transcripts, full game film, or an introduction, reply to this email and we will coordinate the next step.',
   },
   follow_up: {
     subject: 'Follow up: {athleteName} recruiting profile',

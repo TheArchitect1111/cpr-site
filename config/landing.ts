@@ -4,17 +4,17 @@ import { site } from './site';
 /** CPR instance of EA Landing Page Chassis™ — swap config, keep framework. */
 export const landingConfig: LandingPageConfig = {
   brand: {
-    nameLine1: 'CANADIAN PROSPECTS',
-    nameLine2: 'RECRUITMENT',
-    tagline: 'FINDING OPPORTUNITY. BUILDING FUTURES.',
+    nameLine1: 'CPR',
+    nameLine2: 'GLOBAL PROSPECTS',
+    tagline: 'DEVELOPING TALENT. BUILDING FUTURES.',
     logo: '/cpr-logo.png',
   },
   colors: {
-    primary: '#B21712',
-    primaryBright: '#C8102E',
-    black: '#0C0C0A',
-    dark: '#08090B',
-    offWhite: '#F7F7F7',
+    primary: '#D71920',
+    primaryBright: '#FF2A2A',
+    black: '#050505',
+    dark: '#0B0B0D',
+    offWhite: '#0B0B0D',
     white: '#FFFFFF',
   },
   links: {
@@ -28,20 +28,23 @@ export const landingConfig: LandingPageConfig = {
   },
   nav: [
     { label: 'HOME', href: '#top' },
-    { label: 'TESTIMONIALS', href: '#testimonials' },
-    { label: 'HOW IT WORKS', href: '#how-it-works' },
-    { label: 'CAMPS', href: '#camps' },
-    { label: 'RESULTS', href: '#results' },
-    { label: 'APPLY', href: '#apply' },
+    { label: 'ABOUT', href: '#testimonials' },
+    { label: 'PROGRAMS', href: '#how-it-works' },
+    { label: 'RECRUITING', href: '#results' },
+    { label: 'EVENTS', href: '#camps' },
+    { label: 'RESOURCES', href: '#results' },
+    { label: 'PORTAL', href: '/portal/login' },
     { label: 'CONTACT', href: '#contact' },
   ],
   possibility: {
-    headline: 'What becomes possible when talent meets preparation, exposure, and guidance?',
+    headline: "More than basketball. It's a movement.",
     subheadline:
-      'Canadian Prospects.ca has gone global — we now help Student-Athletes pursue their dreams from all around the World.',
+      'CPR Global Prospects empowers student-athletes with exposure, training, and guidance to reach their full potential on and off the court.',
     supporting:
-      'Helping Student-Athletes navigate the journey to the next level. Take your first step toward making your dream a reality.',
+      'Elite development, recruiting support, camp exposure, and family guidance built for the global game.',
     image: '/hero-committed.jpg',
+    applyLabel: 'GET STARTED',
+    videoLabel: 'WATCH VIDEO',
   },
   socialProof: {
     heading: 'WHAT FAMILIES & PLAYERS ARE SAYING',
@@ -71,8 +74,8 @@ export const landingConfig: LandingPageConfig = {
     text: 'A simple, organized path from application to opportunity.',
   },
   process: {
-    heading: 'HOW IT WORKS',
-    subheading: 'A simple, organized path from application to opportunity.',
+    heading: 'BUILT FOR EVERY STEP OF THE JOURNEY',
+    subheading: 'Training, exposure, recruiting support, and academic guidance in one connected program.',
     subheadingEmphasis: true,
     steps: [
       { label: '1. APPLY', description: 'Complete your application and create your player profile.', icon: 'apply' },
@@ -114,10 +117,10 @@ export const landingConfig: LandingPageConfig = {
     heading: 'RESULTS THAT SPEAK',
     subheading: 'Placements, commitments, and success stories — proof CPR changes lives.',
     stats: [
-      { value: '500+', label: 'ATHLETES ASSISTED' },
-      { value: '1,000+', label: 'COACH CONTACTS MADE' },
-      { value: '250+', label: 'SCHOOLS REACHED' },
-      { value: '$25M+', label: 'IN SCHOLARSHIP OPPORTUNITIES' },
+      { value: '100+', label: 'COLLEGE PLACEMENTS' },
+      { value: '50+', label: 'PARTNER SCHOOLS' },
+      { value: '20+', label: 'YEARS OF IMPACT' },
+      { value: 'GLOBAL', label: 'OPPORTUNITIES' },
     ],
     proofs: [
       {
@@ -163,7 +166,7 @@ export const landingConfig: LandingPageConfig = {
   },
   footer: {
     about:
-      'We connect student-athletes with opportunities to play basketball at the next level — locally and globally.',
+      'Developing talent. Building futures. Empowering student-athletes worldwide through basketball.',
     quickLinks: [
       { label: 'Testimonials', href: '#testimonials' },
       { label: 'How It Works', href: '#how-it-works' },
@@ -177,10 +180,10 @@ export const landingConfig: LandingPageConfig = {
       { label: 'Fee Agreement', href: 'https://forms.gle/idrMWqU5FpebA1f46' },
       { label: 'International Fee Agreement', href: 'https://forms.gle/idrMWqU5FpebA1f46' },
     ],
-    email: 'mikecprglobal@mississaugamagic.com',
+    email: 'mikecrpglobal@mississaugamagic.com',
     instagramLabel: '@mississaugamagic',
     prospectsInstagramLabel: '@Prospects.ca',
-    location: 'Mississauga, Ontario',
-    copyright: '© 2026 Canadian Prospects Recruitment. All Rights Reserved.',
+    location: 'Durham, NC / Mississauga, Ontario',
+    copyright: '© 2026 CPR Global Prospects. All Rights Reserved.',
   },
 };

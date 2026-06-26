@@ -26,7 +26,7 @@ export async function sendApplyConfirmationEmail(input: ApplyEmailInput): Promis
         'Application received',
         `
           <p>Hi ${input.firstName},</p>
-          <p>Thank you for applying to Canadian Prospects Recruitment. We received your application and created your recruiting profile.</p>
+          <p>Thank you for applying to CPR Global Prospects. We received your application and created your recruiting profile.</p>
           <p><strong>What happens next:</strong></p>
           <ul>
             <li>Coach Mike will review your application in the CPR admin portal.</li>

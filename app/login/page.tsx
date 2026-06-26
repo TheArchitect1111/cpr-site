@@ -23,7 +23,7 @@ export default function LoginPage() {
       logoUrl="/cpr-logo.png"
       primaryColor="#0a3d6b"
       accentColor="#00aaff"
-      welcomeMessage="Welcome back to Canadian Prospects Recruitment"
+      welcomeMessage="Welcome back to CPR Global Prospects"
       portalId="cpr"
     />
   );

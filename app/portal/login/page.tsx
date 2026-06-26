@@ -23,7 +23,7 @@ function PortalLoginClient({ logo, reset }: { logo: string; reset: boolean }) {
         <div className="pl-logo">
           <img src={logo} alt="CPR" />
           <div className="pl-brand">
-            <div className="b1 display">CANADIAN PROSPECTS</div>
+            <div className="b1 display">CPR GLOBAL PROSPECTS</div>
             <div className="b2 display">RECRUITMENT</div>
           </div>
         </div>

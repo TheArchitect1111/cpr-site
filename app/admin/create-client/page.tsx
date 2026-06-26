@@ -23,7 +23,7 @@ export default async function CreateClientPage() {
         <div className="aside-brand">
           <img src={site.brand.logo} alt="CPR" />
           <div>
-            <div className="ab1 display">CANADIAN PROSPECTS</div>
+            <div className="ab1 display">CPR GLOBAL PROSPECTS</div>
             <div className="ab2 display">RECRUITMENT</div>
           </div>
         </div>

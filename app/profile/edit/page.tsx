@@ -7,7 +7,7 @@ import AthleteProfileEditor from './AthleteProfileEditor';
 export const dynamic = 'force-dynamic';
 
 export const metadata = {
-  title: 'Edit Athlete Profile · Canadian Prospects Recruitment',
+  title: 'Edit Athlete Profile · CPR Global Prospects',
   robots: { index: false, follow: false },
 };
 
@@ -26,7 +26,7 @@ export default async function EditProfilePage({
     <main className="profile-edit-shell">
       <header className="edit-top">
         <a href="/">
-          <img src={site.brand.logo} alt="Canadian Prospects Recruitment" />
+          <img src={site.brand.logo} alt="CPR Global Prospects" />
         </a>
         <div className="display">
           <div className="brand-red">{site.brand.nameLine1}</div>

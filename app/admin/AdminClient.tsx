@@ -10,8 +10,8 @@ const PROFILE_STATUSES = ['Pending', 'Active', 'Coach-only', 'Draft', 'Private',
 const OUTREACH_TEMPLATES = {
   initial: {
     name: 'Initial Outreach',
-    subject: '{athleteName} - Canadian Prospects recruiting profile',
-    message: 'Canadian Prospects Recruitment is sharing {athleteName}\'s private recruiting profile for your review{schoolText}. If you would like transcripts, full game film, or an introduction, reply to this email and we will coordinate the next step.',
+    subject: '{athleteName} - CPR Global Prospects recruiting profile',
+    message: 'CPR Global Prospects is sharing {athleteName}\'s private recruiting profile for your review{schoolText}. If you would like transcripts, full game film, or an introduction, reply to this email and we will coordinate the next step.',
   },
   follow_up: {
     name: 'Follow Up',

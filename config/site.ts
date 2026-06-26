@@ -3,7 +3,7 @@
 
 export const site = {
   brand: {
-    nameLine1: "CANADIAN PROSPECTS",
+    nameLine1: "CPR GLOBAL PROSPECTS",
     nameLine2: "RECRUITMENT",
     tagline: "FINDING OPPORTUNITY. BUILDING FUTURES.",
     logo: "/cpr-logo.png",
@@ -25,7 +25,7 @@ export const site = {
   },
   nav: ["HOME", "TESTIMONIALS", "PROGRAMS", "CAMPS", "APPLY", "CONTACT"],
   hero: {
-    headline: "Canadian Prospects.ca has gone Global!",
+    headline: "CPR Global Prospects has gone Global!",
     subheadline: "We now service dreams for kids all over the world!",
     tagline: "Take your first steps to make your dream come true!",
     image: "/hero-committed.jpg",
@@ -91,15 +91,15 @@ export const site = {
   },
   merchandise: {
     heading: "CPR MERCHANDISE",
-    sub: "Shirts and hoodies — rep Canadian Prospects on and off the court.",
+    sub: "Shirts and hoodies — rep CPR Global Prospects on and off the court.",
     note: "Merchandise ordering coming soon. Contact us for availability.",
     image: "/proof-team.jpg",
   },
   bio: {
     heading: "ABOUT MIKE McKENZIE",
-    sub: "Founder, Canadian Prospects Recruitment",
+    sub: "Founder, CPR Global Prospects",
     paragraphs: [
-      "Mike McKenzie built Canadian Prospects Recruitment to give student-athletes a real path to opportunity — with structure, integrity, and heart.",
+      "Mike McKenzie built CPR Global Prospects to give student-athletes a real path to opportunity — with structure, integrity, and heart.",
       "Through camps, coaching, and recruiting support, CPR has helped hundreds of families navigate the journey to the next level.",
     ],
     image: "/video-main.png",
@@ -213,7 +213,7 @@ export const site = {
       "In memory of one of the best human beings I've ever met. We can only try to stand on the shoulders of true giants.",
       "You are missed.",
     ],
-    sign: "— Mike, Canadian Prospects Recruitment",
+    sign: "— Mike, CPR Global Prospects",
     slides: [
       { img: "/tribute/raveling-memorial.png" },
       { img: "/tribute/raveling-hall-of-fame.png" },
@@ -239,6 +239,6 @@ export const site = {
     instagramLabel: "@mississaugamagic",
     prospectsInstagramLabel: "@Prospects.ca",
     location: "Mississauga, Ontario",
-    copyright: "© 2026 Canadian Prospects Recruitment. All Rights Reserved.",
+    copyright: "© 2026 CPR Global Prospects. All Rights Reserved.",
   },
 };

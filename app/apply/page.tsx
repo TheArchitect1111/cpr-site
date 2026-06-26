@@ -294,9 +294,9 @@ export default function ApplyPage() {
     return (
       <main className="min-h-screen bg-neutral-100">
         <div className="bg-[#0A0A0A] px-6 py-10 text-center">
-          <img src="/cpr-logo.png" alt="Canadian Prospects Recruitment" className="mx-auto mb-4 h-24 w-24" />
+          <img src="/cpr-logo.png" alt="CPR Global Prospects" className="mx-auto mb-4 h-24 w-24" />
           <h1 className="text-2xl font-extrabold uppercase tracking-widest text-[#CC0000]">
-            Canadian Prospects
+            CPR Global Prospects
           </h1>
           <p className="mt-1 text-xs uppercase tracking-widest text-white">
             Recruitment
@@ -337,12 +337,12 @@ export default function ApplyPage() {
   return (
     <main className="min-h-screen bg-neutral-100 pb-20">
       <div className="bg-[#0A0A0A] px-6 py-10 text-center">
-        <img src="/cpr-logo.png" alt="Canadian Prospects Recruitment" className="mx-auto mb-4 h-24 w-24" />
+        <img src="/cpr-logo.png" alt="CPR Global Prospects" className="mx-auto mb-4 h-24 w-24" />
         <h1 className="text-2xl font-extrabold uppercase tracking-widest text-[#CC0000]">
           Athlete Application
         </h1>
         <p className="mt-1 text-xs uppercase tracking-widest text-white">
-          Canadian Prospects Recruitment
+          CPR Global Prospects
         </p>
       </div>
 

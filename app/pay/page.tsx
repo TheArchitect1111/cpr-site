@@ -41,7 +41,7 @@ export default async function PayPage({ searchParams }: { searchParams: Promise<
       </header>
       <div className="form-hero">
         <h1 className="display">CPR PAYMENT</h1>
-        <p>Secure payment for Canadian Prospects Recruitment.</p>
+        <p>Secure payment for CPR Global Prospects.</p>
       </div>
       <div className="form-wrap">
         <div className="fcard">
