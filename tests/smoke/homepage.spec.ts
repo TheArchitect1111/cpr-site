@@ -1,13 +1,16 @@
 import { expect, test } from '@playwright/test';
 
+const PLAYER_APPLICATION_URL =
+  'https://docs.google.com/forms/d/e/1FAIpQLScnS-NAIhJnNDCVMbhFtAPbEtYZT9ZzZytagNu1THa9f80qmg/viewform?usp=publish-editor';
+
 test('homepage renders EA Landing Page Chassis sections', async ({ page }) => {
   await page.goto('/');
-  await expect(page.getByRole('heading', { name: /what becomes possible/i })).toBeVisible();
-  await expect(page.getByText(/canadian prospects\.ca has gone global/i)).toBeVisible();
-  await expect(page.getByRole('heading', { name: /what families & players are saying/i })).toBeVisible();
+  await expect(page.getByRole('heading', { name: /more than basketball/i })).toBeVisible();
+  await expect(page.getByText(/elite development, recruiting support/i)).toBeVisible();
+  await expect(page.getByRole('heading', { name: /what families are saying/i })).toBeVisible();
   await expect(page.getByText(/good coaches get players through drills/i)).toBeVisible();
   await expect(page.getByRole('heading', { name: /camps and exposure/i })).toBeVisible();
-  await expect(page.getByRole('heading', { name: /chips and drip/i })).toBeVisible();
+  await expect(page.getByRole('heading', { name: /where development meets opportunity/i })).toBeVisible();
   await expect(page.getByRole('heading', { name: /cpr family portal/i })).toHaveCount(0);
   await expect(page.getByRole('heading', { name: /the challenge/i })).toHaveCount(0);
 });
@@ -29,15 +32,19 @@ test('tribute deep link page still works', async ({ page }) => {
   await expect(page.getByRole('heading', { name: /george raveling/i })).toBeVisible();
 });
 
-test('apply flow entry page is reachable', async ({ page }) => {
-  await page.goto('/apply');
-  await expect(page.getByRole('heading', { name: /athlete application/i })).toBeVisible();
-  await expect(page.locator('input[autocomplete="given-name"]')).toBeVisible();
+test('application CTAs point to the Google Form', async ({ page }) => {
+  await page.goto('/');
+  const applyLinks = page.locator(`a[href="${PLAYER_APPLICATION_URL}"]`);
+  await expect(applyLinks.first()).toBeVisible();
+  expect(await applyLinks.count()).toBeGreaterThanOrEqual(3);
 });
 
-test('legacy intake URL redirects to apply', async ({ page }) => {
-  await page.goto('/intake');
-  await expect(page).toHaveURL(/\/apply$/);
+test('/apply and legacy intake URLs redirect to the Google Form', async ({ request }) => {
+  for (const path of ['/apply', '/intake']) {
+    const response = await request.get(path, { maxRedirects: 0 });
+    expect([307, 308]).toContain(response.status());
+    expect(response.headers().location).toBe(PLAYER_APPLICATION_URL);
+  }
 });
 
 test('admin login page loads', async ({ page }) => {

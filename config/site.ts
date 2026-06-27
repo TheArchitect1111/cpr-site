@@ -1,6 +1,9 @@
 // CPR LaunchPad Template Config
 // Every client-variable lives here. New client = new config, same layout.
 
+export const PLAYER_APPLICATION_URL =
+  "https://docs.google.com/forms/d/e/1FAIpQLScnS-NAIhJnNDCVMbhFtAPbEtYZT9ZzZytagNu1THa9f80qmg/viewform?usp=publish-editor";
+
 export const site = {
   brand: {
     nameLine1: "CPR GLOBAL PROSPECTS",
@@ -17,7 +20,7 @@ export const site = {
     white: "#FFFFFF",
   },
   links: {
-    apply: "/apply",
+    apply: PLAYER_APPLICATION_URL,
     video: "https://youtu.be/iqietCwnCxc",
     instagram: "https://instagram.com/mississaugamagic",
     instagramProspects: "https://instagram.com/prospects.ca",
@@ -31,7 +34,7 @@ export const site = {
     image: "/hero-committed.jpg",
   },
   testimonials: {
-    heading: "WHAT FAMILIES & PLAYERS ARE SAYING",
+    heading: "WHAT FAMILIES ARE SAYING",
     items: [
       {
         quote:
@@ -87,7 +90,7 @@ export const site = {
     agreementLabel: "FEE AGREEMENT",
     agreementHref: "/agreement",
     applyLabel: "APPLICATION",
-    applyHref: "/apply",
+    applyHref: PLAYER_APPLICATION_URL,
   },
   merchandise: {
     heading: "CPR MERCHANDISE",
@@ -233,7 +236,7 @@ export const site = {
   },
   footer: {
     about: "We connect Canadian student-athletes with opportunities to play basketball at the next level.",
-    quickLinks: ["Testimonials", "Programs", "Camps", "Apply", "Contact"],
+    quickLinks: ["What Families Are Saying", "Programs", "Camps", "Apply", "Contact"],
     resources: ["For Athletes", "For Parents", "NCAA Recruiting Guide", "Fee Agreement"],
     email: "mikecprglobal@mississaugamagic.com",
     instagramLabel: "@mississaugamagic",

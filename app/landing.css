@@ -218,6 +218,12 @@ body {
   box-shadow: none;
 }
 
+.rotate-img,
+.lc-proof img,
+.lc-player-card img {
+  object-position: center top;
+}
+
 .lc-hero-img {
   min-height: 520px;
   background-size: cover;

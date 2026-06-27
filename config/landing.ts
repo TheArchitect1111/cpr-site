@@ -1,6 +1,9 @@
 import type { LandingPageConfig } from '@/lib/landing-chassis/types';
 import { site } from './site';
 
+export const PLAYER_APPLICATION_URL =
+  'https://docs.google.com/forms/d/e/1FAIpQLScnS-NAIhJnNDCVMbhFtAPbEtYZT9ZzZytagNu1THa9f80qmg/viewform?usp=publish-editor';
+
 /** CPR instance of EA Landing Page Chassis™ — swap config, keep framework. */
 export const landingConfig: LandingPageConfig = {
   brand: {
@@ -18,10 +21,9 @@ export const landingConfig: LandingPageConfig = {
     white: '#FFFFFF',
   },
   links: {
-    apply: '/apply',
+    apply: PLAYER_APPLICATION_URL,
     video: 'https://youtu.be/iqietCwnCxc',
     agreement: 'https://forms.gle/idrMWqU5FpebA1f46',
-    internationalAgreement: 'https://forms.gle/idrMWqU5FpebA1f46',
     instagram: 'https://instagram.com/mississaugamagic',
     instagramSecondary: 'https://instagram.com/prospects.ca',
     facebook: 'https://www.facebook.com/mississaugamagic21',
@@ -32,7 +34,7 @@ export const landingConfig: LandingPageConfig = {
     { label: 'PROGRAMS', href: '#how-it-works' },
     { label: 'RECRUITING', href: '#results' },
     { label: 'EVENTS', href: '#camps' },
-    { label: 'RESOURCES', href: '#results' },
+    { label: 'RESOURCES', href: '#apply' },
     { label: 'PORTAL', href: '/portal/login' },
     { label: 'CONTACT', href: '#contact' },
   ],
@@ -47,7 +49,7 @@ export const landingConfig: LandingPageConfig = {
     videoLabel: 'WATCH VIDEO',
   },
   socialProof: {
-    heading: 'WHAT FAMILIES & PLAYERS ARE SAYING',
+    heading: 'WHAT FAMILIES ARE SAYING',
     items: [
       {
         quote:
@@ -75,19 +77,19 @@ export const landingConfig: LandingPageConfig = {
   },
   process: {
     heading: 'BUILT FOR EVERY STEP OF THE JOURNEY',
-    subheading: 'Training, exposure, recruiting support, and academic guidance in one connected program.',
+    subheading: 'Elite player development, trusted family support, global recruiting opportunities, and one connected platform.',
     subheadingEmphasis: true,
     steps: [
-      { label: '1. APPLY', description: 'Complete your application and create your player profile.', icon: 'apply' },
-      { label: '2. UPLOAD', description: 'Share film, photos, transcripts, and achievements.', icon: 'upload' },
-      { label: '3. ACTIVATE', description: 'Review the fee agreement to activate your profile.', icon: 'agreement' },
-      { label: '4. RECRUITING', description: 'We send your profile to coaches and track responses.', icon: 'recruiting' },
-      { label: '5. OPPORTUNITIES', description: 'We present real opportunities and guide you forward.', icon: 'opportunities' },
+      { label: '1. APPLY', description: 'Start the CPR journey with a clear player application.', icon: 'apply' },
+      { label: '2. EVALUATE', description: 'Review film, goals, academics, and the athlete development path.', icon: 'upload' },
+      { label: '3. DEVELOP', description: 'Build confidence through training, structure, and accountability.', icon: 'agreement' },
+      { label: '4. EXPOSE', description: 'Use camps, events, and profiles to put athletes in front of opportunity.', icon: 'recruiting' },
+      { label: '5. SUPPORT', description: 'Guide families before, during, and after the recruiting process.', icon: 'opportunities' },
     ],
   },
   chipsAndDrip: {
-    heading: 'Chips and Drip',
-    body: 'Part of our program consists of training! Some of our players have gone on to some amazing achievements.',
+    heading: 'Where Development Meets Opportunity',
+    body: 'CPR highlights the work behind the results: training, player development, athlete success, and achievements earned through preparation.',
     slides: [
       { img: '/galleries/chips-and-drip/chips-01.jpg', caption: 'Training, growth, and player development.' },
       { img: '/galleries/chips-and-drip/chips-02.jpg', caption: 'Players building toward the next level.' },
@@ -101,7 +103,7 @@ export const landingConfig: LandingPageConfig = {
   },
   campsExposure: {
     heading: 'Camps and Exposure',
-    body: 'We are fortunate to be able to help kids into several high profile Invite Only Camps as part of our program. Check out our All Star Camp performers!',
+    body: 'From skill development camps to national showcases, CPR athletes train, compete, and get seen by the right coaches at the right events.',
     slides: [
       { img: '/galleries/camps-exposure/camp-01.jpg', caption: 'Invite-only camp exposure.' },
       { img: '/galleries/camps-exposure/camp-02.jpg', caption: 'All Star Camp performers.' },
@@ -124,7 +126,7 @@ export const landingConfig: LandingPageConfig = {
     ],
     proofs: [
       {
-        image: '/proof-yohann-axel-sam.jpg',
+        image: '/proof-canada.jpg',
         athleteName: 'Yohann Axel Sam',
         caption: 'Competing for Canada 3v3 in Chile',
       },
@@ -135,16 +137,16 @@ export const landingConfig: LandingPageConfig = {
       },
       {
         image: '/jayden-photo.png',
-        athleteName: 'Third image pending',
-        caption: 'Caption pending',
+        athleteName: 'Pending',
+        caption: 'Profile details pending.',
       },
     ],
     playerProfiles: [
       {
-        name: 'Jayden Thompson',
+        name: 'Sample Profile',
         slug: 'jayden-thompson',
         photo: '/jayden-photo.png',
-        meta: 'Point Guard · Class of 2026',
+        meta: 'Example CPR recruiting profile',
       },
     ],
   },
@@ -159,26 +161,24 @@ export const landingConfig: LandingPageConfig = {
   },
   finalCta: {
     heading: 'READY TO TAKE THE NEXT STEP?',
-    subheading: 'Start your application and review the fee agreements.',
+    subheading: 'Start your application and review the fee agreement.',
     applyLabel: 'APPLY NOW',
     agreementLabel: 'FEE AGREEMENT',
-    internationalAgreementLabel: 'INTERNATIONAL FEE AGREEMENT',
   },
   footer: {
     about:
       'Developing talent. Building futures. Empowering student-athletes worldwide through basketball.',
     quickLinks: [
-      { label: 'Testimonials', href: '#testimonials' },
+      { label: 'What Families Are Saying', href: '#testimonials' },
       { label: 'How It Works', href: '#how-it-works' },
       { label: 'Camps & Exposure', href: '#camps' },
-      { label: 'Apply', href: '#apply' },
+      { label: 'Apply', href: PLAYER_APPLICATION_URL },
     ],
     resources: [
       { label: 'Athlete Profiles', href: '/athletes/jayden-thompson' },
       { label: 'Merchandise', href: '/merchandise' },
       { label: 'George Raveling Tribute', href: '#tribute' },
       { label: 'Fee Agreement', href: 'https://forms.gle/idrMWqU5FpebA1f46' },
-      { label: 'International Fee Agreement', href: 'https://forms.gle/idrMWqU5FpebA1f46' },
     ],
     email: 'mikecrpglobal@mississaugamagic.com',
     instagramLabel: '@mississaugamagic',

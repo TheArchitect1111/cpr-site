@@ -83,18 +83,7 @@ function AgreementForm() {
       </div>
 
       <div className="agree-block">
-        <h4>OPTION 2: INTERNATIONAL RECRUITMENT PROGRAM <span className="req">*</span></h4>
-        <p><strong>Total Fee: $2,500</strong></p>
-        <ul className="fee-list">
-          <li>Payment 1: $1,000 to begin the recruitment process</li>
-          <li>Payment 2: $1,000 during the recruitment process</li>
-          <li>Payment 3: $500 upon completion of the recruitment process</li>
-        </ul>
-        <label className="radio-line"><input type="radio" name="programOption" checked={v('programOption') === 'International Recruitment Program'} onChange={() => set('programOption', 'International Recruitment Program')} /> I agree to the International Recruitment Program fee structure.</label>
-      </div>
-
-      <div className="agree-block">
-        <h4>OPTION 3: SCHOLARSHIP SUCCESS FEE PROGRAM <span className="req">*</span></h4>
+        <h4>OPTION 2: SCHOLARSHIP SUCCESS FEE PROGRAM <span className="req">*</span></h4>
         <p><strong>No upfront recruitment fee.</strong></p>
         <p>If CPR assists in securing a scholarship opportunity, the following success fees apply:</p>
         <ul className="fee-list">

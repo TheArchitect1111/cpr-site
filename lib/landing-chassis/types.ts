@@ -11,9 +11,7 @@ export type LandingLinks = {
   apply: string;
   video: string;
   agreement?: string;
-  /** @deprecated use internationalAgreement */
   schedule?: string;
-  internationalAgreement?: string;
   instagram?: string;
   instagramSecondary?: string;
   facebook?: string;
@@ -163,7 +161,6 @@ export type LandingPageConfig = {
     applyLabel: string;
     agreementLabel?: string;
     scheduleLabel?: string;
-    internationalAgreementLabel?: string;
   };
   /** Optional in-memoriam band (above footer contact) */
   tribute?: {

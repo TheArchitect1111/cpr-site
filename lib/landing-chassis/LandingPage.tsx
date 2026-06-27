@@ -300,11 +300,7 @@ export function LandingPage({ config: c }: Props) {
                   {c.finalCta.agreementLabel}
                 </a>
               ) : null}
-              {c.finalCta.internationalAgreementLabel && c.links.internationalAgreement ? (
-                <a className="lc-btn lc-btn-white-outline" href={c.links.internationalAgreement}>
-                  {c.finalCta.internationalAgreementLabel}
-                </a>
-              ) : c.finalCta.scheduleLabel && c.links.schedule ? (
+              {c.finalCta.scheduleLabel && c.links.schedule ? (
                 <a className="lc-btn lc-btn-white-outline" href={c.links.schedule}>
                   {c.finalCta.scheduleLabel}
                 </a>
