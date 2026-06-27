@@ -55,6 +55,21 @@ export function LandingPage({ config: c }: Props) {
         </div>
       </section>
 
+      {/* About CPR credentials band */}
+      {c.about ? (
+        <section className="lc-section lc-challenge" id="about">
+          <div className="lc-container lc-challenge-inner">
+            <h2 className="display lc-challenge-head">{c.about.heading}</h2>
+            {c.about.intro ? <p className="lc-challenge-intro">{c.about.intro}</p> : null}
+            <ul className="lc-challenge-list">
+              {c.about.points.map((point) => (
+                <li key={point}>{point}</li>
+              ))}
+            </ul>
+          </div>
+        </section>
+      ) : null}
+
       {/* 2. SOCIAL PROOF */}
       <section className="lc-section" id="testimonials">
         <div className="lc-container">

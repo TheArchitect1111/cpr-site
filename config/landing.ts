@@ -48,6 +48,14 @@ export const landingConfig: LandingPageConfig = {
     applyLabel: 'GET STARTED',
     videoLabel: 'WATCH VIDEO',
   },
+  about: {
+    heading: 'ABOUT CPR',
+    points: [
+      'We have over 40 years of coaching experience!',
+      '13 years of recruitment!',
+      'Established relationships with coaches and Athletic Directors all over North America!',
+    ],
+  },
   socialProof: {
     heading: 'WHAT FAMILIES ARE SAYING',
     items: [

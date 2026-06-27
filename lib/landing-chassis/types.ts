@@ -84,6 +84,12 @@ export type LandingPageConfig = {
     applyLabel?: string;
     videoLabel?: string;
   };
+  /** Optional "About" credentials band (e.g. About CPR) */
+  about?: {
+    heading: string;
+    intro?: string;
+    points: string[];
+  };
   /** 2. SOCIAL PROOF — max 3 testimonials */
   socialProof: {
     heading: string;
