@@ -270,13 +270,21 @@ export default function PortalOwnerHub({
         className={`owner-fab${open ? ' is-open' : ''}`}
         onClick={() => setOpen((v) => !v)}
         aria-expanded={open}
+        aria-label={open ? 'Close Update Hub' : 'Open Update Hub'}
       >
-        <span className="owner-fab-dot" aria-hidden="true" />
-        {open ? 'Close Owner Tools' : 'Owner Tools'}
+        {open ? (
+          <span className="owner-fab-dot" aria-hidden="true" />
+        ) : (
+          <svg className="owner-fab-icon" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+            <path d="M12 20h9" />
+            <path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z" />
+          </svg>
+        )}
+        {open ? 'Close Update Hub' : 'Update Hub'}
       </button>
 
       {open && (
-        <div className="owner-panel" role="dialog" aria-label="Portal owner tools">
+        <div className="owner-panel" role="dialog" aria-label="Update Hub">
           <div className="owner-head">
             <div>
               <p className="owner-eyebrow">Owner Mode</p>
