@@ -157,8 +157,8 @@ export const landingConfig: LandingPageConfig = {
       },
       {
         image: '/pending-profile-details.jpg',
-        athleteName: 'Pending',
-        caption: 'Profile details pending.',
+        athleteName: 'Anthony Bennett',
+        caption: "Canada's First #1 NBA Draft Choice.",
       },
     ],
     playerProfiles: [
