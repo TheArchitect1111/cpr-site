@@ -34,6 +34,7 @@ export const landingConfig: LandingPageConfig = {
   },
   nav: [
     { label: 'HOME', href: '#top' },
+    { label: 'EXPERIENCE', href: '/cpr-experience-lab' },
     { label: 'ABOUT', href: '#testimonials' },
     { label: 'PROGRAMS', href: '#how-it-works' },
     { label: 'RECRUITING', href: '/recruitment' },
