@@ -22,6 +22,10 @@
   background: #d71920;
 }
 
+.owner-fab-icon {
+  flex: none;
+}
+
 .owner-fab-dot {
   width: 9px;
   height: 9px;
