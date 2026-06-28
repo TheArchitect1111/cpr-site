@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState, type ReactNode } from 'react';
 import RotatingImagePanel from '@/app/components/RotatingImagePanel';
 import {
+  athletes,
   beliefs,
   camps,
   closing,
@@ -174,19 +175,59 @@ export default function CprExperienceLab() {
         </div>
       </section>
 
+      {/* Meet the players */}
+      <section className="cpx-section cpx-meet" aria-labelledby="cpx-meet-title">
+        <div className="cpx-container">
+          <Reveal className="cpx-head cpx-head-center">
+            <p className="cpx-eyebrow">The Players</p>
+            <h2 id="cpx-meet-title" className="display">
+              Meet {athletes.her.name} &amp; {athletes.him.name}.
+            </h2>
+          </Reveal>
+          <div className="cpx-meet-grid">
+            {[athletes.her, athletes.him].map((a, i) => (
+              <Reveal as="article" className="cpx-meet-card" delay={i * 100} key={a.full}>
+                <div className="cpx-meet-photo" style={{ backgroundImage: `url('${a.portrait}')` }} role="img" aria-label={a.full} />
+                <div className="cpx-meet-meta">
+                  <span className="cpx-meet-name display">{a.full}</span>
+                  <span className="cpx-meet-role">{a.role}</span>
+                  <span className="cpx-meet-home">{a.home}</span>
+                </div>
+              </Reveal>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* 1. The Dream */}
-      <section className="cpx-scene" id={dream.id} aria-labelledby="cpx-dream-title">
-        <div className="cpx-scene-bg" style={{ backgroundImage: `url('${dream.image}')` }} aria-hidden="true" />
-        <div className="cpx-scene-scrim" aria-hidden="true" />
-        <div className="cpx-container cpx-scene-body">
-          <Reveal>
+      <section className="cpx-section cpx-dark" id={dream.id} aria-labelledby="cpx-dream-title">
+        <div className="cpx-container">
+          <Reveal className="cpx-head">
             <p className="cpx-eyebrow">{dream.eyebrow}</p>
-            <h2 id="cpx-dream-title" className="display cpx-scene-title">
+            <h2 id="cpx-dream-title" className="display">
               {dream.headline}
             </h2>
-            <p className="cpx-scene-copy">{dream.copy}</p>
+            <p className="cpx-lead">{dream.copy}</p>
           </Reveal>
-          <Reveal className="cpx-beats" delay={120}>
+          <div className="cpx-duo">
+            <Reveal as="article" className="cpx-duo-card">
+              <div className="cpx-duo-img" style={{ backgroundImage: `url('${dream.her.image}')` }} role="img" aria-label={dream.her.imageAlt} />
+              <div className="cpx-duo-scrim" aria-hidden="true" />
+              <div className="cpx-duo-body">
+                <span className="cpx-duo-name display">{athletes.her.name}</span>
+                <p>{dream.her.line}</p>
+              </div>
+            </Reveal>
+            <Reveal as="article" className="cpx-duo-card" delay={100}>
+              <div className="cpx-duo-img" style={{ backgroundImage: `url('${dream.him.image}')` }} role="img" aria-label={dream.him.imageAlt} />
+              <div className="cpx-duo-scrim" aria-hidden="true" />
+              <div className="cpx-duo-body">
+                <span className="cpx-duo-name display">{athletes.him.name}</span>
+                <p>{dream.him.line}</p>
+              </div>
+            </Reveal>
+          </div>
+          <Reveal className="cpx-beats" delay={150}>
             {dream.beats.map((b) => (
               <span key={b} className="cpx-beat">
                 {b}
@@ -273,6 +314,7 @@ export default function CprExperienceLab() {
             <h2 id="cpx-journey-title" className="display">
               {journey.headline}
             </h2>
+            <p className="cpx-lead">{journey.note}</p>
           </Reveal>
           <ol className="cpx-timeline">
             {journey.milestones.map((m, i) => (

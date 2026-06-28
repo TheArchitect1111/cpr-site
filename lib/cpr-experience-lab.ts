@@ -1,9 +1,12 @@
 /**
  * CPR Experience Lab™
- * A cinematic, scroll-based recruiting journey.
+ * A cinematic, scroll-based recruiting journey told through two student-athletes.
  *
- * The student-athlete is the hero. The parent is beside them.
+ * Amara and Marcus are the heroes. Their families are beside them.
  * CPR is the trusted guide. Basketball is not the destination. Opportunity is.
+ *
+ * Note: Amara and Marcus are illustrative composite student-athletes used to
+ * tell the recruiting journey. Imagery is original and not of current CPR members.
  */
 
 import {
@@ -13,9 +16,9 @@ import {
 } from '@/config/landing';
 
 export const experienceMeta = {
-  title: 'CPR Experience Lab | Canadian Prospects Recruitment',
+  title: 'CPR Experience Lab | The Journey to the Next Level',
   description:
-    'A cinematic recruiting journey. We help student-athletes and families navigate the path to the next level with preparation, exposure, guidance, and ongoing support.',
+    'Follow two student-athletes, Amara and Marcus, from a dream in an empty gym to opportunity at the next level, with CPR as the guide.',
   path: '/cpr-experience-lab',
 } as const;
 
@@ -27,13 +30,31 @@ export const links = {
   contact: '/#contact',
 } as const;
 
+/** The two student-athletes we follow through the journey. */
+export const athletes = {
+  her: {
+    name: 'Amara',
+    full: 'Amara Okafor',
+    role: 'Point Guard · Class of 2026',
+    home: 'Mississauga, ON',
+    portrait: '/experience-lab/cpx-her-portrait.png',
+  },
+  him: {
+    name: 'Marcus',
+    full: 'Marcus Reyes',
+    role: 'Wing · Class of 2025',
+    home: 'Scarborough, ON',
+    portrait: '/experience-lab/cpx-his-portrait.png',
+  },
+} as const;
+
 export const hero = {
   eyebrow: 'CPR Experience Lab',
-  title: 'Basketball Is Not The Destination.',
-  titleAccent: 'Opportunity Is.',
-  sub: 'Helping student-athletes and families navigate the journey to the next level.',
-  image: '/hero-committed.jpg',
-  imageAlt: 'A committed student-athlete looking toward what is next',
+  title: 'Two Players.',
+  titleAccent: 'One Journey.',
+  sub: 'Meet Amara and Marcus. Basketball is not the destination. Opportunity is.',
+  image: '/experience-lab/cpx-hero-dual.png',
+  imageAlt: 'Two young student-athletes standing back to back under arena lighting',
   cta: { label: 'Begin The Journey', href: '#dream' },
 } as const;
 
@@ -41,9 +62,17 @@ export const dream = {
   id: 'dream',
   eyebrow: 'The Dream',
   headline: 'A Dream Worth Chasing',
-  copy: 'Before the offers, before the highlight reels, before the next level, there is a family making sacrifices for a dream.',
-  image: '/cpr-home/play-to-win/1000240212.jpg',
-  imageAlt: 'A young athlete chasing a dream',
+  copy: 'Before the offers, before the highlight reels, before the next level, there is a young player and a family making sacrifices for a dream.',
+  her: {
+    image: '/experience-lab/cpx-her-dream.png',
+    imageAlt: 'Amara training alone at dawn in an empty gym',
+    line: 'For Amara, it starts at dawn. Empty gym. Just her and the ball.',
+  },
+  him: {
+    image: '/experience-lab/cpx-his-dream.png',
+    imageAlt: 'Marcus training alone late at night under a single light',
+    line: 'For Marcus, it is the last shot of the night, long after everyone has gone home.',
+  },
   beats: ['Early mornings', 'Long drives', 'Empty gyms', 'Homework after practice', 'Family sacrifice'],
 } as const;
 
@@ -52,9 +81,9 @@ export const question = {
   eyebrow: 'The Question',
   headline: 'Talent Is Real.',
   headlineAccent: 'The Path Is Not Always Clear.',
-  copy: 'Many athletes have ability. Most families do not know where to start, who to trust, or which steps matter most.',
-  image: '/cpr-home/play-to-win/1000240218.jpg',
-  imageAlt: 'Parents watching and wondering about the path ahead',
+  copy: 'Amara and Marcus both have ability. Like most families, theirs do not know where to start, who to trust, or which steps matter most.',
+  image: '/experience-lab/cpx-parents.png',
+  imageAlt: 'Parents watching from the stands, hopeful and uncertain',
   cards: [
     'Where do we start?',
     'Who should see my athlete?',
@@ -68,11 +97,11 @@ export const guide = {
   id: 'guide',
   eyebrow: 'The Guide',
   headline: 'Then Direction Arrives.',
-  copy: 'Canadian Prospects Recruitment helps families move from uncertainty to a clear, organized recruiting journey.',
-  image: '/galleries/camps-exposure/camp-02.jpg',
-  imageAlt: 'Coach Mike guiding athletes and families',
-  coachName: 'Coach Mike',
-  coachRole: 'Founder · Canadian Prospects Recruitment',
+  copy: 'Canadian Prospects Recruitment helps both families move from uncertainty to a clear, organized recruiting journey.',
+  image: '/experience-lab/cpx-guide.png',
+  imageAlt: 'A CPR coach guiding Amara and Marcus courtside',
+  coachName: 'The CPR Guide',
+  coachRole: 'Beside every athlete and family',
   doing: [
     'Watching games',
     'Talking with families',
@@ -87,22 +116,10 @@ export const beliefs = {
   eyebrow: 'What CPR Believes',
   headline: 'The Future Is Bigger Than Basketball.',
   cards: [
-    {
-      title: 'Develop',
-      body: 'Develop complete student-athletes on and off the court.',
-    },
-    {
-      title: 'Build Confidence',
-      body: 'Build confidence through exposure, structure, and accountability.',
-    },
-    {
-      title: 'Connect',
-      body: 'Connect talent to real programs locally and globally.',
-    },
-    {
-      title: 'Serve',
-      body: 'Serve families with honesty, communication, and results.',
-    },
+    { title: 'Develop', body: 'Develop complete student-athletes on and off the court.' },
+    { title: 'Build Confidence', body: 'Build confidence through exposure, structure, and accountability.' },
+    { title: 'Connect', body: 'Connect talent to real programs locally and globally.' },
+    { title: 'Serve', body: 'Serve families with honesty, communication, and results.' },
   ],
   globalNote:
     'Canadian Prospects has gone global. CPR now helps student-athletes pursue opportunities from around the world.',
@@ -112,6 +129,7 @@ export const journey = {
   id: 'journey',
   eyebrow: 'The Journey',
   headline: 'A Simple, Organized Path From Application To Opportunity.',
+  note: 'Amara and Marcus walk the same path. Every milestone is earned.',
   milestones: [
     'Apply',
     'Evaluation',
@@ -133,9 +151,9 @@ export const quietWork = {
   eyebrow: 'Behind The Scenes',
   headline: 'While You See Practice,',
   headlineAccent: 'CPR Sees Possibility.',
-  copy: 'You stay focused on your athlete. We manage the hidden details that move the journey forward.',
-  image: '/cpr-home/play-to-win/1000240232.jpg',
-  imageAlt: 'An athlete training while parents watch',
+  copy: 'Amara and Marcus stay focused on the game. Their families stay present. CPR manages the hidden details that move the journey forward.',
+  image: '/experience-lab/cpx-quiet-work.png',
+  imageAlt: 'A young athlete training while a parent watches from the sideline',
   activity: [
     { icon: 'profile', label: 'Player profile updated' },
     { icon: 'film', label: 'Film reviewed' },
@@ -154,28 +172,26 @@ export const camps = {
   headline: 'Exposure Creates Opportunity.',
   copy: 'CPR helps athletes gain access to meaningful training, exposure, and invite-only opportunities designed to help the right people see the right player at the right time.',
   gallery: [
-    { img: '/galleries/camps-exposure/camp-01.jpg', caption: 'Invite-only camp exposure.' },
-    { img: '/galleries/camps-exposure/camp-03.jpg', caption: 'Competing where coaches are watching.' },
-    { img: '/galleries/camps-exposure/camp-04.jpg', caption: 'High-profile opportunities through preparation.' },
-    { img: '/galleries/camps-exposure/camp-05.jpg', caption: 'Exposure moments that matter.' },
-    { img: '/galleries/camps-exposure/camp-06.jpg', caption: 'Student-athletes earning visibility.' },
-    { img: '/galleries/camps-exposure/camp-07.jpg', caption: 'The path from work to opportunity.' },
+    { img: '/experience-lab/cpx-her-compete.png', caption: 'Amara competing where coaches are watching.' },
+    { img: '/experience-lab/cpx-his-compete.png', caption: 'Marcus rising on the biggest stage.' },
+    { img: '/experience-lab/cpx-quiet-work.png', caption: 'The work behind every opportunity.' },
+    { img: '/experience-lab/cpx-guide.png', caption: 'Guidance at every event.' },
   ],
   features: [
     {
-      image: '/proof-canada.jpg',
-      name: 'Yohann Axel Sam',
-      caption: 'Competing for Canada 3v3 in Chile.',
+      image: '/experience-lab/cpx-her-compete.png',
+      name: 'Amara',
+      caption: 'Earning visibility at invite-only exposure events.',
     },
     {
-      image: '/proof-champion.jpg',
-      name: 'Nat Jack',
-      caption: 'Florida State · ACC Championship.',
+      image: '/experience-lab/cpx-his-compete.png',
+      name: 'Marcus',
+      caption: 'Performing when the right coaches are in the gym.',
     },
     {
-      image: '/pending-profile-details.jpg',
-      name: 'Your Athlete',
-      caption: 'The next opportunity. Placeholder for the next story.',
+      image: '/experience-lab/cpx-hero-dual.png',
+      name: 'The Next Player',
+      caption: 'The next opportunity starts with the right exposure.',
     },
   ],
 } as const;
@@ -184,14 +200,20 @@ export const profiles = {
   id: 'profiles',
   eyebrow: 'Player Profiles',
   headline: 'Every Athlete Needs A Story Coaches Can Understand.',
-  copy: 'Modern, visual, recruiter-friendly profiles that put preparation, stats, film, and academics in one place.',
+  copy: 'Modern, visual, recruiter-friendly profiles that put preparation, stats, film, and academics in one place, for Amara and Marcus alike.',
   dashboardImage: '/recruiting-dashboard-new.png',
   dashboardAlt: 'CPR recruiting profile dashboard',
   cards: [
     {
-      photo: '/sample-profile-dashboard.png',
-      name: 'Sample Profile',
-      meta: 'Example CPR recruiting profile',
+      photo: '/experience-lab/cpx-her-portrait.png',
+      name: 'Amara Okafor',
+      meta: 'Point Guard · Class of 2026 · Mississauga, ON',
+      href: '/athletes/jayden-thompson',
+    },
+    {
+      photo: '/experience-lab/cpx-his-portrait.png',
+      name: 'Marcus Reyes',
+      meta: 'Wing · Class of 2025 · Scarborough, ON',
       href: '/athletes/jayden-thompson',
     },
   ],
@@ -218,9 +240,9 @@ export const results = {
     'Life beyond basketball',
   ],
   proofs: [
-    { image: '/proof-canada.jpg', name: 'Yohann Axel Sam', caption: 'Team Canada 3v3 · Chile' },
-    { image: '/proof-champion.jpg', name: 'Nat Jack', caption: 'Florida State' },
-    { image: '/proof-team.jpg', name: 'CPR Family', caption: 'Built together, on and off the court' },
+    { image: '/experience-lab/cpx-her-commit.png', name: 'Amara', caption: 'Committed. Surrounded by the family who made it possible.' },
+    { image: '/experience-lab/cpx-his-commit.png', name: 'Marcus', caption: 'Signing day. The first chapter of what comes next.' },
+    { image: '/experience-lab/cpx-hero-dual.png', name: 'The Journey', caption: 'Two players who started with a dream and a guide.' },
   ],
 } as const;
 
@@ -234,7 +256,7 @@ export const testimonials = {
         'To a coach who leads with integrity and who supports the youths and challenges the norm. He has been a support system by coaching my 3 boys, 1 daughter, and 4 cousins. He gave my son an opportunity to go to Florida for training and an event. I have trusted him with my family, who is sacred to me.',
       name: 'Nikki',
       role: 'CPR Parent',
-      photo: '/testimonial-nikki-blessed.jpg',
+      photo: '',
     },
     {
       quote:
@@ -257,7 +279,7 @@ export type ExploreCard = {
 export const explore = {
   id: 'explore',
   eyebrow: 'Explore CPR',
-  headline: 'Take Your Next Step.',
+  headline: 'Start Your Journey.',
   cards: [
     {
       title: 'Apply Now',
