@@ -98,7 +98,7 @@ const sample: Athlete = {
   email: 'jaydent2026@email.com', phone: '(416) 555-8932', parentName: 'Mark Thompson',
   bio: 'Dynamic point guard with elite court vision, leadership and scoring ability. Strong handle, quick first step and excellent decision maker in transition and half court sets. Dedicated to academic success and athletic development.',
   strengths: ['Basketball IQ', 'Court Vision', 'Playmaking', '3PT Shooting', 'Leadership', 'Transition', 'Defense', 'Quick First Step'],
-  videoUrl: 'https://youtu.be/iqietCwnCxc', photoUrl: '/hero-athlete.png', status: 'Active',
+  videoUrl: 'https://youtu.be/iqietCwnCxc', photoUrl: '/sample-profile-dashboard.png', status: 'Active',
   team: 'Mississauga Magic U18 AAA', jersey: '1', vertical: '', reach: '', hand: 'Right', ncaa: '',
   profileViews: '', offers: '', visits: '',
   globalCities: ['Toronto', 'New York', 'Los Angeles'],

@@ -133,7 +133,7 @@ export const landingConfig: LandingPageConfig = {
       { img: '/galleries/camps-exposure/camp-06.jpg', caption: 'Student-athletes earning visibility.' },
       { img: '/galleries/camps-exposure/camp-07.jpg', caption: 'The path from work to opportunity.' },
     ],
-    dashboardImage: '/dashboard.png',
+    dashboardImage: '/recruiting-dashboard-new.png',
   },
   results: {
     heading: 'RESULTS THAT SPEAK',
@@ -156,7 +156,7 @@ export const landingConfig: LandingPageConfig = {
         caption: 'Florida State',
       },
       {
-        image: '/jayden-photo.png',
+        image: '/pending-profile-details.jpg',
         athleteName: 'Pending',
         caption: 'Profile details pending.',
       },
@@ -165,7 +165,7 @@ export const landingConfig: LandingPageConfig = {
       {
         name: 'Sample Profile',
         slug: 'jayden-thompson',
-        photo: '/jayden-photo.png',
+        photo: '/sample-profile-dashboard.png',
         meta: 'Example CPR recruiting profile',
       },
     ],

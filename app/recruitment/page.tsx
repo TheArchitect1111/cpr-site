@@ -29,7 +29,7 @@ export default function RecruitmentPage() {
             </p>
             <a className="btn" href={site.links.apply}>Apply Now</a>
           </div>
-          <img src="/dashboard.png" alt="CPR recruiting dashboard" className="lc-portal-shot" />
+          <img src="/recruiting-dashboard-new.png" alt="CPR recruiting dashboard" className="lc-portal-shot" />
         </div>
       </section>
     </main>
