@@ -1,0 +1,54 @@
+.portal-announce-list {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.portal-announce-card {
+  border: 1px solid var(--cpx-line, rgba(0, 0, 0, 0.1));
+  border-left: 4px solid #d71920;
+  border-radius: 12px;
+  padding: 1rem 1.15rem;
+  background: rgba(215, 25, 32, 0.03);
+}
+
+.portal-announce-card.is-pinned {
+  background: rgba(215, 25, 32, 0.07);
+}
+
+.portal-announce-meta {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin-bottom: 0.35rem;
+}
+
+.portal-announce-pin {
+  font-size: 0.66rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #d71920;
+  background: rgba(215, 25, 32, 0.12);
+  padding: 0.15rem 0.45rem;
+  border-radius: 999px;
+}
+
+.portal-announce-meta time {
+  font-size: 0.74rem;
+  color: #7a7a80;
+}
+
+.portal-announce-card h3 {
+  margin: 0 0 0.25rem;
+  font-family: 'Barlow Condensed', Arial, sans-serif;
+  font-size: 1.2rem;
+  letter-spacing: 0.01em;
+}
+
+.portal-announce-card p {
+  margin: 0;
+  font-size: 0.92rem;
+  line-height: 1.5;
+  color: #46464c;
+  white-space: pre-line;
+}

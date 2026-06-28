@@ -1,6 +1,28 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { createAthlete } from '@/lib/athletes';
+import { createAthlete, getAthletes } from '@/lib/athletes';
 import { isAdminAuthed } from '@/lib/admin-auth';
+
+export const dynamic = 'force-dynamic';
+
+export async function GET(req: NextRequest) {
+  if (!isAdminAuthed(req)) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  try {
+    const { rows, live } = await getAthletes();
+    const athletes = rows.map((a) => ({
+      id: a.id,
+      firstName: a.firstName,
+      lastName: a.lastName,
+      slug: a.slug,
+      status: a.status,
+      gradYear: a.gradYear,
+      position: a.position,
+    }));
+    return NextResponse.json({ athletes, live });
+  } catch (err) {
+    const message = err instanceof Error ? err.message : 'Could not load profiles.';
+    return NextResponse.json({ error: message }, { status: 502 });
+  }
+}
 
 export async function POST(req: NextRequest) {
   if (!isAdminAuthed(req)) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });

@@ -5,13 +5,13 @@ const PLAYER_APPLICATION_URL =
 
 test('homepage renders EA Landing Page Chassis sections', async ({ page }) => {
   await page.goto('/');
-  await expect(page.getByRole('heading', { name: /more than basketball/i })).toBeVisible();
-  await expect(page.getByText(/elite development, recruiting support/i)).toBeVisible();
-  await expect(page.getByRole('heading', { name: /what families are saying/i })).toBeVisible();
+  await expect(page.getByText(/what becomes possible when talent meets preparation/i)).toBeVisible();
+  await expect(page.getByRole('heading', { name: /about cpr/i })).toBeVisible();
+  await expect(page.getByRole('heading', { name: /built for every step of the journey/i })).toBeVisible();
   await expect(page.getByText(/good coaches get players through drills/i)).toBeVisible();
-  await expect(page.getByRole('heading', { name: /camps and exposure/i })).toBeVisible();
   await expect(page.getByRole('heading', { name: /where development meets opportunity/i })).toBeVisible();
-  await expect(page.getByRole('heading', { name: /cpr family portal/i })).toHaveCount(0);
+  await expect(page.getByRole('heading', { name: /camps and exposure/i })).toBeVisible();
+  await expect(page.getByRole('heading', { name: /results that speak/i })).toBeVisible();
   await expect(page.getByRole('heading', { name: /the challenge/i })).toHaveCount(0);
 });
 
