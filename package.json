@@ -11,10 +11,11 @@
     "sync-chassis": "node scripts/sync-portal-chassis.mjs"
   },
   "dependencies": {
-    "@ea/portal-chassis": "file:./vendor/portal-chassis",
     "@clerk/nextjs": "^6.36.4",
+    "@ea/portal-chassis": "file:./vendor/portal-chassis",
     "@sentry/nextjs": "^10.59.0",
     "@vercel/blob": "^2.4.0",
+    "driver.js": "^1.6.0",
     "next": "^15.5.19",
     "puppeteer-core": "^25.1.0",
     "react": "19.2.4",
