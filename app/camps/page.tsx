@@ -29,6 +29,16 @@ export default function CampsPage() {
           <RotatingImagePanel slides={c.slides} />
         </div>
       </section>
+      <section className="section" id="house-league">
+        <div className="container">
+          <h2 className="display">House League</h2>
+          <p className="lc-lead">
+            CPR uses house league and development environments to help student-athletes build
+            fundamentals, confidence, and game experience before moving into higher exposure
+            opportunities.
+          </p>
+        </div>
+      </section>
     </main>
   );
 }

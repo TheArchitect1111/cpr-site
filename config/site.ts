@@ -3,6 +3,9 @@
 
 export const PLAYER_APPLICATION_URL =
   "https://docs.google.com/forms/d/e/1FAIpQLScnS-NAIhJnNDCVMbhFtAPbEtYZT9ZzZytagNu1THa9f80qmg/viewform?usp=publish-editor";
+export const STANDARD_FEE_AGREEMENT_URL = "https://forms.gle/idrMWqU5FpebA1f46";
+export const INTERNATIONAL_FEE_AGREEMENT_URL =
+  "https://docs.google.com/forms/d/e/1FAIpQLScnS-NAIhJnNDCVMbhFtAPbEtYZT9ZzZytagNu1THa9f80qmg/viewform?usp=publish-editor";
 
 export const site = {
   brand: {
@@ -21,6 +24,8 @@ export const site = {
   },
   links: {
     apply: PLAYER_APPLICATION_URL,
+    standardAgreement: STANDARD_FEE_AGREEMENT_URL,
+    internationalAgreement: INTERNATIONAL_FEE_AGREEMENT_URL,
     video: "https://youtu.be/iqietCwnCxc",
     instagram: "https://instagram.com/mississaugamagic",
     instagramProspects: "https://instagram.com/prospects.ca",
@@ -161,7 +166,7 @@ export const site = {
     eyebrow: "CAMPS & EXPOSURE",
     heading: ["CAMPS THAT PUT ", "DEVELOPMENT", " IN MOTION"],
     tagline: "A Play To Win!",
-    sub: "From skill development camps to national showcases, CPR athletes train, compete, and get seen by the right coaches at the right events.",
+    sub: "CPR camp programs give student-athletes a structured place to develop, compete, and be evaluated. Camps focus on skill development, preparation, exposure, confidence, and live competition so athletes can sharpen their game and be seen by the right coaches at the right events.",
     cta: "START YOUR APPLICATION",
     slides: [
       { img: "/hero-athlete.png", caption: "CPR athletes sharpening skills on the court." },

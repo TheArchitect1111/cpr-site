@@ -772,7 +772,7 @@ export default function AdminClient({ rows, players, coaches }: { rows: Outreach
   };
 
   const deletePlayer = async (p: AthleteAdmin) => {
-    if (!window.confirm(`Archive ${p.firstName} ${p.lastName}? This removes the public profile link but keeps the database record for Mike.`)) return;
+    if (!window.confirm(`Delete ${p.firstName} ${p.lastName}'s player profile from the public site? This removes the public profile link but keeps the database record for Mike.`)) return;
     setBusyPlayer(p.id);
     setPlayerMessage('');
     try {
@@ -781,9 +781,9 @@ export default function AdminClient({ rows, players, coaches }: { rows: Outreach
       if (!res.ok) throw new Error(json.error || 'Delete failed');
       setPlayerRows(rows => rows.map(row => row.id === p.id ? { ...row, status: 'Archived', slug: `archived-${p.id}` } : row));
       setDetailPlayer(d => d?.id === p.id ? { ...d, status: 'Archived', slug: `archived-${p.id}` } : d);
-      setPlayerMessage('Player profile archived and removed from the public portal.');
+      setPlayerMessage('Player profile deleted from the public portal.');
     } catch (err) {
-      setPlayerMessage(err instanceof Error ? err.message : 'Could not archive player profile.');
+      setPlayerMessage(err instanceof Error ? err.message : 'Could not delete player profile.');
     } finally {
       setBusyPlayer('');
     }
@@ -1089,7 +1089,7 @@ export default function AdminClient({ rows, players, coaches }: { rows: Outreach
                             <button className="ghost" onClick={() => openDetails(p)}>Details</button>
                             {p.slug && p.status === 'Active' && <a href={`/athletes/${p.slug}`} target="_blank">Open</a>}
                             <button className="ghost" onClick={() => copyEditLink(p)}>Copy Edit Link</button>
-                            <button className="danger" onClick={() => deletePlayer(p)} disabled={busyPlayer === p.id}>{busyPlayer === p.id ? 'Archiving...' : 'Archive'}</button>
+                            <button className="danger" onClick={() => deletePlayer(p)} disabled={busyPlayer === p.id}>{busyPlayer === p.id ? 'Deleting...' : 'Delete Player Profile'}</button>
                           </>
                         )}
                       </div>

@@ -121,6 +121,17 @@ body {
   display: flex;
   flex-direction: column;
   justify-content: center;
+  padding-left: 40px;
+  padding-right: 40px;
+}
+
+.lc-hero-announcement {
+  max-width: 680px;
+  margin: 0 0 14px;
+  color: var(--red-bright);
+  font-size: 15px;
+  line-height: 1.45;
+  font-weight: 900;
 }
 
 .lc-hero-headline,
@@ -146,6 +157,12 @@ body {
 }
 
 .lc-hero-eyebrow,
+.lc-hero-sub,
+.lc-hero-support {
+  font-weight: 900;
+}
+
+.lc-hero-eyebrow,
 .lc-stat .v,
 .lc-qm,
 .lc-feat .icon,
@@ -167,6 +184,15 @@ body {
 .lc-tribute-line,
 .rotate-cap {
   color: var(--text-muted) !important;
+}
+
+.lc-testimonial p {
+  white-space: pre-line;
+}
+
+.lc-testimonial-by {
+  justify-content: center;
+  text-align: center;
 }
 
 .lc-section,

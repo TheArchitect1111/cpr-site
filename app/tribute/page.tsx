@@ -7,7 +7,7 @@ import RotatingImagePanel from '@/app/components/RotatingImagePanel';
 export default function TributePage() {
   const t = site.tribute;
   const slides = t.slides
-    .filter((slide) => !slide.img.includes('bill-russell'))
+    .filter((slide) => !slide.img.includes('bill-russell') && !slide.img.includes('real-youth') && !slide.img.includes('coaching-youth'))
     .map((slide) => ({ img: slide.img }));
 
   return (

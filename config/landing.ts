@@ -3,13 +3,16 @@ import { site } from './site';
 
 export const PLAYER_APPLICATION_URL =
   'https://docs.google.com/forms/d/e/1FAIpQLScnS-NAIhJnNDCVMbhFtAPbEtYZT9ZzZytagNu1THa9f80qmg/viewform?usp=publish-editor';
+export const STANDARD_FEE_AGREEMENT_URL = 'https://forms.gle/idrMWqU5FpebA1f46';
+export const INTERNATIONAL_FEE_AGREEMENT_URL =
+  'https://docs.google.com/forms/d/e/1FAIpQLScnS-NAIhJnNDCVMbhFtAPbEtYZT9ZzZytagNu1THa9f80qmg/viewform?usp=publish-editor';
 
 /** CPR instance of EA Landing Page Chassis™ — swap config, keep framework. */
 export const landingConfig: LandingPageConfig = {
   brand: {
-    nameLine1: 'CPR',
-    nameLine2: 'GLOBAL PROSPECTS',
-    tagline: 'DEVELOPING TALENT. BUILDING FUTURES.',
+    nameLine1: 'CANADIAN PROSPECTS',
+    nameLine2: 'RECRUITMENT',
+    tagline: 'FINDING OPPORTUNITY. BUILDING FUTURES.',
     logo: '/cpr-logo.png',
   },
   colors: {
@@ -23,7 +26,8 @@ export const landingConfig: LandingPageConfig = {
   links: {
     apply: PLAYER_APPLICATION_URL,
     video: 'https://youtu.be/iqietCwnCxc',
-    agreement: 'https://forms.gle/idrMWqU5FpebA1f46',
+    agreement: STANDARD_FEE_AGREEMENT_URL,
+    internationalAgreement: INTERNATIONAL_FEE_AGREEMENT_URL,
     instagram: 'https://instagram.com/mississaugamagic',
     instagramSecondary: 'https://instagram.com/prospects.ca',
     facebook: 'https://www.facebook.com/mississaugamagic21',
@@ -32,46 +36,54 @@ export const landingConfig: LandingPageConfig = {
     { label: 'HOME', href: '#top' },
     { label: 'ABOUT', href: '#testimonials' },
     { label: 'PROGRAMS', href: '#how-it-works' },
-    { label: 'RECRUITING', href: '#results' },
+    { label: 'RECRUITING', href: '/recruitment' },
     { label: 'EVENTS', href: '#camps' },
-    { label: 'RESOURCES', href: '#apply' },
+    { label: 'RESOURCES', href: '/resources' },
     { label: 'PORTAL', href: '/portal/login' },
     { label: 'CONTACT', href: '#contact' },
   ],
   possibility: {
-    headline: "More than basketball. It's a movement.",
-    subheadline:
-      'CPR Global Prospects empowers student-athletes with exposure, training, and guidance to reach their full potential on and off the court.',
+    announcement:
+      'Canadian Prospects.ca has gone global. We now help Student-Athletes pursue their dreams from all around the world.',
+    headline: 'CANADIAN PROSPECTS RECRUITMENT',
+    subheadline: 'What becomes possible when talent meets preparation, exposure, and guidance?',
     supporting:
-      'Elite development, recruiting support, camp exposure, and family guidance built for the global game.',
+      'Helping Student-Athletes navigate the journey to the next level. Take your first step toward making your dream a reality.',
     image: '/hero-committed.jpg',
-    applyLabel: 'GET STARTED',
+    applyLabel: 'Apply Now',
     videoLabel: 'WATCH VIDEO',
   },
   about: {
     heading: 'ABOUT CPR',
     points: [
-      'We have over 40 years of coaching experience!',
-      '13 years of recruitment!',
-      'Established relationships with coaches and Athletic Directors all over North America!',
+      'Over 40 years of coaching experience',
+      '13 years of recruitment experience',
+      'Established relationships with coaches and Athletic Directors throughout North America',
     ],
   },
   socialProof: {
-    heading: 'WHAT FAMILIES ARE SAYING',
+    heading: 'Testimonials',
     items: [
       {
         quote:
-          'To a coach who leads with integrity and who supports the youths and challenge the norm. He has been a support system by coaching my 3 boys, 1 daughter, and 4 cousins. He gave my son an opportunity to go to Florida for training and an event. I have trusted him with my family, who is Sacred to me',
-        name: 'Nikki',
+          "Our experience with the basketball recruitment process has been exceptional. What I appreciate most is the genuine support we received from Coach Mike throughout the journey. He consistently checks on our player's progress, well-being, and overall experience, making us feel valued and supported every step of the way.\n\nWhat truly sets this service apart is that the support does not end once recruitment is completed. Coach Mike continues to stay connected to ensure that both the student-athlete and the parents are happy, satisfied, and adjusting well to their new environment. His commitment, care, and dedication go beyond recruitment, providing ongoing guidance and reassurance for the entire family.\n\nWe are grateful for the personalized attention and highly recommend this program to any family navigating the basketball recruitment process.",
+        name: 'Mrs. Hallarces',
         role: 'CPR Parent',
         photo: '/testimonial-nikki-blessed.jpg',
       },
       {
         quote:
-          'Basketball was my first real love. I still love it. Training and playing with some incredibly talented players was an amazing experience! We are all still friends to this day! BTW I could have gone Pro but I decided to go a different route...one with less running involved lol!',
-        name: 'Tresor Gray',
+          "Those years were the most fun I've had playing basketball! Learned a lot and met some of my closest friends playing!",
+        name: 'Anthony Bennett',
         role: 'Former CPR Player',
         photo: '/testi-2.png',
+      },
+      {
+        quote:
+          "Basketball was essentially all I did for the majority of my life. It's all I wanted to do. Choosing to train and work with Mike McKenzie enabled me to achieve my dreams and develop my skills to an extremely high level. I thank him for everything he put me through to make me the athlete and man I am today.",
+        name: 'Nat Jack',
+        role: 'Former CPR Player',
+        photo: '/proof-champion.jpg',
       },
     ],
   },
@@ -97,7 +109,7 @@ export const landingConfig: LandingPageConfig = {
   },
   chipsAndDrip: {
     heading: 'Where Development Meets Opportunity',
-    body: 'CPR highlights the work behind the results: training, player development, athlete success, and achievements earned through preparation.',
+    body: 'Chips and Drip is where CPR celebrates the work behind the results. Player development and training are a major part of what CPR provides, helping student-athletes sharpen their skills, build confidence, and prepare for the next level. Several athletes have gone on to achieve outstanding success because they committed to the process, the training, and the opportunities created through the program.',
     slides: [
       { img: '/galleries/chips-and-drip/chips-01.jpg', caption: 'Training, growth, and player development.' },
       { img: '/galleries/chips-and-drip/chips-02.jpg', caption: 'Players building toward the next level.' },
@@ -111,7 +123,7 @@ export const landingConfig: LandingPageConfig = {
   },
   campsExposure: {
     heading: 'Camps and Exposure',
-    body: 'From skill development camps to national showcases, CPR athletes train, compete, and get seen by the right coaches at the right events.',
+    body: 'CPR camp programs give student-athletes a structured place to develop, compete, and be evaluated. Camps focus on skill development, preparation, exposure, confidence, and live competition so athletes can sharpen their game and be seen by the right coaches at the right events.',
     slides: [
       { img: '/galleries/camps-exposure/camp-01.jpg', caption: 'Invite-only camp exposure.' },
       { img: '/galleries/camps-exposure/camp-02.jpg', caption: 'All Star Camp performers.' },
@@ -164,14 +176,15 @@ export const landingConfig: LandingPageConfig = {
     meta: site.tribute.meta,
     message: site.tribute.message,
     slides: site.tribute.slides
-      .filter((slide) => !slide.img.includes('bill-russell'))
+      .filter((slide) => !slide.img.includes('bill-russell') && !slide.img.includes('real-youth') && !slide.img.includes('coaching-youth'))
       .map((slide) => ({ img: slide.img })),
   },
   finalCta: {
     heading: 'READY TO TAKE THE NEXT STEP?',
     subheading: 'Start your application and review the fee agreement.',
     applyLabel: 'APPLY NOW',
-    agreementLabel: 'FEE AGREEMENT',
+    agreementLabel: 'STANDARD FEE AGREEMENT',
+    internationalAgreementLabel: 'INTERNATIONAL FEE AGREEMENT',
   },
   footer: {
     about:
@@ -186,7 +199,8 @@ export const landingConfig: LandingPageConfig = {
       { label: 'Athlete Profiles', href: '/athletes/jayden-thompson' },
       { label: 'Merchandise', href: '/merchandise' },
       { label: 'George Raveling Tribute', href: '#tribute' },
-      { label: 'Fee Agreement', href: 'https://forms.gle/idrMWqU5FpebA1f46' },
+      { label: 'Standard Fee Agreement', href: STANDARD_FEE_AGREEMENT_URL },
+      { label: 'International Fee Agreement', href: INTERNATIONAL_FEE_AGREEMENT_URL },
     ],
     email: 'mikecrpglobal@mississaugamagic.com',
     instagramLabel: '@mississaugamagic',

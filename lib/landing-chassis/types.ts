@@ -11,6 +11,7 @@ export type LandingLinks = {
   apply: string;
   video: string;
   agreement?: string;
+  internationalAgreement?: string;
   schedule?: string;
   instagram?: string;
   instagramSecondary?: string;
@@ -77,6 +78,7 @@ export type LandingPageConfig = {
   nav: NavItem[];
   /** 1. POSSIBILITY — lead with the dream */
   possibility: {
+    announcement?: string;
     headline: string;
     subheadline: string;
     supporting: string;
@@ -166,6 +168,7 @@ export type LandingPageConfig = {
     subheading: string;
     applyLabel: string;
     agreementLabel?: string;
+    internationalAgreementLabel?: string;
     scheduleLabel?: string;
   };
   /** Optional in-memoriam band (above footer contact) */

@@ -92,6 +92,7 @@
 /* DIFFERENCE CARDS */
 .lc-cards { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
 .lc-card { border: 1px solid var(--lc-line); border-radius: 8px; padding: 28px 22px; background: #fff; }
+.lc-card:is(a) { color: inherit; text-decoration: none; display: block; }
 .lc-card h3 { margin: 0 0 10px; font-size: 18px; font-weight: 800; }
 .lc-card p { margin: 0; font-size: 14px; color: var(--lc-gray); line-height: 1.6; }
 

@@ -11,8 +11,9 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const { slug } = await params;
   const a = await getAthlete(slug);
   if (!a) return { title: 'Athlete Not Found · CPR Global Prospects' };
+  const profileTitle = slug === 'jayden-thompson' ? 'Sample Profile' : `${a.firstName} ${a.lastName}`;
   return {
-    title: `${a.firstName} ${a.lastName} · CPR Global Prospects`,
+    title: `${profileTitle} · CPR Global Prospects`,
     description: `${a.position} | Class of ${a.gradYear} | ${a.school}. Official CPR recruiting profile.`,
   };
 }
@@ -22,6 +23,7 @@ export default async function AthleteProfile({ params }: { params: Promise<{ slu
   const a = await getAthlete(slug);
   if (!a) notFound();
 
+  const profileTitle = slug === 'jayden-thompson' ? 'Sample Profile' : `${a.firstName} ${a.lastName}`;
   const video = a.videoUrl ? embedUrl(a.videoUrl) : null;
   const schools = [...new Set(a.responses.map(r => r.school))];
   const statusClass = (s: string) =>
@@ -74,7 +76,7 @@ export default async function AthleteProfile({ params }: { params: Promise<{ slu
         <div className="container phero-grid">
           <img className="phero-photo" src={a.photoUrl} alt={`${a.firstName} ${a.lastName}`} />
           <div>
-            <h1 className="display">{a.firstName.toUpperCase()} {a.lastName.toUpperCase()}</h1>
+            <h1 className="display">{profileTitle.toUpperCase()}</h1>
             <p className="phero-meta">
               {[a.position, a.height, a.weight].filter(Boolean).join('  |  ')}
             </p>

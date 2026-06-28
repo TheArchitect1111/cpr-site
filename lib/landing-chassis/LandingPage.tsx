@@ -38,6 +38,9 @@ export function LandingPage({ config: c }: Props) {
       <section className="lc-hero" id="top">
         <div className="lc-hero-grid">
           <div className="lc-hero-copy">
+            {c.possibility.announcement ? (
+              <p className="lc-hero-announcement">{c.possibility.announcement}</p>
+            ) : null}
             <p className="lc-hero-eyebrow display">{c.brand.tagline}</p>
             <h1 className="display lc-hero-headline">{c.possibility.headline}</h1>
             <p className="lc-hero-sub">{c.possibility.subheadline}</p>
@@ -313,6 +316,11 @@ export function LandingPage({ config: c }: Props) {
               {c.finalCta.agreementLabel && c.links.agreement ? (
                 <a className="lc-btn lc-btn-white-outline" href={c.links.agreement}>
                   {c.finalCta.agreementLabel}
+                </a>
+              ) : null}
+              {c.finalCta.internationalAgreementLabel && c.links.internationalAgreement ? (
+                <a className="lc-btn lc-btn-white-outline" href={c.links.internationalAgreement}>
+                  {c.finalCta.internationalAgreementLabel}
                 </a>
               ) : null}
               {c.finalCta.scheduleLabel && c.links.schedule ? (
