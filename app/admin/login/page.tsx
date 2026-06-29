@@ -1,3 +1,4 @@
+import { redirect } from 'next/navigation';
 import '../../landing.css';
 import '../admin.css';
 import { site } from '@/config/site';
@@ -17,23 +18,27 @@ export default async function AdminLogin({
     locked?: string;
     retry?: string;
     config?: string;
+    recover?: string;
   }>;
 }) {
   const params = await searchParams;
   const retryMinutes = params.retry ? Math.max(1, Math.ceil(Number(params.retry) / 60)) : 15;
   const clerkEnabled = Boolean(process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY);
+
+  // Google is the one and only front door. The email/password form below is an
+  // emergency backstop only — reachable at /admin/login?recover=1, never shown
+  // to Mike during a normal sign-in.
+  if (clerkEnabled && !params.recover) {
+    const next = params.next ? `?next=${encodeURIComponent(params.next)}` : '';
+    redirect(`/admin/sign-in${next}`);
+  }
+
   return (
     <main className="login-shell">
       <form className="login-card" action="/api/admin/session" method="post">
         <img src={site.brand.logo} alt="CPR" />
         <h1 className="display">CPR ADMIN</h1>
-        <p>One login for admin, portal owner tools, and Pulse. Works on desktop, tablet, and mobile.</p>
-        {clerkEnabled && (
-          <>
-            <a className="login-google-btn" href="/admin/sign-in">Sign in with Google</a>
-            <p className="login-or">or use your email and password</p>
-          </>
-        )}
+        <p>Emergency password sign-in. The normal way in is <a className="login-link" href="/admin/sign-in">Sign in with Google</a>.</p>
         {params.reset && <div className="login-success">Password updated. Sign in with the new password.</div>}
         {params.config && (
           <div className="login-error">
