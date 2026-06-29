@@ -30,6 +30,8 @@ a.aitem:hover { background: rgba(255,255,255,.07); }
 .login-error { background: #FADDDD; border-radius: 6px; color: #A81D20; font-size: 12px; font-weight: 800; padding: 9px 11px; }
 .login-success { background: #DCF2E2; border-radius: 6px; color: #1E7A38; font-size: 12px; font-weight: 800; padding: 9px 11px; }
 .login-link { color: #333; font-size: 12px; font-weight: 800; text-align: center; }
+.login-google-btn { align-items: center; background: #0C0C0A; border-radius: 5px; color: #fff; display: flex; font-size: 12px; font-weight: 900; justify-content: center; letter-spacing: .8px; padding: 11px; text-decoration: none; text-transform: uppercase; }
+.login-or { color: var(--gray); font-size: 11px; text-align: center; text-transform: uppercase; letter-spacing: .5px; }
 
 .stat-row { display: grid; grid-template-columns: repeat(6, 1fr); gap: 12px; margin-bottom: 20px; }
 .stat-card { background: #fff; border: 1px solid #E7E7E7; border-radius: 8px; padding: 14px; }

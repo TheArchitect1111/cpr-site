@@ -263,11 +263,11 @@ export function buildPortalActionCenter(input: {
 
   items.push({
     id: 'pulse-review',
-    title: 'Review Pulse scores',
-    detail: 'Operational health updates as you capture and engage.',
+    title: 'Review update feed',
+    detail: 'Recruiting activity and team updates in one timeline.',
     priority: 'medium',
-    href: `${base}/pulse`,
-    cta: 'Open Pulse',
+    href: `${base}/updates`,
+    cta: 'Open updates',
   });
 
   return items.sort((a, b) => {

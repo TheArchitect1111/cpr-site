@@ -1,6 +1,7 @@
 import type { LandingPageConfig } from './types';
 import { LandingIcon, landingIcons } from './icons';
 import { TributeSection } from './TributeSection';
+import MobileNav from './MobileNav';
 import RotatingImagePanel from '@/app/components/RotatingImagePanel';
 
 type Props = { config: LandingPageConfig };
@@ -10,6 +11,7 @@ export function LandingPage({ config: c }: Props) {
     <>
       <header className="lc-nav">
         <div className="lc-nav-inner">
+          <MobileNav config={c} />
           <img src={c.brand.logo} alt={c.brand.nameLine1} className="lc-nav-logo" />
           <div className="lc-nav-brand display">
             <div className="b1">{c.brand.nameLine1}</div>

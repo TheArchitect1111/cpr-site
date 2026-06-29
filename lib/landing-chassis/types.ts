@@ -16,6 +16,8 @@ export type LandingLinks = {
   instagram?: string;
   instagramSecondary?: string;
   facebook?: string;
+  youtube?: string;
+  phone?: string;
 };
 
 export type GallerySlide = { img: string; caption?: string };
@@ -27,7 +29,7 @@ export type PlayerProfileCard = {
   meta?: string;
 };
 
-export type NavItem = { label: string; href: string };
+export type NavItem = { label: string; href: string; icon?: string };
 
 export type Testimonial = {
   quote: string;

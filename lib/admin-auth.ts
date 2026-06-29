@@ -258,28 +258,101 @@ export async function changeAdminPassword(
   const user = await authenticateAdminAsync(email, currentPassword);
   if (!user) throw new Error('Current password is incorrect.');
 
-  const airtableUser = await findAirtableAdmin(email);
-  if (airtableUser) {
-    const headers = await airtableHeaders();
-    const patch = await fetch(`https://api.airtable.com/v0/${BASE}/${encodeURIComponent(ADMIN_USERS_TABLE)}`, {
-      method: 'PATCH',
-      headers,
-      body: JSON.stringify({
-        records: [{
-          id: airtableUser.id,
-          fields: {
-            'Password Hash': hashPassword(newPassword),
-            'Last Password Reset': new Date().toISOString(),
-          },
-        }],
-        typecast: true,
-      }),
-    });
-    if (!patch.ok) throw new Error(await patch.text());
-    return;
+  if (!ADMIN_USERS_TABLE || !airtableToken()) {
+    throw new Error('Saved passwords need Airtable Admin Users configured. Set AIRTABLE_ADMIN_USERS_TABLE_ID and AIRTABLE_TOKEN.');
   }
 
-  throw new Error('Password change is only available for admin accounts stored in Airtable Admin Users.');
+  // Upsert: existing accounts are patched; env/legacy accounts get a saved record on first change.
+  const existing = await findAirtableAdmin(email);
+  const target = existing ?? (await createAirtableAdmin(email, user.name));
+
+  const headers = await airtableHeaders();
+  const patch = await fetch(`https://api.airtable.com/v0/${BASE}/${encodeURIComponent(ADMIN_USERS_TABLE)}`, {
+    method: 'PATCH',
+    headers,
+    body: JSON.stringify({
+      records: [{
+        id: target.id,
+        fields: {
+          'Password Hash': hashPassword(newPassword),
+          'Last Password Reset': new Date().toISOString(),
+          Status: 'Active',
+        },
+      }],
+      typecast: true,
+    }),
+  });
+  if (!patch.ok) throw new Error(await patch.text());
+}
+
+/**
+ * Admin-set temporary password (email-free recovery). Upserts the Airtable
+ * Admin Users record so the user can sign in immediately, then change it.
+ */
+export async function setAdminTempPassword(email: string, tempPassword: string, name = 'Admin') {
+  const normalized = email.trim().toLowerCase();
+  const validation = validatePasswordStrength(tempPassword);
+  if (!validation.ok) throw new Error(validation.message);
+  if (!ADMIN_USERS_TABLE || !airtableToken()) {
+    throw new Error('Saved passwords need Airtable Admin Users configured. Set AIRTABLE_ADMIN_USERS_TABLE_ID and AIRTABLE_TOKEN.');
+  }
+
+  const existing = await findAirtableAdmin(normalized);
+  const target = existing ?? (await createAirtableAdmin(normalized, name));
+
+  const headers = await airtableHeaders();
+  const patch = await fetch(`https://api.airtable.com/v0/${BASE}/${encodeURIComponent(ADMIN_USERS_TABLE)}`, {
+    method: 'PATCH',
+    headers,
+    body: JSON.stringify({
+      records: [{
+        id: target.id,
+        fields: {
+          'Password Hash': hashPassword(tempPassword),
+          'Last Password Reset': new Date().toISOString(),
+          Status: 'Active',
+        },
+      }],
+      typecast: true,
+    }),
+  });
+  if (!patch.ok) throw new Error(await patch.text());
+  return { email: normalized };
+}
+
+/**
+ * Resolve an admin account by email only (no password) — used by SSO/Clerk
+ * sign-in to decide whether a Google/email identity is an allowed admin.
+ * Sources, in order: Airtable Admin Users → ADMIN_USERS env → ADMIN_CLERK_ALLOWLIST.
+ */
+export async function findAdminAccount(email: string): Promise<Omit<AdminUser, 'password'> | null> {
+  const normalized = email.trim().toLowerCase();
+  if (!normalized) return null;
+
+  const airtable = await findAirtableAdmin(normalized);
+  if (airtable) {
+    return { email: airtable.email, role: airtable.role || 'admin', name: airtable.name || normalized };
+  }
+
+  const envUser = adminUsers().find((user) => user.email === normalized);
+  if (envUser) {
+    return { email: envUser.email, role: envUser.role || 'admin', name: envUser.name || normalized };
+  }
+
+  const allowlist = (process.env.ADMIN_CLERK_ALLOWLIST || '')
+    .split(/[,\n;]/)
+    .map((value) => value.trim().toLowerCase())
+    .filter(Boolean);
+  if (allowlist.includes(normalized)) {
+    const ownerEmail = (process.env.ADMIN_EMAIL || '').trim().toLowerCase();
+    return {
+      email: normalized,
+      role: normalized === ownerEmail ? 'owner' : 'admin',
+      name: normalized === ownerEmail ? 'Mike' : 'Admin',
+    };
+  }
+
+  return null;
 }
 
 export function adminFromRequest(req: NextRequest) {

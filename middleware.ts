@@ -12,6 +12,7 @@ const ADMIN_PREFIX = '/admin';
 const ADMIN_LOGIN = '/admin/login';
 const ADMIN_PUBLIC = new Set([
   '/admin/login',
+  '/admin/sign-in',
   '/admin/forgot-password',
   '/admin/reset-password',
 ]);
@@ -19,9 +20,16 @@ const ADMIN_PUBLIC = new Set([
 const PORTAL_LOGIN = '/portal/login';
 const PORTAL_PUBLIC = new Set([
   '/portal/login',
+  '/portal/sign-in',
   '/portal/forgot-password',
   '/portal/reset-password',
 ]);
+
+function isPublicPortalPath(pathname: string): boolean {
+  return [...PORTAL_PUBLIC].some(
+    (path) => pathname === path || pathname.startsWith(`${path}/`),
+  );
+}
 
 const ROLE_ROUTES = [
   { pathPrefix: '/portal/athlete/', roleValue: 'athlete' },
@@ -58,8 +66,24 @@ export async function middleware(req: NextRequest) {
     return NextResponse.redirect(url);
   }
 
-  if (PORTAL_PUBLIC.has(pathname)) {
+  if (isPublicPortalPath(pathname)) {
     return NextResponse.next();
+  }
+
+  if (pathname === '/portal/owner' || pathname.startsWith('/portal/owner/')) {
+    const adminToken = req.cookies.get(CPR_ADMIN_COOKIE)?.value ?? '';
+    if (!adminToken) {
+      const url = req.nextUrl.clone();
+      url.pathname = ADMIN_LOGIN;
+      url.searchParams.set('next', pathname + req.nextUrl.search);
+      return NextResponse.redirect(url);
+    }
+    const admin = await verifyAdminSessionEdge(adminToken);
+    if (admin || looksLikeAdminSessionToken(adminToken)) return NextResponse.next();
+    const url = req.nextUrl.clone();
+    url.pathname = ADMIN_LOGIN;
+    url.searchParams.set('next', pathname + req.nextUrl.search);
+    return NextResponse.redirect(url);
   }
 
   for (const route of ROLE_ROUTES) {
@@ -69,26 +93,34 @@ export async function middleware(req: NextRequest) {
     const session = cookieVal
       ? await verifyHmacSession<PortalSession>(cookieVal, CPR_PORTAL_SESSION)
       : null;
-    if (!session) {
-      const loginUrl = req.nextUrl.clone();
-      loginUrl.pathname = PORTAL_LOGIN;
-      return NextResponse.redirect(loginUrl);
+
+    if (session) {
+      const parts = pathname.split('/');
+      const prefixParts = route.pathPrefix.split('/').filter(Boolean);
+      const urlRole = parts[prefixParts.length] ?? '';
+      const urlSlug = parts[prefixParts.length + 1] ?? '';
+      const sessionRole = String(session.type ?? '');
+      const sessionSlug = String(session.slug ?? '');
+
+      if (sessionRole !== route.roleValue || sessionRole !== urlRole || sessionSlug !== urlSlug) {
+        const loginUrl = req.nextUrl.clone();
+        loginUrl.pathname = PORTAL_LOGIN;
+        return NextResponse.redirect(loginUrl);
+      }
+
+      return NextResponse.next();
     }
 
-    const parts = pathname.split('/');
-    const prefixParts = route.pathPrefix.split('/').filter(Boolean);
-    const urlRole = parts[prefixParts.length] ?? '';
-    const urlSlug = parts[prefixParts.length + 1] ?? '';
-    const sessionRole = String(session.type ?? '');
-    const sessionSlug = String(session.slug ?? '');
-
-    if (sessionRole !== route.roleValue || sessionRole !== urlRole || sessionSlug !== urlSlug) {
-      const loginUrl = req.nextUrl.clone();
-      loginUrl.pathname = PORTAL_LOGIN;
-      return NextResponse.redirect(loginUrl);
+    // CPR owners (admin session) can open any family portal without a separate portal login.
+    const adminToken = req.cookies.get(CPR_ADMIN_COOKIE)?.value ?? '';
+    if (adminToken) {
+      const admin = await verifyAdminSessionEdge(adminToken);
+      if (admin || looksLikeAdminSessionToken(adminToken)) return NextResponse.next();
     }
 
-    return NextResponse.next();
+    const loginUrl = req.nextUrl.clone();
+    loginUrl.pathname = PORTAL_LOGIN;
+    return NextResponse.redirect(loginUrl);
   }
 
   return NextResponse.next();
@@ -99,9 +131,13 @@ export const config = {
     '/admin',
     '/admin/:path*',
     '/portal/login',
+    '/portal/sign-in',
+    '/portal/sign-in/:path*',
     '/portal/forgot-password',
     '/portal/reset-password',
     '/portal/athlete/:path*',
     '/portal/parent/:path*',
+    '/portal/owner',
+    '/portal/owner/:path*',
   ],
 };

@@ -35,7 +35,11 @@ test('tribute deep link page still works', async ({ page }) => {
 test('application CTAs point to the Google Form', async ({ page }) => {
   await page.goto('/');
   const applyLinks = page.locator(`a[href="${PLAYER_APPLICATION_URL}"]`);
-  await expect(applyLinks.first()).toBeVisible();
+  // At least one CTA must be visible on load. The mobile-nav drawer also has an
+  // "Apply Now" link that is intentionally hidden until the drawer is opened, so
+  // assert on a visible CTA rather than whichever happens to be first in the DOM.
+  const visibleApplyLinks = page.locator(`a[href="${PLAYER_APPLICATION_URL}"]:visible`);
+  await expect(visibleApplyLinks.first()).toBeVisible();
   expect(await applyLinks.count()).toBeGreaterThanOrEqual(3);
 });
 

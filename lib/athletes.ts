@@ -474,6 +474,25 @@ export async function deleteAthlete(recordId: string) {
   });
 }
 
+export async function appendAthletePortalActivity(slug: string, message: string): Promise<boolean> {
+  const token = process.env.AIRTABLE_TOKEN;
+  if (!token) return false;
+
+  const safe = slug.replace(/[^a-z0-9-]/g, '');
+  const url = `https://api.airtable.com/v0/${BASE}/${ATHLETES}?maxRecords=1&filterByFormula=${encodeURIComponent(`{Slug}='${safe}'`)}`;
+  const res = await fetch(url, { headers: { Authorization: `Bearer ${token}` }, cache: 'no-store' });
+  if (!res.ok) return false;
+
+  const data = (await res.json()) as { records: AirtableRecord[] };
+  const record = data.records?.[0];
+  if (!record) return false;
+
+  await patchAthleteFields(record.id, {
+    Notes: appendActivityLine(f(record, 'Notes'), message),
+  });
+  return true;
+}
+
 export async function getAthlete(slug: string, options: { includeHidden?: boolean } = {}): Promise<Athlete | null> {
   const token = process.env.AIRTABLE_TOKEN;
   if (!token) return allowSampleData() && slug === sample.slug ? sample : null;

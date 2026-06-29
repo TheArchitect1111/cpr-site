@@ -7,6 +7,8 @@ import { site } from '@/config/site';
 import { notFound } from 'next/navigation';
 import PortalShell from '@/app/portal/components/PortalShell';
 import UpdatePortalFeed from '@/app/portal/components/UpdatePortalFeed';
+import PortalOwnerFab from '@/app/portal/components/PortalOwnerFab';
+import { getPortalOwner } from '@/lib/portal-owner';
 
 export const dynamic = 'force-dynamic';
 
@@ -20,6 +22,7 @@ export default async function AthleteUpdatesPage({
   if (!portalData) notFound();
 
   const { updates, live } = await getPortalUpdates(slug);
+  const owner = await getPortalOwner();
   const athleteName = portalData.firstName
     ? `${portalData.firstName} ${portalData.lastName}`.trim()
     : portalData.slug;
@@ -28,7 +31,12 @@ export default async function AthleteUpdatesPage({
     <div className="portal-page">
       <PortalShell portalType="athlete" slug={slug} active="updates" />
       <main className="portal-main pp-main">
-        <UpdatePortalFeed updates={updates} athleteName={athleteName} live={live} />
+        <UpdatePortalFeed
+          updates={updates}
+          athleteName={athleteName}
+          live={live}
+          ownerPostUrl={owner ? `/portal/athlete/${slug}/updates/new` : undefined}
+        />
       </main>
       <footer className="portal-footer">
         <p>
@@ -36,6 +44,7 @@ export default async function AthleteUpdatesPage({
           <a href={`mailto:${site.footer.email}`}>{site.footer.email}</a>
         </p>
       </footer>
+      {owner && <PortalOwnerFab href={`/portal/athlete/${slug}/updates/new`} />}
     </div>
   );
 }

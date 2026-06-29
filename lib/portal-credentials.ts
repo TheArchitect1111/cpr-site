@@ -95,6 +95,50 @@ export async function findPortalAccount(identifier: string): Promise<PortalAccou
   return null;
 }
 
+/** Email-only lookup for Google / magic-link sign-in (must match portal email on file). */
+export async function findPortalAccountByEmail(email: string): Promise<PortalAccount | null> {
+  const safe = escapeFormula(email);
+  const athleteRecord = await queryOne(`LOWER({Email})='${safe}'`);
+  if (athleteRecord?.fields['Athlete Password Hash']) {
+    const account = accountFromRecord(athleteRecord, 'athlete');
+    if (account) return account;
+  }
+
+  const parentRecord = await queryOne(`LOWER({Parent Email})='${safe}'`);
+  if (parentRecord?.fields['Parent Password Hash']) {
+    return accountFromRecord(parentRecord, 'parent');
+  }
+  return null;
+}
+
+export async function recordPortalLogin(account: PortalAccount): Promise<void> {
+  const headers = await airtableHeaders();
+  const res = await fetch(`https://api.airtable.com/v0/${BASE}/${TABLE}/${account.recordId}`, {
+    headers,
+    cache: 'no-store',
+  });
+  if (!res.ok) return;
+  const record = (await res.json()) as AirtableRecord;
+  const now = new Date().toISOString();
+  const loginType = account.role === 'athlete' ? 'Athlete' : 'Parent';
+  const currentLogins = Number(record.fields['Total Logins'] ?? 0);
+  const legacyField =
+    loginType === 'Athlete' ? 'Athlete Portal Last Login' : 'Parent Portal Last Login';
+
+  await fetch(`https://api.airtable.com/v0/${BASE}/${TABLE}/${account.recordId}`, {
+    method: 'PATCH',
+    headers,
+    body: JSON.stringify({
+      fields: {
+        'Last Login': now,
+        'Last Login Type': loginType,
+        'Total Logins': currentLogins + 1,
+        [legacyField]: now,
+      },
+    }),
+  }).catch(() => { /* non-fatal */ });
+}
+
 export async function findApplicantByEmail(email: string): Promise<AirtableRecord | null> {
   const safe = escapeFormula(email);
   return queryOne(`LOWER({Email})='${safe}'`);

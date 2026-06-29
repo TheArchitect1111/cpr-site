@@ -8,7 +8,7 @@ import PortalShell from '@/app/portal/components/PortalShell';
 import PortalHomeSections from '@/app/portal/components/PortalHomeSections';
 import PortalAnnouncements from '@/app/portal/components/PortalAnnouncements';
 import GuidedTour from '@/app/portal/components/GuidedTour';
-import PortalOwnerHub from '@/app/portal/components/PortalOwnerHub';
+import PortalOwnerFab from '@/app/portal/components/PortalOwnerFab';
 import { getPortalContent } from '@/lib/portal-content';
 import { getPortalOwner } from '@/lib/portal-owner';
 import { portalHomeTour } from '@/lib/portal-tours';
@@ -91,16 +91,7 @@ export default async function AthletePortalPage({
         </p>
       </footer>
 
-      {owner && (
-        <PortalOwnerHub
-          slug={slug}
-          portalType="athlete"
-          ownerName={owner.name}
-          content={content}
-          amplifiUrl={`/portal/athlete/${slug}/amplifi`}
-          athleteName={athleteName}
-        />
-      )}
+      {owner && <PortalOwnerFab href={`/portal/athlete/${slug}/updates/new`} />}
     </div>
   );
 }
