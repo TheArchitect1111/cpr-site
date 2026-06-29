@@ -21,12 +21,19 @@ export default async function AdminLogin({
 }) {
   const params = await searchParams;
   const retryMinutes = params.retry ? Math.max(1, Math.ceil(Number(params.retry) / 60)) : 15;
+  const clerkEnabled = Boolean(process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY);
   return (
     <main className="login-shell">
       <form className="login-card" action="/api/admin/session" method="post">
         <img src={site.brand.logo} alt="CPR" />
         <h1 className="display">CPR ADMIN</h1>
-        <p>Sign in with your admin account.</p>
+        <p>One login for admin, portal owner tools, and Pulse. Works on desktop, tablet, and mobile.</p>
+        {clerkEnabled && (
+          <>
+            <a className="login-google-btn" href="/admin/sign-in">Sign in with Google</a>
+            <p className="login-or">or use your email and password</p>
+          </>
+        )}
         {params.reset && <div className="login-success">Password updated. Sign in with the new password.</div>}
         {params.config && (
           <div className="login-error">

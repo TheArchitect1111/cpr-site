@@ -23,10 +23,12 @@ export default function UpdatePortalFeed({
   updates,
   athleteName,
   live,
+  ownerPostUrl,
 }: {
   updates: PortalUpdate[];
   athleteName: string;
   live: boolean;
+  ownerPostUrl?: string;
 }) {
   return (
     <div className="update-portal">
@@ -37,6 +39,11 @@ export default function UpdatePortalFeed({
           Every outreach, message, and milestone — in one live feed.
           {!live && ' Showing sample updates until live data is available.'}
         </p>
+        {ownerPostUrl && (
+          <p className="update-portal-owner-cta">
+            <a className="owner-primary owner-link-cta" href={ownerPostUrl}>Post update via Update Hub</a>
+          </p>
+        )}
       </div>
 
       {updates.length === 0 ? (

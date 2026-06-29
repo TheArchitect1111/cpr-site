@@ -13,10 +13,21 @@ export default async function PortalLoginPage({
   searchParams: Promise<{ reset?: string }>;
 }) {
   const params = await searchParams;
-  return <PortalLoginClient logo={site.brand.logo} reset={Boolean(params.reset)} />;
+  const clerkEnabled = Boolean(process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY);
+  return (
+    <PortalLoginClient logo={site.brand.logo} reset={Boolean(params.reset)} clerkEnabled={clerkEnabled} />
+  );
 }
 
-function PortalLoginClient({ logo, reset }: { logo: string; reset: boolean }) {
+function PortalLoginClient({
+  logo,
+  reset,
+  clerkEnabled,
+}: {
+  logo: string;
+  reset: boolean;
+  clerkEnabled: boolean;
+}) {
   return (
     <div className="pl-page">
       <div className="pl-card">
@@ -35,6 +46,13 @@ function PortalLoginClient({ logo, reset }: { logo: string; reset: boolean }) {
 
         {reset ? <div className="pl-success">Password updated. Sign in with your new password.</div> : null}
         <div id="pl-error" className="pl-error" style={{ display: 'none' }} aria-live="polite" />
+
+        {clerkEnabled ? (
+          <>
+            <a className="pl-google-btn" href="/portal/sign-in">Sign in with Google or email link</a>
+            <p className="pl-or">or use your username and password</p>
+          </>
+        ) : null}
 
         <div className="pl-field">
           <label htmlFor="pl-username">USERNAME</label>

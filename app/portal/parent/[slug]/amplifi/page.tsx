@@ -1,46 +1,14 @@
-import '../../../portal.css';
-import '../../parent-portal.css';
-import '../../../amplifi.css';
-import { getParentPortalData, getOpportunities, onboardingProgress } from '@/lib/portal-data';
-import { site } from '@/config/site';
-import { notFound } from 'next/navigation';
-import PortalShell from '@/app/portal/components/PortalShell';
-import AmplifiExperience from '@/app/portal/components/AmplifiExperience';
+import { redirect } from 'next/navigation';
 
 export const dynamic = 'force-dynamic';
 
+// Amplifi has been removed from the parent portal. Any direct or saved links
+// fall back to the parent portal home.
 export default async function ParentAmplifiPage({
   params,
 }: {
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const portalData = await getParentPortalData(slug);
-  if (!portalData) notFound();
-
-  const opportunities = await getOpportunities(portalData.recordId);
-
-  return (
-    <div className="portal-page">
-      <PortalShell portalType="parent" slug={slug} active="amplifi" />
-      <main className="portal-main pp-main">
-        <AmplifiExperience
-          firstName={portalData.firstName}
-          lastName={portalData.lastName}
-          gradYear={portalData.gradYear}
-          sport={portalData.sport}
-          onboardingPct={onboardingProgress(portalData.onboarding)}
-          opportunityCount={opportunities.length}
-          portalType="parent"
-          slug={slug}
-        />
-      </main>
-      <footer className="portal-footer">
-        <p>
-          CPR Global Prospects &middot;{' '}
-          <a href={`mailto:${site.footer.email}`}>{site.footer.email}</a>
-        </p>
-      </footer>
-    </div>
-  );
+  redirect(`/portal/parent/${slug}`);
 }

@@ -41,7 +41,9 @@ export default function PortalShell({
             label: portalType === 'parent' ? 'Parent Portal' : 'Athlete Portal',
             href: base,
           },
-          { id: 'amplifi', label: 'Amplifi™', href: `${base}/amplifi` },
+          ...(portalType === 'parent'
+            ? []
+            : [{ id: 'amplifi', label: 'Amplifi™', href: `${base}/amplifi` }]),
           { id: 'updates', label: 'Update Portal', href: `${base}/updates` },
           { id: 'resources', label: 'Resources', href: `${base}/resource-library` },
           { id: 'messages', label: 'Messages', href: `${base}/messaging-center` },

@@ -19,6 +19,8 @@ import CommunicationCenter from '@/components/communication-center/Communication
 import { getCommunicationAnnouncements, getCommunicationNotifications } from '@/lib/communication-center-data';
 import AdminCollection from './AdminCollection';
 import { getCollectionDef, isCollectionId } from '@/lib/admin-collections-schema';
+import AdminTeam from './AdminTeam';
+import { listAdminTeamMembers } from '@/lib/admin-team';
 import { listCollection } from '@/lib/admin-collections';
 
 export const dynamic = 'force-dynamic';
@@ -140,6 +142,24 @@ export default async function AdminPage({
         <AdminClient rows={outreach.rows} players={athletes.rows} coaches={coaches.rows} />
       </>
     );
+  } else if (tab === 'team') {
+    const team = await listAdminTeamMembers();
+    mainContent = (
+      <>
+        <header className="ahead">
+          <div>
+            <h1 className="display">ADMIN TEAM</h1>
+            <p>One login for admin, portal owner tools, and Pulse across devices.</p>
+          </div>
+          <a className="admin-logout" href="/api/admin/logout">Sign Out</a>
+        </header>
+        <AdminTeam
+          canInvite={admin.role === 'owner'}
+          initialMembers={team.members}
+          live={team.live}
+        />
+      </>
+    );
   } else if (tab && isCollectionId(tab)) {
     const def = getCollectionDef(tab)!;
     const [athletes, items] = await Promise.all([athletesPromise, listCollection(tab)]);
@@ -206,6 +226,7 @@ export default async function AdminPage({
         </nav>
         <div className="aside-sec">PORTAL</div>
         <nav>
+          <a className="aitem" href="/portal/owner">&#127968; Family Portal (Owner)</a>
           <a className={`aitem${activeTab === 'communication' ? ' active' : ''}`} href="/admin?tab=communication">
             &#128227; Communication Center
           </a>
@@ -227,6 +248,9 @@ export default async function AdminPage({
         </nav>
         <div className="aside-sec">MANAGEMENT</div>
         <nav>
+          <a className={`aitem${activeTab === 'team' ? ' active' : ''}`} href="/admin?tab=team">
+            &#128101; Admin Team
+          </a>
           <a className="aitem" href="/admin/create-client">&#43; Create New Client</a>
           <a className={`aitem${activeTab === 'documents' ? ' active' : ''}`} href="/admin?tab=documents">
             &#128196; Documents

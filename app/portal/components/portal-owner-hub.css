@@ -16,6 +16,7 @@
   letter-spacing: 0.02em;
   cursor: pointer;
   box-shadow: 0 16px 40px -16px rgba(0, 0, 0, 0.7);
+  text-decoration: none;
 }
 
 .owner-fab.is-open {
@@ -54,6 +55,13 @@
   border: 1px solid rgba(0, 0, 0, 0.08);
   box-shadow: 0 30px 80px -24px rgba(0, 0, 0, 0.55);
   overflow: hidden;
+}
+
+.owner-panel-inline {
+  position: static;
+  width: 100%;
+  max-height: none;
+  margin-top: 1.5rem;
 }
 
 .owner-head {
@@ -377,4 +385,38 @@
   .owner-add-grid {
     grid-template-columns: 1fr;
   }
+}
+
+.owner-update-form {
+  max-width: 720px;
+}
+
+.owner-update-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.owner-destinations {
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 12px;
+  padding: 1rem;
+}
+
+.owner-destinations legend {
+  font-weight: 700;
+  padding: 0 0.25rem;
+}
+
+.owner-result {
+  padding: 1rem;
+  border-radius: 12px;
+  background: rgba(12, 12, 10, 0.04);
+}
+
+.owner-result ul {
+  margin: 0.5rem 0 0;
+  padding-left: 1.2rem;
 }

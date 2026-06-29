@@ -26,10 +26,14 @@ const TABS: { id: Tab; label: string }[] = [
 ];
 
 export default function PortalOwnerHub({
+  portalType,
   ownerName,
   content,
   amplifiUrl,
   athleteName,
+  slug,
+  defaultOpen = false,
+  hideFab = false,
 }: {
   slug: string;
   portalType: 'athlete' | 'parent';
@@ -37,10 +41,16 @@ export default function PortalOwnerHub({
   content: PortalContent;
   amplifiUrl: string;
   athleteName: string;
+  defaultOpen?: boolean;
+  hideFab?: boolean;
 }) {
   const router = useRouter();
-  const [open, setOpen] = useState(false);
+  const base = `/portal/${portalType}/${slug}`;
+  const [open, setOpen] = useState(defaultOpen || hideFab);
   const [tab, setTab] = useState<Tab>('announcements');
+
+  // Amplifi is not part of the parent portal, so hide its owner tab there.
+  const tabs = portalType === 'parent' ? TABS.filter((t) => t.id !== 'amplifi') : TABS;
   const [message, setMessage] = useState('');
   const [busy, setBusy] = useState('');
 
@@ -265,26 +275,22 @@ export default function PortalOwnerHub({
 
   return (
     <>
-      <button
-        type="button"
-        className={`owner-fab${open ? ' is-open' : ''}`}
-        onClick={() => setOpen((v) => !v)}
-        aria-expanded={open}
-        aria-label={open ? 'Close Update Hub' : 'Open Update Hub'}
-      >
-        {open ? (
-          <span className="owner-fab-dot" aria-hidden="true" />
-        ) : (
+      {!hideFab && (
+        <a
+          href={`${base}/updates/new`}
+          className="owner-fab"
+          aria-label="Open Update Hub"
+        >
           <svg className="owner-fab-icon" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
             <path d="M12 20h9" />
             <path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z" />
           </svg>
-        )}
-        {open ? 'Close Update Hub' : 'Update Hub'}
-      </button>
+          Update Hub
+        </a>
+      )}
 
-      {open && (
-        <div className="owner-panel" role="dialog" aria-label="Update Hub">
+      {(open || hideFab) && (
+        <div className={`owner-panel${hideFab ? ' owner-panel-inline' : ''}`} role="dialog" aria-label="Update Hub">
           <div className="owner-head">
             <div>
               <p className="owner-eyebrow">Owner Mode</p>
@@ -294,8 +300,16 @@ export default function PortalOwnerHub({
             <button type="button" className="owner-x" onClick={() => setOpen(false)} aria-label="Close">&#10005;</button>
           </div>
 
+          {!hideFab && (
+            <p className="owner-hint">
+              <a href={`${base}/updates/new`}>Post a quick update</a>
+              {' · '}
+              <a href={`${base}/owner`}>Advanced tools</a>
+            </p>
+          )}
+
           <div className="owner-tabs" role="tablist">
-            {TABS.map((t) => (
+            {tabs.map((t) => (
               <button
                 key={t.id}
                 type="button"

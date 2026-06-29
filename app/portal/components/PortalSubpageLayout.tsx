@@ -1,6 +1,8 @@
 import type { ReactNode } from 'react';
 import { site } from '@/config/site';
+import { getPortalOwner } from '@/lib/portal-owner';
 import PortalShell, { type PortalTab } from './PortalShell';
+import PortalOwnerFab from './PortalOwnerFab';
 
 type Props = {
   portalType: 'athlete' | 'parent';
@@ -10,8 +12,9 @@ type Props = {
 };
 
 /** Sub-page shell — PortalShell tabs + back link (replaces legacy portal-header). */
-export default function PortalSubpageLayout({ portalType, slug, active, children }: Props) {
+export default async function PortalSubpageLayout({ portalType, slug, active, children }: Props) {
   const dash = `/portal/${portalType}/${slug}`;
+  const owner = await getPortalOwner();
 
   return (
     <div className="portal-page">
@@ -28,6 +31,7 @@ export default function PortalSubpageLayout({ portalType, slug, active, children
           <a href={`mailto:${site.footer.email}`}>{site.footer.email}</a>
         </p>
       </footer>
+      {owner && <PortalOwnerFab href={`${dash}/updates/new`} />}
     </div>
   );
 }
