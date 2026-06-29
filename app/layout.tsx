@@ -1,5 +1,4 @@
 import type { Metadata, Viewport } from 'next';
-import { ClerkProvider } from '@clerk/nextjs';
 import PwaController from '@/app/components/pwa/PwaController';
 import { getPwaConfig, isPwaEnabled } from '@/lib/pwa/pwa-config';
 import './globals.css';
@@ -30,7 +29,8 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   const pwaEnabled = isPwaEnabled();
-  const page = (
+
+  return (
     <html lang="en">
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -43,7 +43,4 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       </body>
     </html>
   );
-
-  const publishableKey = process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY;
-  return publishableKey ? <ClerkProvider publishableKey={publishableKey}>{page}</ClerkProvider> : page;
 }

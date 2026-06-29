@@ -58,5 +58,5 @@ test('admin login page loads', async ({ page }) => {
 
 test('portal login page loads', async ({ page }) => {
   await page.goto('/portal/login');
-  await expect(page.getByRole('heading', { name: /portal login/i })).toBeVisible();
+  await expect(page.getByRole('heading', { name: /portal sign in/i })).toBeVisible();
 });
