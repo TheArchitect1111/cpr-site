@@ -6,7 +6,7 @@
  *  - Navigations are network-first with an offline fallback shell.
  */
 
-const VERSION = 'ea-pwa-v1';
+const VERSION = 'ea-pwa-v2';
 const STATIC_CACHE = `${VERSION}-static`;
 const OFFLINE_URL = '/offline';
 
@@ -14,6 +14,10 @@ const OFFLINE_URL = '/offline';
 const BYPASS_PREFIXES = [
   '/api',
   '/admin',
+  '/portal/login',
+  '/portal/sign-in',
+  '/portal/forgot-password',
+  '/portal/reset-password',
   '/sso-callback',
   '/_next/data',
 ];
