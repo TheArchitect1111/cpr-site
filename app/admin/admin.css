@@ -20,7 +20,7 @@ a.aitem:hover { background: rgba(255,255,255,.07); }
 .admin-logout { background: #EAEAEA; border-radius: 5px; color: #333; font-size: 11px; font-weight: 900; letter-spacing: .7px; padding: 8px 11px; text-decoration: none; text-transform: uppercase; white-space: nowrap; }
 .demo-pill { background: #FBF0D2; color: #8A6D00; font-size: 11px; font-weight: 700; padding: 7px 12px; border-radius: 20px; white-space: nowrap; }
 .login-shell { align-items: center; background: #F4F4F4; display: grid; min-height: 100vh; padding: 24px; place-items: center; }
-.login-card { background: #fff; border: 1px solid #E7E7E7; border-radius: 8px; display: grid; gap: 12px; max-width: 380px; padding: 26px; width: 100%; }
+.login-card { background: #fff; border: 1px solid #E7E7E7; border-radius: 8px; display: grid; gap: 12px; max-width: 420px; padding: 26px; width: 100%; }
 .login-card img { height: 58px; width: 58px; }
 .login-card h1 { font-size: 28px; margin: 0; }
 .login-card p { color: var(--gray); font-size: 13px; margin: 0 0 4px; }
