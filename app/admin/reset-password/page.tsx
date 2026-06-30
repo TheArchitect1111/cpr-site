@@ -18,7 +18,7 @@ export default async function ResetPassword({
       <form className="login-card" action="/api/admin/password-reset/complete" method="post">
         <img src={site.brand.logo} alt="CPR" />
         <h1 className="display">SET PASSWORD</h1>
-        <p>Choose a new password for the CPR admin account.</p>
+        <p>Choose a new password for the CPR admin account. After saving, Mike can sign in with his admin email or username.</p>
         {params.error && <div className="login-error">The reset link is invalid, expired, or the password is too short.</div>}
         <input type="hidden" name="email" value={params.email || ''} />
         <input type="hidden" name="token" value={params.token || ''} />

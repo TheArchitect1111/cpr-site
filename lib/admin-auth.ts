@@ -3,7 +3,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getAdminSessionSecret } from '@/lib/admin-session-secret';
 import { validatePasswordStrength } from '@/lib/password-policy';
 
-export type AdminUser = { email: string; password: string; role: string; name: string };
+export type AdminUser = { email: string; password: string; role: string; name: string; username?: string };
 type AirtableRecord = { id: string; fields: Record<string, unknown> };
 
 const COOKIE = 'cpr_admin_session';
@@ -36,6 +36,7 @@ export function adminUsers(): AdminUser[] {
       return parsed
         .map(user => ({
           email: String(user.email || user.username || '').trim().toLowerCase(),
+          username: String(user.username || user.email || '').trim().toLowerCase(),
           password: String(user.password || ''),
           role: String(user.role || 'admin'),
           name: String(user.name || user.email || user.username || 'Admin'),
@@ -44,14 +45,15 @@ export function adminUsers(): AdminUser[] {
     } catch {
       return raw.split(/[;\n]/).map(row => {
         const [email, password, role = 'admin', name = email] = row.split(':').map(part => part.trim());
-        return { email: email.toLowerCase(), password, role, name };
+        return { email: email.toLowerCase(), username: email.toLowerCase(), password, role, name };
       }).filter(user => user.email && user.password);
     }
   }
   const legacyPassword = process.env.ADMIN_PASSWORD;
   if (!legacyPassword) return [];
   const legacyEmail = process.env.ADMIN_EMAIL || process.env.ADMIN_USER || 'cpr';
-  return [{ email: legacyEmail.toLowerCase(), password: legacyPassword, role: 'owner', name: 'Mike' }];
+  const legacyUsername = process.env.ADMIN_USER || legacyEmail;
+  return [{ email: legacyEmail.toLowerCase(), username: legacyUsername.toLowerCase(), password: legacyPassword, role: 'owner', name: 'Mike' }];
 }
 
 function text(r: AirtableRecord, field: string) {
@@ -173,23 +175,26 @@ export function verifyAdminSession(token: string): Omit<AdminUser, 'password'> |
 
 export function authenticateAdmin(email: string, password: string) {
   const normalized = email.trim().toLowerCase();
-  const user = adminUsers().find(item => item.email === normalized);
+  const user = adminUsers().find(item => item.email === normalized || item.username === normalized);
   if (!user || !password) return null;
   return verifyPassword(password, user.password) ? user : null;
 }
 
 export async function authenticateAdminAsync(email: string, password: string) {
   const normalized = email.trim().toLowerCase();
-  const airtableUser = await findAirtableAdmin(normalized);
+  const configuredUser = adminUsers().find(user => user.email === normalized || user.username === normalized);
+  const airtableEmail = configuredUser?.email || normalized;
+  const airtableUser = await findAirtableAdmin(airtableEmail);
   if (airtableUser && verifyPassword(password, airtableUser.password)) return airtableUser;
   return authenticateAdmin(email, password);
 }
 
 export async function requestAdminPasswordReset(email: string, origin: string) {
   const normalized = email.trim().toLowerCase();
-  const knownEnvUser = adminUsers().find(user => user.email === normalized);
-  let user = await findAirtableAdmin(normalized);
-  if (!user && knownEnvUser) user = await createAirtableAdmin(normalized, knownEnvUser.name);
+  const knownEnvUser = adminUsers().find(user => user.email === normalized || user.username === normalized);
+  const resetEmail = knownEnvUser?.email || normalized;
+  let user = await findAirtableAdmin(resetEmail);
+  if (!user && knownEnvUser) user = await createAirtableAdmin(resetEmail, knownEnvUser.name);
   if (!user) return null;
 
   const token = randomBytes(32).toString('base64url');
@@ -210,7 +215,7 @@ export async function requestAdminPasswordReset(email: string, origin: string) {
     }),
   });
   if (!res.ok) throw new Error(await res.text());
-  return `${origin}/admin/reset-password?email=${encodeURIComponent(normalized)}&token=${encodeURIComponent(token)}`;
+  return `${origin}/admin/reset-password?email=${encodeURIComponent(resetEmail)}&token=${encodeURIComponent(token)}`;
 }
 
 export async function resetAdminPassword(email: string, token: string, password: string) {
