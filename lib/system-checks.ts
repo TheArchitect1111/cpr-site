@@ -90,7 +90,19 @@ export async function getSystemChecks(): Promise<SystemCheck[]> {
         : auth.blockers.find((b) => b.includes('AIRTABLE_ADMIN')) ||
           'Requires RESEND + AIRTABLE_ADMIN_USERS_TABLE_ID to save new passwords.',
     },
-    { name: 'Admin users', ok: admins.length > 0 || auth.adminUserStorage, detail: process.env.ADMIN_USERS ? `${admins.length} configured in ADMIN_USERS.` : usingLegacy ? 'Using legacy ADMIN_EMAIL/ADMIN_PASSWORD fallback.' : auth.adminUserStorage ? 'Admin Users table configured in Airtable.' : 'No admin users configured in env.' },
+    {
+      name: 'Admin users',
+      ok: auth.adminIdentity,
+      detail: process.env.ADMIN_USERS
+        ? `${admins.length} configured in ADMIN_USERS.`
+        : usingLegacy
+          ? 'Using legacy ADMIN_EMAIL/ADMIN_PASSWORD fallback.'
+          : auth.adminUserStorage
+            ? 'Admin Users table configured in Airtable.'
+            : auth.adminCount > 0
+              ? 'Owner email configured for magic-link login.'
+              : 'No admin users configured in env.',
+    },
     { name: 'Portal session secret', ok: auth.portalSecret, detail: auth.portalSecret ? 'PORTAL_SECRET configured.' : 'Missing — portal login will fail in production.' },
     { name: 'Resend API key', ok: auth.emailDelivery, detail: auth.emailDelivery ? 'Application and enrollment emails can send.' : 'RESEND_API_KEY is missing.' },
     { name: 'Apply webhook', ok: Boolean(process.env.MAKE_CPR_WEBHOOK), detail: process.env.MAKE_CPR_WEBHOOK ? 'MAKE_CPR_WEBHOOK configured (optional — in-app Resend also sends apply emails).' : 'Optional Make apply webhook not set.' },

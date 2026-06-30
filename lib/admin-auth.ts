@@ -8,7 +8,7 @@ import {
 } from '@/lib/admin-password-reset-token';
 import { configuredOwnerEmails, isConfiguredOwnerEmail } from '@/lib/admin-owner';
 
-export type AdminUser = { email: string; password: string; role: string; name: string };
+export type AdminUser = { email: string; password: string; role: string; name: string; username?: string };
 type AirtableRecord = { id: string; fields: Record<string, unknown> };
 
 const COOKIE = 'cpr_admin_session';
@@ -41,6 +41,7 @@ export function adminUsers(): AdminUser[] {
       return parsed
         .map(user => ({
           email: String(user.email || user.username || '').trim().toLowerCase(),
+          username: String(user.username || user.email || '').trim().toLowerCase(),
           password: String(user.password || ''),
           role: String(user.role || 'admin'),
           name: String(user.name || user.email || user.username || 'Admin'),
@@ -49,14 +50,15 @@ export function adminUsers(): AdminUser[] {
     } catch {
       return raw.split(/[;\n]/).map(row => {
         const [email, password, role = 'admin', name = email] = row.split(':').map(part => part.trim());
-        return { email: email.toLowerCase(), password, role, name };
+        return { email: email.toLowerCase(), username: email.toLowerCase(), password, role, name };
       }).filter(user => user.email && user.password);
     }
   }
   const legacyPassword = process.env.ADMIN_PASSWORD;
   if (!legacyPassword) return [];
   const legacyEmail = process.env.ADMIN_EMAIL || process.env.ADMIN_USER || 'cpr';
-  return [{ email: legacyEmail.toLowerCase(), password: legacyPassword, role: 'owner', name: 'Mike' }];
+  const legacyUsername = process.env.ADMIN_USER || legacyEmail;
+  return [{ email: legacyEmail.toLowerCase(), username: legacyUsername.toLowerCase(), password: legacyPassword, role: 'owner', name: 'Mike' }];
 }
 
 function text(r: AirtableRecord, field: string) {
@@ -178,30 +180,33 @@ export function verifyAdminSession(token: string): Omit<AdminUser, 'password'> |
 
 export function authenticateAdmin(email: string, password: string) {
   const normalized = email.trim().toLowerCase();
-  const user = adminUsers().find(item => item.email === normalized);
+  const user = adminUsers().find(item => item.email === normalized || item.username === normalized);
   if (!user || !password) return null;
   return verifyPassword(password, user.password) ? user : null;
 }
 
 export async function authenticateAdminAsync(email: string, password: string) {
   const normalized = email.trim().toLowerCase();
-  const airtableUser = await findAirtableAdmin(normalized);
+  const configuredUser = adminUsers().find(user => user.email === normalized || user.username === normalized);
+  const airtableEmail = configuredUser?.email || normalized;
+  const airtableUser = await findAirtableAdmin(airtableEmail);
   if (airtableUser && verifyPassword(password, airtableUser.password)) return airtableUser;
   return authenticateAdmin(email, password);
 }
 
 export async function requestAdminPasswordReset(email: string, origin: string) {
   const normalized = email.trim().toLowerCase();
-  const knownEnvUser = adminUsers().find((user) => user.email === normalized);
-  const account = await findAdminAccount(normalized);
+  const knownEnvUser = adminUsers().find((user) => user.email === normalized || user.username === normalized);
+  const resetEmail = knownEnvUser?.email || normalized;
+  const account = await findAdminAccount(resetEmail);
   if (!account && !knownEnvUser) return null;
 
-  const token = createAdminPasswordResetToken(normalized);
+  const token = createAdminPasswordResetToken(resetEmail);
   if (!token) {
     throw new Error('ADMIN_AUTH_SECRET is not configured.');
   }
 
-  return `${origin}/admin/reset-password?email=${encodeURIComponent(normalized)}&token=${encodeURIComponent(token)}`;
+  return `${origin}/admin/reset-password?email=${encodeURIComponent(resetEmail)}&token=${encodeURIComponent(token)}`;
 }
 
 export async function resetAdminPassword(email: string, token: string, password: string) {

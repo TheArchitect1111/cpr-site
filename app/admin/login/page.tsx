@@ -83,6 +83,10 @@ export default async function AdminLogin({
             {magicBlocked}
           </p>
         ) : null}
+
+        <a className="login-link" href="/admin/forgot-password" style={{ display: 'block', marginTop: '1rem', textAlign: 'center' }}>
+          Forgot password?
+        </a>
       </div>
     </main>
   );

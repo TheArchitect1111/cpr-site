@@ -862,7 +862,7 @@ export default function AdminClient({ rows, players, coaches }: { rows: Outreach
         <div className="pm-head">
           <div>
             <h2 className="display">SYSTEM READINESS</h2>
-            <p>Admin accounts, Airtable schema, and Stripe payment configuration.</p>
+            <p>Mike admin access, password recovery, portal credentials, Airtable schema, and Stripe payment configuration.</p>
           </div>
           <div className="pm-tools">
             {systemMessage && <span className="pm-message">{systemMessage}</span>}
@@ -880,7 +880,7 @@ export default function AdminClient({ rows, players, coaches }: { rows: Outreach
             ))}
           </div>
         ) : (
-          <p className="empty activity-empty">Run checks after changing Vercel or Airtable settings.</p>
+          <p className="empty activity-empty">Run checks before handing the portal to Mike or after changing Vercel, Airtable, Resend, or Stripe settings.</p>
         )}
       </section>
 
