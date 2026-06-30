@@ -1,4 +1,5 @@
 import { adminUsers } from './admin-auth';
+import { getAuthReadiness } from './auth-config';
 
 const BASE = process.env.AIRTABLE_BASE_ID || 'appvVr6MVrJvEY0YJ';
 const ATHLETES = process.env.AIRTABLE_ATHLETES_TABLE_ID || 'tblZwrZHi3WBR3NHZ';
@@ -53,7 +54,7 @@ async function airtableSchemaChecks(): Promise<SystemCheck[]> {
       { name: 'Athlete payment fields', ok: missing.length === 0, detail: missing.length ? `Missing: ${missing.join(', ')}` : 'Required applicant/payment fields found.' },
       { name: 'Coach Directory table', ok: Boolean(coachTable), detail: coachTable ? `${coachTable.name} found.` : `${COACHES} was not found.` },
       { name: 'Admin Users table', ok: Boolean(adminTable), detail: adminTable ? `${adminTable.name} found.` : 'AIRTABLE_ADMIN_USERS_TABLE_ID is missing or the table was not found.' },
-      { name: 'Password reset fields', ok: Boolean(adminTable) && missingAdmin.length === 0, detail: missingAdmin.length ? `Missing: ${missingAdmin.join(', ')}` : 'Password reset fields found.' },
+      { name: 'Password reset fields', ok: Boolean(adminTable) && missingAdmin.length === 0, detail: missingAdmin.length ? `Missing: ${missingAdmin.join(', ')} (stateless reset works without these; optional for legacy flow).` : 'Password reset fields found (optional — stateless tokens used).' },
     ];
   } catch (err) {
     const message = err instanceof Error ? err.message : 'Unknown Airtable schema error.';
@@ -62,13 +63,36 @@ async function airtableSchemaChecks(): Promise<SystemCheck[]> {
 }
 
 export async function getSystemChecks(): Promise<SystemCheck[]> {
+  const auth = getAuthReadiness();
   const admins = adminUsers();
   const usingLegacy = !process.env.ADMIN_USERS && Boolean(process.env.ADMIN_PASSWORD);
   return [
-    { name: 'Admin users', ok: admins.length > 0, detail: process.env.ADMIN_USERS ? `${admins.length} configured in ADMIN_USERS.` : usingLegacy ? 'Using legacy ADMIN_USER/ADMIN_PASSWORD fallback.' : 'No admin users configured.' },
-    { name: 'Admin auth secret', ok: Boolean(process.env.ADMIN_AUTH_SECRET || process.env.ADMIN_PASSWORD), detail: process.env.ADMIN_AUTH_SECRET ? 'ADMIN_AUTH_SECRET configured.' : 'Using ADMIN_PASSWORD as session secret fallback.' },
-    { name: 'Portal session secret', ok: Boolean(process.env.PORTAL_SECRET), detail: process.env.PORTAL_SECRET ? 'PORTAL_SECRET configured.' : 'Missing — portal login will fail in production.' },
-    { name: 'Resend API key', ok: Boolean(process.env.RESEND_API_KEY), detail: process.env.RESEND_API_KEY ? 'Application and enrollment emails can send.' : 'RESEND_API_KEY is missing.' },
+    {
+      name: 'Admin session secret',
+      ok: auth.sessionSecret,
+      detail: auth.sessionSecret
+        ? 'ADMIN_AUTH_SECRET (or legacy ADMIN_PASSWORD) configured.'
+        : 'Missing — set ADMIN_AUTH_SECRET on Vercel Production.',
+    },
+    {
+      name: 'Magic-link login',
+      ok: auth.magicLinkReady,
+      detail: auth.magicLinkReady
+        ? 'Email login links can send (ADMIN_AUTH_SECRET + RESEND_API_KEY).'
+        : auth.blockers.filter((b) => b.includes('ADMIN_AUTH') || b.includes('RESEND')).join(' ') ||
+          'Configure ADMIN_AUTH_SECRET and RESEND_API_KEY.',
+    },
+    {
+      name: 'Password reset (full flow)',
+      ok: auth.passwordResetReady,
+      detail: auth.passwordResetReady
+        ? 'Reset emails send and new passwords save to Airtable Admin Users.'
+        : auth.blockers.find((b) => b.includes('AIRTABLE_ADMIN')) ||
+          'Requires RESEND + AIRTABLE_ADMIN_USERS_TABLE_ID to save new passwords.',
+    },
+    { name: 'Admin users', ok: admins.length > 0 || auth.adminUserStorage, detail: process.env.ADMIN_USERS ? `${admins.length} configured in ADMIN_USERS.` : usingLegacy ? 'Using legacy ADMIN_EMAIL/ADMIN_PASSWORD fallback.' : auth.adminUserStorage ? 'Admin Users table configured in Airtable.' : 'No admin users configured in env.' },
+    { name: 'Portal session secret', ok: auth.portalSecret, detail: auth.portalSecret ? 'PORTAL_SECRET configured.' : 'Missing — portal login will fail in production.' },
+    { name: 'Resend API key', ok: auth.emailDelivery, detail: auth.emailDelivery ? 'Application and enrollment emails can send.' : 'RESEND_API_KEY is missing.' },
     { name: 'Apply webhook', ok: Boolean(process.env.MAKE_CPR_WEBHOOK), detail: process.env.MAKE_CPR_WEBHOOK ? 'MAKE_CPR_WEBHOOK configured (optional — in-app Resend also sends apply emails).' : 'Optional Make apply webhook not set.' },
     { name: 'Enroll webhook', ok: Boolean(process.env.CPR_ENROLL_WEBHOOK_URL), detail: process.env.CPR_ENROLL_WEBHOOK_URL ? 'CPR_ENROLL_WEBHOOK_URL configured.' : 'CPR_ENROLL_WEBHOOK_URL is missing.' },
     { name: 'Blob storage', ok: Boolean(process.env.BLOB_READ_WRITE_TOKEN), detail: process.env.BLOB_READ_WRITE_TOKEN ? 'Apply photo and document uploads enabled.' : 'BLOB_READ_WRITE_TOKEN is missing.' },

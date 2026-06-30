@@ -2,6 +2,10 @@ import { createHash, createHmac, randomBytes, timingSafeEqual } from 'crypto';
 import { NextRequest, NextResponse } from 'next/server';
 import { getAdminSessionSecret } from '@/lib/admin-session-secret';
 import { validatePasswordStrength } from '@/lib/password-policy';
+import {
+  createAdminPasswordResetToken,
+  verifyAdminPasswordResetToken,
+} from '@/lib/admin-password-reset-token';
 
 export type AdminUser = { email: string; password: string; role: string; name: string };
 type AirtableRecord = { id: string; fields: Record<string, unknown> };
@@ -187,36 +191,32 @@ export async function authenticateAdminAsync(email: string, password: string) {
 
 export async function requestAdminPasswordReset(email: string, origin: string) {
   const normalized = email.trim().toLowerCase();
-  const knownEnvUser = adminUsers().find(user => user.email === normalized);
-  let user = await findAirtableAdmin(normalized);
-  if (!user && knownEnvUser) user = await createAirtableAdmin(normalized, knownEnvUser.name);
-  if (!user) return null;
+  const knownEnvUser = adminUsers().find((user) => user.email === normalized);
+  const account = await findAdminAccount(normalized);
+  if (!account && !knownEnvUser) return null;
 
-  const token = randomBytes(32).toString('base64url');
-  const headers = await airtableHeaders();
-  const expires = new Date(Date.now() + 1000 * 60 * 30).toISOString();
-  const res = await fetch(`https://api.airtable.com/v0/${BASE}/${encodeURIComponent(ADMIN_USERS_TABLE)}`, {
-    method: 'PATCH',
-    headers,
-    body: JSON.stringify({
-      records: [{
-        id: user.id,
-        fields: {
-          'Password Reset Token': hashToken(token),
-          'Password Reset Expires': expires,
-        },
-      }],
-      typecast: true,
-    }),
-  });
-  if (!res.ok) throw new Error(await res.text());
+  const token = createAdminPasswordResetToken(normalized);
+  if (!token) {
+    throw new Error('ADMIN_AUTH_SECRET is not configured.');
+  }
+
   return `${origin}/admin/reset-password?email=${encodeURIComponent(normalized)}&token=${encodeURIComponent(token)}`;
 }
 
 export async function resetAdminPassword(email: string, token: string, password: string) {
   const validation = validatePasswordStrength(password);
   if (!validation.ok) throw new Error(validation.message);
-  const user = await findAirtableAdmin(email);
+
+  const normalized = email.trim().toLowerCase();
+  const stateless = verifyAdminPasswordResetToken(token);
+  if (stateless) {
+    if (stateless.email !== normalized) throw new Error('Reset link is invalid.');
+    await setAdminTempPassword(normalized, password, 'Admin');
+    return;
+  }
+
+  // Legacy: Airtable-stored reset token (backward compatibility)
+  const user = await findAirtableAdmin(normalized);
   if (!user) throw new Error('Reset link is invalid.');
   const headers = await airtableHeaders();
   const res = await fetch(`https://api.airtable.com/v0/${BASE}/${encodeURIComponent(ADMIN_USERS_TABLE)}/${user.id}`, { headers, cache: 'no-store' });
