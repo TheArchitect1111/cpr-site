@@ -6,6 +6,7 @@ import {
   createAdminPasswordResetToken,
   verifyAdminPasswordResetToken,
 } from '@/lib/admin-password-reset-token';
+import { configuredOwnerEmails, isConfiguredOwnerEmail } from '@/lib/admin-owner';
 
 export type AdminUser = { email: string; password: string; role: string; name: string };
 type AirtableRecord = { id: string; fields: Record<string, unknown> };
@@ -344,12 +345,16 @@ export async function findAdminAccount(email: string): Promise<Omit<AdminUser, '
     .map((value) => value.trim().toLowerCase())
     .filter(Boolean);
   if (allowlist.includes(normalized)) {
-    const ownerEmail = (process.env.ADMIN_EMAIL || '').trim().toLowerCase();
+    const ownerEmail = configuredOwnerEmails()[0] || '';
     return {
       email: normalized,
       role: normalized === ownerEmail ? 'owner' : 'admin',
       name: normalized === ownerEmail ? 'Mike' : 'Admin',
     };
+  }
+
+  if (isConfiguredOwnerEmail(normalized)) {
+    return { email: normalized, role: 'owner', name: 'Mike' };
   }
 
   return null;

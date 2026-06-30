@@ -9,6 +9,8 @@ type Props = {
   title?: string;
   subtitle?: string;
   buttonLabel?: string;
+  emailPlaceholder?: string;
+  emailHint?: string;
 };
 
 export default function MagicLinkForm({
@@ -17,6 +19,8 @@ export default function MagicLinkForm({
   title = 'Sign in with email',
   subtitle = 'Enter your email and we will send you a one-tap login link. No password needed.',
   buttonLabel = 'Email me a login link',
+  emailPlaceholder = 'you@example.com',
+  emailHint,
 }: Props) {
   const [email, setEmail] = useState('');
   const [error, setError] = useState('');
@@ -70,13 +74,14 @@ export default function MagicLinkForm({
 
       <div className="pl-field">
         <label htmlFor="magic-email">EMAIL</label>
+        {emailHint ? <p className="pl-sub" style={{ marginBottom: '0.5rem' }}>{emailHint}</p> : null}
         <input
           id="magic-email"
           type="email"
           autoComplete="email"
           autoCapitalize="none"
           spellCheck={false}
-          placeholder="you@example.com"
+          placeholder={emailPlaceholder}
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           required

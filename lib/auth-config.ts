@@ -6,6 +6,7 @@
 import { magicLinkConfigured } from '@/lib/magic-link';
 import { getAdminSessionSecret } from '@/lib/admin-session-secret';
 import { adminUsers } from '@/lib/admin-auth';
+import { configuredOwnerEmails } from '@/lib/admin-owner';
 
 export type AuthReadiness = {
   /** HMAC secret for sessions + magic links + password-reset tokens */
@@ -31,7 +32,12 @@ export type AuthReadiness = {
 export function getAuthReadiness(): AuthReadiness {
   const sessionSecret = Boolean(getAdminSessionSecret());
   const admins = adminUsers();
-  const adminIdentity = admins.length > 0 || Boolean(process.env.AIRTABLE_ADMIN_USERS_TABLE_ID);
+  const ownerEmails = configuredOwnerEmails();
+  const adminIdentity =
+    admins.length > 0 ||
+    ownerEmails.length > 0 ||
+    Boolean(process.env.AIRTABLE_ADMIN_USERS_TABLE_ID?.trim()) ||
+    Boolean(process.env.ADMIN_CLERK_ALLOWLIST?.trim());
   const emailDelivery = Boolean(process.env.RESEND_API_KEY?.trim());
   const emailFrom = Boolean(process.env.RESEND_FROM_EMAIL?.trim());
   const adminUserStorage = Boolean(
@@ -66,7 +72,7 @@ export function getAuthReadiness(): AuthReadiness {
   return {
     sessionSecret,
     adminIdentity,
-    adminCount: admins.length,
+    adminCount: Math.max(admins.length, ownerEmails.length),
     emailDelivery,
     emailFrom,
     adminUserStorage,

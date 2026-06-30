@@ -1,3 +1,5 @@
+import { CPR_OWNER_EMAIL } from '@/lib/admin-owner';
+
 type Props = {
   next?: string;
   disabled?: boolean;
@@ -17,11 +19,15 @@ export default function AdminPasswordLoginForm({ next = '/admin', disabled, disa
 
       <div className="pl-field">
         <label htmlFor="admin-email">EMAIL</label>
+        <p className="pl-sub" style={{ marginBottom: '0.5rem' }}>
+          Type your email address — do not pick from a Google account list.
+        </p>
         <input
           id="admin-email"
           name="email"
           type="email"
           autoComplete="username"
+          placeholder={CPR_OWNER_EMAIL}
           required
           disabled={disabled}
         />
