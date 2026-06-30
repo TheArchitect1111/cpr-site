@@ -5,6 +5,17 @@ Hi Mike,
 We fixed the admin login issue on CPR Global. The password field had been removed from the sign-in page while recovery instructions still pointed you there — that’s resolved now. Here’s how to get in.
 
 ══════════════════════════════════════════
+IMPORTANT — IGNORE THE GOOGLE DROPDOWN
+══════════════════════════════════════════
+
+If you see a Google account picker or dropdown that does NOT list
+mikecprglobal@mississaugamagic.com, close it. Go directly to:
+
+  https://canadianprospectrecruitment.vercel.app/admin/login
+
+Type your email in the text box — do not pick an account from the list.
+
+══════════════════════════════════════════
 RECOMMENDED: EMAIL LOGIN LINK (NO PASSWORD)
 ══════════════════════════════════════════
 
