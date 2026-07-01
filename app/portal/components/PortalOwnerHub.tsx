@@ -3,6 +3,7 @@
 import { useCallback, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import type { PortalContent, PortalSection } from '@/lib/portal-content';
+import { OptimisticSaveBadge, useOptimisticSave } from '@/lib/instant-feel';
 import './portal-owner-hub.css';
 
 type Tab = 'announcements' | 'sections' | 'content' | 'profiles' | 'amplifi';
@@ -53,6 +54,10 @@ export default function PortalOwnerHub({
   const tabs = portalType === 'parent' ? TABS.filter((t) => t.id !== 'amplifi') : TABS;
   const [message, setMessage] = useState('');
   const [busy, setBusy] = useState('');
+  const sectionsSave = useOptimisticSave();
+  const contentSave = useOptimisticSave();
+  const { run: runSectionsSave, status: sectionsSaveStatus, error: sectionsSaveError } = sectionsSave;
+  const { run: runContentSave, status: contentSaveStatus, error: contentSaveError } = contentSave;
 
   // ---- Sections ----
   const [sections, setSections] = useState<PortalSection[]>(content.sections);
@@ -68,9 +73,8 @@ export default function PortalOwnerHub({
   };
 
   const saveSections = useCallback(async () => {
-    setBusy('sections');
     setMessage('');
-    try {
+    await runSectionsSave(async () => {
       const res = await fetch('/api/portal-admin/content', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -80,12 +84,8 @@ export default function PortalOwnerHub({
       if (!res.ok) throw new Error(json.error || 'Save failed');
       setMessage('Sections updated.');
       router.refresh();
-    } catch (err) {
-      setMessage(err instanceof Error ? err.message : 'Could not save sections.');
-    } finally {
-      setBusy('');
-    }
-  }, [sections, router]);
+    });
+  }, [sections, router, runSectionsSave]);
 
   // ---- Content / hero ----
   const [hero, setHero] = useState(content.hero);
@@ -110,9 +110,8 @@ export default function PortalOwnerHub({
   };
 
   const saveContent = async () => {
-    setBusy('content');
     setMessage('');
-    try {
+    await runContentSave(async () => {
       const res = await fetch('/api/portal-admin/content', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -122,11 +121,7 @@ export default function PortalOwnerHub({
       if (!res.ok) throw new Error(json.error || 'Save failed');
       setMessage('Content saved.');
       router.refresh();
-    } catch (err) {
-      setMessage(err instanceof Error ? err.message : 'Could not save content.');
-    } finally {
-      setBusy('');
-    }
+    });
   };
 
   // ---- Announcements ----
@@ -381,9 +376,14 @@ export default function PortalOwnerHub({
                     </li>
                   ))}
                 </ul>
-                <button className="owner-primary" onClick={saveSections} disabled={busy === 'sections'}>
-                  {busy === 'sections' ? 'Saving...' : 'Save Sections'}
+                <button
+                  className={`owner-primary pc-tap${sectionsSaveStatus === 'saved' ? ' pc-save-ok' : ''}`}
+                  onClick={() => void saveSections()}
+                  disabled={sectionsSaveStatus === 'saving'}
+                >
+                  {sectionsSaveStatus === 'saving' ? 'Saving...' : 'Save Sections'}
                 </button>
+                <OptimisticSaveBadge status={sectionsSaveStatus} error={sectionsSaveError} />
               </div>
             )}
 
@@ -401,9 +401,14 @@ export default function PortalOwnerHub({
                     <button type="button" className="owner-link-btn" onClick={() => setHero((h) => ({ ...h, imageUrl: '' }))}>Remove image</button>
                   </div>
                 )}
-                <button className="owner-primary" onClick={saveContent} disabled={busy === 'content' || busy === 'upload'}>
-                  {busy === 'content' ? 'Saving...' : busy === 'upload' ? 'Uploading...' : 'Save Content'}
+                <button
+                  className={`owner-primary pc-tap${contentSaveStatus === 'saved' ? ' pc-save-ok' : ''}`}
+                  onClick={() => void saveContent()}
+                  disabled={contentSaveStatus === 'saving' || busy === 'upload'}
+                >
+                  {contentSaveStatus === 'saving' ? 'Saving...' : busy === 'upload' ? 'Uploading...' : 'Save Content'}
                 </button>
+                <OptimisticSaveBadge status={contentSaveStatus} error={contentSaveError} />
               </div>
             )}
 

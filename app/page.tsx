@@ -1,7 +1,10 @@
 import './landing.css';
 import { LandingPage } from '@/lib/landing-chassis/LandingPage';
-import { landingConfig } from '@/config/landing';
+import { getLandingPageConfig } from '@/lib/get-landing-config';
 
-export default function Home() {
-  return <LandingPage config={landingConfig} />;
+export const dynamic = 'force-dynamic';
+
+export default async function Home() {
+  const config = await getLandingPageConfig();
+  return <LandingPage config={config} />;
 }

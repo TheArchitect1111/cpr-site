@@ -33,7 +33,12 @@ export type CollectionId =
   | 'offers'
   | 'documents'
   | 'fee-agreements'
-  | 'email-templates';
+  | 'email-templates'
+  | 'site-updates'
+  | 'site-events'
+  | 'site-quotes'
+  | 'media-library'
+  | 'site-text';
 
 export type CollectionDef = {
   id: CollectionId;
@@ -179,6 +184,97 @@ export const COLLECTIONS: Record<CollectionId, CollectionDef> = {
       { key: 'category', label: 'Category', type: 'select', options: ['Coach Outreach', 'Family', 'Follow Up', 'Welcome', 'Offer', 'Other'] },
       { key: 'subject', label: 'Subject line', type: 'text', placeholder: 'Email subject' },
       { key: 'body', label: 'Body', type: 'textarea', hint: 'You can use placeholders like {{athlete}}, {{school}}, {{coach}}.' },
+    ],
+  },
+  'site-updates': {
+    id: 'site-updates',
+    label: 'Site Updates',
+    singular: 'Update',
+    description: 'Owner-authored updates for families, athletes, and public site moments.',
+    titleField: 'title',
+    subtitleFields: ['audience', 'publishDate'],
+    statusField: 'status',
+    fields: [
+      { key: 'title', label: 'Title', type: 'text', required: true, placeholder: 'e.g. Summer showcase details are live' },
+      { key: 'audience', label: 'Audience', type: 'select', options: ['Everyone', 'Families', 'Athletes', 'Parents', 'Coaches'] },
+      { key: 'status', label: 'Status', type: 'select', options: ['Draft', 'Published', 'Archived'] },
+      { key: 'publishDate', label: 'Publish date', type: 'date' },
+      { key: 'summary', label: 'Short summary', type: 'textarea', placeholder: 'One or two sentences people can scan quickly.' },
+      { key: 'body', label: 'Full update', type: 'textarea' },
+      { key: 'imageUrl', label: 'Image', type: 'file' },
+      { key: 'ctaLabel', label: 'Button label', type: 'text', placeholder: 'Register now' },
+      { key: 'ctaUrl', label: 'Button link', type: 'text', placeholder: 'https://' },
+    ],
+  },
+  'site-events': {
+    id: 'site-events',
+    label: 'Events',
+    singular: 'Event',
+    description: 'Create, edit, and publish events that can appear in portal event feeds.',
+    titleField: 'eventName',
+    subtitleFields: ['eventType', 'date', 'location'],
+    statusField: 'status',
+    fields: [
+      { key: 'eventName', label: 'Event name', type: 'text', required: true, placeholder: 'e.g. CPR Elite Exposure Camp' },
+      { key: 'eventType', label: 'Event type', type: 'select', options: ['Camp', 'Showcase', 'Tournament', 'Recruiting', 'Deadline', 'Meeting', 'Other'] },
+      { key: 'status', label: 'Status', type: 'select', options: ['Draft', 'Published', 'Archived'] },
+      { key: 'date', label: 'Date', type: 'date', required: true },
+      { key: 'location', label: 'Location', type: 'text', placeholder: 'City, venue, or online' },
+      { key: 'description', label: 'Description', type: 'textarea' },
+      { key: 'registrationUrl', label: 'Registration link', type: 'text', placeholder: 'https://' },
+      { key: 'gradYearRelevance', label: 'Grad-year tags', type: 'text', placeholder: '2026, 2027, senior' },
+      { key: 'imageUrl', label: 'Event image', type: 'file' },
+    ],
+  },
+  'site-quotes': {
+    id: 'site-quotes',
+    label: 'Quotes',
+    singular: 'Quote',
+    description: 'Testimonials, coaching quotes, and proof points for the public site.',
+    titleField: 'name',
+    subtitleFields: ['role', 'placement'],
+    statusField: 'status',
+    fields: [
+      { key: 'quote', label: 'Quote', type: 'textarea', required: true },
+      { key: 'name', label: 'Name', type: 'text', required: true, placeholder: 'Person or family name' },
+      { key: 'role', label: 'Role / context', type: 'text', placeholder: 'CPR Parent, Former Player, Coach' },
+      { key: 'placement', label: 'Placement', type: 'select', options: ['Homepage testimonials', 'Philosophy band', 'Recruitment page', 'Portal'] },
+      { key: 'status', label: 'Status', type: 'select', options: ['Draft', 'Published', 'Featured', 'Archived'] },
+      { key: 'photoUrl', label: 'Photo', type: 'file' },
+    ],
+  },
+  'media-library': {
+    id: 'media-library',
+    label: 'Images',
+    singular: 'Image',
+    description: 'A reusable media library for site, portal, and social visuals.',
+    titleField: 'name',
+    subtitleFields: ['category', 'usage'],
+    statusField: 'category',
+    fields: [
+      { key: 'name', label: 'Image name', type: 'text', required: true, placeholder: 'e.g. 2026 Showcase group photo' },
+      { key: 'category', label: 'Category', type: 'select', options: ['Hero', 'Athlete', 'Event', 'Testimonial', 'Training', 'Social', 'Other'] },
+      { key: 'fileUrl', label: 'Image file', type: 'file', required: true },
+      { key: 'altText', label: 'Alt text', type: 'text', placeholder: 'Describe the image for accessibility' },
+      { key: 'caption', label: 'Caption', type: 'textarea' },
+      { key: 'usage', label: 'Where it should be used', type: 'text', placeholder: 'Homepage hero, camp page, social post...' },
+    ],
+  },
+  'site-text': {
+    id: 'site-text',
+    label: 'Site Text',
+    singular: 'Text Block',
+    description: 'Reusable copy blocks for pages, calls-to-action, and owner notes.',
+    titleField: 'placement',
+    subtitleFields: ['headline', 'status'],
+    statusField: 'status',
+    fields: [
+      { key: 'placement', label: 'Placement', type: 'text', required: true, placeholder: 'e.g. Homepage CTA, Camps intro, Footer note' },
+      { key: 'status', label: 'Status', type: 'select', options: ['Draft', 'Published', 'Archived'] },
+      { key: 'headline', label: 'Headline', type: 'text' },
+      { key: 'body', label: 'Body text', type: 'textarea' },
+      { key: 'ctaLabel', label: 'Button label', type: 'text' },
+      { key: 'ctaUrl', label: 'Button link', type: 'text', placeholder: 'https://' },
     ],
   },
 };

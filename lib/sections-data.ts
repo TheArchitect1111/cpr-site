@@ -1,4 +1,5 @@
 import { allowSampleData } from '@/lib/env';
+import { listCollection } from '@/lib/admin-collections';
 
 const BASE = 'appvVr6MVrJvEY0YJ';
 
@@ -592,5 +593,28 @@ export async function getUpcomingEvents(): Promise<{ events: PortalEvent[]; live
   if (rows.length === 0 && !process.env.AIRTABLE_TOKEN && allowSampleData()) {
     return { events: SAMPLE_EVENTS, live: false };
   }
-  return { events: rows.map(rowToEvent), live: true };
+  const ownerEvents = (await listCollection('site-events'))
+    .filter((item) => {
+      const status = String(item.status || '').toLowerCase();
+      const date = String(item.date || '');
+      return status === 'published' && (!date || date >= today);
+    })
+    .map((item): PortalEvent => ({
+      id: String(item.id),
+      eventName: String(item.eventName || ''),
+      eventType: String(item.eventType || 'Event'),
+      date: String(item.date || ''),
+      location: String(item.location || ''),
+      description: String(item.description || ''),
+      registrationUrl: String(item.registrationUrl || ''),
+      gradYearRelevance: String(item.gradYearRelevance || '')
+        .split(/[,\n;]/)
+        .map((tag) => tag.trim())
+        .filter(Boolean),
+    }))
+    .filter((event) => event.eventName.trim());
+  const events = [...ownerEvents, ...rows.map(rowToEvent)].sort((a, b) =>
+    String(a.date || '').localeCompare(String(b.date || '')),
+  );
+  return { events, live: true };
 }

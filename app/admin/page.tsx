@@ -226,6 +226,8 @@ export default async function AdminPage({
         </nav>
         <div className="aside-sec">PORTAL</div>
         <nav>
+          <a className="aitem" href="/admin/update-portal">&#9889; Update Portal</a>
+          <a className="aitem" href="/admin/landing">&#127760; Edit Homepage</a>
           <a className="aitem" href="/portal/owner">&#127968; Family Portal (Owner)</a>
           <a className={`aitem${activeTab === 'communication' ? ' active' : ''}`} href="/admin?tab=communication">
             &#128227; Communication Center
@@ -260,6 +262,21 @@ export default async function AdminPage({
           </a>
           <a className={`aitem${activeTab === 'email-templates' ? ' active' : ''}`} href="/admin?tab=email-templates">
             &#9993; Email Templates
+          </a>
+          <a className={`aitem${activeTab === 'site-updates' ? ' active' : ''}`} href="/admin?tab=site-updates">
+            &#128221; Site Updates
+          </a>
+          <a className={`aitem${activeTab === 'site-events' ? ' active' : ''}`} href="/admin?tab=site-events">
+            &#128197; Site Events
+          </a>
+          <a className={`aitem${activeTab === 'site-quotes' ? ' active' : ''}`} href="/admin?tab=site-quotes">
+            &#10077; Quotes
+          </a>
+          <a className={`aitem${activeTab === 'media-library' ? ' active' : ''}`} href="/admin?tab=media-library">
+            &#128247; Image Library
+          </a>
+          <a className={`aitem${activeTab === 'site-text' ? ' active' : ''}`} href="/admin?tab=site-text">
+            &#9997; Site Text
           </a>
         </nav>
         <a className="aitem back" href="/">&#8592; Back to Site</a>

@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from 'next';
 import PwaController from '@/app/components/pwa/PwaController';
 import { getPwaConfig, isPwaEnabled } from '@/lib/pwa/pwa-config';
 import './globals.css';
+import '../styles/ea-instant-feel/index.css';
 
 const pwa = getPwaConfig();
 
