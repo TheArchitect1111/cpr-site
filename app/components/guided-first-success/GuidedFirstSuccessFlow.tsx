@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useMemo, useState, useSyncExternalStore } from 'react';
 import Link from 'next/link';
 import {
   type EAPlatformId,
@@ -12,23 +12,38 @@ import './guided-first-success.css';
 
 type Step = 'welcome' | 'intent' | 'action' | 'result';
 
+function subscribeNoop() {
+  return () => {};
+}
+
 export default function GuidedFirstSuccessFlow({
   platformId,
   scope,
   firstActionHref,
   onFirstAction,
   onComplete,
+  autoOpen = true,
 }: {
   platformId: EAPlatformId;
   scope: string;
   firstActionHref?: string;
   onFirstAction?: () => void;
   onComplete?: () => void;
+  /** When false, the modal never auto-opens (CPR uses GuidedTour instead). */
+  autoOpen?: boolean;
 }) {
   const config = GUIDED_PLATFORMS[platformId];
-  const [open, setOpen] = useState(() => !isGfsComplete(platformId, scope));
+  const [dismissed, setDismissed] = useState(false);
   const [step, setStep] = useState<Step>('welcome');
   const [intentId, setIntentId] = useState<string | null>(null);
+
+  const gfsComplete = useSyncExternalStore(
+    subscribeNoop,
+    () => isGfsComplete(platformId, scope),
+    () => true,
+  );
+
+  const open = autoOpen && !dismissed && !gfsComplete;
 
   const actionHref = firstActionHref ?? config.firstActionHref;
 
@@ -59,7 +74,7 @@ export default function GuidedFirstSuccessFlow({
 
   const finish = (intent?: string) => {
     markGfsComplete(platformId, scope, intent ?? intentId ?? undefined);
-    setOpen(false);
+    setDismissed(true);
     onComplete?.();
   };
 
@@ -79,6 +94,9 @@ export default function GuidedFirstSuccessFlow({
             </p>
             <button type="button" className="gfs-btn gfs-btn-primary" onClick={() => setStep('intent')}>
               Get Started
+            </button>
+            <button type="button" className="gfs-btn gfs-btn-ghost" onClick={() => finish()}>
+              Skip for now
             </button>
           </>
         )}

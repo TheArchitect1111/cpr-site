@@ -195,7 +195,7 @@ export function gfsStorageKey(platform: EAPlatformId, scope: string): string {
 }
 
 export function isGfsComplete(platform: EAPlatformId, scope: string): boolean {
-  if (typeof window === 'undefined') return true;
+  if (typeof window === 'undefined') return false;
   return localStorage.getItem(gfsStorageKey(platform, scope)) === 'complete';
 }
 

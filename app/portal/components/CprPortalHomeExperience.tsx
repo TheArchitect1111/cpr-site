@@ -30,6 +30,7 @@ export default function CprPortalHomeExperience({
         platformId="cpr"
         scope={`${portalType}/${slug}`}
         firstActionHref={`${base}/recruiting-timeline`}
+        autoOpen={false}
       />
       <ActionCenterPanel items={actionItems} />
       <UniversalCoachPanel platformId="cpr" portalBase={base} />
