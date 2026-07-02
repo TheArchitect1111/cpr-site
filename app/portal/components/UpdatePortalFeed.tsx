@@ -1,3 +1,4 @@
+import { eaChassis } from '@/config/ea-chassis';
 import type { PortalUpdate } from '@/lib/portal-updates';
 
 const CATEGORY_LABEL: Record<PortalUpdate['category'], string> = {
@@ -5,7 +6,7 @@ const CATEGORY_LABEL: Record<PortalUpdate['category'], string> = {
   onboarding: 'Onboarding',
   message: 'Message',
   opportunity: 'Opportunity',
-  system: 'CPR Activity',
+  system: eaChassis.portalCopy.categorySystemLabel,
 };
 
 function formatWhen(dateStr: string): string {
@@ -33,10 +34,12 @@ export default function UpdatePortalFeed({
   return (
     <div className="update-portal">
       <div className="update-portal-hero">
-        <p className="pp-portal-label">Update Portal</p>
-        <h1 className="update-portal-title">Recruiting activity for {athleteName}</h1>
+        <p className="pp-portal-label">{eaChassis.navigation.tabs.updates}</p>
+        <h1 className="update-portal-title">
+          {eaChassis.portalCopy.updateFeedTitle.replace('{name}', athleteName)}
+        </h1>
         <p className="update-portal-sub">
-          Every outreach, message, and milestone — in one live feed.
+          {eaChassis.portalCopy.updateFeedSub}
           {!live && ' Showing sample updates until live data is available.'}
         </p>
         {ownerPostUrl && (
@@ -48,7 +51,7 @@ export default function UpdatePortalFeed({
 
       {updates.length === 0 ? (
         <div className="update-portal-empty pp-section">
-          <p>No updates yet. As CPR tracks coach outreach and school interest, activity will appear here.</p>
+          <p>{eaChassis.portalCopy.emptyUpdates}</p>
         </div>
       ) : (
         <div className="update-portal-feed">

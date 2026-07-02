@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react';
-import { site } from '@/config/site';
+import { eaChassis } from '@/config/ea-chassis';
 import { getPortalOwner } from '@/lib/portal-owner';
 import PortalShell, { type PortalTab } from './PortalShell';
 import PortalOwnerFab from './PortalOwnerFab';
@@ -27,8 +27,8 @@ export default async function PortalSubpageLayout({ portalType, slug, active, ch
       </main>
       <footer className="portal-footer">
         <p>
-          CPR Global Prospects &middot;{' '}
-          <a href={`mailto:${site.footer.email}`}>{site.footer.email}</a>
+          {eaChassis.portalCopy.footerPrefix} &middot;{' '}
+          <a href={`mailto:${eaChassis.organization.supportEmail}`}>{eaChassis.organization.supportEmail}</a>
         </p>
       </footer>
       {owner && <PortalOwnerFab href={`${dash}/updates/new`} />}

@@ -1,7 +1,8 @@
 'use client';
 
-import { useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import type { LandingContent } from '@/lib/landing-content';
+import { LANDING_EDITOR_SECTIONS } from '@/lib/landing-editor-sections';
 import type { LandingPageConfig } from '@/lib/landing-chassis/types';
 import { OptimisticSaveBadge, useOptimisticSave } from '@/lib/instant-feel';
 import '../admin.css';
@@ -15,37 +16,40 @@ type Props = {
 
 export default function AdminLandingEditor({ initialContent, defaults, storageConfigured }: Props) {
   const [content, setContent] = useState(initialContent);
+  const [activeSection, setActiveSection] = useState(LANDING_EDITOR_SECTIONS[0].id);
   const [message, setMessage] = useState('');
   const [busy, setBusy] = useState(false);
+  const previewRef = useRef<HTMLIFrameElement>(null);
   const { status: saveStatus, error: saveError, run: runSave } = useOptimisticSave();
 
-  const updatePossibility = (key: keyof LandingContent['possibility'], value: string) => {
-    setContent((prev) => ({
-      ...prev,
-      possibility: { ...prev.possibility, [key]: value },
-    }));
-  };
+  const activeMeta = LANDING_EDITOR_SECTIONS.find((s) => s.id === activeSection) ?? LANDING_EDITOR_SECTIONS[0];
 
-  const updateAboutPoint = (index: number, value: string) => {
-    setContent((prev) => {
-      const points = [...prev.about.points];
-      points[index] = value;
-      return { ...prev, about: { ...prev.about, points } };
-    });
-  };
+  const scrollPreviewToSection = useCallback((hash: string) => {
+    const frame = previewRef.current;
+    if (!frame?.contentWindow) return;
+    try {
+      frame.contentWindow.location.hash = hash.replace(/^#/, '');
+    } catch {
+      /* cross-origin guard */
+    }
+  }, []);
 
-  async function uploadHero(file: File) {
+  useEffect(() => {
+    scrollPreviewToSection(activeMeta.hash);
+  }, [activeMeta.hash, scrollPreviewToSection]);
+
+  async function uploadImage(kind: string, file: File, onUrl: (url: string) => void) {
     setBusy(true);
     setMessage('');
     try {
       const fd = new FormData();
       fd.append('file', file);
-      fd.append('kind', 'landing-hero');
+      fd.append('kind', kind);
       const res = await fetch('/api/upload', { method: 'POST', body: fd });
       const json = await res.json();
       if (!res.ok) throw new Error(json.error || 'Upload failed');
-      updatePossibility('imageUrl', json.url);
-      setMessage('Hero image uploaded. Click Save changes to publish.');
+      onUrl(json.url);
+      setMessage('Image uploaded. Click Save changes to publish.');
     } catch (err) {
       setMessage(err instanceof Error ? err.message : 'Upload failed.');
     } finally {
@@ -64,14 +68,664 @@ export default function AdminLandingEditor({ initialContent, defaults, storageCo
       const json = await res.json();
       if (!res.ok) throw new Error(json.error || 'Save failed');
       setContent(json.content);
-      setMessage('Landing page updated. Open the homepage in a new tab to review.');
+      setMessage('Homepage updated. The preview panel refreshes on save.');
+      previewRef.current?.contentWindow?.location.reload();
     });
   }
 
   const ph = defaults.possibility;
   const defAbout = defaults.about;
-  const defSocial = defaults.socialProof.items[0];
+  const defSocial = defaults.socialProof;
+  const defPhilosophy = defaults.philosophy;
+  const defPath = defaults.pathBand;
+  const defProcess = defaults.process;
+  const defChips = defaults.chipsAndDrip;
+  const defCamps = defaults.campsExposure;
+  const defResults = defaults.results;
   const defFooter = defaults.footer;
+
+  function renderSectionFields() {
+    switch (activeSection) {
+      case 'top':
+        return (
+          <>
+            <label>
+              Announcement banner
+              <input
+                value={content.possibility.announcement}
+                onChange={(e) =>
+                  setContent((prev) => ({
+                    ...prev,
+                    possibility: { ...prev.possibility, announcement: e.target.value },
+                  }))
+                }
+                placeholder={ph.announcement ?? 'Optional announcement line'}
+              />
+            </label>
+            <label>
+              Headline
+              <input
+                value={content.possibility.headline}
+                onChange={(e) =>
+                  setContent((prev) => ({
+                    ...prev,
+                    possibility: { ...prev.possibility, headline: e.target.value },
+                  }))
+                }
+                placeholder={ph.headline}
+              />
+            </label>
+            <label>
+              Subheadline
+              <input
+                value={content.possibility.subheadline}
+                onChange={(e) =>
+                  setContent((prev) => ({
+                    ...prev,
+                    possibility: { ...prev.possibility, subheadline: e.target.value },
+                  }))
+                }
+                placeholder={ph.subheadline}
+              />
+            </label>
+            <label>
+              Supporting text
+              <textarea
+                rows={3}
+                value={content.possibility.supporting}
+                onChange={(e) =>
+                  setContent((prev) => ({
+                    ...prev,
+                    possibility: { ...prev.possibility, supporting: e.target.value },
+                  }))
+                }
+                placeholder={ph.supporting}
+              />
+            </label>
+            <label>
+              Hero photo
+              <input
+                type="file"
+                accept="image/*"
+                onChange={(e) => {
+                  const file = e.target.files?.[0];
+                  if (file) {
+                    void uploadImage('landing-hero', file, (url) =>
+                      setContent((prev) => ({
+                        ...prev,
+                        possibility: { ...prev.possibility, imageUrl: url },
+                      })),
+                    );
+                  }
+                }}
+              />
+            </label>
+            {(content.possibility.imageUrl || ph.image) && (
+              <img
+                className="landing-editor-preview"
+                src={content.possibility.imageUrl || ph.image}
+                alt="Hero preview"
+              />
+            )}
+          </>
+        );
+
+      case 'about':
+        return (
+          <>
+            <label>
+              Section heading
+              <input
+                value={content.about.heading}
+                onChange={(e) =>
+                  setContent((prev) => ({ ...prev, about: { ...prev.about, heading: e.target.value } }))
+                }
+                placeholder={defAbout?.heading ?? 'About CPR'}
+              />
+            </label>
+            {[0, 1, 2].map((i) => (
+              <label key={i}>
+                Bullet {i + 1}
+                <input
+                  value={content.about.points[i] ?? ''}
+                  onChange={(e) => {
+                    const points = [...content.about.points];
+                    points[i] = e.target.value;
+                    setContent((prev) => ({ ...prev, about: { ...prev.about, points } }));
+                  }}
+                  placeholder={defAbout?.points[i] ?? ''}
+                />
+              </label>
+            ))}
+          </>
+        );
+
+      case 'testimonials':
+        return (
+          <>
+            <label>
+              Section heading
+              <input
+                value={content.socialProof.heading}
+                onChange={(e) =>
+                  setContent((prev) => ({
+                    ...prev,
+                    socialProof: { ...prev.socialProof, heading: e.target.value },
+                  }))
+                }
+                placeholder={defSocial.heading}
+              />
+            </label>
+            <p className="landing-editor-note">
+              Edit up to three quotes shown on the homepage. Leave a slot blank to keep the current quote for that
+              position.
+            </p>
+            {[0, 1, 2].map((i) => {
+              const slot = content.testimonials[i];
+              const def = defSocial.items[i];
+              return (
+                <div key={i} className="landing-editor-subsection">
+                  <h3>Testimonial {i + 1}</h3>
+                  <label>
+                    Quote
+                    <textarea
+                      rows={4}
+                      value={slot?.quote ?? ''}
+                      onChange={(e) => {
+                        const testimonials = [...content.testimonials];
+                        testimonials[i] = { ...testimonials[i], quote: e.target.value };
+                        setContent((prev) => ({ ...prev, testimonials }));
+                      }}
+                      placeholder={def?.quote ?? ''}
+                    />
+                  </label>
+                  <label>
+                    Name
+                    <input
+                      value={slot?.name ?? ''}
+                      onChange={(e) => {
+                        const testimonials = [...content.testimonials];
+                        testimonials[i] = { ...testimonials[i], name: e.target.value };
+                        setContent((prev) => ({ ...prev, testimonials }));
+                      }}
+                      placeholder={def?.name ?? ''}
+                    />
+                  </label>
+                  <label>
+                    Role
+                    <input
+                      value={slot?.role ?? ''}
+                      onChange={(e) => {
+                        const testimonials = [...content.testimonials];
+                        testimonials[i] = { ...testimonials[i], role: e.target.value };
+                        setContent((prev) => ({ ...prev, testimonials }));
+                      }}
+                      placeholder={def?.role ?? ''}
+                    />
+                  </label>
+                  <label>
+                    Photo
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={(e) => {
+                        const file = e.target.files?.[0];
+                        if (file) {
+                          void uploadImage('landing-quote', file, (url) => {
+                            const testimonials = [...content.testimonials];
+                            testimonials[i] = { ...testimonials[i], photoUrl: url };
+                            setContent((prev) => ({ ...prev, testimonials }));
+                          });
+                        }
+                      }}
+                    />
+                  </label>
+                  {(slot?.photoUrl || def?.photo) && (
+                    <img
+                      className="landing-editor-preview landing-editor-preview--thumb"
+                      src={slot?.photoUrl || def?.photo}
+                      alt={`Testimonial ${i + 1}`}
+                    />
+                  )}
+                </div>
+              );
+            })}
+          </>
+        );
+
+      case 'philosophy':
+        return (
+          <>
+            <label>
+              Eyebrow label
+              <input
+                value={content.philosophy.label}
+                onChange={(e) =>
+                  setContent((prev) => ({
+                    ...prev,
+                    philosophy: { ...prev.philosophy, label: e.target.value },
+                  }))
+                }
+                placeholder={defPhilosophy?.label ?? ''}
+              />
+            </label>
+            <label>
+              Quote
+              <textarea
+                rows={3}
+                value={content.philosophy.quote}
+                onChange={(e) =>
+                  setContent((prev) => ({
+                    ...prev,
+                    philosophy: { ...prev.philosophy, quote: e.target.value },
+                  }))
+                }
+                placeholder={defPhilosophy?.quote ?? ''}
+              />
+            </label>
+            <label>
+              Attribution
+              <input
+                value={content.philosophy.attribution}
+                onChange={(e) =>
+                  setContent((prev) => ({
+                    ...prev,
+                    philosophy: { ...prev.philosophy, attribution: e.target.value },
+                  }))
+                }
+                placeholder={defPhilosophy?.attribution ?? ''}
+              />
+            </label>
+          </>
+        );
+
+      case 'path':
+        return (
+          <label>
+            Band text
+            <textarea
+              rows={2}
+              value={content.pathBand.text}
+              onChange={(e) =>
+                setContent((prev) => ({
+                  ...prev,
+                  pathBand: { ...prev.pathBand, text: e.target.value },
+                }))
+              }
+              placeholder={defPath?.text ?? ''}
+            />
+          </label>
+        );
+
+      case 'how-it-works':
+        return (
+          <>
+            <label>
+              Section heading
+              <input
+                value={content.process.heading}
+                onChange={(e) =>
+                  setContent((prev) => ({
+                    ...prev,
+                    process: { ...prev.process, heading: e.target.value },
+                  }))
+                }
+                placeholder={defProcess?.heading ?? ''}
+              />
+            </label>
+            <label>
+              Subheading
+              <textarea
+                rows={2}
+                value={content.process.subheading}
+                onChange={(e) =>
+                  setContent((prev) => ({
+                    ...prev,
+                    process: { ...prev.process, subheading: e.target.value },
+                  }))
+                }
+                placeholder={defProcess?.subheading ?? ''}
+              />
+            </label>
+            {content.process.steps.map((step, i) => {
+              const def = defProcess?.steps[i];
+              return (
+                <div key={i} className="landing-editor-subsection">
+                  <h3>Step {i + 1}</h3>
+                  <label>
+                    Label
+                    <input
+                      value={step.label}
+                      onChange={(e) => {
+                        const steps = [...content.process.steps];
+                        steps[i] = { ...steps[i], label: e.target.value };
+                        setContent((prev) => ({ ...prev, process: { ...prev.process, steps } }));
+                      }}
+                      placeholder={def?.label ?? ''}
+                    />
+                  </label>
+                  <label>
+                    Description
+                    <textarea
+                      rows={2}
+                      value={step.description}
+                      onChange={(e) => {
+                        const steps = [...content.process.steps];
+                        steps[i] = { ...steps[i], description: e.target.value };
+                        setContent((prev) => ({ ...prev, process: { ...prev.process, steps } }));
+                      }}
+                      placeholder={def?.description ?? ''}
+                    />
+                  </label>
+                </div>
+              );
+            })}
+          </>
+        );
+
+      case 'chips-and-drip':
+        return (
+          <>
+            <label>
+              Section heading
+              <input
+                value={content.chipsAndDrip.heading}
+                onChange={(e) =>
+                  setContent((prev) => ({
+                    ...prev,
+                    chipsAndDrip: { ...prev.chipsAndDrip, heading: e.target.value },
+                  }))
+                }
+                placeholder={defChips?.heading ?? ''}
+              />
+            </label>
+            <label>
+              Body copy
+              <textarea
+                rows={5}
+                value={content.chipsAndDrip.body}
+                onChange={(e) =>
+                  setContent((prev) => ({
+                    ...prev,
+                    chipsAndDrip: { ...prev.chipsAndDrip, body: e.target.value },
+                  }))
+                }
+                placeholder={defChips?.body ?? ''}
+              />
+            </label>
+            <p className="landing-editor-note">
+              Training gallery photos still rotate automatically. Contact EA if you need to swap gallery images.
+            </p>
+          </>
+        );
+
+      case 'camps':
+        return (
+          <>
+            <label>
+              Section heading
+              <input
+                value={content.campsExposure.heading}
+                onChange={(e) =>
+                  setContent((prev) => ({
+                    ...prev,
+                    campsExposure: { ...prev.campsExposure, heading: e.target.value },
+                  }))
+                }
+                placeholder={defCamps?.heading ?? ''}
+              />
+            </label>
+            <label>
+              Body copy
+              <textarea
+                rows={5}
+                value={content.campsExposure.body}
+                onChange={(e) =>
+                  setContent((prev) => ({
+                    ...prev,
+                    campsExposure: { ...prev.campsExposure, body: e.target.value },
+                  }))
+                }
+                placeholder={defCamps?.body ?? ''}
+              />
+            </label>
+            <label>
+              Dashboard / exposure image
+              <input
+                type="file"
+                accept="image/*"
+                onChange={(e) => {
+                  const file = e.target.files?.[0];
+                  if (file) {
+                    void uploadImage('landing-camps', file, (url) =>
+                      setContent((prev) => ({
+                        ...prev,
+                        campsExposure: { ...prev.campsExposure, dashboardImageUrl: url },
+                      })),
+                    );
+                  }
+                }}
+              />
+            </label>
+            {(content.campsExposure.dashboardImageUrl || defCamps?.dashboardImage) && (
+              <img
+                className="landing-editor-preview"
+                src={content.campsExposure.dashboardImageUrl || defCamps?.dashboardImage}
+                alt="Camps dashboard preview"
+              />
+            )}
+            <p className="landing-editor-note">
+              Camp photo carousel images are managed by EA. You can change the copy and dashboard image here.
+            </p>
+          </>
+        );
+
+      case 'results':
+        return (
+          <>
+            <label>
+              Section heading
+              <input
+                value={content.results.heading}
+                onChange={(e) =>
+                  setContent((prev) => ({
+                    ...prev,
+                    results: { ...prev.results, heading: e.target.value },
+                  }))
+                }
+                placeholder={defResults?.heading ?? ''}
+              />
+            </label>
+            <label>
+              Subheading
+              <textarea
+                rows={2}
+                value={content.results.subheading}
+                onChange={(e) =>
+                  setContent((prev) => ({
+                    ...prev,
+                    results: { ...prev.results, subheading: e.target.value },
+                  }))
+                }
+                placeholder={defResults?.subheading ?? ''}
+              />
+            </label>
+            <div className="landing-editor-subsection">
+              <h3>Stats</h3>
+              {content.results.stats.map((stat, i) => {
+                const def = defResults?.stats[i];
+                return (
+                  <div key={i} className="landing-editor-stat-row">
+                    <label>
+                      Value {i + 1}
+                      <input
+                        value={stat.value}
+                        onChange={(e) => {
+                          const stats = [...content.results.stats];
+                          stats[i] = { ...stats[i], value: e.target.value };
+                          setContent((prev) => ({ ...prev, results: { ...prev.results, stats } }));
+                        }}
+                        placeholder={def?.value ?? ''}
+                      />
+                    </label>
+                    <label>
+                      Label {i + 1}
+                      <input
+                        value={stat.label}
+                        onChange={(e) => {
+                          const stats = [...content.results.stats];
+                          stats[i] = { ...stats[i], label: e.target.value };
+                          setContent((prev) => ({ ...prev, results: { ...prev.results, stats } }));
+                        }}
+                        placeholder={def?.label ?? ''}
+                      />
+                    </label>
+                  </div>
+                );
+              })}
+            </div>
+            {[0, 1, 2].map((i) => {
+              const proof = content.results.proofs[i];
+              const def = defResults?.proofs[i];
+              return (
+                <div key={i} className="landing-editor-subsection">
+                  <h3>Proof card {i + 1}</h3>
+                  <label>
+                    Athlete name
+                    <input
+                      value={proof?.athleteName ?? ''}
+                      onChange={(e) => {
+                        const proofs = [...content.results.proofs];
+                        proofs[i] = { ...proofs[i], athleteName: e.target.value };
+                        setContent((prev) => ({ ...prev, results: { ...prev.results, proofs } }));
+                      }}
+                      placeholder={def?.athleteName ?? ''}
+                    />
+                  </label>
+                  <label>
+                    Caption
+                    <input
+                      value={proof?.caption ?? ''}
+                      onChange={(e) => {
+                        const proofs = [...content.results.proofs];
+                        proofs[i] = { ...proofs[i], caption: e.target.value };
+                        setContent((prev) => ({ ...prev, results: { ...prev.results, proofs } }));
+                      }}
+                      placeholder={def?.caption ?? ''}
+                    />
+                  </label>
+                  <label>
+                    Photo
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={(e) => {
+                        const file = e.target.files?.[0];
+                        if (file) {
+                          void uploadImage('landing-proof', file, (url) => {
+                            const proofs = [...content.results.proofs];
+                            proofs[i] = { ...proofs[i], imageUrl: url };
+                            setContent((prev) => ({ ...prev, results: { ...prev.results, proofs } }));
+                          });
+                        }
+                      }}
+                    />
+                  </label>
+                  {(proof?.imageUrl || def?.image) && (
+                    <img
+                      className="landing-editor-preview landing-editor-preview--thumb"
+                      src={proof?.imageUrl || def?.image}
+                      alt={def?.athleteName ?? `Proof ${i + 1}`}
+                    />
+                  )}
+                </div>
+              );
+            })}
+          </>
+        );
+
+      case 'apply':
+        return (
+          <>
+            <label>
+              Heading
+              <input
+                value={content.finalCta.heading}
+                onChange={(e) =>
+                  setContent((prev) => ({
+                    ...prev,
+                    finalCta: { ...prev.finalCta, heading: e.target.value },
+                  }))
+                }
+                placeholder={defaults.finalCta.heading}
+              />
+            </label>
+            <label>
+              Subheading
+              <input
+                value={content.finalCta.subheading}
+                onChange={(e) =>
+                  setContent((prev) => ({
+                    ...prev,
+                    finalCta: { ...prev.finalCta, subheading: e.target.value },
+                  }))
+                }
+                placeholder={defaults.finalCta.subheading}
+              />
+            </label>
+          </>
+        );
+
+      case 'contact':
+        return (
+          <>
+            <label>
+              About line
+              <textarea
+                rows={2}
+                value={content.footer.about}
+                onChange={(e) =>
+                  setContent((prev) => ({
+                    ...prev,
+                    footer: { ...prev.footer, about: e.target.value },
+                  }))
+                }
+                placeholder={defFooter.about}
+              />
+            </label>
+            <label>
+              Email
+              <input
+                value={content.footer.email}
+                onChange={(e) =>
+                  setContent((prev) => ({
+                    ...prev,
+                    footer: { ...prev.footer, email: e.target.value },
+                  }))
+                }
+                placeholder={defFooter.email}
+              />
+            </label>
+            <label>
+              Location
+              <input
+                value={content.footer.location}
+                onChange={(e) =>
+                  setContent((prev) => ({
+                    ...prev,
+                    footer: { ...prev.footer, location: e.target.value },
+                  }))
+                }
+                placeholder={defFooter.location}
+              />
+            </label>
+          </>
+        );
+
+      default:
+        return null;
+    }
+  }
 
   return (
     <div className="landing-editor">
@@ -81,237 +735,71 @@ export default function AdminLandingEditor({ initialContent, defaults, storageCo
         </p>
       )}
 
-      <section className="landing-editor-section">
-        <h2>Hero (top of homepage)</h2>
-        <label>
-          Announcement banner
-          <input
-            value={content.possibility.announcement}
-            onChange={(e) => updatePossibility('announcement', e.target.value)}
-            placeholder={ph.announcement ?? 'Optional announcement line'}
-          />
-        </label>
-        <label>
-          Headline
-          <input
-            value={content.possibility.headline}
-            onChange={(e) => updatePossibility('headline', e.target.value)}
-            placeholder={ph.headline}
-          />
-        </label>
-        <label>
-          Subheadline
-          <input
-            value={content.possibility.subheadline}
-            onChange={(e) => updatePossibility('subheadline', e.target.value)}
-            placeholder={ph.subheadline}
-          />
-        </label>
-        <label>
-          Supporting text
-          <textarea
-            rows={3}
-            value={content.possibility.supporting}
-            onChange={(e) => updatePossibility('supporting', e.target.value)}
-            placeholder={ph.supporting}
-          />
-        </label>
-        <label>
-          Hero photo
-          <input
-            type="file"
-            accept="image/*"
-            onChange={(e) => {
-              const file = e.target.files?.[0];
-              if (file) void uploadHero(file);
-            }}
-          />
-        </label>
-        {(content.possibility.imageUrl || ph.image) && (
-          <img
-            className="landing-editor-preview"
-            src={content.possibility.imageUrl || ph.image}
-            alt="Hero preview"
-          />
-        )}
-      </section>
+      <div className="landing-editor-layout">
+        <nav className="landing-editor-nav" aria-label="Homepage sections">
+          {LANDING_EDITOR_SECTIONS.map((section) => (
+            <button
+              key={section.id}
+              type="button"
+              className={`landing-editor-nav-item${activeSection === section.id ? ' is-active' : ''}`}
+              onClick={() => setActiveSection(section.id)}
+            >
+              {section.label}
+            </button>
+          ))}
+        </nav>
 
-      <section className="landing-editor-section">
-        <h2>About CPR</h2>
-        <label>
-          Section heading
-          <input
-            value={content.about.heading}
-            onChange={(e) =>
-              setContent((prev) => ({ ...prev, about: { ...prev.about, heading: e.target.value } }))
-            }
-            placeholder={defAbout?.heading ?? 'About CPR'}
-          />
-        </label>
-        {[0, 1, 2].map((i) => (
-          <label key={i}>
-            Bullet {i + 1}
-            <input
-              value={content.about.points[i] ?? ''}
-              onChange={(e) => updateAboutPoint(i, e.target.value)}
-              placeholder={defAbout?.points[i] ?? ''}
-            />
-          </label>
-        ))}
-      </section>
+        <div className="landing-editor-form-pane">
+          <section className="landing-editor-section">
+            <h2>{activeMeta.label}</h2>
+            <p className="landing-editor-section-desc">{activeMeta.description}</p>
+            {renderSectionFields()}
+          </section>
 
-      <section className="landing-editor-section">
-        <h2>Featured testimonial (first quote on homepage)</h2>
-        <label>
-          Section heading
-          <input
-            value={content.socialProof.heading}
-            onChange={(e) =>
-              setContent((prev) => ({
-                ...prev,
-                socialProof: { ...prev.socialProof, heading: e.target.value },
-              }))
-            }
-            placeholder={defaults.socialProof.heading}
-          />
-        </label>
-        <label>
-          Quote
-          <textarea
-            rows={5}
-            value={content.socialProof.quote}
-            onChange={(e) =>
-              setContent((prev) => ({
-                ...prev,
-                socialProof: { ...prev.socialProof, quote: e.target.value },
-              }))
-            }
-            placeholder={defSocial?.quote ?? ''}
-          />
-        </label>
-        <label>
-          Name
-          <input
-            value={content.socialProof.name}
-            onChange={(e) =>
-              setContent((prev) => ({
-                ...prev,
-                socialProof: { ...prev.socialProof, name: e.target.value },
-              }))
-            }
-            placeholder={defSocial?.name ?? ''}
-          />
-        </label>
-        <label>
-          Role
-          <input
-            value={content.socialProof.role}
-            onChange={(e) =>
-              setContent((prev) => ({
-                ...prev,
-                socialProof: { ...prev.socialProof, role: e.target.value },
-              }))
-            }
-            placeholder={defSocial?.role ?? ''}
-          />
-        </label>
-      </section>
+          {message && <p className="landing-editor-message">{message}</p>}
+          <OptimisticSaveBadge status={saveStatus} error={saveError} />
 
-      <section className="landing-editor-section">
-        <h2>Bottom call-to-action</h2>
-        <label>
-          Heading
-          <input
-            value={content.finalCta.heading}
-            onChange={(e) =>
-              setContent((prev) => ({
-                ...prev,
-                finalCta: { ...prev.finalCta, heading: e.target.value },
-              }))
-            }
-            placeholder={defaults.finalCta.heading}
-          />
-        </label>
-        <label>
-          Subheading
-          <input
-            value={content.finalCta.subheading}
-            onChange={(e) =>
-              setContent((prev) => ({
-                ...prev,
-                finalCta: { ...prev.finalCta, subheading: e.target.value },
-              }))
-            }
-            placeholder={defaults.finalCta.subheading}
-          />
-        </label>
-      </section>
+          <div className="landing-editor-actions">
+            <button
+              type="button"
+              className={`admin-btn admin-btn-primary pc-tap${saveStatus === 'saved' ? ' pc-save-ok' : ''}`}
+              disabled={busy || saveStatus === 'saving'}
+              onClick={() => void save()}
+            >
+              {saveStatus === 'saving' ? 'Saving…' : 'Save changes'}
+            </button>
+            <button
+              type="button"
+              className="admin-btn admin-btn-secondary"
+              onClick={() => scrollPreviewToSection(activeMeta.hash)}
+            >
+              Jump preview to section
+            </button>
+            <a className="admin-btn admin-btn-secondary" href={activeMeta.hash} target="_blank" rel="noreferrer">
+              Open section on live site
+            </a>
+          </div>
 
-      <section className="landing-editor-section">
-        <h2>Footer contact</h2>
-        <label>
-          About line
-          <textarea
-            rows={2}
-            value={content.footer.about}
-            onChange={(e) =>
-              setContent((prev) => ({
-                ...prev,
-                footer: { ...prev.footer, about: e.target.value },
-              }))
-            }
-            placeholder={defFooter.about}
-          />
-        </label>
-        <label>
-          Email
-          <input
-            value={content.footer.email}
-            onChange={(e) =>
-              setContent((prev) => ({
-                ...prev,
-                footer: { ...prev.footer, email: e.target.value },
-              }))
-            }
-            placeholder={defFooter.email}
-          />
-        </label>
-        <label>
-          Location
-          <input
-            value={content.footer.location}
-            onChange={(e) =>
-              setContent((prev) => ({
-                ...prev,
-                footer: { ...prev.footer, location: e.target.value },
-              }))
-            }
-            placeholder={defFooter.location}
-          />
-        </label>
-      </section>
+          <p className="landing-editor-hint">
+            Leave a field blank to keep the current published text. The preview panel shows the live homepage — save
+            first to see your edits. Gallery carousels and nav links still require EA support.
+          </p>
+        </div>
 
-      {message && <p className="landing-editor-message">{message}</p>}
-      <OptimisticSaveBadge status={saveStatus} error={saveError} />
-
-      <div className="landing-editor-actions">
-        <button
-          type="button"
-          className={`admin-btn admin-btn-primary pc-tap${saveStatus === 'saved' ? ' pc-save-ok' : ''}`}
-          disabled={busy || saveStatus === 'saving'}
-          onClick={() => void save()}
-        >
-          {saveStatus === 'saving' ? 'Saving…' : 'Save changes'}
-        </button>
-        <a className="admin-btn admin-btn-secondary" href="/" target="_blank" rel="noreferrer">
-          Preview homepage
-        </a>
+        <div className="landing-editor-preview-pane">
+          <div className="landing-editor-preview-head">
+            <strong>Live preview</strong>
+            <span>{activeMeta.label}</span>
+          </div>
+          <iframe
+            ref={previewRef}
+            className="landing-editor-iframe"
+            src="/"
+            title="Homepage preview"
+            onLoad={() => scrollPreviewToSection(activeMeta.hash)}
+          />
+        </div>
       </div>
-
-      <p className="landing-editor-hint">
-        Leave a field blank to keep the current published text. Gallery photos, nav links, and apply URLs still
-        require EA support — this editor covers the headline areas families read first.
-      </p>
     </div>
   );
 }

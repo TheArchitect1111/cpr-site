@@ -1,3 +1,4 @@
+import { eaChassis } from '@/config/ea-chassis';
 import { activeTenant, type HubModuleId } from '@/config/tenant';
 
 export type PortalHubModule = {
@@ -14,118 +15,94 @@ const MODULE_CATALOG: Record<
 > = {
   dashboard: {
     path: '',
-    tag: 'Command Center',
-    title: activeTenant.id === 'family-hub' ? 'Family dashboard' : 'Recruiting dashboard',
-    description:
-      activeTenant.id === 'family-hub'
-        ? 'Onboarding, family milestones, and what deserves attention today.'
-        : 'Onboarding, school interest, roadmap, and opportunity tracking.',
+    tag: eaChassis.portalCopy.dashboardTag,
+    title: eaChassis.portalCopy.dashboardTitle,
+    description: eaChassis.portalCopy.dashboardDescription,
   },
   amplifi: {
     path: '/amplifi',
-    tag: 'Amplifi™',
-    title: activeTenant.id === 'family-hub' ? 'Your story, visualized' : 'Your future, visualized',
-    description:
-      activeTenant.id === 'family-hub'
-        ? 'Share your family journey with cinematic clarity.'
-        : 'Cinematic vision of your recruiting journey — potential through success.',
+    tag: 'Amplifi',
+    title: 'Your story, visualized',
+    description: 'A cinematic view of progress, context, and what comes next.',
     variant: 'amplifi',
   },
   updates: {
     path: '/updates',
-    tag: 'Update Portal',
-    title: activeTenant.id === 'family-hub' ? 'Family activity feed' : 'Real-time recruiting feed',
-    description:
-      activeTenant.id === 'family-hub'
-        ? 'Announcements, milestones, and team updates in one timeline.'
-        : 'Coach outreach, school interest, messages, and CPR activity in one timeline.',
+    tag: eaChassis.portalCopy.updatesTag,
+    title: eaChassis.portalCopy.updatesTitle,
+    description: eaChassis.portalCopy.updatesDescription,
     variant: 'updates',
   },
   'recruiting-timeline': {
     path: '/recruiting-timeline',
-    tag: 'Learning Center',
-    title: 'Recruiting timeline',
-    description: 'Grade-by-grade guide for academics, film, camps, and coach outreach.',
+    tag: eaChassis.portalCopy.learningEyebrow,
+    title: 'Timeline',
+    description: 'A step-by-step guide for milestones, preparation, and next actions.',
   },
   'eligibility-center': {
     path: '/eligibility-center',
-    tag: 'Learning Center',
-    title: 'Eligibility center',
-    description: 'NCAA, NAIA, NJCAA, and U SPORTS requirements in plain language.',
+    tag: eaChassis.portalCopy.learningEyebrow,
+    title: 'Requirements',
+    description: 'Rules, requirements, and readiness checkpoints explained clearly.',
   },
   'scholarship-center': {
     path: '/scholarship-center',
-    tag: 'Learning Center',
-    title: 'Scholarship center',
-    description: 'Athletic scholarships, academic aid, and walk-on opportunities explained.',
+    tag: eaChassis.portalCopy.learningEyebrow,
+    title: 'Opportunities',
+    description: 'Options, support paths, offers, and next decisions explained clearly.',
   },
   training: {
     path: '/video-learning-center',
-    tag: 'Training Transformation™',
-    title: 'Training & learning',
+    tag: 'Training',
+    title: 'Training and learning',
     description: 'Upload materials, complete modules, and track progress.',
   },
   'video-learning': {
     path: '/video-learning-center',
-    tag: activeTenant.id === 'family-hub' ? 'Family Learning' : 'Athlete Services',
+    tag: eaChassis.portalCopy.servicesEyebrow,
     title: 'Video learning center',
-    description:
-      activeTenant.id === 'family-hub'
-        ? 'Curated videos for family growth, planning, and development.'
-        : 'Coach-curated videos on film, recruiting strategy, and skill development.',
+    description: 'Curated videos, lessons, and owner-selected learning resources.',
   },
   'resource-library': {
     path: '/resource-library',
-    tag: activeTenant.id === 'family-hub' ? 'Resources' : 'Athlete Services',
+    tag: eaChassis.portalCopy.servicesEyebrow,
     title: 'Resource library',
-    description: 'Videos, PDFs, articles, and links for your journey.',
+    description: 'Videos, PDFs, articles, and links for the journey.',
   },
   'ask-guide': {
     path: '/ask-cpr',
-    tag: activeTenant.id === 'family-hub' ? 'Guide™' : 'Athlete Services',
-    title: activeTenant.id === 'family-hub' ? 'Ask your guide' : 'Ask CPR',
-    description:
-      activeTenant.id === 'family-hub'
-        ? 'Submit questions to your family success guide.'
-        : 'Submit questions directly to Coach Mike.',
+    tag: eaChassis.portalCopy.askGuideTag,
+    title: eaChassis.portalCopy.askGuideTitle,
+    description: eaChassis.portalCopy.askGuideDescription,
   },
   messaging: {
     path: '/messaging-center',
     tag: 'Communication',
-    title: 'Messaging center',
-    description: activeTenant.id === 'family-hub' ? 'Direct messages with your team.' : 'Direct messages with the CPR team.',
+    title: eaChassis.portalCopy.messagingTitle,
+    description: eaChassis.portalCopy.messagingDescription,
   },
   documents: {
     path: '/document-vault',
     tag: 'Documents',
-    title: 'Document vault',
-    description:
-      activeTenant.id === 'family-hub'
-        ? 'Family documents, forms, and shared files.'
-        : 'Recruiting profile, transcripts, and eligibility documents.',
+    title: eaChassis.portalCopy.documentsTitle,
+    description: eaChassis.portalCopy.documentsDescription,
   },
   events: {
     path: '/upcoming-events',
     tag: 'Events',
-    title: 'Upcoming events',
-    description:
-      activeTenant.id === 'family-hub'
-        ? 'Family events, workshops, and gatherings.'
-        : 'Showcases, camps, and workshops curated for CPR athletes.',
+    title: eaChassis.portalCopy.eventsTitle,
+    description: eaChassis.portalCopy.eventsDescription,
   },
   'opportunities-resources': {
     path: '/opportunities-resources',
-    tag: 'Opportunities & Resources',
-    title: activeTenant.id === 'family-hub' ? 'Trusted family resources' : 'Curated opportunities',
-    description:
-      activeTenant.id === 'family-hub'
-        ? 'Recommended partners, resources, benefits, and support options curated for your family.'
-        : 'Scholarships, training, trusted partners, offers, and opportunities curated for your path.',
+    tag: 'Opportunities and Resources',
+    title: 'Curated opportunities',
+    description: 'Recommended partners, resources, benefits, and support options.',
   },
   'family-calendar': {
     path: '/upcoming-events',
-    tag: 'Family Hub',
-    title: 'Family calendar',
+    tag: 'Calendar',
+    title: 'Shared calendar',
     description: 'Shared dates, reminders, and what is coming next.',
   },
 };
@@ -143,7 +120,7 @@ export function getPortalHubModules(base: string): PortalHubModule[] {
 
 export function getHubCopy() {
   return {
-    eyebrow: activeTenant.id === 'family-hub' ? 'Your Family Hub' : 'Your CPR Portals',
+    eyebrow: eaChassis.organization.shortName,
     title: activeTenant.hubTitle,
     intro: activeTenant.hubIntro,
   };

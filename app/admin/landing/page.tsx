@@ -50,7 +50,7 @@ export default async function AdminLandingPage() {
           <div>
             <p className="admin-kicker">Public website</p>
             <h1 className="display">Edit your homepage</h1>
-            <p>Update hero text, about bullets, featured testimonial, and footer contact — then save.</p>
+            <p>Update each homepage section — hero, testimonials, process, results, and more — then save.</p>
           </div>
           <a className="admin-logout" href="/api/admin/logout">
             Sign Out

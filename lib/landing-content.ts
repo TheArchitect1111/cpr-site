@@ -5,6 +5,29 @@
 
 import { put, list } from '@vercel/blob';
 
+export type LandingTestimonialSlot = {
+  quote: string;
+  name: string;
+  role: string;
+  photoUrl: string;
+};
+
+export type LandingStatSlot = {
+  value: string;
+  label: string;
+};
+
+export type LandingProofSlot = {
+  imageUrl: string;
+  athleteName: string;
+  caption: string;
+};
+
+export type LandingProcessStepSlot = {
+  label: string;
+  description: string;
+};
+
 export type LandingContent = {
   possibility: {
     announcement: string;
@@ -24,6 +47,35 @@ export type LandingContent = {
     role: string;
     photoUrl: string;
   };
+  testimonials: LandingTestimonialSlot[];
+  philosophy: {
+    label: string;
+    quote: string;
+    attribution: string;
+  };
+  pathBand: {
+    text: string;
+  };
+  process: {
+    heading: string;
+    subheading: string;
+    steps: LandingProcessStepSlot[];
+  };
+  chipsAndDrip: {
+    heading: string;
+    body: string;
+  };
+  campsExposure: {
+    heading: string;
+    body: string;
+    dashboardImageUrl: string;
+  };
+  results: {
+    heading: string;
+    subheading: string;
+    stats: LandingStatSlot[];
+    proofs: LandingProofSlot[];
+  };
   finalCta: {
     heading: string;
     subheading: string;
@@ -38,6 +90,23 @@ export type LandingContent = {
 
 const BLOB_PATH = 'cpr/landing-content/site.json';
 const CACHE_TTL_MS = 10_000;
+
+const emptyTestimonial = (): LandingTestimonialSlot => ({
+  quote: '',
+  name: '',
+  role: '',
+  photoUrl: '',
+});
+
+const emptyStat = (): LandingStatSlot => ({ value: '', label: '' });
+
+const emptyProof = (): LandingProofSlot => ({
+  imageUrl: '',
+  athleteName: '',
+  caption: '',
+});
+
+const emptyStep = (): LandingProcessStepSlot => ({ label: '', description: '' });
 
 export const EMPTY_LANDING_CONTENT: LandingContent = {
   possibility: {
@@ -58,6 +127,35 @@ export const EMPTY_LANDING_CONTENT: LandingContent = {
     role: '',
     photoUrl: '',
   },
+  testimonials: [emptyTestimonial(), emptyTestimonial(), emptyTestimonial()],
+  philosophy: {
+    label: '',
+    quote: '',
+    attribution: '',
+  },
+  pathBand: {
+    text: '',
+  },
+  process: {
+    heading: '',
+    subheading: '',
+    steps: [emptyStep(), emptyStep(), emptyStep(), emptyStep(), emptyStep()],
+  },
+  chipsAndDrip: {
+    heading: '',
+    body: '',
+  },
+  campsExposure: {
+    heading: '',
+    body: '',
+    dashboardImageUrl: '',
+  },
+  results: {
+    heading: '',
+    subheading: '',
+    stats: [emptyStat(), emptyStat(), emptyStat(), emptyStat()],
+    proofs: [emptyProof(), emptyProof(), emptyProof()],
+  },
   finalCta: {
     heading: '',
     subheading: '',
@@ -70,9 +168,43 @@ export const EMPTY_LANDING_CONTENT: LandingContent = {
   updatedAt: '',
 };
 
+function normalizeTestimonials(input: Partial<LandingContent> | null | undefined): LandingTestimonialSlot[] {
+  if (Array.isArray(input?.testimonials) && input.testimonials.length) {
+    return [0, 1, 2].map((i) => {
+      const slot = input.testimonials?.[i];
+      return {
+        quote: String(slot?.quote ?? ''),
+        name: String(slot?.name ?? ''),
+        role: String(slot?.role ?? ''),
+        photoUrl: String(slot?.photoUrl ?? ''),
+      };
+    });
+  }
+
+  const legacy = input?.socialProof;
+  if (legacy?.quote?.trim() || legacy?.name?.trim()) {
+    return [
+      {
+        quote: String(legacy.quote ?? ''),
+        name: String(legacy.name ?? ''),
+        role: String(legacy.role ?? ''),
+        photoUrl: String(legacy.photoUrl ?? ''),
+      },
+      emptyTestimonial(),
+      emptyTestimonial(),
+    ];
+  }
+
+  return [emptyTestimonial(), emptyTestimonial(), emptyTestimonial()];
+}
+
 function normalize(input: Partial<LandingContent> | null | undefined): LandingContent {
   const base = EMPTY_LANDING_CONTENT;
   const points = Array.isArray(input?.about?.points) ? input.about.points : [];
+  const steps = Array.isArray(input?.process?.steps) ? input.process.steps : [];
+  const stats = Array.isArray(input?.results?.stats) ? input.results.stats : [];
+  const proofs = Array.isArray(input?.results?.proofs) ? input.results.proofs : [];
+
   return {
     possibility: {
       announcement: String(input?.possibility?.announcement ?? base.possibility.announcement),
@@ -91,6 +223,45 @@ function normalize(input: Partial<LandingContent> | null | undefined): LandingCo
       name: String(input?.socialProof?.name ?? base.socialProof.name),
       role: String(input?.socialProof?.role ?? base.socialProof.role),
       photoUrl: String(input?.socialProof?.photoUrl ?? base.socialProof.photoUrl),
+    },
+    testimonials: normalizeTestimonials(input),
+    philosophy: {
+      label: String(input?.philosophy?.label ?? base.philosophy.label),
+      quote: String(input?.philosophy?.quote ?? base.philosophy.quote),
+      attribution: String(input?.philosophy?.attribution ?? base.philosophy.attribution),
+    },
+    pathBand: {
+      text: String(input?.pathBand?.text ?? base.pathBand.text),
+    },
+    process: {
+      heading: String(input?.process?.heading ?? base.process.heading),
+      subheading: String(input?.process?.subheading ?? base.process.subheading),
+      steps: [0, 1, 2, 3, 4].map((i) => ({
+        label: String(steps[i]?.label ?? ''),
+        description: String(steps[i]?.description ?? ''),
+      })),
+    },
+    chipsAndDrip: {
+      heading: String(input?.chipsAndDrip?.heading ?? base.chipsAndDrip.heading),
+      body: String(input?.chipsAndDrip?.body ?? base.chipsAndDrip.body),
+    },
+    campsExposure: {
+      heading: String(input?.campsExposure?.heading ?? base.campsExposure.heading),
+      body: String(input?.campsExposure?.body ?? base.campsExposure.body),
+      dashboardImageUrl: String(input?.campsExposure?.dashboardImageUrl ?? base.campsExposure.dashboardImageUrl),
+    },
+    results: {
+      heading: String(input?.results?.heading ?? base.results.heading),
+      subheading: String(input?.results?.subheading ?? base.results.subheading),
+      stats: [0, 1, 2, 3].map((i) => ({
+        value: String(stats[i]?.value ?? ''),
+        label: String(stats[i]?.label ?? ''),
+      })),
+      proofs: [0, 1, 2].map((i) => ({
+        imageUrl: String(proofs[i]?.imageUrl ?? ''),
+        athleteName: String(proofs[i]?.athleteName ?? ''),
+        caption: String(proofs[i]?.caption ?? ''),
+      })),
     },
     finalCta: {
       heading: String(input?.finalCta?.heading ?? base.finalCta.heading),

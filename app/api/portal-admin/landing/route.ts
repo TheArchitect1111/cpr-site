@@ -8,6 +8,53 @@ function trim(value: unknown, max: number): string {
   return String(value ?? '').slice(0, max);
 }
 
+function trimTestimonials(
+  input: LandingContent['testimonials'] | undefined,
+  current: LandingContent['testimonials'],
+) {
+  const source = input ?? current;
+  return [0, 1, 2].map((i) => ({
+    quote: trim(source[i]?.quote ?? '', 4000),
+    name: trim(source[i]?.name ?? '', 120),
+    role: trim(source[i]?.role ?? '', 120),
+    photoUrl: trim(source[i]?.photoUrl ?? '', 1000),
+  }));
+}
+
+function trimSteps(
+  input: LandingContent['process']['steps'] | undefined,
+  current: LandingContent['process']['steps'],
+) {
+  const source = input ?? current;
+  return [0, 1, 2, 3, 4].map((i) => ({
+    label: trim(source[i]?.label ?? '', 80),
+    description: trim(source[i]?.description ?? '', 400),
+  }));
+}
+
+function trimStats(
+  input: LandingContent['results']['stats'] | undefined,
+  current: LandingContent['results']['stats'],
+) {
+  const source = input ?? current;
+  return [0, 1, 2, 3].map((i) => ({
+    value: trim(source[i]?.value ?? '', 40),
+    label: trim(source[i]?.label ?? '', 80),
+  }));
+}
+
+function trimProofs(
+  input: LandingContent['results']['proofs'] | undefined,
+  current: LandingContent['results']['proofs'],
+) {
+  const source = input ?? current;
+  return [0, 1, 2].map((i) => ({
+    imageUrl: trim(source[i]?.imageUrl ?? '', 1000),
+    athleteName: trim(source[i]?.athleteName ?? '', 120),
+    caption: trim(source[i]?.caption ?? '', 200),
+  }));
+}
+
 export async function GET(req: NextRequest) {
   if (!isAdminAuthed(req)) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   const content = await getLandingContent();
@@ -26,6 +73,7 @@ export async function POST(req: NextRequest) {
 
   try {
     const current = await getLandingContent();
+    const testimonials = trimTestimonials(body.testimonials, current.testimonials);
     const saved = await saveLandingContent({
       possibility: {
         announcement: trim(body.possibility?.announcement ?? current.possibility.announcement, 400),
@@ -40,10 +88,45 @@ export async function POST(req: NextRequest) {
       },
       socialProof: {
         heading: trim(body.socialProof?.heading ?? current.socialProof.heading, 120),
-        quote: trim(body.socialProof?.quote ?? current.socialProof.quote, 4000),
-        name: trim(body.socialProof?.name ?? current.socialProof.name, 120),
-        role: trim(body.socialProof?.role ?? current.socialProof.role, 120),
-        photoUrl: trim(body.socialProof?.photoUrl ?? current.socialProof.photoUrl, 1000),
+        quote: trim(testimonials[0]?.quote ?? body.socialProof?.quote ?? current.socialProof.quote, 4000),
+        name: trim(testimonials[0]?.name ?? body.socialProof?.name ?? current.socialProof.name, 120),
+        role: trim(testimonials[0]?.role ?? body.socialProof?.role ?? current.socialProof.role, 120),
+        photoUrl: trim(
+          testimonials[0]?.photoUrl ?? body.socialProof?.photoUrl ?? current.socialProof.photoUrl,
+          1000,
+        ),
+      },
+      testimonials,
+      philosophy: {
+        label: trim(body.philosophy?.label ?? current.philosophy.label, 80),
+        quote: trim(body.philosophy?.quote ?? current.philosophy.quote, 600),
+        attribution: trim(body.philosophy?.attribution ?? current.philosophy.attribution, 120),
+      },
+      pathBand: {
+        text: trim(body.pathBand?.text ?? current.pathBand.text, 300),
+      },
+      process: {
+        heading: trim(body.process?.heading ?? current.process.heading, 120),
+        subheading: trim(body.process?.subheading ?? current.process.subheading, 400),
+        steps: trimSteps(body.process?.steps, current.process.steps),
+      },
+      chipsAndDrip: {
+        heading: trim(body.chipsAndDrip?.heading ?? current.chipsAndDrip.heading, 120),
+        body: trim(body.chipsAndDrip?.body ?? current.chipsAndDrip.body, 2000),
+      },
+      campsExposure: {
+        heading: trim(body.campsExposure?.heading ?? current.campsExposure.heading, 120),
+        body: trim(body.campsExposure?.body ?? current.campsExposure.body, 2000),
+        dashboardImageUrl: trim(
+          body.campsExposure?.dashboardImageUrl ?? current.campsExposure.dashboardImageUrl,
+          1000,
+        ),
+      },
+      results: {
+        heading: trim(body.results?.heading ?? current.results.heading, 120),
+        subheading: trim(body.results?.subheading ?? current.results.subheading, 400),
+        stats: trimStats(body.results?.stats, current.results.stats),
+        proofs: trimProofs(body.results?.proofs, current.results.proofs),
       },
       finalCta: {
         heading: trim(body.finalCta?.heading ?? current.finalCta.heading, 200),
