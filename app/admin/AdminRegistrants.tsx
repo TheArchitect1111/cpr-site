@@ -55,7 +55,7 @@ export default function AdminRegistrants({ athletes, live }: Props) {
         {!live && <span className="demo-pill">SAMPLE DATA · connect Airtable to go live</span>}
       </header>
 
-      <div className="admission-stats registrant-stats">
+      <div className="admission-stats registrant-stats" data-orbie-target="registrant-stats">
         <div><span>Total registrants</span><b>{stats.total}</b></div>
         <div><span>Profiles created</span><b>{stats.withProfile}</b></div>
         <div><span>Agreements</span><b>{stats.agreements}</b></div>
@@ -80,7 +80,7 @@ export default function AdminRegistrants({ athletes, live }: Props) {
           </div>
 
           <div style={{ overflowX: 'auto' }}>
-            <table className="otable registrants-table">
+            <table className="otable registrants-table" data-orbie-target="registrants-table">
               <thead>
                 <tr>
                   <th>Registrant</th>

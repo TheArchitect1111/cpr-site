@@ -11,19 +11,21 @@ export const metadata = {
 const slug = 'jayden-thompson';
 
 const links = [
-  { label: 'Public CPR Website', href: '/', note: 'Current public site experience.' },
-  { label: 'Admin Portal', href: '/admin', note: 'Open staging admin area with sample data.' },
-  { label: 'Athlete Portal', href: `/portal/athlete/${slug}`, note: 'What the athlete sees.' },
-  { label: 'Parent Portal', href: `/portal/parent/${slug}`, note: 'What the parent sees.' },
+  { label: 'Public CPR Website', href: '/', note: 'Current public site experience.', target: 'public-site' },
+  { label: 'Admin Portal', href: '/admin', note: 'Open staging admin area with sample data.', target: 'admin-portal' },
+  { label: 'Athlete Portal', href: `/portal/athlete/${slug}`, note: 'What the athlete sees.', target: 'athlete-portal' },
+  { label: 'Parent Portal', href: `/portal/parent/${slug}`, note: 'What the parent sees.', target: 'parent-portal' },
   {
     label: 'Admin Website Builder',
     href: '/admin?tab=website',
     note: 'Admin-only builder with client update approvals.',
+    target: 'admin-website-builder',
   },
   {
     label: 'Athlete Update Request',
     href: `/portal/athlete/${slug}/updates`,
     note: 'Where the athlete requests website/profile changes.',
+    target: 'athlete-update-request',
   },
 ];
 
@@ -92,6 +94,7 @@ export default function StagingPage() {
             <a
               key={link.href}
               href={link.href}
+              data-orbie-target={link.target}
               style={{
                 display: 'flex',
                 minHeight: 132,

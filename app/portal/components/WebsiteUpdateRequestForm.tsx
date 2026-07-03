@@ -46,7 +46,7 @@ export default function WebsiteUpdateRequestForm({
   }
 
   return (
-    <section className="website-request-panel">
+    <section className="website-request-panel" data-orbie-target="website-update-request">
       <div>
         <p className="pp-section-eyebrow">Website Updates</p>
         <h2>Request a profile or website change</h2>
@@ -84,4 +84,3 @@ export default function WebsiteUpdateRequestForm({
     </section>
   );
 }
-

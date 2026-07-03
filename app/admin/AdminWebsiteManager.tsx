@@ -55,7 +55,7 @@ export default function AdminWebsiteManager({ requests, live }: Props) {
         {!live && <span className="demo-pill">SAMPLE DATA · staging approval flow</span>}
       </header>
 
-      <section className="website-approval-board">
+      <section className="website-approval-board" data-orbie-target="website-approval-board">
         <div className="pm-head">
           <div>
             <h2>Client Update Requests</h2>
@@ -71,7 +71,7 @@ export default function AdminWebsiteManager({ requests, live }: Props) {
             <p className="empty">No website update requests yet.</p>
           )}
           {items.map((item) => (
-            <article key={item.id} className="website-request-card">
+            <article key={item.id} className="website-request-card" data-orbie-target="website-request-card">
               <div>
                 <span className={`pill st ${item.status === 'Resolved' ? 'active' : item.status === 'Closed' ? 'closed' : 'pending'}`}>
                   {item.status}
@@ -90,6 +90,7 @@ export default function AdminWebsiteManager({ requests, live }: Props) {
                 </a>
                 <button
                   type="button"
+                  data-orbie-target="approve-website-request"
                   disabled={busyId === item.id || item.status === 'Resolved'}
                   onClick={() => decide(item.id, 'approved')}
                 >
@@ -113,4 +114,3 @@ export default function AdminWebsiteManager({ requests, live }: Props) {
     </>
   );
 }
-
