@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import type { OrbieContext, OrbiePossibility } from '@/lib/orbie/types';
 
-type GuidanceMode = 'ambient' | 'peek' | 'guiding' | 'done';
+type GuidanceMode = 'ambient' | 'focus' | 'guiding' | 'done';
 
 type TargetRect = {
   top: number;
@@ -71,6 +71,13 @@ function insightText(possibility: OrbiePossibility) {
   return `I found the next useful step in ${possibility.targetLabel}.`;
 }
 
+function focusLead(context: OrbieContext) {
+  if (context.primary.urgency === 'high') {
+    return `${context.area} has something ready for attention. I can guide the next move.`;
+  }
+  return `I can help you move through ${context.area} without guessing what to do next.`;
+}
+
 export default function EAOrbieLayer({ productId, resolveContext, memoryNamespace }: Props) {
   const pathname = usePathname() ?? '/';
   const namespace = memoryNamespace ?? productId;
@@ -84,7 +91,7 @@ export default function EAOrbieLayer({ productId, resolveContext, memoryNamespac
 
   useEffect(() => {
     const timer = window.setTimeout(() => {
-      if (!readMemory(namespace).includes(possibility.id)) setMode('peek');
+      if (!readMemory(namespace).includes(possibility.id)) setMode('focus');
     }, possibility.urgency === 'high' ? 500 : 1200);
 
     return () => window.clearTimeout(timer);
@@ -153,17 +160,41 @@ export default function EAOrbieLayer({ productId, resolveContext, memoryNamespac
         />
       ) : null}
 
-      {mode === 'peek' ? (
-        <section className="ea-orbie-peek" aria-label="Orbie recommendation">
-          <div className="ea-orbie-mark" aria-hidden="true" />
-          <p>{insightText(possibility)}</p>
-          <div>
-            <button type="button" onClick={startGuidance}>
-              Show me
-            </button>
-            <button type="button" onClick={() => setMode('ambient')} aria-label="Dismiss Orbie recommendation">
-              Later
-            </button>
+      {mode === 'focus' ? (
+        <section className="ea-orbie-focus" aria-label="Orbie guidance">
+          <div className="ea-orbie-stage-light" aria-hidden="true" />
+          <div className="ea-orbie-focus-card">
+            <div className="ea-orbie-focus-presence" aria-hidden="true">
+              <span />
+            </div>
+            <p className="ea-orbie-eyebrow">Orbie is ready</p>
+            <h2>{possibility.title}</h2>
+            <p className="ea-orbie-focus-notice">{insightText(possibility)}</p>
+            <p>{focusLead(context)}</p>
+            <div className="ea-orbie-focus-status">
+              <span>{context.status}</span>
+            </div>
+            <div className="ea-orbie-focus-actions">
+              <button type="button" onClick={startGuidance}>
+                Guide me
+              </button>
+              <Link href={possibility.href} onClick={() => setMode('ambient')}>
+                Open now
+              </Link>
+              <button type="button" onClick={() => setMode('ambient')}>
+                Later
+              </button>
+            </div>
+            {context.secondary.length > 0 ? (
+              <div className="ea-orbie-focus-secondary" aria-label="Other Orbie options">
+                {context.secondary.slice(0, 2).map((option) => (
+                  <Link key={option.id} href={option.href} onClick={() => setMode('ambient')}>
+                    <strong>{option.title}</strong>
+                    <span>{option.actionLabel}</span>
+                  </Link>
+                ))}
+              </div>
+            ) : null}
           </div>
         </section>
       ) : null}
@@ -226,7 +257,7 @@ export default function EAOrbieLayer({ productId, resolveContext, memoryNamespac
 
       <button
         type="button"
-        className={`ea-orbie-orb cpr-orbie-orb${mode === 'peek' && !isDone ? ' needs-attention' : ''}`}
+        className={`ea-orbie-orb cpr-orbie-orb${mode === 'focus' && !isDone ? ' needs-attention' : ''}`}
         aria-label="Open Orbie guidance"
         onClick={mode === 'guiding' ? () => setMode('ambient') : startGuidance}
       >
