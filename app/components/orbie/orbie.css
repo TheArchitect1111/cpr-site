@@ -1,0 +1,208 @@
+.cpr-orbie-shell {
+  position: fixed;
+  right: 18px;
+  bottom: 18px;
+  z-index: 10000;
+  display: grid;
+  justify-items: end;
+  gap: 12px;
+  pointer-events: none;
+}
+
+.cpr-orbie-panel,
+.cpr-orbie-orb {
+  pointer-events: auto;
+}
+
+.cpr-orbie-orb {
+  display: grid;
+  width: 64px;
+  height: 64px;
+  place-items: center;
+  border: 0;
+  border-radius: 50%;
+  background: radial-gradient(circle at 38% 30%, #ffffff 0 8%, #a8d8ff 9% 20%, #1768ac 52%, #07172a 100%);
+  box-shadow: 0 18px 42px rgba(8, 22, 42, 0.28), 0 0 32px rgba(44, 132, 204, 0.38);
+  color: #ffffff;
+  cursor: pointer;
+  font-size: 0.88rem;
+  font-weight: 900;
+  transition: transform 180ms ease, box-shadow 180ms ease;
+}
+
+.cpr-orbie-orb:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 22px 50px rgba(8, 22, 42, 0.34), 0 0 42px rgba(44, 132, 204, 0.5);
+}
+
+.cpr-orbie-panel {
+  width: min(92vw, 390px);
+  max-height: min(76vh, 680px);
+  overflow: auto;
+  border: 1px solid rgba(20, 73, 121, 0.16);
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.98);
+  box-shadow: 0 24px 70px rgba(8, 22, 42, 0.22);
+  color: #122033;
+  padding: 18px;
+}
+
+.cpr-orbie-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.cpr-orbie-head h2,
+.cpr-orbie-recommendation h3 {
+  margin: 4px 0;
+  color: #0a2540;
+  font-size: 1.24rem;
+  line-height: 1.12;
+}
+
+.cpr-orbie-head p,
+.cpr-orbie-recommendation p {
+  margin: 0;
+  color: #53657b;
+  font-size: 0.92rem;
+  line-height: 1.48;
+}
+
+.cpr-orbie-head button {
+  width: 32px;
+  height: 32px;
+  border: 1px solid rgba(18, 32, 51, 0.12);
+  border-radius: 50%;
+  background: #f5f7fa;
+  color: #122033;
+  cursor: pointer;
+}
+
+.cpr-orbie-eyebrow,
+.cpr-orbie-label {
+  margin: 0;
+  color: #b63131;
+  font-size: 0.66rem;
+  font-weight: 900;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.cpr-orbie-recommendation,
+.cpr-orbie-help {
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid rgba(18, 32, 51, 0.1);
+}
+
+.cpr-orbie-recommendation a,
+.cpr-orbie-secondary a {
+  text-decoration: none;
+}
+
+.cpr-orbie-recommendation a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 42px;
+  margin-top: 14px;
+  padding: 0 18px;
+  border-radius: 999px;
+  background: #0a2540;
+  color: #ffffff;
+  font-size: 0.86rem;
+  font-weight: 900;
+}
+
+.cpr-orbie-secondary {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.cpr-orbie-secondary a {
+  min-height: 82px;
+  padding: 12px;
+  border: 1px solid rgba(18, 32, 51, 0.1);
+  border-radius: 12px;
+  background: #f8fafc;
+  color: #122033;
+}
+
+.cpr-orbie-secondary span,
+.cpr-orbie-secondary small {
+  display: block;
+}
+
+.cpr-orbie-secondary span {
+  font-size: 0.82rem;
+  font-weight: 850;
+  line-height: 1.25;
+}
+
+.cpr-orbie-secondary small {
+  margin-top: 8px;
+  color: #b63131;
+  font-size: 0.72rem;
+  font-weight: 900;
+}
+
+.cpr-orbie-disclosure {
+  width: 100%;
+  min-height: 38px;
+  margin-top: 14px;
+  border: 1px solid rgba(18, 32, 51, 0.12);
+  border-radius: 999px;
+  background: #ffffff;
+  color: #122033;
+  cursor: pointer;
+  font-weight: 850;
+}
+
+.cpr-orbie-help {
+  display: grid;
+  gap: 12px;
+}
+
+.cpr-orbie-help div {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+}
+
+.cpr-orbie-help .cpr-orbie-label {
+  flex-basis: 100%;
+}
+
+.cpr-orbie-help span {
+  padding: 7px 9px;
+  border-radius: 999px;
+  background: #f2f5f8;
+  color: #38475a;
+  font-size: 0.74rem;
+  font-weight: 800;
+}
+
+@media (max-width: 640px) {
+  .cpr-orbie-shell {
+    right: 12px;
+    bottom: 12px;
+  }
+
+  .cpr-orbie-orb {
+    width: 58px;
+    height: 58px;
+  }
+
+  .cpr-orbie-panel {
+    width: calc(100vw - 24px);
+    max-height: calc(100vh - 104px);
+    border-radius: 16px;
+  }
+
+  .cpr-orbie-secondary {
+    grid-template-columns: 1fr;
+  }
+}

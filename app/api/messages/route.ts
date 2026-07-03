@@ -4,14 +4,16 @@ import { cookies } from 'next/headers';
 import { PORTAL_COOKIE, verifySession } from '@/lib/portal-auth';
 import { createMessage, markMessagesRead, getMessagesBySlug } from '@/lib/sections-data';
 import { notifyAdminNewMessage } from '@/lib/portal-admin-notifications';
+import { isOpenStaging } from '@/lib/staging';
 
 export const dynamic = 'force-dynamic';
 
 export async function GET() {
   const cookieStore = await cookies();
   const token = cookieStore.get(PORTAL_COOKIE)?.value;
-  if (!token) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-  const session = await verifySession(token);
+  const session = isOpenStaging()
+    ? { slug: 'jayden-thompson', type: 'athlete' as const }
+    : token ? await verifySession(token) : null;
   if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
   const { messages } = await getMessagesBySlug(session.slug);
@@ -21,8 +23,9 @@ export async function GET() {
 export async function POST(req: NextRequest) {
   const cookieStore = await cookies();
   const token = cookieStore.get(PORTAL_COOKIE)?.value;
-  if (!token) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-  const session = await verifySession(token);
+  const session = isOpenStaging()
+    ? { slug: 'jayden-thompson', type: 'athlete' as const }
+    : token ? await verifySession(token) : null;
   if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
   let body: { messageBody?: string };
@@ -47,12 +50,14 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  void notifyAdminNewMessage({
-    athleteSlug: session.slug,
-    sender,
-    messageBody,
-    messageId: message.id,
-  });
+  if (!isOpenStaging()) {
+    void notifyAdminNewMessage({
+      athleteSlug: session.slug,
+      sender,
+      messageBody,
+      messageId: message.id,
+    });
+  }
 
   return NextResponse.json({ message }, { status: 201 });
 }
@@ -60,8 +65,9 @@ export async function POST(req: NextRequest) {
 export async function PATCH() {
   const cookieStore = await cookies();
   const token = cookieStore.get(PORTAL_COOKIE)?.value;
-  if (!token) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-  const session = await verifySession(token);
+  const session = isOpenStaging()
+    ? { slug: 'jayden-thompson', type: 'athlete' as const }
+    : token ? await verifySession(token) : null;
   if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
   await markMessagesRead(session.slug);

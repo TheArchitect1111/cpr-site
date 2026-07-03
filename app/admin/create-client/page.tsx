@@ -4,6 +4,7 @@ import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
 import { site } from '@/config/site';
 import { verifyAdminSession } from '@/lib/admin-auth';
+import { isOpenStaging } from '@/lib/staging';
 import CreateClientForm from '../CreateClientForm';
 
 export const dynamic = 'force-dynamic';
@@ -15,7 +16,9 @@ export const metadata = {
 
 export default async function CreateClientPage() {
   const session = (await cookies()).get('cpr_admin_session')?.value || '';
-  if (!verifyAdminSession(session)) redirect('/admin/login?next=/admin/create-client');
+  if (!isOpenStaging() && !verifyAdminSession(session)) {
+    redirect('/admin/login?next=/admin/create-client');
+  }
 
   return (
     <div className="admin-shell">

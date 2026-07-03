@@ -41,6 +41,15 @@ const MODULE_CATALOG: Record<
         : 'Coach outreach, school interest, messages, and CPR activity in one timeline.',
     variant: 'updates',
   },
+  'website-builder': {
+    path: '/website-builder',
+    tag: 'Website',
+    title: 'Live website editor',
+    description:
+      activeTenant.id === 'family-hub'
+        ? 'Tap the live family hub site to update photos, sections, events, and calls to action.'
+        : 'Tap the live CPR website to update athletes, camps, testimonials, photos, and calls to action.',
+  },
   'recruiting-timeline': {
     path: '/recruiting-timeline',
     tag: 'Learning Center',

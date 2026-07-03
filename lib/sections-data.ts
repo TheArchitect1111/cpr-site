@@ -1,4 +1,5 @@
 import { allowSampleData } from '@/lib/env';
+import { isOpenStaging } from '@/lib/staging';
 
 const BASE = 'appvVr6MVrJvEY0YJ';
 
@@ -267,6 +268,7 @@ const SAMPLE_EVENTS: PortalEvent[] = [
 // ── Core fetch helpers ────────────────────────────────────────────────────────
 
 async function atFetch(tablePath: string): Promise<AirtableRow[]> {
+  if (isOpenStaging()) return [];
   if (!process.env.AIRTABLE_TOKEN) return [];
   const url = `https://api.airtable.com/v0/${BASE}/${tablePath}`;
   try {
@@ -283,6 +285,7 @@ async function atPost(
   table: string,
   fields: Record<string, unknown>
 ): Promise<{ id: string } | null> {
+  if (isOpenStaging()) return null;
   if (!process.env.AIRTABLE_TOKEN) return null;
   const url = `https://api.airtable.com/v0/${BASE}/${table}`;
   try {
@@ -304,6 +307,7 @@ async function atPatch(
   id: string,
   fields: Record<string, unknown>
 ): Promise<boolean> {
+  if (isOpenStaging()) return false;
   if (!process.env.AIRTABLE_TOKEN) return false;
   const url = `https://api.airtable.com/v0/${BASE}/${table}/${id}`;
   try {
@@ -339,6 +343,8 @@ function rowToResource(r: AirtableRow): Resource {
 }
 
 export async function getResources(): Promise<{ resources: Resource[]; live: boolean }> {
+  if (isOpenStaging()) return { resources: SAMPLE_RESOURCES, live: false };
+
   const sort = encodeURIComponent('sort[0][field]') + '=' + encodeURIComponent('Date Added') +
     '&' + encodeURIComponent('sort[0][direction]') + '=desc';
   const rows = await atFetch(`${TABLES.resources}?${sort}`);
@@ -366,6 +372,13 @@ function rowToTicket(r: AirtableRow): Ticket {
 export async function getTicketsBySlug(
   slug: string
 ): Promise<{ tickets: Ticket[]; live: boolean }> {
+  if (isOpenStaging()) {
+    const sample = SAMPLE_TICKETS.filter(
+      (t) => t.athleteSlug === slug || slug === 'jayden-thompson'
+    );
+    return { tickets: sample, live: false };
+  }
+
   const formula = encodeURIComponent(`{Athlete Slug}='${safeSlug(slug)}'`);
   const sort =
     encodeURIComponent('sort[0][field]') +
@@ -385,6 +398,8 @@ export async function getTicketsBySlug(
 }
 
 export async function getAllTickets(): Promise<{ tickets: Ticket[]; live: boolean }> {
+  if (isOpenStaging()) return { tickets: SAMPLE_TICKETS, live: false };
+
   const sort =
     encodeURIComponent('sort[0][field]') +
     '=' +
@@ -405,6 +420,19 @@ export async function createTicket(data: {
   message: string;
 }): Promise<Ticket | null> {
   const dateStr = new Date().toISOString().slice(0, 10);
+  if (isOpenStaging()) {
+    return {
+      id: `staging_ticket_${Date.now()}`,
+      athleteSlug: data.athleteSlug,
+      subject: data.subject,
+      message: data.message,
+      status: 'Open',
+      dateSubmitted: dateStr,
+      dateResolved: '',
+      adminNotes: '',
+    };
+  }
+
   const created = await atPost(TABLES.tickets, {
     'Athlete Slug': data.athleteSlug,
     Subject: data.subject,
@@ -429,6 +457,8 @@ export async function updateTicket(
   id: string,
   fields: { status?: string; adminNotes?: string; dateResolved?: string }
 ): Promise<boolean> {
+  if (isOpenStaging()) return true;
+
   const raw: Record<string, unknown> = {};
   if (fields.status !== undefined) raw['Status'] = fields.status;
   if (fields.adminNotes !== undefined) raw['Admin Notes'] = fields.adminNotes;
@@ -452,6 +482,13 @@ function rowToMessage(r: AirtableRow): Message {
 export async function getMessagesBySlug(
   slug: string
 ): Promise<{ messages: Message[]; live: boolean }> {
+  if (isOpenStaging()) {
+    const sample = SAMPLE_MESSAGES.filter(
+      (m) => m.athleteSlug === slug || slug === 'jayden-thompson'
+    );
+    return { messages: sample, live: false };
+  }
+
   const formula = encodeURIComponent(`{Athlete Slug}='${safeSlug(slug)}'`);
   const sort =
     encodeURIComponent('sort[0][field]') +
@@ -471,6 +508,8 @@ export async function getMessagesBySlug(
 }
 
 export async function getAllMessages(): Promise<{ messages: Message[]; live: boolean }> {
+  if (isOpenStaging()) return { messages: SAMPLE_MESSAGES, live: false };
+
   const sort =
     encodeURIComponent('sort[0][field]') +
     '=' +
@@ -491,6 +530,17 @@ export async function createMessage(data: {
   messageBody: string;
 }): Promise<Message | null> {
   const dateSent = new Date().toISOString();
+  if (isOpenStaging()) {
+    return {
+      id: `staging_message_${Date.now()}`,
+      athleteSlug: data.athleteSlug,
+      sender: data.sender,
+      messageBody: data.messageBody,
+      dateSent,
+      readStatus: false,
+    };
+  }
+
   const created = await atPost(TABLES.messages, {
     'Athlete Slug': data.athleteSlug,
     Sender: data.sender,
@@ -510,6 +560,8 @@ export async function createMessage(data: {
 }
 
 export async function markMessagesRead(slug: string): Promise<void> {
+  if (isOpenStaging()) return;
+
   const formula = encodeURIComponent(
     `AND({Athlete Slug}='${safeSlug(slug)}',{Read Status}=FALSE())`
   );
@@ -537,6 +589,16 @@ export async function getDocumentsBySlug(
   slug: string,
   portalType?: 'athlete' | 'parent'
 ): Promise<{ docs: DocFile[]; live: boolean }> {
+  if (isOpenStaging()) {
+    const sample = SAMPLE_DOCS.filter((d) => {
+      if (d.athleteSlug !== slug && slug !== 'jayden-thompson') return false;
+      if (!portalType) return true;
+      const v = d.visibleTo.toLowerCase();
+      return v === 'both' || v === portalType;
+    });
+    return { docs: sample, live: false };
+  }
+
   const formula = encodeURIComponent(`{Athlete Slug}='${safeSlug(slug)}'`);
   const sort =
     encodeURIComponent('sort[0][field]') +
@@ -581,6 +643,8 @@ function rowToEvent(r: AirtableRow): PortalEvent {
 }
 
 export async function getUpcomingEvents(): Promise<{ events: PortalEvent[]; live: boolean }> {
+  if (isOpenStaging()) return { events: SAMPLE_EVENTS, live: false };
+
   const today = new Date().toISOString().slice(0, 10);
   const formula = encodeURIComponent(`IS_AFTER({Date},'${today}')`);
   const sort =

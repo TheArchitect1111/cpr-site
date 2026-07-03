@@ -6,6 +6,7 @@ import { sendApplyAdminAlert, sendApplyConfirmationEmail } from "@/lib/apply-not
 import { forwardPulseEvent } from "@/lib/ea-pulse-forward";
 import { isProductionDeploy } from "@/lib/env";
 import { findApplicantByEmail } from "@/lib/portal-credentials";
+import { isOpenStaging } from "@/lib/staging";
 
 const AIRTABLE_BASE_ID = process.env.AIRTABLE_BASE_ID || "appvVr6MVrJvEY0YJ";
 const AIRTABLE_TABLE_ID = "tblZwrZHi3WBR3NHZ";
@@ -87,6 +88,19 @@ export async function POST(req: NextRequest) {
         { status: 400 }
       );
     }
+    if (isOpenStaging()) {
+      const slug = `${firstName}-${lastName}`.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+      return NextResponse.json({
+        ok: true,
+        recordId: `staging_${Date.now()}`,
+        slug,
+        profileUrl: profileUrl(slug),
+        confirmationSent: false,
+        adminAlertSent: false,
+        staging: true,
+      });
+    }
+
     if (!process.env.AIRTABLE_TOKEN) {
       return NextResponse.json(
         { error: "Server is not configured. Missing AIRTABLE_TOKEN." },

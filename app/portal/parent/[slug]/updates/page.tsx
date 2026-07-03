@@ -7,6 +7,7 @@ import { site } from '@/config/site';
 import { notFound } from 'next/navigation';
 import PortalShell from '@/app/portal/components/PortalShell';
 import UpdatePortalFeed from '@/app/portal/components/UpdatePortalFeed';
+import WebsiteUpdateRequestForm from '@/app/portal/components/WebsiteUpdateRequestForm';
 
 export const dynamic = 'force-dynamic';
 
@@ -28,6 +29,7 @@ export default async function ParentUpdatesPage({
     <div className="portal-page">
       <PortalShell portalType="parent" slug={slug} active="updates" />
       <main className="portal-main pp-main">
+        <WebsiteUpdateRequestForm portalType="parent" slug={slug} />
         <UpdatePortalFeed updates={updates} athleteName={athleteName} live={live} />
       </main>
       <footer className="portal-footer">

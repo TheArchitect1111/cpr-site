@@ -1,4 +1,5 @@
 import { allowSampleData } from '@/lib/env';
+import { isOpenStaging } from '@/lib/staging';
 
 const BASE = 'appvVr6MVrJvEY0YJ';
 const ATHLETES = 'tblZwrZHi3WBR3NHZ';
@@ -73,6 +74,10 @@ const SAMPLE_OPPS: Opportunity[] = [
 ];
 
 export async function getParentPortalData(slug: string): Promise<ParentPortalData | null> {
+  if (isOpenStaging()) {
+    return slug === SAMPLE_DATA.slug ? SAMPLE_DATA : null;
+  }
+
   const token = process.env.AIRTABLE_TOKEN;
   if (!token) {
     if (!allowSampleData()) return null;
@@ -109,6 +114,8 @@ export async function getParentPortalData(slug: string): Promise<ParentPortalDat
 }
 
 export async function getOpportunities(athleteRecordId: string): Promise<Opportunity[]> {
+  if (isOpenStaging()) return athleteRecordId === 'rec_sample' ? SAMPLE_OPPS : [];
+
   const token = process.env.AIRTABLE_TOKEN;
   if (!token) {
     if (!allowSampleData()) return [];

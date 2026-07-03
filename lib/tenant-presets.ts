@@ -4,6 +4,7 @@ export type HubModuleId =
   | 'dashboard'
   | 'amplifi'
   | 'updates'
+  | 'website-builder'
   | 'recruiting-timeline'
   | 'eligibility-center'
   | 'scholarship-center'

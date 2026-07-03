@@ -4,6 +4,7 @@
 
 import { createHmac, timingSafeEqual } from 'crypto';
 import { allowSampleData } from '@/lib/env';
+import { isOpenStaging } from '@/lib/staging';
 
 const BASE = 'appvVr6MVrJvEY0YJ';
 const TABLE = 'Coach Outreach';
@@ -122,6 +123,8 @@ export function outreachFieldsFromInput(input: OutreachInput) {
 }
 
 export async function getOutreach(): Promise<{ rows: Outreach[]; live: boolean }> {
+  if (isOpenStaging()) return { rows: sampleOutreach, live: false };
+
   const token = process.env.AIRTABLE_TOKEN;
   if (!token) {
     if (!allowSampleData()) return { rows: [], live: false };
@@ -151,6 +154,28 @@ export async function getOutreach(): Promise<{ rows: Outreach[]; live: boolean }
 }
 
 export async function createOutreach(input: OutreachInput) {
+  if (isOpenStaging()) {
+    const id = `staging_outreach_${Date.now()}`;
+    return {
+      id,
+      school: cleanString(input.school, true) || 'Staging University',
+      coach: cleanString(input.coach, true) || 'Coach Staging',
+      coachEmail: cleanString(input.coachEmail, true) || '',
+      coachRole: cleanString(input.coachRole, true) || '',
+      prospect: cleanString(input.prospect, true) || 'Jayden Thompson',
+      prospectSlug: cleanString(input.prospectSlug, true) || 'jayden-thompson',
+      positionYear: cleanString(input.positionYear, true) || '',
+      dateSent: cleanString(input.dateSent, true) || new Date().toISOString().slice(0, 10),
+      opened: input.opened === true,
+      viewed: input.viewed === true,
+      response: cleanString(input.response, true) || 'No Response',
+      status: cleanString(input.status, true) || 'Waiting',
+      notes: cleanString(input.notes, true) || '',
+      shareToken: '',
+      activity: [],
+    };
+  }
+
   const headers = airtableHeaders();
   const fields = {
     ...outreachFieldsFromInput(input),
@@ -176,6 +201,8 @@ export async function getOutreachByRecordId(recordId: string): Promise<Outreach 
 }
 
 export async function trackCoachShareView(recordId: string) {
+  if (isOpenStaging()) return null;
+
   const outreach = await getOutreachByRecordId(recordId);
   if (!outreach) return null;
   const message = `Coach share link opened by ${[outreach.coach, outreach.school].filter(Boolean).join(' / ') || 'coach'}.`;
@@ -188,6 +215,8 @@ export async function trackCoachShareView(recordId: string) {
 }
 
 export async function updateOutreach(recordId: string, input: OutreachInput) {
+  if (isOpenStaging()) return;
+
   const headers = airtableHeaders();
   const fields = outreachFieldsFromInput(input);
   const res = await fetch(`https://api.airtable.com/v0/${BASE}/${encodeURIComponent(TABLE)}`, {
@@ -199,6 +228,8 @@ export async function updateOutreach(recordId: string, input: OutreachInput) {
 }
 
 export async function appendOutreachActivity(recordId: string, message: string) {
+  if (isOpenStaging()) return null;
+
   const outreach = await getOutreachByRecordId(recordId);
   if (!outreach) return null;
   await updateOutreach(recordId, { notes: appendActivityLine(outreach.notes, message) });
@@ -223,6 +254,8 @@ export async function appendOutreachActivityByEmailId(emailId: string, message: 
 }
 
 export async function recordCoachResponse(recordId: string, response: string, detail = '') {
+  if (isOpenStaging()) return;
+
   const outreach = await getOutreachByRecordId(recordId);
   if (!outreach) throw new Error('Outreach record not found');
   const responseMap: Record<string, { response: string; status: string }> = {
@@ -243,6 +276,8 @@ export async function recordCoachResponse(recordId: string, response: string, de
 }
 
 export async function deleteOutreach(recordId: string) {
+  if (isOpenStaging()) return;
+
   const headers = airtableHeaders();
   const res = await fetch(`https://api.airtable.com/v0/${BASE}/${encodeURIComponent(TABLE)}/${recordId}`, {
     method: 'DELETE',

@@ -1,4 +1,5 @@
 import { allowSampleData } from '@/lib/env';
+import { isOpenStaging } from '@/lib/staging';
 
 const BASE = process.env.AIRTABLE_BASE_ID || 'appvVr6MVrJvEY0YJ';
 const TABLE = process.env.AIRTABLE_COACHES_TABLE_ID || 'Coach Directory';
@@ -74,6 +75,8 @@ export function coachFieldsFromInput(input: CoachInput) {
 }
 
 export async function getCoaches(): Promise<{ rows: CoachContact[]; live: boolean }> {
+  if (isOpenStaging()) return { rows: sampleCoaches, live: false };
+
   const token = process.env.AIRTABLE_TOKEN || process.env.AIRTABLE_API_KEY;
   if (!token) {
     if (!allowSampleData()) return { rows: [], live: false };
@@ -99,6 +102,21 @@ export async function getCoaches(): Promise<{ rows: CoachContact[]; live: boolea
 }
 
 export async function createCoach(input: CoachInput) {
+  if (isOpenStaging()) {
+    return {
+      id: `staging_coach_${Date.now()}`,
+      school: cleanString(input.school, true) || 'Staging University',
+      coach: cleanString(input.coach, true) || 'Coach Staging',
+      coachEmail: cleanString(input.coachEmail, true) || '',
+      coachRole: cleanString(input.coachRole, true) || '',
+      sport: cleanString(input.sport, true) || 'Basketball',
+      conference: cleanString(input.conference, true) || '',
+      region: cleanString(input.region, true) || '',
+      status: cleanString(input.status, true) || 'Active',
+      notes: cleanString(input.notes, true) || '',
+    };
+  }
+
   const school = cleanString(input.school);
   const coach = cleanString(input.coach);
   if (!school || !coach) throw new Error('School and coach name are required.');
@@ -114,6 +132,8 @@ export async function createCoach(input: CoachInput) {
 }
 
 export async function updateCoach(recordId: string, input: CoachInput) {
+  if (isOpenStaging()) return;
+
   const res = await fetch(`https://api.airtable.com/v0/${BASE}/${encodeURIComponent(TABLE)}`, {
     method: 'PATCH',
     headers: headers(),
@@ -123,6 +143,8 @@ export async function updateCoach(recordId: string, input: CoachInput) {
 }
 
 export async function deleteCoach(recordId: string) {
+  if (isOpenStaging()) return;
+
   const res = await fetch(`https://api.airtable.com/v0/${BASE}/${encodeURIComponent(TABLE)}/${recordId}`, {
     method: 'DELETE',
     headers: headers(),

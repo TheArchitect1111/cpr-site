@@ -4,6 +4,7 @@
 
 import { createHmac, timingSafeEqual } from 'crypto';
 import { allowSampleData } from '@/lib/env';
+import { isOpenStaging } from '@/lib/staging';
 
 const BASE = 'appvVr6MVrJvEY0YJ';
 const ATHLETES = 'tblZwrZHi3WBR3NHZ';
@@ -104,6 +105,29 @@ const sample: Athlete = {
   globalCities: ['Toronto', 'New York', 'Los Angeles'],
   responses: [],
 };
+
+function sampleAdminAthlete(): AthleteAdmin {
+  return {
+    ...sample,
+    id: 'sample',
+    submittedAt: '',
+    parentEmail: '',
+    parentPhone: '',
+    feeStage1: false,
+    feeStage2: false,
+    feeStage3: false,
+    nilInterest: false,
+    termsAgreed: false,
+    agreementSubmitted: '',
+    programOption: '',
+    editToken: '',
+    notes: '',
+    transcriptUrl: '',
+    gameplayVideoUrl: '',
+    pendingUpdates: [],
+    activity: [],
+  };
+}
 
 function youTubeId(url: string): string | null {
   const m = url.match(/(?:youtu\.be\/|v=|embed\/)([\w-]{11})/);
@@ -249,10 +273,12 @@ const athleteFromRecord = (r: AirtableRecord): AthleteAdmin => ({
 });
 
 export async function getAthletes(): Promise<{ rows: AthleteAdmin[]; live: boolean }> {
+  if (isOpenStaging()) return { rows: [sampleAdminAthlete()], live: false };
+
   const token = process.env.AIRTABLE_TOKEN;
   if (!token) {
     if (!allowSampleData()) return { rows: [], live: false };
-    return { rows: [{ ...sample, id: 'sample', submittedAt: '', parentEmail: '', parentPhone: '', feeStage1: false, feeStage2: false, feeStage3: false, nilInterest: false, termsAgreed: false, agreementSubmitted: '', programOption: '', editToken: '', notes: '', transcriptUrl: '', gameplayVideoUrl: '', pendingUpdates: [], activity: [] }], live: false };
+    return { rows: [sampleAdminAthlete()], live: false };
   }
   try {
     const rows: AthleteAdmin[] = [];
@@ -310,6 +336,8 @@ export async function archiveAthlete(recordId: string, reason: string) {
 }
 
 export async function updateAthlete(recordId: string, fields: Record<string, unknown>) {
+  if (isOpenStaging()) return;
+
   const headers = await airtableHeaders();
   const cleanFields = Object.fromEntries(
     Object.entries(fields).filter(([, value]) => value !== undefined),
@@ -339,6 +367,14 @@ async function patchAthleteFields(recordId: string, fields: Record<string, unkno
 }
 
 export async function submitPendingAthleteUpdate(recordId: string, fields: AthleteInput) {
+  if (isOpenStaging()) {
+    return {
+      id: `staging_${Date.now()}`,
+      submittedAt: new Date().toISOString(),
+      fields,
+    };
+  }
+
   const record = await getRawAthleteRecord(recordId);
   if (!record) throw new Error('Profile not found');
   const existingNotes = f(record, 'Notes');
@@ -353,6 +389,8 @@ export async function submitPendingAthleteUpdate(recordId: string, fields: Athle
 }
 
 export async function approvePendingAthleteUpdate(recordId: string, updateId: string) {
+  if (isOpenStaging()) return;
+
   const record = await getRawAthleteRecord(recordId);
   if (!record) throw new Error('Profile not found');
   const notes = f(record, 'Notes');
@@ -365,12 +403,16 @@ export async function approvePendingAthleteUpdate(recordId: string, updateId: st
 }
 
 export async function rejectPendingAthleteUpdate(recordId: string, updateId: string) {
+  if (isOpenStaging()) return;
+
   const record = await getRawAthleteRecord(recordId);
   if (!record) throw new Error('Profile not found');
   await patchAthleteFields(recordId, { Notes: appendActivityLine(removePending(f(record, 'Notes'), updateId), `Admin rejected profile update ${updateId}.`) });
 }
 
 export async function markAthletePaymentPaid(recordId: string, stage: 'stage1' | 'stage2' | 'stage3', detail: string) {
+  if (isOpenStaging()) return;
+
   const record = await getRawAthleteRecord(recordId);
   if (!record) throw new Error('Profile not found');
   const field = stage === 'stage1' ? 'Fee Stage 1' : stage === 'stage2' ? 'Fee Stage 2' : 'Fee Stage 3';
@@ -444,6 +486,31 @@ export function athleteFieldsFromInput(input: AthleteInput, includeAdminFields =
 }
 
 export async function createAthlete(input: AthleteInput) {
+  if (isOpenStaging()) {
+    const firstName = cleanString(input.firstName) || 'Staging';
+    const lastName = cleanString(input.lastName) || 'Athlete';
+    return {
+      ...sampleAdminAthlete(),
+      id: `staging_${Date.now()}`,
+      slug: slugify([firstName, lastName, cleanString(input.gradYear)]),
+      firstName,
+      lastName,
+      email: cleanString(input.email, true) || '',
+      phone: cleanString(input.phone, true) || '',
+      parentName: cleanString(input.parentName, true) || '',
+      parentEmail: cleanString(input.parentEmail, true) || '',
+      parentPhone: cleanString(input.parentPhone, true) || '',
+      position: cleanString(input.position, true) || '',
+      height: cleanString(input.height, true) || '',
+      weight: cleanString(input.weight, true) || '',
+      gradYear: cleanString(input.gradYear, true) || '',
+      school: cleanString(input.school, true) || '',
+      location: cleanString(input.location, true) || '',
+      status: cleanString(input.status, true) || 'Pending',
+      submittedAt: new Date().toISOString().slice(0, 10),
+    };
+  }
+
   const headers = await airtableHeaders();
   const firstName = cleanString(input.firstName);
   const lastName = cleanString(input.lastName);
@@ -465,6 +532,8 @@ export async function createAthlete(input: AthleteInput) {
 }
 
 export async function deleteAthlete(recordId: string) {
+  if (isOpenStaging()) return;
+
   await archiveAthlete(recordId, 'Profile archived by admin');
   const record = await getRawAthleteRecord(recordId);
   await patchAthleteFields(recordId, {
@@ -475,6 +544,8 @@ export async function deleteAthlete(recordId: string) {
 }
 
 export async function getAthlete(slug: string, options: { includeHidden?: boolean } = {}): Promise<Athlete | null> {
+  if (isOpenStaging()) return slug === sample.slug ? sample : null;
+
   const token = process.env.AIRTABLE_TOKEN;
   if (!token) return allowSampleData() && slug === sample.slug ? sample : null;
 

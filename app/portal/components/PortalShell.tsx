@@ -3,7 +3,14 @@ import { site } from '@/config/site';
 import { HeaderPortalShell } from '@ea/portal-chassis/layout';
 import '../portal-nav.css';
 
-export type PortalTab = 'home' | 'parent' | 'amplifi' | 'updates' | 'resources' | 'messages' | 'account';
+export type PortalTab =
+  | 'home'
+  | 'parent'
+  | 'amplifi'
+  | 'updates'
+  | 'resources'
+  | 'messages'
+  | 'account';
 
 type Props = {
   portalType: 'athlete' | 'parent';

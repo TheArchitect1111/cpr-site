@@ -2,6 +2,7 @@ import { createHash, createHmac, randomBytes, timingSafeEqual } from 'crypto';
 import { NextRequest, NextResponse } from 'next/server';
 import { getAdminSessionSecret } from '@/lib/admin-session-secret';
 import { validatePasswordStrength } from '@/lib/password-policy';
+import { isOpenStaging } from '@/lib/staging';
 
 export type AdminUser = { email: string; password: string; role: string; name: string };
 type AirtableRecord = { id: string; fields: Record<string, unknown> };
@@ -283,6 +284,10 @@ export async function changeAdminPassword(
 }
 
 export function adminFromRequest(req: NextRequest) {
+  if (isOpenStaging()) {
+    return { email: 'staging@canadianprospects.ca', role: 'owner', name: 'CPR Staging' };
+  }
+
   const session = req.cookies.get(COOKIE)?.value;
   if (session) {
     const user = verifyAdminSession(session);

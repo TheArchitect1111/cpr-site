@@ -1,5 +1,6 @@
 import '../landing.css';
 import './admin.css';
+import '../portal/website-builder.css';
 import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
 import { getOutreach } from '@/lib/outreach';
@@ -9,12 +10,15 @@ import { getAthletes } from '@/lib/athletes';
 import { getCoaches } from '@/lib/coaches';
 import { verifyAdminSession } from '@/lib/admin-auth';
 import { site } from '@/config/site';
+import { isOpenStaging } from '@/lib/staging';
+import { getWebsiteUpdateRequests } from '@/lib/website-update-requests';
 import AdminClient from './AdminClient';
 import AdminTickets from './AdminTickets';
 import AdminMessages from './AdminMessages';
 import AdminActivity from './AdminActivity';
 import AdminContentRelevance from './AdminContentRelevance';
 import AdminRegistrants from './AdminRegistrants';
+import AdminWebsiteManager from './AdminWebsiteManager';
 
 export const dynamic = 'force-dynamic';
 
@@ -30,7 +34,8 @@ export default async function AdminPage({
 }) {
   const session = (await cookies()).get('cpr_admin_session')?.value || '';
   const admin = verifyAdminSession(session);
-  if (!admin) redirect('/admin/login');
+  const openStaging = isOpenStaging();
+  if (!openStaging && !admin) redirect('/admin/login');
 
   const { tab } = await searchParams;
   const activeTab = tab ?? 'registrants';
@@ -64,6 +69,10 @@ export default async function AdminPage({
         live={resourcesResult.live}
       />
     );
+  } else if (tab === 'website') {
+    const athletes = await athletesPromise;
+    const result = await getWebsiteUpdateRequests(athletes.rows);
+    mainContent = <AdminWebsiteManager requests={result.requests} live={result.live} />;
   } else if (tab === 'registrants' || !tab) {
     const athletes = await athletesPromise;
     mainContent = (
@@ -145,6 +154,9 @@ export default async function AdminPage({
         </nav>
         <div className="aside-sec">PORTAL</div>
         <nav>
+          <a className={`aitem${activeTab === 'website' ? ' active' : ''}`} href="/admin?tab=website">
+            Website &amp; Approvals
+          </a>
           <a className={`aitem${activeTab === 'tickets' ? ' active' : ''}`} href="/admin?tab=tickets">
             &#10067; Ask CPR Tickets
           </a>

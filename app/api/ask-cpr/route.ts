@@ -3,14 +3,16 @@ import { cookies } from 'next/headers';
 import { PORTAL_COOKIE, verifySession } from '@/lib/portal-auth';
 import { createTicket, getTicketsBySlug } from '@/lib/sections-data';
 import { notifyAdminNewTicket } from '@/lib/portal-admin-notifications';
+import { isOpenStaging } from '@/lib/staging';
 
 export const dynamic = 'force-dynamic';
 
 export async function GET() {
   const cookieStore = await cookies();
   const token = cookieStore.get(PORTAL_COOKIE)?.value;
-  if (!token) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-  const session = await verifySession(token);
+  const session = isOpenStaging()
+    ? { slug: 'jayden-thompson', type: 'athlete' as const }
+    : token ? await verifySession(token) : null;
   if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
   const { tickets } = await getTicketsBySlug(session.slug);
@@ -20,8 +22,9 @@ export async function GET() {
 export async function POST(req: NextRequest) {
   const cookieStore = await cookies();
   const token = cookieStore.get(PORTAL_COOKIE)?.value;
-  if (!token) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-  const session = await verifySession(token);
+  const session = isOpenStaging()
+    ? { slug: 'jayden-thompson', type: 'athlete' as const }
+    : token ? await verifySession(token) : null;
   if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
   let body: { subject?: string; message?: string };
@@ -49,12 +52,14 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  void notifyAdminNewTicket({
-    athleteSlug: session.slug,
-    subject,
-    message,
-    ticketId: ticket.id,
-  });
+  if (!isOpenStaging()) {
+    void notifyAdminNewTicket({
+      athleteSlug: session.slug,
+      subject,
+      message,
+      ticketId: ticket.id,
+    });
+  }
 
   return NextResponse.json({ ticket }, { status: 201 });
 }

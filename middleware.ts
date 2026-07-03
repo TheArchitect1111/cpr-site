@@ -7,6 +7,7 @@ import {
 } from '@/lib/chassis/cpr-portal';
 import { looksLikeAdminSessionToken, verifyAdminSessionEdge } from '@/lib/edge-admin-session';
 import type { PortalSession } from '@/lib/portal-auth';
+import { isOpenStaging } from '@/lib/staging';
 
 const ADMIN_PREFIX = '/admin';
 const ADMIN_LOGIN = '/admin/login';
@@ -30,6 +31,8 @@ const ROLE_ROUTES = [
 
 export async function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
+
+  if (isOpenStaging()) return NextResponse.next();
 
   if (pathname === ADMIN_PREFIX || pathname.startsWith(`${ADMIN_PREFIX}/`)) {
     const isPublic = [...ADMIN_PUBLIC].some(

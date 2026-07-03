@@ -2,6 +2,92 @@
   margin-bottom: 20px;
 }
 
+.website-request-panel {
+  background: #fff;
+  border: 1px solid var(--line);
+  border-left: 4px solid var(--red);
+  border-radius: 10px;
+  display: grid;
+  gap: 18px;
+  grid-template-columns: minmax(220px, 0.8fr) minmax(280px, 1.2fr);
+  margin-bottom: 24px;
+  padding: 22px;
+}
+
+.website-request-panel h2 {
+  font-size: 22px;
+  margin: 0 0 8px;
+}
+
+.website-request-panel p {
+  color: var(--gray);
+  line-height: 1.55;
+  margin: 0;
+}
+
+.website-request-panel form {
+  display: grid;
+  gap: 12px;
+}
+
+.website-request-panel label {
+  display: grid;
+  gap: 6px;
+}
+
+.website-request-panel label span {
+  color: var(--gray);
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+}
+
+.website-request-panel select,
+.website-request-panel textarea {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  font: inherit;
+  padding: 11px 12px;
+  width: 100%;
+}
+
+.website-request-panel textarea {
+  min-height: 120px;
+  resize: vertical;
+}
+
+.website-request-actions {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.website-request-actions button {
+  background: var(--red);
+  border: 0;
+  border-radius: 7px;
+  color: #fff;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 900;
+  letter-spacing: .06em;
+  padding: 11px 15px;
+  text-transform: uppercase;
+}
+
+.website-request-actions button:disabled {
+  cursor: not-allowed;
+  opacity: .6;
+}
+
+.website-request-actions span {
+  color: var(--gray);
+  font-size: 13px;
+  font-weight: 700;
+}
+
 .update-portal-title {
   font-size: clamp(24px, 4vw, 34px);
   margin: 0 0 8px;
@@ -75,4 +161,10 @@
 .update-portal-empty {
   text-align: center;
   color: var(--gray);
+}
+
+@media (max-width: 760px) {
+  .website-request-panel {
+    grid-template-columns: 1fr;
+  }
 }

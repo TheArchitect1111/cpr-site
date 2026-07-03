@@ -433,6 +433,95 @@ a.aitem:hover { background: rgba(255,255,255,.07); }
 }
 .profile-link-btn:hover { text-decoration: underline; }
 
+.website-approval-board {
+  background: #fff;
+  border: 1px solid #E7E7E7;
+  border-radius: 8px;
+  margin-bottom: 18px;
+  padding: 16px;
+}
+
+.website-request-list {
+  display: grid;
+  gap: 10px;
+}
+
+.website-request-card {
+  align-items: flex-start;
+  background: #FAFAFA;
+  border: 1px solid #ECECEC;
+  border-radius: 8px;
+  display: grid;
+  gap: 14px;
+  grid-template-columns: 1fr auto;
+  padding: 14px;
+}
+
+.website-request-card h3 {
+  font-size: 16px;
+  margin: 8px 0 6px;
+}
+
+.website-request-card p {
+  color: #555;
+  line-height: 1.45;
+  margin: 0;
+}
+
+.website-request-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.website-request-meta span {
+  background: #fff;
+  border: 1px solid #EEE;
+  border-radius: 999px;
+  color: var(--gray);
+  font-size: 11px;
+  font-weight: 800;
+  padding: 5px 8px;
+}
+
+.website-request-admin-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 132px;
+}
+
+.website-request-admin-actions a,
+.website-request-admin-actions button {
+  border: 0;
+  border-radius: 5px;
+  background: var(--black);
+  color: #fff;
+  cursor: pointer;
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: .06em;
+  padding: 9px 10px;
+  text-align: center;
+  text-decoration: none;
+  text-transform: uppercase;
+}
+
+.website-request-admin-actions a {
+  background: #EAEAEA;
+  color: #333;
+}
+
+.website-request-admin-actions .danger {
+  background: #A81D20;
+}
+
+.website-request-admin-actions button:disabled {
+  cursor: not-allowed;
+  opacity: .55;
+}
+
 @media (max-width: 1000px) {
   .admin-shell { grid-template-columns: 1fr; }
   .aside { position: static; height: auto; }
@@ -449,4 +538,6 @@ a.aitem:hover { background: rgba(255,255,255,.07); }
   .charts { grid-template-columns: 1fr; }
   .activity-feed li { grid-template-columns: 1fr; align-items: start; }
   .activity-feed span { width: fit-content; }
+  .website-request-card { grid-template-columns: 1fr; }
+  .website-request-admin-actions { flex-direction: row; flex-wrap: wrap; }
 }

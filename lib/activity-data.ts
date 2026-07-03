@@ -1,4 +1,5 @@
 import { getAllTickets, getAllMessages } from '@/lib/sections-data';
+import { isOpenStaging } from '@/lib/staging';
 
 const BASE = 'appvVr6MVrJvEY0YJ';
 const ATHLETES = 'tblZwrZHi3WBR3NHZ';
@@ -157,6 +158,8 @@ export async function getAthleteActivity(): Promise<{
   athletes: AthleteActivity[];
   live: boolean;
 }> {
+  if (isOpenStaging()) return { athletes: SAMPLE_ACTIVITY, live: false };
+
   const token = process.env.AIRTABLE_TOKEN;
   if (!token) return { athletes: SAMPLE_ACTIVITY, live: false };
 
