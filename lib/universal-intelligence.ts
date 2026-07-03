@@ -1,3 +1,5 @@
+import type { OrbieContext, OrbieGuidanceStep, OrbiePossibility, OrbieSpecialist } from '@/lib/orbie/types';
+
 export type CprSpecialistId =
   | 'research'
   | 'communications'
@@ -7,44 +9,15 @@ export type CprSpecialistId =
   | 'analytics'
   | 'website';
 
-export interface CprSpecialist {
-  id: CprSpecialistId;
-  name: string;
-  role: string;
-}
-
-export interface CprPossibility {
-  id: string;
-  title: string;
-  detail: string;
-  href: string;
-  actionLabel: string;
-  specialistId: CprSpecialistId;
-  targetSelector: string;
-  targetLabel: string;
-  steps: CprGuidanceStep[];
-  urgency?: 'low' | 'medium' | 'high';
-  completionMessage: string;
-}
-
-export interface CprGuidanceStep {
-  title: string;
-  reason: string;
-  outcome: string;
-  actionLabel: string;
-  href?: string;
-}
-
-export interface CprOrbieContext {
-  area: string;
-  status: string;
+export type CprSpecialist = OrbieSpecialist & { id: CprSpecialistId };
+export type CprGuidanceStep = OrbieGuidanceStep;
+export type CprPossibility = OrbiePossibility & { specialistId: CprSpecialistId };
+export type CprOrbieContext = OrbieContext & {
+  productId: 'cpr';
+  specialists: CprSpecialist[];
   primary: CprPossibility;
   secondary: CprPossibility[];
-  specialists: CprSpecialist[];
-  helpTopics: string[];
-  memorySignals: string[];
-  smartchitectureChecks: string[];
-}
+};
 
 const SPECIALISTS: Record<CprSpecialistId, CprSpecialist> = {
   research: {
@@ -264,6 +237,9 @@ function context(input: {
   memorySignals: string[];
 }): CprOrbieContext {
   return {
+    productId: 'cpr',
+    organizationName: 'Canadian Prospects Recruitment',
+    accentColor: '#C8102E',
     ...input,
     specialists: input.specialistIds.map((id) => SPECIALISTS[id]),
     helpTopics: HELP_TOPICS,
