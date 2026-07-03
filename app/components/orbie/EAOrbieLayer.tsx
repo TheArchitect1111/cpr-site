@@ -54,16 +54,6 @@ function targetRectFor(selector: string): TargetRect | null {
   };
 }
 
-function cardStyle(rect: TargetRect | null): CSSProperties {
-  if (!rect) return {};
-  const narrow = typeof window !== 'undefined' && window.innerWidth < 720;
-  if (narrow) return {};
-  const rightSpace = window.innerWidth - (rect.left + rect.width);
-  const left = rightSpace > 390 ? rect.left + rect.width + 18 : Math.max(18, rect.left - 378);
-  const top = Math.min(Math.max(18, rect.top), window.innerHeight - 440);
-  return { left, top };
-}
-
 function insightText(possibility: OrbiePossibility) {
   if (possibility.urgency === 'high') {
     return `I noticed ${possibility.targetLabel} can move this forward now.`;
@@ -200,7 +190,9 @@ export default function EAOrbieLayer({ productId, resolveContext, memoryNamespac
       ) : null}
 
       {mode === 'guiding' ? (
-        <section className="ea-orbie-guide" style={cardStyle(targetRect)} aria-label="Orbie guided assistance">
+        <>
+        <div className="ea-orbie-guide-backdrop" aria-hidden="true" />
+        <section className="ea-orbie-guide" aria-label="Orbie guided assistance">
           <div className="ea-orbie-guide-head">
             <div className="ea-orbie-presence" aria-hidden="true" />
             <div>
@@ -246,6 +238,7 @@ export default function EAOrbieLayer({ productId, resolveContext, memoryNamespac
             ))}
           </div>
         </section>
+        </>
       ) : null}
 
       {mode === 'done' ? (
