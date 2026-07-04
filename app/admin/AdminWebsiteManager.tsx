@@ -110,7 +110,9 @@ export default function AdminWebsiteManager({ requests, live }: Props) {
         </div>
       </section>
 
-      <WebsiteBuilderExperience />
+      <section id="builder" className="admin-builder-panel" data-orbie-target="admin-website-builder">
+        <WebsiteBuilderExperience />
+      </section>
     </>
   );
 }

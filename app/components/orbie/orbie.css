@@ -770,6 +770,187 @@
   font-weight: 850;
 }
 
+.ea-orbie-focus {
+  inset: auto 22px 96px auto;
+  z-index: 10000;
+  display: block;
+  width: min(430px, calc(100vw - 32px));
+  max-height: calc(100vh - 126px);
+  overflow: auto;
+  padding: 0;
+  background: transparent;
+}
+
+.ea-orbie-stage-light {
+  right: 18px;
+  bottom: 18px;
+  width: 220px;
+  height: 220px;
+  opacity: 0.42;
+}
+
+.ea-orbie-focus-card {
+  width: 100%;
+  grid-template-columns: 76px 1fr;
+  gap: 15px;
+  align-items: start;
+  padding: 18px;
+  border: 1px solid rgba(15, 35, 60, 0.12);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.96);
+  box-shadow: 0 24px 70px rgba(7, 18, 35, 0.24);
+  color: #0c2038;
+}
+
+.ea-orbie-morph-stage {
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.96);
+  box-shadow: 0 24px 70px rgba(7, 18, 35, 0.24);
+}
+
+.ea-orbie-focus-copy {
+  gap: 9px;
+  text-shadow: none;
+}
+
+.ea-orbie-focus-card h2 {
+  max-width: none;
+  color: #0c2038;
+  font-size: 1.55rem;
+  line-height: 1.05;
+}
+
+.ea-orbie-focus-card p,
+.ea-orbie-guide-copy,
+.ea-orbie-step-card p {
+  max-width: none;
+  color: #52657c;
+  font-size: 0.92rem;
+  line-height: 1.45;
+}
+
+.ea-orbie-focus-card .ea-orbie-focus-notice {
+  color: #10243d;
+  font-size: 0.95rem;
+}
+
+.ea-orbie-focus-status {
+  border-left-color: var(--orbie-accent);
+  color: #52657c;
+  font-size: 0.84rem;
+}
+
+.ea-orbie-focus-actions {
+  gap: 8px;
+}
+
+.ea-orbie-focus-actions button,
+.ea-orbie-focus-actions a,
+.ea-orbie-guide-actions button,
+.ea-orbie-guide-actions a {
+  min-height: 36px;
+  padding: 0 13px;
+  font-size: 0.82rem;
+}
+
+.ea-orbie-focus-actions button:last-child {
+  background: #eef4fa;
+  color: #304861;
+}
+
+.ea-orbie-focus-secondary {
+  display: grid;
+  gap: 8px;
+}
+
+.ea-orbie-focus-secondary a {
+  padding: 10px;
+  border: 1px solid #e3e9f0;
+  border-radius: 8px;
+  background: #f8fafc;
+  color: #10243d;
+}
+
+.ea-orbie-guide-backdrop {
+  display: none;
+}
+
+.ea-orbie-spotlight,
+.cpr-orbie-spotlight {
+  box-shadow:
+    0 0 0 6px color-mix(in srgb, var(--orbie-accent) 12%, transparent),
+    0 0 38px color-mix(in srgb, var(--orbie-accent) 35%, transparent);
+}
+
+.ea-orbie-guide {
+  top: auto;
+  right: 22px;
+  bottom: 96px;
+  left: auto;
+  width: min(430px, calc(100vw - 32px));
+  max-height: calc(100vh - 126px);
+  grid-template-columns: 76px 1fr;
+  gap: 15px;
+  align-items: start;
+  overflow: auto;
+  padding: 18px;
+  border: 1px solid rgba(15, 35, 60, 0.12);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.96);
+  box-shadow: 0 24px 70px rgba(7, 18, 35, 0.24);
+  color: #0c2038;
+  transform: none;
+  animation: eaOrbieRise 220ms ease-out both;
+}
+
+.ea-orbie-guide-content {
+  gap: 10px;
+  text-shadow: none;
+}
+
+.ea-orbie-guide-head {
+  gap: 10px;
+}
+
+.ea-orbie-guide-head h2,
+.ea-orbie-step-card h3 {
+  color: #0c2038;
+  font-size: 1.25rem;
+  line-height: 1.08;
+}
+
+.ea-orbie-guide-head button {
+  border-color: #d7e0ea;
+  background: #f4f7fb;
+  color: #304861;
+}
+
+.ea-orbie-step-card {
+  padding: 12px;
+  border: 1px solid #e3e9f0;
+  border-left: 3px solid var(--orbie-accent);
+  border-radius: 8px;
+  background: #f8fafc;
+}
+
+.ea-orbie-step-card small {
+  color: #18723a;
+}
+
+.ea-orbie-step-list {
+  margin-top: 4px;
+}
+
+.ea-orbie-step-list span {
+  background: #e9eff6;
+  color: #40546b;
+}
+
+.ea-orbie-context-strip {
+  display: flex;
+  margin-top: 4px;
+}
+
 .ea-orbie-complete {
   position: fixed;
   right: 96px;
@@ -1005,5 +1186,48 @@
 
   .ea-orbie-focus-secondary {
     justify-content: center;
+  }
+}
+
+@media (max-width: 720px) {
+  .ea-orbie-focus,
+  .ea-orbie-guide {
+    right: 12px;
+    bottom: 82px;
+    left: 12px;
+    width: auto;
+    max-height: calc(100vh - 108px);
+    padding: 0;
+    text-align: left;
+  }
+
+  .ea-orbie-focus-card,
+  .ea-orbie-guide {
+    grid-template-columns: 64px 1fr;
+    gap: 12px;
+    padding: 14px;
+  }
+
+  .ea-orbie-focus-copy,
+  .ea-orbie-guide-content {
+    justify-items: stretch;
+  }
+
+  .ea-orbie-hero-figure,
+  .ea-orbie-guide-figure {
+    height: auto;
+    transform: none;
+  }
+
+  .ea-orbie-focus-card h2,
+  .ea-orbie-guide-head h2,
+  .ea-orbie-step-card h3 {
+    font-size: 1.18rem;
+  }
+
+  .ea-orbie-step-card {
+    padding: 10px;
+    border-left: 3px solid var(--orbie-accent);
+    text-align: left;
   }
 }

@@ -136,61 +136,55 @@ export default async function AdminPage({
         <div className="aside-orbie" data-orbie-target="admin-orbie-rail">
           <div className="aside-orbie-head">
             <span className="aside-orbie-orb" aria-hidden="true" />
-            <span>Orbie Recommends</span>
+            <span>Next Action</span>
           </div>
           <a className="aside-orbie-primary" href={activeTab === 'website' ? '/admin?tab=website' : '/admin'}>
             <strong>{activeTab === 'website' ? 'Review website requests' : 'Review current registrants'}</strong>
-            <span>{activeTab === 'website' ? 'Approve the next portal update' : 'Move the next applicant forward'}</span>
+            <span>{activeTab === 'website' ? 'Approve the next portal update' : 'Orbie can walk the next applicant forward'}</span>
           </a>
         </div>
-        <div className="aside-sec">REGISTRANTS</div>
+        <div className="aside-sec">TODAY</div>
         <nav>
           <a className={`aitem${activeTab === 'registrants' ? ' active' : ''}`} href="/admin">
-            &#128100; Registrants &amp; Progress
+            <span>01</span> Registrants &amp; Progress
+          </a>
+          <a className={`aitem${activeTab === 'website' ? ' active' : ''}`} href="/admin?tab=website">
+            <span>02</span> Website Update Hub
           </a>
         </nav>
-        <div className="aside-sec">RECRUITMENT</div>
+        <div className="aside-sec">BUILD</div>
         <nav>
           <a className={`aitem${activeTab === 'outreach' ? ' active' : ''}`} href="/admin?tab=outreach">
-            &#128226; Coach Outreach
+            <span>03</span> Coach Outreach
           </a>
           <a className={`aitem${activeTab === 'outreach' ? ' active' : ''}`} href="/admin?tab=outreach#players">
-            &#127936; Player Profiles
+            <span>04</span> Player Profiles
           </a>
-          <span className="aitem coming-soon" title="Coming soon">&#127979; Schools</span>
-          <span className="aitem coming-soon" title="Coming soon">&#128202; Recruitment Tracker</span>
-          <span className="aitem coming-soon" title="Coming soon">&#128172; Responses</span>
-          <span className="aitem coming-soon" title="Coming soon">&#127942; Offers</span>
+          <a className="aitem" href="/admin?tab=website#builder"><span>05</span> Website Builder</a>
         </nav>
-        <div className="aside-sec">PORTAL</div>
+        <div className="aside-sec">COMMUNICATE</div>
         <nav>
-          <a className={`aitem${activeTab === 'website' ? ' active' : ''}`} href="/admin?tab=website">
-            Website &amp; Approvals
-          </a>
           <a className={`aitem${activeTab === 'tickets' ? ' active' : ''}`} href="/admin?tab=tickets">
-            &#10067; Ask CPR Tickets
+            <span>06</span> Ask CPR Tickets
           </a>
           <a className={`aitem${activeTab === 'messages' ? ' active' : ''}`} href="/admin?tab=messages">
-            &#128172; Messaging Center
+            <span>07</span> Messaging Center
           </a>
         </nav>
-        <div className="aside-sec">ANALYTICS</div>
+        <div className="aside-sec">INTELLIGENCE</div>
         <nav>
           <a className={`aitem${activeTab === 'activity' ? ' active' : ''}`} href="/admin?tab=activity">
-            &#128200; Athlete Activity
+            <span>08</span> Athlete Activity
           </a>
           <a className={`aitem${activeTab === 'content' ? ' active' : ''}`} href="/admin?tab=content">
-            &#128203; Content Relevance
+            <span>09</span> Content Relevance
           </a>
         </nav>
-        <div className="aside-sec">MANAGEMENT</div>
+        <div className="aside-sec">OPERATIONS</div>
         <nav>
-          <a className="aitem" href="/admin/create-client">&#43; Create New Client</a>
-          <span className="aitem coming-soon" title="Coming soon">&#128196; Documents</span>
-          <span className="aitem coming-soon" title="Coming soon">&#128221; Fee Agreements</span>
-          <span className="aitem coming-soon" title="Coming soon">&#9993; Email Templates</span>
+          <a className="aitem" href="/admin/create-client"><span>+</span> Create New Client</a>
         </nav>
-        <a className="aitem back" href="/">&#8592; Back to Site</a>
+        <a className="aitem back" href="/"><span>&lt;</span> Back to Site</a>
       </aside>
       <main className="amain">{mainContent}</main>
     </div>

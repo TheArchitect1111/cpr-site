@@ -169,7 +169,7 @@ export default function EAOrbieLayer({ productId, resolveContext, memoryNamespac
   }
 
   return (
-    <div className={`ea-orbie-shell ea-orbie-${mode}`} data-guidance-mode={mode} style={style}>
+    <div className={`ea-orbie-shell ea-orbie-mode-${mode}`} data-guidance-mode={mode} style={style}>
       {mode === 'guiding' && targetRect ? (
         <div
           className="ea-orbie-spotlight cpr-orbie-spotlight"
@@ -188,7 +188,7 @@ export default function EAOrbieLayer({ productId, resolveContext, memoryNamespac
           <div className="ea-orbie-stage-light" aria-hidden="true" />
           <div className="ea-orbie-focus-card ea-orbie-morph-stage">
             <div className="ea-orbie-hero-figure">
-              <OrbieFigure />
+              <OrbieFigure compact />
             </div>
             <div className="ea-orbie-focus-copy">
               <p className="ea-orbie-eyebrow">Orbie is ready</p>
@@ -229,7 +229,7 @@ export default function EAOrbieLayer({ productId, resolveContext, memoryNamespac
         <div className="ea-orbie-guide-backdrop" aria-hidden="true" />
         <section className="ea-orbie-guide" aria-label="Orbie guided assistance">
           <div className="ea-orbie-guide-figure">
-            <OrbieFigure />
+            <OrbieFigure compact />
           </div>
           <div className="ea-orbie-guide-content">
             <div className="ea-orbie-guide-head">
