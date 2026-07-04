@@ -68,6 +68,31 @@ function focusLead(context: OrbieContext) {
   return `I can help you move through ${context.area} without guessing what to do next.`;
 }
 
+function OrbieFigure({ compact = false }: { compact?: boolean }) {
+  return (
+    <div className={`ea-orbie-figure${compact ? ' ea-orbie-figure-compact' : ''}`} aria-hidden="true">
+      <div className="ea-orbie-antenna">
+        <span />
+      </div>
+      <div className="ea-orbie-head">
+        <div className="ea-orbie-ear ea-orbie-ear-left" />
+        <div className="ea-orbie-ear ea-orbie-ear-right" />
+        <div className="ea-orbie-visor">
+          <span className="ea-orbie-eye" />
+          <span className="ea-orbie-eye" />
+          <span className="ea-orbie-smile" />
+        </div>
+      </div>
+      <div className="ea-orbie-body">
+        <span>EA</span>
+      </div>
+      <div className="ea-orbie-arm ea-orbie-arm-left" />
+      <div className="ea-orbie-arm ea-orbie-arm-right" />
+      <div className="ea-orbie-shadow" />
+    </div>
+  );
+}
+
 export default function EAOrbieLayer({ productId, resolveContext, memoryNamespace }: Props) {
   const pathname = usePathname() ?? '/';
   const namespace = memoryNamespace ?? productId;
@@ -153,38 +178,40 @@ export default function EAOrbieLayer({ productId, resolveContext, memoryNamespac
       {mode === 'focus' ? (
         <section className="ea-orbie-focus" aria-label="Orbie guidance">
           <div className="ea-orbie-stage-light" aria-hidden="true" />
-          <div className="ea-orbie-focus-card">
-            <div className="ea-orbie-focus-presence" aria-hidden="true">
-              <span />
+          <div className="ea-orbie-focus-card ea-orbie-morph-stage">
+            <div className="ea-orbie-hero-figure">
+              <OrbieFigure />
             </div>
-            <p className="ea-orbie-eyebrow">Orbie is ready</p>
-            <h2>{possibility.title}</h2>
-            <p className="ea-orbie-focus-notice">{insightText(possibility)}</p>
-            <p>{focusLead(context)}</p>
-            <div className="ea-orbie-focus-status">
-              <span>{context.status}</span>
-            </div>
-            <div className="ea-orbie-focus-actions">
-              <button type="button" onClick={startGuidance}>
-                Guide me
-              </button>
-              <Link href={possibility.href} onClick={() => setMode('ambient')}>
-                Open now
-              </Link>
-              <button type="button" onClick={() => setMode('ambient')}>
-                Later
-              </button>
-            </div>
-            {context.secondary.length > 0 ? (
-              <div className="ea-orbie-focus-secondary" aria-label="Other Orbie options">
-                {context.secondary.slice(0, 2).map((option) => (
-                  <Link key={option.id} href={option.href} onClick={() => setMode('ambient')}>
-                    <strong>{option.title}</strong>
-                    <span>{option.actionLabel}</span>
-                  </Link>
-                ))}
+            <div className="ea-orbie-focus-copy">
+              <p className="ea-orbie-eyebrow">Orbie is ready</p>
+              <h2>Hi, I&apos;m Orbie.</h2>
+              <p className="ea-orbie-focus-notice">{insightText(possibility)}</p>
+              <p>{focusLead(context)}</p>
+              <div className="ea-orbie-focus-status">
+                <span>{context.status}</span>
               </div>
-            ) : null}
+              <div className="ea-orbie-focus-actions">
+                <button type="button" onClick={startGuidance}>
+                  Let&apos;s handle it
+                </button>
+                <Link href={possibility.href} onClick={() => setMode('ambient')}>
+                  Open now
+                </Link>
+                <button type="button" onClick={() => setMode('ambient')}>
+                  Later
+                </button>
+              </div>
+              {context.secondary.length > 0 ? (
+                <div className="ea-orbie-focus-secondary" aria-label="Other Orbie options">
+                  {context.secondary.slice(0, 2).map((option) => (
+                    <Link key={option.id} href={option.href} onClick={() => setMode('ambient')}>
+                      <strong>{option.title}</strong>
+                      <span>{option.actionLabel}</span>
+                    </Link>
+                  ))}
+                </div>
+              ) : null}
+            </div>
           </div>
         </section>
       ) : null}
@@ -194,9 +221,9 @@ export default function EAOrbieLayer({ productId, resolveContext, memoryNamespac
         <div className="ea-orbie-guide-backdrop" aria-hidden="true" />
         <section className="ea-orbie-guide" aria-label="Orbie guided assistance">
           <div className="ea-orbie-guide-head">
-            <div className="ea-orbie-presence" aria-hidden="true" />
+            <OrbieFigure compact />
             <div>
-              <p className="ea-orbie-eyebrow">Orbie noticed</p>
+              <p className="ea-orbie-eyebrow">Orbie is guiding</p>
               <h2>{possibility.title}</h2>
             </div>
             <button type="button" aria-label="Close Orbie" onClick={() => setMode('ambient')}>
