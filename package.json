@@ -14,6 +14,7 @@
     "@ea/portal-chassis": "file:./vendor/portal-chassis",
     "@sentry/nextjs": "^10.59.0",
     "@vercel/blob": "^2.4.0",
+    "motion": "^12.42.2",
     "next": "^15.5.19",
     "puppeteer-core": "^25.1.0",
     "react": "19.2.4",
