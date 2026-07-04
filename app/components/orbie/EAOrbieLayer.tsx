@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import type { OrbieContext, OrbiePossibility } from '@/lib/orbie/types';
 
-type GuidanceMode = 'ambient' | 'focus' | 'guiding' | 'done';
+type GuidanceMode = 'ambient' | 'peek' | 'focus' | 'guiding' | 'done';
 
 type TargetRect = {
   top: number;
@@ -109,12 +109,12 @@ export default function EAOrbieLayer({ productId, resolveContext, memoryNamespac
     const sessionKey = `ea-orbie-presented:${namespace}:${pathname}`;
     if (shouldPresentOnLoad && !window.sessionStorage.getItem(sessionKey)) {
       window.sessionStorage.setItem(sessionKey, 'true');
-      const timer = window.setTimeout(() => setMode('focus'), 650);
+      const timer = window.setTimeout(() => setMode('peek'), 650);
       return () => window.clearTimeout(timer);
     }
 
     const timer = window.setTimeout(() => {
-      if (!readMemory(namespace).includes(possibility.id)) setMode('focus');
+      if (!readMemory(namespace).includes(possibility.id)) setMode('peek');
     }, possibility.urgency === 'high' ? 500 : 1200);
 
     return () => window.clearTimeout(timer);
@@ -181,6 +181,24 @@ export default function EAOrbieLayer({ productId, resolveContext, memoryNamespac
           }}
           aria-hidden="true"
         />
+      ) : null}
+
+      {mode === 'peek' ? (
+        <section className="ea-orbie-peek" aria-label="Orbie recommendation">
+          <OrbieFigure compact />
+          <div>
+            <p>{insightText(possibility)}</p>
+            <span>{context.status}</span>
+          </div>
+          <div>
+            <button type="button" onClick={() => setMode('focus')}>
+              Show me
+            </button>
+            <button type="button" onClick={() => setMode('ambient')}>
+              Later
+            </button>
+          </div>
+        </section>
       ) : null}
 
       {mode === 'focus' ? (
@@ -289,9 +307,9 @@ export default function EAOrbieLayer({ productId, resolveContext, memoryNamespac
 
       <button
         type="button"
-        className={`ea-orbie-orb cpr-orbie-orb${mode === 'focus' && !isDone ? ' needs-attention' : ''}`}
+        className={`ea-orbie-orb cpr-orbie-orb${(mode === 'peek' || mode === 'focus') && !isDone ? ' needs-attention' : ''}`}
         aria-label="Open Orbie guidance"
-        onClick={mode === 'guiding' ? () => setMode('ambient') : startGuidance}
+        onClick={mode === 'guiding' ? () => setMode('ambient') : () => setMode('focus')}
       >
         <span className="ea-orbie-core" aria-hidden="true" />
       </button>

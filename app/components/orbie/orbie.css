@@ -1,8 +1,7 @@
 .ea-orbie-shell {
   --orbie-accent: #2d7ff9;
   position: fixed;
-  right: 18px;
-  bottom: 18px;
+  inset: 0;
   z-index: 10000;
   pointer-events: none;
 }
@@ -14,6 +13,7 @@
 .ea-orbie-orb,
 .ea-orbie-focus,
 .ea-orbie-guide,
+.ea-orbie-peek,
 .ea-orbie-complete {
   pointer-events: auto;
 }
@@ -771,10 +771,10 @@
 }
 
 .ea-orbie-focus {
-  inset: auto 22px 96px auto;
-  z-index: 10000;
+  inset: auto 20px 92px auto;
+  z-index: 10002;
   display: block;
-  width: min(430px, calc(100vw - 32px));
+  width: min(360px, calc(100vw - 32px));
   max-height: calc(100vh - 126px);
   overflow: auto;
   padding: 0;
@@ -791,10 +791,10 @@
 
 .ea-orbie-focus-card {
   width: 100%;
-  grid-template-columns: 76px 1fr;
-  gap: 15px;
+  grid-template-columns: 58px 1fr;
+  gap: 12px;
   align-items: start;
-  padding: 18px;
+  padding: 15px;
   border: 1px solid rgba(15, 35, 60, 0.12);
   border-radius: 8px;
   background: rgba(255, 255, 255, 0.96);
@@ -816,7 +816,7 @@
 .ea-orbie-focus-card h2 {
   max-width: none;
   color: #0c2038;
-  font-size: 1.55rem;
+  font-size: 1.28rem;
   line-height: 1.05;
 }
 
@@ -825,19 +825,19 @@
 .ea-orbie-step-card p {
   max-width: none;
   color: #52657c;
-  font-size: 0.92rem;
+  font-size: 0.84rem;
   line-height: 1.45;
 }
 
 .ea-orbie-focus-card .ea-orbie-focus-notice {
   color: #10243d;
-  font-size: 0.95rem;
+  font-size: 0.88rem;
 }
 
 .ea-orbie-focus-status {
   border-left-color: var(--orbie-accent);
   color: #52657c;
-  font-size: 0.84rem;
+  font-size: 0.78rem;
 }
 
 .ea-orbie-focus-actions {
@@ -848,9 +848,9 @@
 .ea-orbie-focus-actions a,
 .ea-orbie-guide-actions button,
 .ea-orbie-guide-actions a {
-  min-height: 36px;
-  padding: 0 13px;
-  font-size: 0.82rem;
+  min-height: 34px;
+  padding: 0 12px;
+  font-size: 0.78rem;
 }
 
 .ea-orbie-focus-actions button:last-child {
@@ -859,7 +859,7 @@
 }
 
 .ea-orbie-focus-secondary {
-  display: grid;
+  display: none;
   gap: 8px;
 }
 
@@ -884,16 +884,17 @@
 
 .ea-orbie-guide {
   top: auto;
-  right: 22px;
-  bottom: 96px;
+  right: 20px;
+  bottom: 92px;
   left: auto;
-  width: min(430px, calc(100vw - 32px));
+  z-index: 10002;
+  width: min(360px, calc(100vw - 32px));
   max-height: calc(100vh - 126px);
-  grid-template-columns: 76px 1fr;
-  gap: 15px;
+  grid-template-columns: 58px 1fr;
+  gap: 12px;
   align-items: start;
   overflow: auto;
-  padding: 18px;
+  padding: 15px;
   border: 1px solid rgba(15, 35, 60, 0.12);
   border-radius: 8px;
   background: rgba(255, 255, 255, 0.96);
@@ -915,7 +916,7 @@
 .ea-orbie-guide-head h2,
 .ea-orbie-step-card h3 {
   color: #0c2038;
-  font-size: 1.25rem;
+  font-size: 1.05rem;
   line-height: 1.08;
 }
 
@@ -926,7 +927,7 @@
 }
 
 .ea-orbie-step-card {
-  padding: 12px;
+  padding: 10px;
   border: 1px solid #e3e9f0;
   border-left: 3px solid var(--orbie-accent);
   border-radius: 8px;
@@ -947,8 +948,38 @@
 }
 
 .ea-orbie-context-strip {
-  display: flex;
+  display: none;
   margin-top: 4px;
+}
+
+.ea-orbie-peek {
+  z-index: 10002;
+  right: 20px;
+  bottom: 92px;
+  width: min(360px, calc(100vw - 32px));
+  grid-template-columns: 58px 1fr;
+  gap: 10px;
+  padding: 12px;
+  border-radius: 8px;
+}
+
+.ea-orbie-peek .ea-orbie-figure-compact {
+  width: 58px;
+  height: 66px;
+}
+
+.ea-orbie-peek span {
+  display: block;
+  margin-top: 4px;
+  color: #52657c;
+  font-size: 0.78rem;
+  line-height: 1.35;
+}
+
+.ea-orbie-focus .ea-orbie-figure-compact,
+.ea-orbie-guide .ea-orbie-figure-compact {
+  width: 58px;
+  height: 66px;
 }
 
 .ea-orbie-complete {
