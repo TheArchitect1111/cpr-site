@@ -133,6 +133,16 @@ export default async function AdminPage({
             <div className="ab2 display">RECRUITMENT</div>
           </div>
         </div>
+        <div className="aside-orbie" data-orbie-target="admin-orbie-rail">
+          <div className="aside-orbie-head">
+            <span className="aside-orbie-orb" aria-hidden="true" />
+            <span>Orbie Recommends</span>
+          </div>
+          <a className="aside-orbie-primary" href={activeTab === 'website' ? '/admin?tab=website' : '/admin'}>
+            <strong>{activeTab === 'website' ? 'Review website requests' : 'Review current registrants'}</strong>
+            <span>{activeTab === 'website' ? 'Approve the next portal update' : 'Move the next applicant forward'}</span>
+          </a>
+        </div>
         <div className="aside-sec">REGISTRANTS</div>
         <nav>
           <a className={`aitem${activeTab === 'registrants' ? ' active' : ''}`} href="/admin">

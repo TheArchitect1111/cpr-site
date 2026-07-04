@@ -105,12 +105,20 @@ export default function EAOrbieLayer({ productId, resolveContext, memoryNamespac
   const [completed, setCompleted] = useState<string[]>(() => readMemory(namespace));
 
   useEffect(() => {
+    const shouldPresentOnLoad = pathname.startsWith('/admin');
+    const sessionKey = `ea-orbie-presented:${namespace}:${pathname}`;
+    if (shouldPresentOnLoad && !window.sessionStorage.getItem(sessionKey)) {
+      window.sessionStorage.setItem(sessionKey, 'true');
+      const timer = window.setTimeout(() => setMode('focus'), 650);
+      return () => window.clearTimeout(timer);
+    }
+
     const timer = window.setTimeout(() => {
       if (!readMemory(namespace).includes(possibility.id)) setMode('focus');
     }, possibility.urgency === 'high' ? 500 : 1200);
 
     return () => window.clearTimeout(timer);
-  }, [namespace, possibility.id, possibility.urgency]);
+  }, [namespace, pathname, possibility.id, possibility.urgency]);
 
   useEffect(() => {
     const refresh = () => setTargetRect(targetRectFor(possibility.targetSelector));
