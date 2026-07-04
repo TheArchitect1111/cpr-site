@@ -100,8 +100,8 @@
   place-items: center;
   padding: 24px;
   background:
-    radial-gradient(circle at 50% 55%, color-mix(in srgb, var(--orbie-accent) 13%, transparent), transparent 34%),
-    rgba(6, 13, 26, 0.18);
+    radial-gradient(circle at 48% 52%, color-mix(in srgb, var(--orbie-accent) 24%, transparent), transparent 36%),
+    rgba(6, 13, 26, 0.58);
   animation: eaOrbieFocusIn 260ms ease-out both;
 }
 
@@ -127,7 +127,7 @@
   gap: 34px;
   align-items: center;
   padding: 34px 42px;
-  color: #10243d;
+  color: #ffffff;
   text-align: left;
 }
 
@@ -147,13 +147,8 @@
 .ea-orbie-focus-copy {
   display: grid;
   gap: 14px;
-  padding: 28px;
-  border: 1px solid rgba(255, 255, 255, 0.72);
-  border-radius: 30px;
-  background: rgba(255, 255, 255, 0.94);
-  box-shadow:
-    0 32px 90px rgba(6, 19, 38, 0.2),
-    0 0 90px color-mix(in srgb, var(--orbie-accent) 16%, transparent);
+  padding: 0;
+  text-shadow: 0 2px 18px rgba(3, 10, 22, 0.34);
 }
 
 .ea-orbie-focus-presence {
@@ -187,7 +182,7 @@
 .ea-orbie-focus-card h2 {
   max-width: 14ch;
   margin: 0;
-  color: #071f3b;
+  color: #ffffff;
   font-size: clamp(2rem, 4vw, 3.2rem);
   line-height: 0.95;
 }
@@ -195,23 +190,21 @@
 .ea-orbie-focus-card p {
   max-width: 440px;
   margin: 0;
-  color: #40546b;
+  color: rgba(255, 255, 255, 0.82);
   font-size: 1rem;
   line-height: 1.5;
 }
 
 .ea-orbie-focus-card .ea-orbie-focus-notice {
-  color: #10243d;
+  color: #ffffff;
   font-weight: 860;
 }
 
 .ea-orbie-focus-status {
   width: 100%;
-  padding: 12px 14px;
-  border: 1px solid rgba(16, 36, 61, 0.1);
-  border-radius: 18px;
-  background: linear-gradient(180deg, #f9fbff, #eef5ff);
-  color: #223a56;
+  padding: 0 0 0 13px;
+  border-left: 2px solid color-mix(in srgb, var(--orbie-accent) 72%, white);
+  color: rgba(255, 255, 255, 0.78);
   font-size: 0.92rem;
   font-weight: 780;
   line-height: 1.35;
@@ -248,28 +241,29 @@
 }
 
 .ea-orbie-focus-actions button:last-child {
-  background: #eef4fa;
-  color: #304861;
+  background: rgba(255, 255, 255, 0.14);
+  color: #ffffff;
+  backdrop-filter: blur(10px);
 }
 
 .ea-orbie-focus-secondary {
-  display: grid;
+  display: flex;
   width: 100%;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 10px;
-  margin-top: 4px;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-top: 2px;
 }
 
 .ea-orbie-focus-secondary a {
-  display: grid;
-  gap: 4px;
-  min-height: 86px;
-  align-content: center;
-  padding: 14px;
-  border: 1px solid rgba(16, 36, 61, 0.1);
-  border-radius: 18px;
-  background: rgba(255, 255, 255, 0.76);
-  color: #10243d;
+  display: inline-grid;
+  gap: 2px;
+  min-height: auto;
+  align-content: start;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  color: #ffffff;
   text-align: left;
   text-decoration: none;
 }
@@ -503,7 +497,7 @@
 }
 
 .ea-orbie-focus-secondary span {
-  color: var(--orbie-accent);
+  color: color-mix(in srgb, var(--orbie-accent) 54%, white);
   font-size: 0.78rem;
   font-weight: 900;
 }
@@ -607,8 +601,8 @@
   inset: 0;
   z-index: 9997;
   background:
-    radial-gradient(circle at 50% 48%, color-mix(in srgb, var(--orbie-accent) 16%, transparent), transparent 36%),
-    rgba(6, 13, 26, 0.18);
+    radial-gradient(circle at 44% 50%, color-mix(in srgb, var(--orbie-accent) 24%, transparent), transparent 34%),
+    rgba(6, 13, 26, 0.62);
   pointer-events: none;
 }
 
@@ -625,34 +619,47 @@
   top: 50%;
   left: 50%;
   z-index: 10001;
-  width: min(540px, calc(100vw - 36px));
+  display: grid;
+  width: min(900px, calc(100vw - 36px));
   max-height: min(82vh, 620px);
+  grid-template-columns: minmax(220px, 0.78fr) minmax(320px, 1fr);
+  gap: 34px;
+  align-items: center;
   overflow: auto;
-  padding: 24px;
-  border: 1px solid rgba(255, 255, 255, 0.72);
-  border-radius: 30px;
-  background: rgba(255, 255, 255, 0.97);
-  box-shadow:
-    0 34px 96px rgba(6, 19, 38, 0.3),
-    0 0 92px color-mix(in srgb, var(--orbie-accent) 20%, transparent);
-  color: #10243d;
+  padding: 28px 34px;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  color: #ffffff;
   transform: translate(-50%, -50%);
   animation: eaOrbieGuideIn 240ms ease-out both;
 }
 
+.ea-orbie-guide-figure {
+  display: grid;
+  justify-items: center;
+}
+
+.ea-orbie-guide-content {
+  display: grid;
+  gap: 14px;
+  text-shadow: 0 2px 18px rgba(3, 10, 22, 0.34);
+}
+
 .ea-orbie-guide-head {
   display: grid;
-  grid-template-columns: auto 1fr auto;
-  gap: 12px;
+  grid-template-columns: 1fr auto;
+  gap: 18px;
   align-items: center;
 }
 
 .ea-orbie-guide-head h2,
 .ea-orbie-step-card h3 {
   margin: 3px 0 0;
-  color: #071f3b;
-  font-size: 1.2rem;
-  line-height: 1.15;
+  color: #ffffff;
+  font-size: clamp(1.65rem, 3vw, 2.5rem);
+  line-height: 1.05;
 }
 
 .ea-orbie-guide-head button {
@@ -660,11 +667,12 @@
   width: 32px;
   height: 32px;
   place-items: center;
-  border: 1px solid rgba(16, 36, 61, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.2);
   border-radius: 50%;
-  background: #f4f7fb;
-  color: #10243d;
+  background: rgba(255, 255, 255, 0.12);
+  color: #ffffff;
   cursor: pointer;
+  backdrop-filter: blur(10px);
 }
 
 .ea-orbie-eyebrow,
@@ -678,29 +686,31 @@
 }
 
 .ea-orbie-guide-copy {
-  margin: 16px 0;
-  color: #4d6078;
-  font-size: 0.94rem;
+  max-width: 540px;
+  margin: 0;
+  color: rgba(255, 255, 255, 0.82);
+  font-size: 1rem;
   line-height: 1.5;
 }
 
 .ea-orbie-step-card {
-  padding: 14px;
-  border: 1px solid rgba(16, 36, 61, 0.1);
-  border-radius: 16px;
-  background: linear-gradient(180deg, #f9fbff, #eef5ff);
+  padding: 2px 0 2px 18px;
+  border: 0;
+  border-left: 2px solid color-mix(in srgb, var(--orbie-accent) 72%, white);
+  border-radius: 0;
+  background: transparent;
 }
 
 .ea-orbie-step-card p {
   margin: 8px 0;
-  color: #4d6078;
-  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.76);
+  font-size: 1rem;
   line-height: 1.45;
 }
 
 .ea-orbie-step-card small {
   display: block;
-  color: #166534;
+  color: #a7f3d0;
   font-weight: 850;
   line-height: 1.35;
 }
@@ -717,14 +727,19 @@
   height: 26px;
   place-items: center;
   border-radius: 50%;
-  background: #e9eef5;
-  color: #596b80;
+  background: rgba(255, 255, 255, 0.14);
+  color: rgba(255, 255, 255, 0.78);
   font-size: 0.76rem;
   font-weight: 900;
 }
 
 .ea-orbie-step-list span.is-active {
-  background: #071f3b;
+  background: #ffffff;
+  color: #071f3b;
+}
+
+.ea-orbie-step-list span.is-active:first-child {
+  background: var(--orbie-accent);
   color: #ffffff;
 }
 
@@ -740,7 +755,7 @@
 }
 
 .ea-orbie-context-strip {
-  display: flex;
+  display: none;
   flex-wrap: wrap;
   gap: 7px;
   margin-top: 14px;
@@ -945,7 +960,8 @@
   }
 
   .ea-orbie-focus-copy {
-    padding: 20px 16px;
+    padding: 0;
+    justify-items: center;
   }
 
   .ea-orbie-hero-figure {
@@ -957,7 +973,30 @@
   .ea-orbie-guide {
     width: calc(100vw - 28px);
     max-height: 82vh;
+    grid-template-columns: 1fr;
+    gap: 12px;
     padding: 20px 18px;
+    text-align: center;
+  }
+
+  .ea-orbie-guide-figure {
+    height: 196px;
+    transform: scale(0.66);
+    transform-origin: center top;
+  }
+
+  .ea-orbie-guide-content {
+    justify-items: center;
+  }
+
+  .ea-orbie-guide-head {
+    width: 100%;
+  }
+
+  .ea-orbie-step-card {
+    padding-left: 0;
+    border-left: 0;
+    text-align: center;
   }
 
   .ea-orbie-focus-card h2 {
@@ -965,6 +1004,6 @@
   }
 
   .ea-orbie-focus-secondary {
-    grid-template-columns: 1fr;
+    justify-content: center;
   }
 }

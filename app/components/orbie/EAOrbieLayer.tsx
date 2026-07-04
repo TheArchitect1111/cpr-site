@@ -220,49 +220,53 @@ export default function EAOrbieLayer({ productId, resolveContext, memoryNamespac
         <>
         <div className="ea-orbie-guide-backdrop" aria-hidden="true" />
         <section className="ea-orbie-guide" aria-label="Orbie guided assistance">
-          <div className="ea-orbie-guide-head">
-            <OrbieFigure compact />
-            <div>
-              <p className="ea-orbie-eyebrow">Orbie is guiding</p>
-              <h2>{possibility.title}</h2>
+          <div className="ea-orbie-guide-figure">
+            <OrbieFigure />
+          </div>
+          <div className="ea-orbie-guide-content">
+            <div className="ea-orbie-guide-head">
+              <div>
+                <p className="ea-orbie-eyebrow">Orbie is guiding</p>
+                <h2>{possibility.title}</h2>
+              </div>
+              <button type="button" aria-label="Close Orbie" onClick={() => setMode('ambient')}>
+                x
+              </button>
             </div>
-            <button type="button" aria-label="Close Orbie" onClick={() => setMode('ambient')}>
-              x
-            </button>
-          </div>
 
-          <p className="ea-orbie-guide-copy">{possibility.detail}</p>
+            <p className="ea-orbie-guide-copy">{possibility.detail}</p>
 
-          <div className="ea-orbie-step-card">
-            <p className="ea-orbie-label">Step {stepIndex + 1} of {possibility.steps.length}</p>
-            <h3>{currentStep.title}</h3>
-            <p>{currentStep.reason}</p>
-            <small>{currentStep.outcome}</small>
-          </div>
+            <div className="ea-orbie-step-card">
+              <p className="ea-orbie-label">Step {stepIndex + 1} of {possibility.steps.length}</p>
+              <h3>{currentStep.title}</h3>
+              <p>{currentStep.reason}</p>
+              <small>{currentStep.outcome}</small>
+            </div>
 
-          <div className="ea-orbie-step-list">
-            {possibility.steps.map((step, index) => (
-              <span key={step.title} className={index <= stepIndex ? 'is-active' : ''}>
-                {index + 1}
-              </span>
-            ))}
-          </div>
+            <div className="ea-orbie-step-list">
+              {possibility.steps.map((step, index) => (
+                <span key={step.title} className={index <= stepIndex ? 'is-active' : ''}>
+                  {index + 1}
+                </span>
+              ))}
+            </div>
 
-          <div className="ea-orbie-guide-actions">
-            {stepIndex === 0 ? (
-              <Link href={possibility.href} onClick={() => setMode('ambient')}>
-                {currentStep.actionLabel}
-              </Link>
-            ) : null}
-            <button type="button" onClick={nextStep}>
-              {stepIndex >= possibility.steps.length - 1 ? 'Mark done' : 'Next step'}
-            </button>
-          </div>
+            <div className="ea-orbie-guide-actions">
+              {stepIndex === 0 ? (
+                <Link href={possibility.href} onClick={() => setMode('ambient')}>
+                  {currentStep.actionLabel}
+                </Link>
+              ) : null}
+              <button type="button" onClick={nextStep}>
+                {stepIndex >= possibility.steps.length - 1 ? 'Mark done' : 'Next step'}
+              </button>
+            </div>
 
-          <div className="ea-orbie-context-strip">
-            {context.specialists.slice(0, 3).map((specialist) => (
-              <span key={specialist.id}>{specialist.name}</span>
-            ))}
+            <div className="ea-orbie-context-strip">
+              {context.specialists.slice(0, 3).map((specialist) => (
+                <span key={specialist.id}>{specialist.name}</span>
+              ))}
+            </div>
           </div>
         </section>
         </>
