@@ -1,9 +1,9 @@
 {
   "name": "EA Governance Drift Report",
-  "branch": "governance/baseline-v1.0",
-  "commit": "60346712366871276631abef9839242ecd9b4f1b",
-  "generatedAt": "2026-07-07T22:44:15.891Z",
-  "changedFileCount": 31,
+  "branch": "main",
+  "commit": "380578d0ced33d5a9c2b463a7284311a0094c260",
+  "generatedAt": "2026-07-07T23:10:01.235Z",
+  "changedFileCount": 6,
   "applicationDriftFiles": [],
   "disallowedReferences": [],
   "driftScore": 100,

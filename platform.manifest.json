@@ -1,8 +1,8 @@
 {
   "name": "EA Platform Governance Manifest",
-  "branch": "governance/baseline-v1.0",
-  "commit": "60346712366871276631abef9839242ecd9b4f1b",
-  "generatedAt": "2026-07-07T22:36:25.599Z",
+  "branch": "main",
+  "commit": "380578d0ced33d5a9c2b463a7284311a0094c260",
+  "generatedAt": "2026-07-07T23:09:33.630Z",
   "package": {
     "name": "cpr-site",
     "version": "0.1.0",

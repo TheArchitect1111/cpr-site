@@ -1,8 +1,8 @@
 {
   "name": "EA Route Manifest",
-  "branch": "governance/baseline-v1.0",
-  "commit": "60346712366871276631abef9839242ecd9b4f1b",
-  "generatedAt": "2026-07-07T22:33:06.469Z",
+  "branch": "main",
+  "commit": "380578d0ced33d5a9c2b463a7284311a0094c260",
+  "generatedAt": "2026-07-07T23:09:33.430Z",
   "routeCount": 107,
   "routes": [
     {
