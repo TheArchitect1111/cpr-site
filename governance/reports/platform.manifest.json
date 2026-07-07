@@ -1,0 +1,78 @@
+{
+  "name": "EA Platform Governance Manifest",
+  "branch": "governance/baseline-v1.0",
+  "commit": "60346712366871276631abef9839242ecd9b4f1b",
+  "generatedAt": "2026-07-07T22:36:25.599Z",
+  "package": {
+    "name": "cpr-site",
+    "version": "0.1.0",
+    "private": true
+  },
+  "scripts": [
+    "build",
+    "chassis:clone",
+    "dev",
+    "governance:all",
+    "governance:drift",
+    "governance:gates",
+    "governance:manifest",
+    "governance:platform",
+    "governance:routes",
+    "lint",
+    "start",
+    "sync-chassis",
+    "test:smoke",
+    "verify:deploy"
+  ],
+  "dependencies": [
+    "@clerk/nextjs",
+    "@ea/portal-chassis",
+    "@sentry/nextjs",
+    "@vercel/blob",
+    "driver.js",
+    "next",
+    "puppeteer-core",
+    "react",
+    "react-dom",
+    "stripe"
+  ],
+  "devDependencies": [
+    "@playwright/test",
+    "@tailwindcss/postcss",
+    "@types/node",
+    "@types/react",
+    "@types/react-dom",
+    "eslint",
+    "eslint-config-next",
+    "tailwindcss",
+    "typescript"
+  ],
+  "governanceFiles": [
+    "governance/README.md",
+    "governance/config/baseline.json",
+    "governance/reports/.gitkeep",
+    "governance/reports/drift-report.json",
+    "governance/reports/latest.json",
+    "governance/reports/platform.manifest.json",
+    "governance/reports/route-inventory.json",
+    "governance/schema/release-manifest.schema.json"
+  ],
+  "docs": [
+    "docs/BRANCH-GOVERNANCE.md",
+    "docs/COMMUNICATION-CENTER-RESEARCH-PLAN.md",
+    "docs/CPR-STAFF-AUTH-GUIDE.md",
+    "docs/DEPLOYMENT-CHECKLIST.md",
+    "docs/DRIFT-DETECTION.md",
+    "docs/EA-RELEASE-GOVERNANCE.md",
+    "docs/ENVIRONMENT-CATALOG.md",
+    "docs/EXTERNAL-SERVICE-REGISTRY.md",
+    "docs/PLATFORM-MANIFEST.md",
+    "docs/RECOVERY-PLAYBOOK.md",
+    "docs/branch-protection-checklist.md",
+    "docs/cpr-authentication-report.md",
+    "docs/deploy-runbook.md",
+    "docs/mike-admin-login-email.md",
+    "docs/releases/README.md",
+    "docs/sentry-setup.md"
+  ]
+}

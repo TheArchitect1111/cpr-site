@@ -1,0 +1,23 @@
+{
+  "baseline": "EA Governance Baseline v1.0",
+  "branch": "governance/baseline-v1.0",
+  "commit": "60346712366871276631abef9839242ecd9b4f1b",
+  "generatedAt": "2026-07-07T22:44:28.071Z",
+  "routeCount": 107,
+  "integrityScore": 100,
+  "driftScore": 100,
+  "platform": {
+    "package": {
+      "name": "cpr-site",
+      "version": "0.1.0",
+      "private": true
+    },
+    "governanceFileCount": 8,
+    "dependencyCount": 10
+  },
+  "reports": [
+    "governance/reports/route-inventory.json",
+    "governance/reports/platform.manifest.json",
+    "governance/reports/drift-report.json"
+  ]
+}
