@@ -1,0 +1,21 @@
+{
+  "version": "1.0.0",
+  "baseline": "EA Governance Baseline v1.0",
+  "branch": "governance/baseline-v1.0",
+  "source": "origin/main",
+  "products": [
+    "CPR",
+    "Simplifi",
+    "Amplifi",
+    "ETFM",
+    "Magnifi",
+    "EA Portal Chassis"
+  ],
+  "principles": [
+    "Governance is independent from application feature work.",
+    "Release readiness is measured before deployment.",
+    "Environment, route, service, and platform drift are documented.",
+    "Recovery paths are defined before production changes.",
+    "Generated manifests are reproducible from the repository state."
+  ]
+}

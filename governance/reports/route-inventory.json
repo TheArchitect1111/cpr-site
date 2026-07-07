@@ -1,0 +1,651 @@
+{
+  "name": "EA Route Manifest",
+  "branch": "governance/baseline-v1.0",
+  "commit": "60346712366871276631abef9839242ecd9b4f1b",
+  "generatedAt": "2026-07-07T22:33:06.469Z",
+  "routeCount": 107,
+  "routes": [
+    {
+      "route": "/",
+      "kind": "page",
+      "file": "app/page.tsx",
+      "dynamic": false
+    },
+    {
+      "route": "/admin",
+      "kind": "page",
+      "file": "app/admin/page.tsx",
+      "dynamic": false
+    },
+    {
+      "route": "/admin/account",
+      "kind": "page",
+      "file": "app/admin/account/page.tsx",
+      "dynamic": false
+    },
+    {
+      "route": "/admin/create-client",
+      "kind": "page",
+      "file": "app/admin/create-client/page.tsx",
+      "dynamic": false
+    },
+    {
+      "route": "/admin/forgot-password",
+      "kind": "page",
+      "file": "app/admin/forgot-password/page.tsx",
+      "dynamic": false
+    },
+    {
+      "route": "/admin/landing",
+      "kind": "page",
+      "file": "app/admin/landing/page.tsx",
+      "dynamic": false
+    },
+    {
+      "route": "/admin/login",
+      "kind": "page",
+      "file": "app/admin/login/page.tsx",
+      "dynamic": false
+    },
+    {
+      "route": "/admin/reset-password",
+      "kind": "page",
+      "file": "app/admin/reset-password/page.tsx",
+      "dynamic": false
+    },
+    {
+      "route": "/admin/sign-in",
+      "kind": "page",
+      "file": "app/admin/sign-in/page.tsx",
+      "dynamic": false
+    },
+    {
+      "route": "/admin/sign-in/complete",
+      "kind": "page",
+      "file": "app/admin/sign-in/complete/page.tsx",
+      "dynamic": false
+    },
+    {
+      "route": "/admin/update-portal",
+      "kind": "page",
+      "file": "app/admin/update-portal/page.tsx",
+      "dynamic": false
+    },
+    {
+      "route": "/agreement",
+      "kind": "page",
+      "file": "app/agreement/page.tsx",
+      "dynamic": false
+    },
+    {
+      "route": "/api/admin/athletes",
+      "kind": "api",
+      "file": "app/api/admin/athletes/route.ts",
+      "dynamic": false
+    },
+    {
+      "route": "/api/admin/athletes/[id]",
+      "kind": "api",
+      "file": "app/api/admin/athletes/[id]/route.ts",
+      "dynamic": true
+    },
+    {
+      "route": "/api/admin/athletes/[id]/pending/[updateId]",
+      "kind": "api",
+      "file": "app/api/admin/athletes/[id]/pending/[updateId]/route.ts",
+      "dynamic": true
+    },
+    {
+      "route": "/api/admin/change-password",
+      "kind": "api",
+      "file": "app/api/admin/change-password/route.ts",
+      "dynamic": false
+    },
+    {
+      "route": "/api/admin/clerk-bridge",
+      "kind": "api",
+      "file": "app/api/admin/clerk-bridge/route.ts",
+      "dynamic": false
+    },
+    {
+      "route": "/api/admin/coaches",
+      "kind": "api",
+      "file": "app/api/admin/coaches/route.ts",
+      "dynamic": false
+    },
+    {
+      "route": "/api/admin/coaches/[id]",
+      "kind": "api",
+      "file": "app/api/admin/coaches/[id]/route.ts",
+      "dynamic": true
+    },
+    {
+      "route": "/api/admin/collections/[collection]",
+      "kind": "api",
+      "file": "app/api/admin/collections/[collection]/route.ts",
+      "dynamic": true
+    },
+    {
+      "route": "/api/admin/collections/[collection]/[id]",
+      "kind": "api",
+      "file": "app/api/admin/collections/[collection]/[id]/route.ts",
+      "dynamic": true
+    },
+    {
+      "route": "/api/admin/communication/announcements",
+      "kind": "api",
+      "file": "app/api/admin/communication/announcements/route.ts",
+      "dynamic": false
+    },
+    {
+      "route": "/api/admin/logout",
+      "kind": "api",
+      "file": "app/api/admin/logout/route.ts",
+      "dynamic": false
+    },
+    {
+      "route": "/api/admin/outreach",
+      "kind": "api",
+      "file": "app/api/admin/outreach/route.ts",
+      "dynamic": false
+    },
+    {
+      "route": "/api/admin/outreach/[id]",
+      "kind": "api",
+      "file": "app/api/admin/outreach/[id]/route.ts",
+      "dynamic": true
+    },
+    {
+      "route": "/api/admin/outreach/[id]/send-link",
+      "kind": "api",
+      "file": "app/api/admin/outreach/[id]/send-link/route.ts",
+      "dynamic": true
+    },
+    {
+      "route": "/api/admin/password-reset/complete",
+      "kind": "api",
+      "file": "app/api/admin/password-reset/complete/route.ts",
+      "dynamic": false
+    },
+    {
+      "route": "/api/admin/password-reset/request",
+      "kind": "api",
+      "file": "app/api/admin/password-reset/request/route.ts",
+      "dynamic": false
+    },
+    {
+      "route": "/api/admin/portal-updates/publish",
+      "kind": "api",
+      "file": "app/api/admin/portal-updates/publish/route.ts",
+      "dynamic": false
+    },
+    {
+      "route": "/api/admin/recovery",
+      "kind": "api",
+      "file": "app/api/admin/recovery/route.ts",
+      "dynamic": false
+    },
+    {
+      "route": "/api/admin/session",
+      "kind": "api",
+      "file": "app/api/admin/session/route.ts",
+      "dynamic": false
+    },
+    {
+      "route": "/api/admin/system-checks",
+      "kind": "api",
+      "file": "app/api/admin/system-checks/route.ts",
+      "dynamic": false
+    },
+    {
+      "route": "/api/admin/users",
+      "kind": "api",
+      "file": "app/api/admin/users/route.ts",
+      "dynamic": false
+    },
+    {
+      "route": "/api/agreement",
+      "kind": "api",
+      "file": "app/api/agreement/route.ts",
+      "dynamic": false
+    },
+    {
+      "route": "/api/apply",
+      "kind": "api",
+      "file": "app/api/apply/route.ts",
+      "dynamic": false
+    },
+    {
+      "route": "/api/ask-cpr",
+      "kind": "api",
+      "file": "app/api/ask-cpr/route.ts",
+      "dynamic": false
+    },
+    {
+      "route": "/api/athlete-profile/[id]",
+      "kind": "api",
+      "file": "app/api/athlete-profile/[id]/route.ts",
+      "dynamic": true
+    },
+    {
+      "route": "/api/auth/forgot-username",
+      "kind": "api",
+      "file": "app/api/auth/forgot-username/route.ts",
+      "dynamic": false
+    },
+    {
+      "route": "/api/auth/magic-link",
+      "kind": "api",
+      "file": "app/api/auth/magic-link/route.ts",
+      "dynamic": false
+    },
+    {
+      "route": "/api/auth/magic-link/verify",
+      "kind": "api",
+      "file": "app/api/auth/magic-link/verify/route.ts",
+      "dynamic": false
+    },
+    {
+      "route": "/api/coach-inquiry",
+      "kind": "api",
+      "file": "app/api/coach-inquiry/route.ts",
+      "dynamic": false
+    },
+    {
+      "route": "/api/coach/[id]/response",
+      "kind": "api",
+      "file": "app/api/coach/[id]/response/route.ts",
+      "dynamic": true
+    },
+    {
+      "route": "/api/messages",
+      "kind": "api",
+      "file": "app/api/messages/route.ts",
+      "dynamic": false
+    },
+    {
+      "route": "/api/payments/checkout",
+      "kind": "api",
+      "file": "app/api/payments/checkout/route.ts",
+      "dynamic": false
+    },
+    {
+      "route": "/api/portal-admin/content",
+      "kind": "api",
+      "file": "app/api/portal-admin/content/route.ts",
+      "dynamic": false
+    },
+    {
+      "route": "/api/portal-admin/landing",
+      "kind": "api",
+      "file": "app/api/portal-admin/landing/route.ts",
+      "dynamic": false
+    },
+    {
+      "route": "/api/portal/change-password",
+      "kind": "api",
+      "file": "app/api/portal/change-password/route.ts",
+      "dynamic": false
+    },
+    {
+      "route": "/api/portal/clerk-bridge",
+      "kind": "api",
+      "file": "app/api/portal/clerk-bridge/route.ts",
+      "dynamic": false
+    },
+    {
+      "route": "/api/portal/create-client",
+      "kind": "api",
+      "file": "app/api/portal/create-client/route.ts",
+      "dynamic": false
+    },
+    {
+      "route": "/api/portal/login",
+      "kind": "api",
+      "file": "app/api/portal/login/route.ts",
+      "dynamic": false
+    },
+    {
+      "route": "/api/portal/password-reset/complete",
+      "kind": "api",
+      "file": "app/api/portal/password-reset/complete/route.ts",
+      "dynamic": false
+    },
+    {
+      "route": "/api/portal/password-reset/request",
+      "kind": "api",
+      "file": "app/api/portal/password-reset/request/route.ts",
+      "dynamic": false
+    },
+    {
+      "route": "/api/upload",
+      "kind": "api",
+      "file": "app/api/upload/route.ts",
+      "dynamic": false
+    },
+    {
+      "route": "/api/webhooks/resend",
+      "kind": "api",
+      "file": "app/api/webhooks/resend/route.ts",
+      "dynamic": false
+    },
+    {
+      "route": "/api/webhooks/stripe",
+      "kind": "api",
+      "file": "app/api/webhooks/stripe/route.ts",
+      "dynamic": false
+    },
+    {
+      "route": "/apply",
+      "kind": "page",
+      "file": "app/apply/page.tsx",
+      "dynamic": false
+    },
+    {
+      "route": "/athletes/[slug]",
+      "kind": "page",
+      "file": "app/athletes/[slug]/page.tsx",
+      "dynamic": true
+    },
+    {
+      "route": "/camps",
+      "kind": "page",
+      "file": "app/camps/page.tsx",
+      "dynamic": false
+    },
+    {
+      "route": "/coach/[id]",
+      "kind": "page",
+      "file": "app/coach/[id]/page.tsx",
+      "dynamic": true
+    },
+    {
+      "route": "/cpr-experience-lab",
+      "kind": "page",
+      "file": "app/cpr-experience-lab/page.tsx",
+      "dynamic": false
+    },
+    {
+      "route": "/intake",
+      "kind": "page",
+      "file": "app/intake/page.tsx",
+      "dynamic": false
+    },
+    {
+      "route": "/login",
+      "kind": "page",
+      "file": "app/login/page.tsx",
+      "dynamic": false
+    },
+    {
+      "route": "/merchandise",
+      "kind": "page",
+      "file": "app/merchandise/page.tsx",
+      "dynamic": false
+    },
+    {
+      "route": "/offline",
+      "kind": "page",
+      "file": "app/offline/page.tsx",
+      "dynamic": false
+    },
+    {
+      "route": "/pay",
+      "kind": "page",
+      "file": "app/pay/page.tsx",
+      "dynamic": false
+    },
+    {
+      "route": "/portal/athlete/[slug]",
+      "kind": "page",
+      "file": "app/portal/athlete/[slug]/page.tsx",
+      "dynamic": true
+    },
+    {
+      "route": "/portal/athlete/[slug]/account",
+      "kind": "page",
+      "file": "app/portal/athlete/[slug]/account/page.tsx",
+      "dynamic": true
+    },
+    {
+      "route": "/portal/athlete/[slug]/amplifi",
+      "kind": "page",
+      "file": "app/portal/athlete/[slug]/amplifi/page.tsx",
+      "dynamic": true
+    },
+    {
+      "route": "/portal/athlete/[slug]/ask-cpr",
+      "kind": "page",
+      "file": "app/portal/athlete/[slug]/ask-cpr/page.tsx",
+      "dynamic": true
+    },
+    {
+      "route": "/portal/athlete/[slug]/document-vault",
+      "kind": "page",
+      "file": "app/portal/athlete/[slug]/document-vault/page.tsx",
+      "dynamic": true
+    },
+    {
+      "route": "/portal/athlete/[slug]/eligibility-center",
+      "kind": "page",
+      "file": "app/portal/athlete/[slug]/eligibility-center/page.tsx",
+      "dynamic": true
+    },
+    {
+      "route": "/portal/athlete/[slug]/messaging-center",
+      "kind": "page",
+      "file": "app/portal/athlete/[slug]/messaging-center/page.tsx",
+      "dynamic": true
+    },
+    {
+      "route": "/portal/athlete/[slug]/opportunities-resources",
+      "kind": "page",
+      "file": "app/portal/athlete/[slug]/opportunities-resources/page.tsx",
+      "dynamic": true
+    },
+    {
+      "route": "/portal/athlete/[slug]/owner",
+      "kind": "page",
+      "file": "app/portal/athlete/[slug]/owner/page.tsx",
+      "dynamic": true
+    },
+    {
+      "route": "/portal/athlete/[slug]/recruiting-timeline",
+      "kind": "page",
+      "file": "app/portal/athlete/[slug]/recruiting-timeline/page.tsx",
+      "dynamic": true
+    },
+    {
+      "route": "/portal/athlete/[slug]/resource-library",
+      "kind": "page",
+      "file": "app/portal/athlete/[slug]/resource-library/page.tsx",
+      "dynamic": true
+    },
+    {
+      "route": "/portal/athlete/[slug]/scholarship-center",
+      "kind": "page",
+      "file": "app/portal/athlete/[slug]/scholarship-center/page.tsx",
+      "dynamic": true
+    },
+    {
+      "route": "/portal/athlete/[slug]/upcoming-events",
+      "kind": "page",
+      "file": "app/portal/athlete/[slug]/upcoming-events/page.tsx",
+      "dynamic": true
+    },
+    {
+      "route": "/portal/athlete/[slug]/updates",
+      "kind": "page",
+      "file": "app/portal/athlete/[slug]/updates/page.tsx",
+      "dynamic": true
+    },
+    {
+      "route": "/portal/athlete/[slug]/updates/new",
+      "kind": "page",
+      "file": "app/portal/athlete/[slug]/updates/new/page.tsx",
+      "dynamic": true
+    },
+    {
+      "route": "/portal/athlete/[slug]/video-learning-center",
+      "kind": "page",
+      "file": "app/portal/athlete/[slug]/video-learning-center/page.tsx",
+      "dynamic": true
+    },
+    {
+      "route": "/portal/forgot-password",
+      "kind": "page",
+      "file": "app/portal/forgot-password/page.tsx",
+      "dynamic": false
+    },
+    {
+      "route": "/portal/login",
+      "kind": "page",
+      "file": "app/portal/login/page.tsx",
+      "dynamic": false
+    },
+    {
+      "route": "/portal/owner",
+      "kind": "page",
+      "file": "app/portal/owner/page.tsx",
+      "dynamic": false
+    },
+    {
+      "route": "/portal/parent/[slug]",
+      "kind": "page",
+      "file": "app/portal/parent/[slug]/page.tsx",
+      "dynamic": true
+    },
+    {
+      "route": "/portal/parent/[slug]/account",
+      "kind": "page",
+      "file": "app/portal/parent/[slug]/account/page.tsx",
+      "dynamic": true
+    },
+    {
+      "route": "/portal/parent/[slug]/amplifi",
+      "kind": "page",
+      "file": "app/portal/parent/[slug]/amplifi/page.tsx",
+      "dynamic": true
+    },
+    {
+      "route": "/portal/parent/[slug]/ask-cpr",
+      "kind": "page",
+      "file": "app/portal/parent/[slug]/ask-cpr/page.tsx",
+      "dynamic": true
+    },
+    {
+      "route": "/portal/parent/[slug]/document-vault",
+      "kind": "page",
+      "file": "app/portal/parent/[slug]/document-vault/page.tsx",
+      "dynamic": true
+    },
+    {
+      "route": "/portal/parent/[slug]/eligibility-center",
+      "kind": "page",
+      "file": "app/portal/parent/[slug]/eligibility-center/page.tsx",
+      "dynamic": true
+    },
+    {
+      "route": "/portal/parent/[slug]/messaging-center",
+      "kind": "page",
+      "file": "app/portal/parent/[slug]/messaging-center/page.tsx",
+      "dynamic": true
+    },
+    {
+      "route": "/portal/parent/[slug]/opportunities-resources",
+      "kind": "page",
+      "file": "app/portal/parent/[slug]/opportunities-resources/page.tsx",
+      "dynamic": true
+    },
+    {
+      "route": "/portal/parent/[slug]/recruiting-timeline",
+      "kind": "page",
+      "file": "app/portal/parent/[slug]/recruiting-timeline/page.tsx",
+      "dynamic": true
+    },
+    {
+      "route": "/portal/parent/[slug]/resource-library",
+      "kind": "page",
+      "file": "app/portal/parent/[slug]/resource-library/page.tsx",
+      "dynamic": true
+    },
+    {
+      "route": "/portal/parent/[slug]/scholarship-center",
+      "kind": "page",
+      "file": "app/portal/parent/[slug]/scholarship-center/page.tsx",
+      "dynamic": true
+    },
+    {
+      "route": "/portal/parent/[slug]/upcoming-events",
+      "kind": "page",
+      "file": "app/portal/parent/[slug]/upcoming-events/page.tsx",
+      "dynamic": true
+    },
+    {
+      "route": "/portal/parent/[slug]/updates",
+      "kind": "page",
+      "file": "app/portal/parent/[slug]/updates/page.tsx",
+      "dynamic": true
+    },
+    {
+      "route": "/portal/parent/[slug]/updates/new",
+      "kind": "page",
+      "file": "app/portal/parent/[slug]/updates/new/page.tsx",
+      "dynamic": true
+    },
+    {
+      "route": "/portal/parent/[slug]/video-learning-center",
+      "kind": "page",
+      "file": "app/portal/parent/[slug]/video-learning-center/page.tsx",
+      "dynamic": true
+    },
+    {
+      "route": "/portal/reset-password",
+      "kind": "page",
+      "file": "app/portal/reset-password/page.tsx",
+      "dynamic": false
+    },
+    {
+      "route": "/portal/sign-in",
+      "kind": "page",
+      "file": "app/portal/sign-in/page.tsx",
+      "dynamic": false
+    },
+    {
+      "route": "/portal/sign-in/complete",
+      "kind": "page",
+      "file": "app/portal/sign-in/complete/page.tsx",
+      "dynamic": false
+    },
+    {
+      "route": "/profile/edit",
+      "kind": "page",
+      "file": "app/profile/edit/page.tsx",
+      "dynamic": false
+    },
+    {
+      "route": "/recruitment",
+      "kind": "page",
+      "file": "app/recruitment/page.tsx",
+      "dynamic": false
+    },
+    {
+      "route": "/resources",
+      "kind": "page",
+      "file": "app/resources/page.tsx",
+      "dynamic": false
+    },
+    {
+      "route": "/sso-callback",
+      "kind": "page",
+      "file": "app/sso-callback/page.tsx",
+      "dynamic": false
+    },
+    {
+      "route": "/tribute",
+      "kind": "page",
+      "file": "app/tribute/page.tsx",
+      "dynamic": false
+    }
+  ]
+}

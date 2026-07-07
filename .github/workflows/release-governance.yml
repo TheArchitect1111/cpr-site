@@ -1,0 +1,31 @@
+name: Release Governance
+
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - 'governance/**'
+      - 'scripts/governance/**'
+      - 'docs/EA-RELEASE-GOVERNANCE.md'
+      - 'docs/PLATFORM-MANIFEST.md'
+      - 'docs/ENVIRONMENT-CATALOG.md'
+      - 'docs/EXTERNAL-SERVICE-REGISTRY.md'
+      - 'docs/BRANCH-GOVERNANCE.md'
+      - 'docs/DEPLOYMENT-CHECKLIST.md'
+      - 'docs/DRIFT-DETECTION.md'
+      - 'docs/RECOVERY-PLAYBOOK.md'
+      - 'docs/releases/**'
+      - 'route-manifest.json'
+      - 'platform.manifest.json'
+      - 'package.json'
+      - '.env.example'
+
+jobs:
+  governance:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: npm run governance:all

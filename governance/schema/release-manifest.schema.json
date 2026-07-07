@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "EA Release Manifest",
+  "type": "object",
+  "required": [
+    "baseline",
+    "branch",
+    "commit",
+    "generatedAt",
+    "routeCount",
+    "integrityScore",
+    "driftScore"
+  ],
+  "properties": {
+    "baseline": { "type": "string" },
+    "branch": { "type": "string" },
+    "commit": { "type": "string" },
+    "generatedAt": { "type": "string" },
+    "routeCount": { "type": "number" },
+    "integrityScore": { "type": "number" },
+    "driftScore": { "type": "number" }
+  }
+}
