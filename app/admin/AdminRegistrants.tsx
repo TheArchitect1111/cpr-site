@@ -4,12 +4,53 @@ import { useMemo, useState } from 'react';
 import type { AthleteAdmin } from '@/lib/athletes';
 import { getRegistrantProgress, sortByNewest } from '@/lib/registrant-progress';
 
+function ChassisPageHeader({ title, description, actions }: { title: string; description: React.ReactNode; actions?: React.ReactNode }) {
+  return <header className="ea-page-header"><div><h1>{title}</h1><p>{description}</p></div>{actions}</header>;
+}
+
+function ChassisDemoPill({ children }: { children: React.ReactNode }) {
+  return <span className="demo-pill">{children}</span>;
+}
+
+function ChassisStatGrid({ children, className = '' }: { children: React.ReactNode; className?: string }) {
+  return <div className={`ea-stat-grid ${className}`}>{children}</div>;
+}
+
+function ChassisStatCard({ label, value }: { label: string; value: string | number }) {
+  return <div className="ea-stat-card"><span>{label}</span><strong>{value}</strong></div>;
+}
+
+function ChassisWorkspace({ children }: { children: React.ReactNode }) {
+  return <div className="ea-workspace">{children}</div>;
+}
+
+function ChassisTableSurface({ children }: { children: React.ReactNode }) {
+  return <section className="ea-table-surface">{children}</section>;
+}
+
+function ChassisFilterBar({ children }: { children: React.ReactNode }) {
+  return <div className="ea-filter-bar">{children}</div>;
+}
+
+function ChassisTableScroll({ children }: { children: React.ReactNode }) {
+  return <div className="ea-table-scroll">{children}</div>;
+}
+
+function ChassisEmptyTableCell({ colSpan, children }: { colSpan: number; children: React.ReactNode }) {
+  return <td colSpan={colSpan} className="ea-empty-cell">{children}</td>;
+}
+
+function ChassisStatusBadge({ children }: { status?: string; children: React.ReactNode }) {
+  return <span className="ea-status-badge">{children}</span>;
+}
+
 interface Props {
   athletes: AthleteAdmin[];
   live: boolean;
+  showHeader?: boolean;
 }
 
-export default function AdminRegistrants({ athletes, live }: Props) {
+export default function AdminRegistrants({ athletes, live, showHeader = true }: Props) {
   const [query, setQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState('All');
 
@@ -45,27 +86,25 @@ export default function AdminRegistrants({ athletes, live }: Props) {
 
   return (
     <>
-      <header className="ahead">
-        <div>
-          <h1 className="display">REGISTRANTS &amp; PROGRESS</h1>
-          <p>
-            Every kid who registers appears here automatically with a recruiting profile and live progress tracking.
-          </p>
-        </div>
-        {!live && <span className="demo-pill">SAMPLE DATA · connect Airtable to go live</span>}
-      </header>
+      {showHeader && (
+        <ChassisPageHeader
+          title="REGISTRANTS &amp; PROGRESS"
+          description="Every kid who registers appears here automatically with a recruiting profile and live progress tracking."
+          actions={!live && <ChassisDemoPill>SAMPLE DATA &middot; connect production data to go live</ChassisDemoPill>}
+        />
+      )}
 
-      <div className="admission-stats registrant-stats">
-        <div><span>Total registrants</span><b>{stats.total}</b></div>
-        <div><span>Profiles created</span><b>{stats.withProfile}</b></div>
-        <div><span>Agreements</span><b>{stats.agreements}</b></div>
-        <div><span>Portal active</span><b>{stats.portalActive}</b></div>
-        <div><span>Pending review</span><b>{stats.pending}</b></div>
-      </div>
+      <ChassisStatGrid className="registrant-stats">
+        <ChassisStatCard label="Total registrants" value={stats.total} />
+        <ChassisStatCard label="Profiles created" value={stats.withProfile} />
+        <ChassisStatCard label="Agreements" value={stats.agreements} />
+        <ChassisStatCard label="Portal active" value={stats.portalActive} />
+        <ChassisStatCard label="Pending review" value={stats.pending} />
+      </ChassisStatGrid>
 
-      <div className="work">
-        <div className="table-wrap">
-          <div className="filters">
+      <ChassisWorkspace>
+        <ChassisTableSurface>
+          <ChassisFilterBar>
             <input
               type="search"
               placeholder="Search name, email, or slug…"
@@ -77,9 +116,9 @@ export default function AdminRegistrants({ athletes, live }: Props) {
                 <option key={item}>{item}</option>
               ))}
             </select>
-          </div>
+          </ChassisFilterBar>
 
-          <div style={{ overflowX: 'auto' }}>
+          <ChassisTableScroll>
             <table className="otable registrants-table">
               <thead>
                 <tr>
@@ -94,7 +133,7 @@ export default function AdminRegistrants({ athletes, live }: Props) {
               <tbody>
                 {rows.length === 0 && (
                   <tr>
-                    <td colSpan={6} className="empty">No registrants match your filters.</td>
+                    <ChassisEmptyTableCell colSpan={6}>No action needed right now. What this means: no registrants match this view; clear filters or return to Attention.</ChassisEmptyTableCell>
                   </tr>
                 )}
                 {rows.map((athlete) => {
@@ -107,9 +146,9 @@ export default function AdminRegistrants({ athletes, live }: Props) {
                         {athlete.parentName && <div className="sub">Parent: {athlete.parentName}</div>}
                       </td>
                       <td>
-                        <span className={`pill st ${athlete.status === 'Active' ? 'active' : 'pending'}`}>
+                        <ChassisStatusBadge status={athlete.status === 'Active' ? 'active' : 'pending'}>
                           {(athlete.status || 'Pending').toUpperCase()}
-                        </span>
+                        </ChassisStatusBadge>
                       </td>
                       <td>
                         <div className="registrant-progress-cell">
@@ -140,16 +179,16 @@ export default function AdminRegistrants({ athletes, live }: Props) {
                           <span className="no">—</span>
                         )}
                       </td>
-                      <td style={{ whiteSpace: 'nowrap' }}>{athlete.submittedAt || '—'}</td>
+                      <td className="nowrap">{athlete.submittedAt || '—'}</td>
                     </tr>
                   );
                 })}
               </tbody>
             </table>
-          </div>
+          </ChassisTableScroll>
           <div className="count">Showing {rows.length} registrant{rows.length !== 1 ? 's' : ''}</div>
-        </div>
-      </div>
+        </ChassisTableSurface>
+      </ChassisWorkspace>
     </>
   );
 }

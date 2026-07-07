@@ -81,7 +81,7 @@ function GapBanner({ noRes, noEvt }: { noRes: boolean; noEvt: boolean }) {
 
 function ItemList({ items, max = 6 }: { items: { id: string; label: string; universal: boolean }[]; max?: number }) {
   if (items.length === 0) {
-    return <p style={{ fontSize: 12, color: '#A81D20', margin: '4px 0 0' }}>None tagged for this bucket.</p>;
+    return <p style={{ fontSize: 12, color: '#A81D20', margin: '4px 0 0' }}>No action needed right now. What this means: nothing is targeted here yet; add content only if this group needs guidance.</p>;
   }
   return (
     <ul style={{ margin: '4px 0 0', padding: '0 0 0 14px', fontSize: 12 }}>
@@ -105,9 +105,10 @@ interface Props {
   events: PortalEvent[];
   gradYears: number[];
   live: boolean;
+  showHeader?: boolean;
 }
 
-export default function AdminContentRelevance({ resources, events, gradYears, live }: Props) {
+export default function AdminContentRelevance({ resources, events, gradYears, live, showHeader = true }: Props) {
   const buckets = buildBuckets(gradYears);
 
   const universalResources = resources.filter((r) => r.gradYearRelevance.length === 0);
@@ -120,18 +121,20 @@ export default function AdminContentRelevance({ resources, events, gradYears, li
 
   return (
     <>
-      <header className="ahead">
-        <div>
-          <h1 className="display">CONTENT RELEVANCE CHECK</h1>
-          <p>
-            {resources.length} resource{resources.length !== 1 ? 's' : ''} &middot;{' '}
-            {events.length} upcoming event{events.length !== 1 ? 's' : ''} &middot;{' '}
-            {universalResources.length} universal resource{universalResources.length !== 1 ? 's' : ''} &middot;{' '}
-            {universalEvents.length} universal event{universalEvents.length !== 1 ? 's' : ''}
-          </p>
-        </div>
-        {!live && <span className="demo-pill">SAMPLE DATA &middot; connect Airtable to go live</span>}
-      </header>
+      {showHeader && (
+        <header className="ahead">
+          <div>
+            <h1 className="display">CONTENT READINESS</h1>
+            <p>
+              {resources.length} resource{resources.length !== 1 ? 's' : ''} &middot;{' '}
+              {events.length} upcoming event{events.length !== 1 ? 's' : ''} &middot;{' '}
+              {universalResources.length} universal resource{universalResources.length !== 1 ? 's' : ''} &middot;{' '}
+              {universalEvents.length} universal event{universalEvents.length !== 1 ? 's' : ''}
+            </p>
+          </div>
+          {!live && <span className="demo-pill">SAMPLE DATA &middot; connect production data to go live</span>}
+        </header>
+      )}
 
       <div className="work">
         <div style={{
@@ -253,7 +256,7 @@ export default function AdminContentRelevance({ resources, events, gradYears, li
                   Resources ({universalResources.length})
                 </div>
                 {universalResources.length === 0 ? (
-                  <span style={{ fontSize: 12, color: 'var(--gray)' }}>None</span>
+                  <span style={{ fontSize: 12, color: 'var(--gray)' }}>No action needed right now</span>
                 ) : (
                   <ul style={{ margin: 0, padding: '0 0 0 14px', fontSize: 12 }}>
                     {universalResources.map((r) => (
@@ -267,7 +270,7 @@ export default function AdminContentRelevance({ resources, events, gradYears, li
                   Events ({universalEvents.length})
                 </div>
                 {universalEvents.length === 0 ? (
-                  <span style={{ fontSize: 12, color: 'var(--gray)' }}>None</span>
+                  <span style={{ fontSize: 12, color: 'var(--gray)' }}>No action needed right now</span>
                 ) : (
                   <ul style={{ margin: 0, padding: '0 0 0 14px', fontSize: 12 }}>
                     {universalEvents.map((e) => (

@@ -113,7 +113,7 @@ export default function CreateClientForm() {
 
         <div className="cc-meta">
           <span>Slug: <code>{success.slug}</code></span>
-          <span>Airtable ID: <code>{success.recordId}</code></span>
+          <span>Client record: <code>{success.recordId}</code></span>
           {success.emailsSent
             ? <span className="cc-email-ok">Welcome emails sent.</span>
             : <span className="cc-email-fail">Welcome emails NOT sent.</span>}
@@ -185,7 +185,7 @@ export default function CreateClientForm() {
       </div>
 
       <button type="submit" className="cc-submit-btn" disabled={submitting}>
-        {submitting ? 'Creating...' : 'Create Client & Send Welcome Emails'}
+        {submitting ? 'Creating...' : 'Create enrollment and send welcome emails'}
       </button>
     </form>
   );

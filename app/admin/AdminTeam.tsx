@@ -10,10 +10,11 @@ type Member = {
   status: string;
 };
 
-export default function AdminTeam({ canInvite, initialMembers, live }: {
+export default function AdminTeam({ canInvite, initialMembers, live, showHeader = true }: {
   canInvite: boolean;
   initialMembers: Member[];
   live: boolean;
+  showHeader?: boolean;
 }) {
   const [members, setMembers] = useState(initialMembers);
   const [name, setName] = useState('');
@@ -22,7 +23,6 @@ export default function AdminTeam({ canInvite, initialMembers, live }: {
   const [role, setRole] = useState('admin');
   const [message, setMessage] = useState('');
   const [busy, setBusy] = useState(false);
-  const [tempFor, setTempFor] = useState('');
   const [tempPassword, setTempPassword] = useState('');
 
   async function reload() {
@@ -52,8 +52,7 @@ export default function AdminTeam({ canInvite, initialMembers, live }: {
       });
       const json = await res.json();
       if (!res.ok) throw new Error(json.error || 'Could not set temporary password');
-      setMessage(`Temp password for ${email}: ${password} — share it securely. They sign in at /admin/login, then change it under Account Settings.`);
-      setTempFor('');
+      setMessage(`Secure temporary access prepared for ${email}: ${password}. Share it securely and confirm they update it under Account Settings.`);
       setTempPassword('');
       await reload();
     } catch (error) {
@@ -75,7 +74,7 @@ export default function AdminTeam({ canInvite, initialMembers, live }: {
       });
       const json = await res.json();
       if (!res.ok) throw new Error(json.error || 'Could not add user');
-      setMessage(`Added ${json.member.email}. They can sign in at /admin/login on any device.`);
+      setMessage(`Access assigned to ${json.member.email}. Confirm their role matches what they should operate.`);
       setName('');
       setEmail('');
       setPassword('');
@@ -89,10 +88,14 @@ export default function AdminTeam({ canInvite, initialMembers, live }: {
 
   return (
     <section className="admin-team">
-      <h2>Admin team</h2>
-      <p className="admin-team-sub">
-        One login for CPR admin, portal owner tools, and Pulse. {!live && 'Connect Airtable Admin Users to manage team members in production.'}
-      </p>
+      {showHeader && (
+        <>
+          <h2>Admin team</h2>
+          <p className="admin-team-sub">
+            One login for CPR owner tools, team access, and Pulse. {!live && 'Team access is running in setup mode until production access is connected.'}
+          </p>
+        </>
+      )}
 
       {canInvite && (
         <div className="admin-team-quick">
@@ -109,7 +112,7 @@ export default function AdminTeam({ canInvite, initialMembers, live }: {
             onClick={() => setTemp('mikecprglobal@mississaugamagic.com', 'Mike')}
             disabled={busy}
           >
-            {busy ? 'Working…' : 'Set temp password for Mike'}
+            {busy ? 'Preparing access…' : 'Prepare secure access for Mike'}
           </button>
           {message && <p className="admin-team-message">{message}</p>}
         </div>
@@ -117,7 +120,7 @@ export default function AdminTeam({ canInvite, initialMembers, live }: {
 
       <div className="admin-team-list">
         {members.length === 0 ? (
-          <p>No team members listed yet.</p>
+          <p>No action needed right now. Recommended next step: confirm the owner account before inviting additional operators.</p>
         ) : (
           <ul>
             {members.map((member) => (
@@ -130,7 +133,7 @@ export default function AdminTeam({ canInvite, initialMembers, live }: {
                     onClick={() => setTemp(member.email, member.name)}
                     disabled={busy}
                   >
-                    Set temp password
+                    Prepare secure access
                   </button>
                 )}
               </li>
@@ -141,7 +144,7 @@ export default function AdminTeam({ canInvite, initialMembers, live }: {
 
       {canInvite && (
         <form className="admin-team-form" onSubmit={handleSubmit}>
-          <h3>Add admin user</h3>
+          <h3>Assign operator access</h3>
           <label>Name<input value={name} onChange={(e) => setName(e.target.value)} required /></label>
           <label>Email<input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required /></label>
           <label>Password<input type="password" value={password} onChange={(e) => setPassword(e.target.value)} required /></label>
@@ -152,7 +155,7 @@ export default function AdminTeam({ canInvite, initialMembers, live }: {
               <option value="owner">Owner</option>
             </select>
           </label>
-          <button type="submit" disabled={busy}>{busy ? 'Adding…' : 'Add user'}</button>
+          <button type="submit" disabled={busy}>{busy ? 'Assigning access…' : 'Assign access'}</button>
         </form>
       )}
       {!canInvite && message && <p className="admin-team-message">{message}</p>}

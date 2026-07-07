@@ -18,6 +18,7 @@ type Props = {
   announcements?: CommunicationAnnouncement[];
   notifications?: CommunicationNotification[];
   live?: boolean;
+  showHero?: boolean;
 };
 
 function formatDate(value: string) {
@@ -66,6 +67,7 @@ export default function CommunicationCenter({
   announcements = [],
   notifications = [],
   live = true,
+  showHero = true,
 }: Props) {
   const [tab, setTab] = useState<Tab>('dashboard');
   const [announcementList, setAnnouncementList] = useState(announcements);
@@ -195,23 +197,25 @@ export default function CommunicationCenter({
         '--comm-accent': config.accentColor,
       } as React.CSSProperties}
     >
-      <header className="comm-hero">
-        <div>
-          <p className="comm-eyebrow">COMMUNICATION CENTER</p>
-          <h1 className="display">{config.portalName}</h1>
-          <p>Announcements, messages, feedback, notifications, and communication health in one place.</p>
-        </div>
-        <div className="comm-health">
-          <span>Health</span>
-          <strong>{metrics.health}%</strong>
-        </div>
-      </header>
+      {showHero && (
+        <header className="comm-hero">
+          <div>
+            <p className="comm-eyebrow">COMMUNICATION CENTER</p>
+            <h1 className="display">{config.portalName}</h1>
+            <p>Announcements, messages, feedback, notifications, and communication health in one place.</p>
+          </div>
+          <div className="comm-health">
+            <span>Health</span>
+            <strong>{metrics.health}%</strong>
+          </div>
+        </header>
+      )}
 
       {!live && <div className="comm-alert">Sample data is showing. Connect Airtable to make this live.</div>}
 
       <nav className="comm-tabs" aria-label="Communication Center sections">
         {[
-          ['dashboard', 'Dashboard'],
+          ['dashboard', 'Attention'],
           ['announcements', 'Announcements'],
           ['messages', 'Messages'],
           ['feedback', 'Feedback'],
@@ -248,7 +252,7 @@ export default function CommunicationCenter({
                 ))}
               </div>
             ) : (
-              <div className="comm-empty">No urgent communication items right now.</div>
+              <div className="comm-empty">No action needed right now. Recommended next step: keep communication focused on the next meaningful update.</div>
             )}
           </div>
 
@@ -399,7 +403,7 @@ export default function CommunicationCenter({
                 ))}
               </div>
             ) : (
-              <div className="comm-empty">No announcements yet. Create the first update.</div>
+              <div className="comm-empty">No action needed right now. How to create momentum: publish an update only when it clarifies a decision, deadline, or opportunity.</div>
             )}
           </div>
         </div>
@@ -419,7 +423,7 @@ export default function CommunicationCenter({
                 <span>{thread.last?.sender} at {formatDate(thread.last?.createdAt || '')}</span>
               </article>
             ))}
-            {!threads.length && <div className="comm-empty">No messages yet.</div>}
+            {!threads.length && <div className="comm-empty">No action needed right now. What this means: no one is waiting on a direct reply.</div>}
           </div>
         </div>
       )}
@@ -438,7 +442,7 @@ export default function CommunicationCenter({
                 <span>{item.status} from {item.subjectId} on {formatDate(item.createdAt)}</span>
               </article>
             ))}
-            {!feedback.length && <div className="comm-empty">No feedback or support requests yet.</div>}
+            {!feedback.length && <div className="comm-empty">No action needed right now. What this means: no support request is blocking trust or momentum.</div>}
           </div>
         </div>
       )}

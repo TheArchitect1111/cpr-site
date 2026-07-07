@@ -4,11 +4,39 @@ import { Fragment, useState } from 'react';
 import { serverUpdateTicket } from './actions';
 import type { Ticket } from '@/lib/sections-data';
 
-function statusClass(status: string): string {
+function ChassisPageHeader({ title, description, actions }: { title: string; description: React.ReactNode; actions?: React.ReactNode }) {
+  return <header className="ea-page-header"><div><h1>{title}</h1><p>{description}</p></div>{actions}</header>;
+}
+
+function ChassisDemoPill({ children }: { children: React.ReactNode }) {
+  return <span className="demo-pill">{children}</span>;
+}
+
+function ChassisWorkspace({ children }: { children: React.ReactNode }) {
+  return <div className="ea-workspace">{children}</div>;
+}
+
+function ChassisTableSurface({ children }: { children: React.ReactNode }) {
+  return <section className="ea-table-surface">{children}</section>;
+}
+
+function ChassisFilterBar({ children }: { children: React.ReactNode }) {
+  return <div className="ea-filter-bar">{children}</div>;
+}
+
+function ChassisEmptyTableCell({ colSpan, children }: { colSpan: number; children: React.ReactNode }) {
+  return <td colSpan={colSpan} className="ea-empty-cell">{children}</td>;
+}
+
+function ChassisStatusBadge({ children }: { tone?: string; children: React.ReactNode }) {
+  return <span className="ea-status-badge">{children}</span>;
+}
+
+function statusTone(status: string): 'follow-up' | 'interested' | undefined {
   const s = status.toLowerCase();
-  if (s === 'open') return 'pill follow-up';
-  if (s === 'resolved') return 'pill interested';
-  return 'pill';
+  if (s === 'open') return 'follow-up';
+  if (s === 'resolved') return 'interested';
+  return undefined;
 }
 
 function formatDate(dateStr: string): string {
@@ -19,9 +47,10 @@ function formatDate(dateStr: string): string {
 interface Props {
   tickets: Ticket[];
   live: boolean;
+  showHeader?: boolean;
 }
 
-export default function AdminTickets({ tickets, live }: Props) {
+export default function AdminTickets({ tickets, live, showHeader = true }: Props) {
   const [expanded, setExpanded] = useState<string | null>(null);
   const [filter, setFilter] = useState('');
   const [statusFilter, setStatusFilter] = useState('All');
@@ -40,23 +69,21 @@ export default function AdminTickets({ tickets, live }: Props) {
   });
 
   const open = tickets.filter((t) => t.status === 'Open').length;
+  const toggleTicket = (id: string) => setExpanded(expanded === id ? null : id);
 
   return (
     <>
-      <header className="ahead">
-        <div>
-          <h1 className="display">ASK CPR TICKETS</h1>
-          <p>
-            {open} open {open === 1 ? 'ticket' : 'tickets'} &middot;{' '}
-            {tickets.length} total
-          </p>
-        </div>
-        {!live && <span className="demo-pill">SAMPLE DATA &middot; connect Airtable to go live</span>}
-      </header>
+      {showHeader && (
+        <ChassisPageHeader
+          title="ASK CPR TICKETS"
+          description={<>{open} open {open === 1 ? 'ticket' : 'tickets'} &middot; {tickets.length} total</>}
+          actions={!live && <ChassisDemoPill>SAMPLE DATA &middot; connect production data to go live</ChassisDemoPill>}
+        />
+      )}
 
-      <div className="work">
-        <div className="table-wrap">
-          <div className="filters">
+      <ChassisWorkspace>
+        <ChassisTableSurface>
+          <ChassisFilterBar>
             <input
               type="text"
               placeholder="Search tickets..."
@@ -69,7 +96,7 @@ export default function AdminTickets({ tickets, live }: Props) {
               <option>Resolved</option>
               <option>Closed</option>
             </select>
-          </div>
+          </ChassisFilterBar>
 
           <table className="otable">
             <thead>
@@ -83,37 +110,45 @@ export default function AdminTickets({ tickets, live }: Props) {
             <tbody>
               {filtered.length === 0 && (
                 <tr>
-                  <td colSpan={4} className="empty">No tickets found.</td>
+                  <ChassisEmptyTableCell colSpan={4}>No action needed right now. What this means: no tickets match this view; clear filters or return to Attention.</ChassisEmptyTableCell>
                 </tr>
               )}
               {filtered.map((t) => (
                 <Fragment key={t.id}>
                   <tr
                     className={expanded === t.id ? 'selrow' : ''}
-                    onClick={() => setExpanded(expanded === t.id ? null : t.id)}
+                    role="button"
+                    tabIndex={0}
+                    aria-expanded={expanded === t.id}
+                    onClick={() => toggleTicket(t.id)}
+                    onKeyDown={(event) => {
+                      if (event.key === 'Enter' || event.key === ' ') {
+                        event.preventDefault();
+                        toggleTicket(t.id);
+                      }
+                    }}
                   >
                     <td className="bold">{t.athleteSlug}</td>
                     <td>{t.subject}</td>
-                    <td><span className={statusClass(t.status)}>{t.status}</span></td>
+                    <td><ChassisStatusBadge tone={statusTone(t.status)}>{t.status}</ChassisStatusBadge></td>
                     <td className="sub">{formatDate(t.dateSubmitted)}</td>
                   </tr>
                   {expanded === t.id && (
                     <tr>
-                      <td colSpan={4} style={{ padding: '0 10px 16px', background: '#FAFAFA' }}>
-                        <div style={{ padding: '14px 0 0' }}>
+                      <td colSpan={4} className="ticket-expanded-cell">
+                        <div className="ticket-expanded-panel">
                           <div className="dlabel">MESSAGE</div>
                           <p className="dnotes">{t.message}</p>
 
-                          <div className="dlabel" style={{ marginTop: 16 }}>UPDATE TICKET</div>
+                          <div className="dlabel ticket-update-label">UPDATE TICKET</div>
                           <form
                             action={serverUpdateTicket}
-                            style={{ display: 'flex', gap: 10, flexWrap: 'wrap', marginTop: 8 }}
+                            className="ticket-update-form"
                           >
                             <input type="hidden" name="id" value={t.id} />
                             <select
                               name="status"
                               defaultValue={t.status}
-                              style={{ padding: '8px 10px', border: '1px solid #DDD', borderRadius: 5, fontSize: 13, background: '#fff' }}
                             >
                               <option>Open</option>
                               <option>Resolved</option>
@@ -124,11 +159,9 @@ export default function AdminTickets({ tickets, live }: Props) {
                               name="adminNotes"
                               defaultValue={t.adminNotes}
                               placeholder="Admin notes (visible to athlete)..."
-                              style={{ flex: 1, minWidth: 220, padding: '8px 12px', border: '1px solid #DDD', borderRadius: 5, fontSize: 13 }}
                             />
                             <button
                               type="submit"
-                              style={{ padding: '8px 18px', background: 'var(--red)', color: '#fff', border: 'none', borderRadius: 5, fontSize: 12.5, fontWeight: 700, cursor: 'pointer' }}
                             >
                               Save
                             </button>
@@ -142,8 +175,8 @@ export default function AdminTickets({ tickets, live }: Props) {
             </tbody>
           </table>
           <div className="count">{filtered.length} ticket{filtered.length !== 1 ? 's' : ''}</div>
-        </div>
-      </div>
+        </ChassisTableSurface>
+      </ChassisWorkspace>
     </>
   );
 }

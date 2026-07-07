@@ -3,12 +3,15 @@ import '../admin.css';
 import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
 import { verifyAdminSession } from '@/lib/admin-auth';
-import { site } from '@/config/site';
 import { getAthletes } from '@/lib/athletes';
 import { getLandingContent } from '@/lib/landing-content';
 import { getCollectionDef, type CollectionId } from '@/lib/admin-collections-schema';
 import { listCollection } from '@/lib/admin-collections';
 import AdminUpdatePortal from './AdminUpdatePortal';
+import AdminCommandPalette from '@/app/admin/AdminCommandPalette';
+import AdminEosSidebar from '@/app/admin/AdminEosSidebar';
+import AdminExecutiveBrief from '@/app/admin/AdminExecutiveBrief';
+import AdminRecommendedFirstItem from '@/app/admin/AdminRecommendedFirstItem';
 
 export const dynamic = 'force-dynamic';
 
@@ -48,40 +51,30 @@ export default async function AdminUpdatePortalPage() {
 
   return (
     <div className="admin-shell">
-      <aside className="aside">
-        <div className="aside-brand">
-          <img src={site.brand.logo} alt="CPR" />
-          <div>
-            <div className="ab1 display">CPR GLOBAL PROSPECTS</div>
-            <div className="ab2 display">RECRUITMENT</div>
-          </div>
-        </div>
-        <div className="aside-sec">OWNER TOOLS</div>
-        <nav>
-          <a className="aitem active" href="/admin/update-portal">Update Portal</a>
-          <a className="aitem" href="/admin/landing">Edit Homepage</a>
-          <a className="aitem" href="/admin?tab=communication">Communication Center</a>
-          <a className="aitem" href="/portal/owner">Family Portal Owner</a>
-        </nav>
-        <div className="aside-sec">CONTENT</div>
-        <nav>
-          <a className="aitem" href="/admin?tab=site-events">Events</a>
-          <a className="aitem" href="/admin?tab=site-quotes">Quotes</a>
-          <a className="aitem" href="/admin?tab=media-library">Images</a>
-          <a className="aitem" href="/admin?tab=site-text">Site Text</a>
-        </nav>
-        <a className="aitem back" href="/admin">Back to Admin</a>
-        <a className="aitem back" href="/">View public site</a>
-      </aside>
+      <AdminEosSidebar activeRoute="update-portal" />
       <main className="amain">
-        <header className="ahead">
-          <div>
-            <p className="admin-kicker">Signed in as {admin.name || admin.email}</p>
-            <h1 className="display">Update Portal</h1>
-            <p>Premium owner controls for public site, portal updates, announcements, events, quotes, images, and reusable text.</p>
-          </div>
-          <a className="admin-logout" href="/api/admin/logout">Sign Out</a>
-        </header>
+        <AdminCommandPalette permissions={[admin.role || 'admin']} />
+        <AdminExecutiveBrief
+          eyebrow="Creation"
+          title="Decide what changed enough to publish."
+          situation={`${collections.reduce((total, collection) => total + collection.items.length, 0)} content records are available across updates, events, quotes, media, and site text.`}
+          recommendation="Start with the update or content item that will reduce the most uncertainty for families and coaches."
+          why="Publishing should create clarity, not just add more public content."
+          nextBestAction="Review the most useful update"
+          expectedOutcome="The public portal reflects the next thing people need to know."
+          confidence={process.env.BLOB_READ_WRITE_TOKEN ? 'High' : 'Publishing setup needed'}
+          successMetric="One publish-ready item reviewed or updated"
+          actionHref="/admin/update-portal"
+          actionLabel="Review updates"
+        />
+        <AdminRecommendedFirstItem
+          title={landing.updatedAt ? 'Confirm homepage and portal alignment' : 'Recommended first item'}
+          reason={landing.updatedAt ? `Homepage content was last saved ${landing.updatedAt.slice(0, 10)}, so public updates should match the current promise.` : 'The homepage has no owner override yet, so publishing updates before the core message is confirmed can create mixed signals.'}
+          action="Review the highest-visibility update before editing lower-impact content."
+          outcome="Families and coaches see one coherent public message."
+          href="/admin/update-portal"
+          actionLabel="Review first update"
+        />
         <AdminUpdatePortal
           landing={landing}
           collections={collections}

@@ -4,6 +4,30 @@ import { useState } from 'react';
 import { serverSendAdminMessage } from './actions';
 import type { Message } from '@/lib/sections-data';
 
+function ChassisPageHeader({ title, description, actions }: { title: string; description: React.ReactNode; actions?: React.ReactNode }) {
+  return <header className="ea-page-header"><div><h1>{title}</h1><p>{description}</p></div>{actions}</header>;
+}
+
+function ChassisDemoPill({ children }: { children: React.ReactNode }) {
+  return <span className="demo-pill">{children}</span>;
+}
+
+function ChassisWorkspace({ children, withPanel }: { children: React.ReactNode; withPanel?: boolean }) {
+  return <div className={withPanel ? 'ea-workspace with-panel' : 'ea-workspace'}>{children}</div>;
+}
+
+function ChassisTableSurface({ children }: { children: React.ReactNode }) {
+  return <section className="ea-table-surface">{children}</section>;
+}
+
+function ChassisEmptyState({ children }: { children: React.ReactNode }) {
+  return <div className="ea-empty-state">{children}</div>;
+}
+
+function ChassisStatusBadge({ children }: { tone?: string; children: React.ReactNode }) {
+  return <span className="ea-status-badge">{children}</span>;
+}
+
 function formatTime(dateStr: string): string {
   if (!dateStr) return '';
   return new Date(dateStr).toLocaleDateString('en-CA', {
@@ -14,9 +38,10 @@ function formatTime(dateStr: string): string {
 interface Props {
   messages: Message[];
   live: boolean;
+  showHeader?: boolean;
 }
 
-export default function AdminMessages({ messages, live }: Props) {
+export default function AdminMessages({ messages, live, showHeader = true }: Props) {
   const [activeSlug, setActiveSlug] = useState<string | null>(null);
 
   const slugs = Array.from(new Set(messages.map((m) => m.athleteSlug))).sort();
@@ -34,49 +59,56 @@ export default function AdminMessages({ messages, live }: Props) {
     (threadMap[slug] ?? []).filter((m) => !m.readStatus && m.sender !== 'Athlete' && m.sender !== 'Parent').length;
 
   const currentThread = activeSlug ? (threadMap[activeSlug] ?? []) : [];
+  const toggleThread = (slug: string) => setActiveSlug(activeSlug === slug ? null : slug);
 
   return (
     <>
-      <header className="ahead">
-        <div>
-          <h1 className="display">MESSAGING CENTER</h1>
-          <p>{slugs.length} athlete {slugs.length === 1 ? 'thread' : 'threads'}</p>
-        </div>
-        {!live && <span className="demo-pill">SAMPLE DATA &middot; connect Airtable to go live</span>}
-      </header>
+      {showHeader && (
+        <ChassisPageHeader
+          title="MESSAGING CENTER"
+          description={`${slugs.length} athlete ${slugs.length === 1 ? 'thread' : 'threads'}`}
+          actions={!live && <ChassisDemoPill>SAMPLE DATA &middot; connect production data to go live</ChassisDemoPill>}
+        />
+      )}
 
-      <div className="work with-panel">
-        <div className="table-wrap">
-          <p style={{ fontSize: 13, color: 'var(--gray)', marginBottom: 14 }}>
-            Select an athlete to view their thread and reply.
-          </p>
-          {slugs.length === 0 && <div className="empty">No messages yet.</div>}
+      <ChassisWorkspace withPanel>
+        <ChassisTableSurface>
+          <p className="ea-chassis-intro">Select an athlete to view their thread and reply.</p>
+          {slugs.length === 0 && (
+            <ChassisEmptyState>
+              No action needed right now. Recommended next step: use announcements only when there is a clear decision or update to share.
+            </ChassisEmptyState>
+          )}
           {slugs.map((slug) => {
             const lastMsg = threadMap[slug]?.slice(-1)[0];
             const unread = unreadCount(slug);
             return (
               <div
                 key={slug}
-                className={`admin-slug-section`}
-                style={{ cursor: 'pointer', marginBottom: 10 }}
-                onClick={() => setActiveSlug(activeSlug === slug ? null : slug)}
+                className="admin-slug-section"
+                role="button"
+                tabIndex={0}
+                aria-expanded={activeSlug === slug}
+                onClick={() => toggleThread(slug)}
+                onKeyDown={(event) => {
+                  if (event.key === 'Enter' || event.key === ' ') {
+                    event.preventDefault();
+                    toggleThread(slug);
+                  }
+                }}
               >
                 <div className="admin-slug-head">
                   <div>
                     <div className="admin-slug-name">{slug}</div>
-                    {lastMsg && (
-                      <div className="admin-slug-count" style={{ marginTop: 2 }}>
-                        Last: {lastMsg.sender} at {formatTime(lastMsg.dateSent)}
-                      </div>
-                    )}
+                    {lastMsg && <div className="admin-slug-count">Last: {lastMsg.sender} at {formatTime(lastMsg.dateSent)}</div>}
                   </div>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                  <div className="admin-thread-status">
                     {unread > 0 && (
-                      <span style={{ background: 'var(--red)', color: '#fff', borderRadius: 10, fontSize: 11, fontWeight: 700, padding: '2px 8px' }}>
+                      <ChassisStatusBadge tone="not-interested">
                         {unread} unread
-                      </span>
+                      </ChassisStatusBadge>
                     )}
-                    <span style={{ color: 'var(--gray)', fontSize: 13 }}>
+                    <span className="admin-thread-caret">
                       {activeSlug === slug ? '&#9650;' : '&#9660;'}
                     </span>
                   </div>
@@ -88,7 +120,7 @@ export default function AdminMessages({ messages, live }: Props) {
                       {currentThread.map((m) => {
                         const isCoach = m.sender === 'Coach Mike';
                         return (
-                          <div key={m.id} style={{ display: 'flex', flexDirection: 'column', alignItems: isCoach ? 'flex-end' : 'flex-start' }}>
+                          <div key={m.id} className={isCoach ? 'admin-thread-line is-coach' : 'admin-thread-line'}>
                             <div className={`admin-thread-bubble ${isCoach ? 'admin-right' : 'admin-left'}`}>
                               <div className="admin-thread-meta">{m.sender} &middot; {formatTime(m.dateSent)}</div>
                               {m.messageBody}
@@ -114,8 +146,8 @@ export default function AdminMessages({ messages, live }: Props) {
               </div>
             );
           })}
-        </div>
-      </div>
+        </ChassisTableSurface>
+      </ChassisWorkspace>
     </>
   );
 }

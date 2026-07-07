@@ -4,6 +4,78 @@ import { useCallback, useMemo, useState } from 'react';
 import type { CollectionDef, CollectionItem, FieldDef } from '@/lib/admin-collections-schema';
 import './admin-collection.css';
 
+function ChassisButton({
+  children,
+  variant,
+  onClick,
+  disabled,
+}: {
+  children: React.ReactNode;
+  variant?: 'primary' | 'secondary' | 'link' | 'danger';
+  onClick?: () => void;
+  disabled?: boolean;
+}) {
+  return (
+    <button type="button" className={`ea-button ${variant ?? 'secondary'}`} onClick={onClick} disabled={disabled}>
+      {children}
+    </button>
+  );
+}
+
+function ChassisCollectionFormCard({ children }: { children: React.ReactNode }) {
+  return <section className="ac-form-card">{children}</section>;
+}
+
+function ChassisCollectionFormTitle({ children }: { children: React.ReactNode }) {
+  return <h2>{children}</h2>;
+}
+
+function ChassisCollectionFormGrid({ children }: { children: React.ReactNode }) {
+  return <div className="ac-form-grid">{children}</div>;
+}
+
+function ChassisCollectionField({ label, required, hint, wide, children }: { label: string; required?: boolean; hint?: string; wide?: boolean; children: React.ReactNode }) {
+  return (
+    <label className={wide ? 'ac-field wide' : 'ac-field'}>
+      <span>{label}{required ? ' *' : ''}</span>
+      {children}
+      {hint && <small>{hint}</small>}
+    </label>
+  );
+}
+
+function ChassisCollectionActions({ children }: { children: React.ReactNode }) {
+  return <div className="ac-actions">{children}</div>;
+}
+
+function ChassisCollectionListHead({ children }: { children: React.ReactNode }) {
+  return <div className="ac-list-head">{children}</div>;
+}
+
+function ChassisCollectionCount({ children }: { children: React.ReactNode }) {
+  return <strong>{children}</strong>;
+}
+
+function ChassisSearchInput({ value, placeholder, onChange }: { value: string; placeholder: string; onChange: (event: React.ChangeEvent<HTMLInputElement>) => void }) {
+  return <input type="search" value={value} placeholder={placeholder} onChange={onChange} />;
+}
+
+function ChassisCollectionList({ children }: { children: React.ReactNode }) {
+  return <ul className="ac-list">{children}</ul>;
+}
+
+function ChassisEmptyState({ children }: { variant?: string; as?: 'li'; children: React.ReactNode }) {
+  return <li className="ea-empty-state">{children}</li>;
+}
+
+function ChassisCollectionCard({ children }: { children: React.ReactNode }) {
+  return <li className="ac-card">{children}</li>;
+}
+
+function ChassisCollectionTitle({ title, badge }: { title: string; badge?: string }) {
+  return <h3>{title}{badge && <span>{badge}</span>}</h3>;
+}
+
 type AthleteOption = { label: string; value: string };
 
 function emptyDraft(def: CollectionDef): Record<string, string> {
@@ -17,11 +89,13 @@ export default function AdminCollection({
   initialItems,
   athleteOptions,
   live,
+  showHeader = true,
 }: {
   def: CollectionDef;
   initialItems: CollectionItem[];
   athleteOptions: AthleteOption[];
   live: boolean;
+  showHeader?: boolean;
 }) {
   const [items, setItems] = useState<CollectionItem[]>(initialItems);
   const [draft, setDraft] = useState<Record<string, string>>(() => emptyDraft(def));
@@ -50,7 +124,7 @@ export default function AdminCollection({
       const json = await res.json();
       if (!res.ok) throw new Error(json.error || 'Upload failed');
       setField(key, json.url);
-      setMessage('File uploaded. Remember to Save.');
+      setMessage('File uploaded. Save update to keep it.');
     } catch (err) {
       setMessage(err instanceof Error ? err.message : 'Upload failed.');
     } finally {
@@ -78,7 +152,7 @@ export default function AdminCollection({
       setItems((prev) =>
         editingId ? prev.map((it) => (it.id === editingId ? saved : it)) : [saved, ...prev],
       );
-      setMessage(editingId ? `${def.singular} updated.` : `${def.singular} added.`);
+      setMessage(editingId ? `${def.singular} improved.` : `${def.singular} created as a next step.`);
       resetForm();
     } catch (err) {
       setMessage(err instanceof Error ? err.message : 'Could not save.');
@@ -98,7 +172,7 @@ export default function AdminCollection({
 
   const remove = async (item: CollectionItem) => {
     const title = String(item[def.titleField] || 'this item');
-    if (!window.confirm(`Delete "${title}"? This cannot be undone.`)) return;
+    if (!window.confirm(`Remove "${title}" from the active view? This cannot be undone.`)) return;
     setBusy(true);
     setMessage('');
     try {
@@ -107,7 +181,7 @@ export default function AdminCollection({
       if (!res.ok) throw new Error(json.error || 'Delete failed');
       setItems((prev) => prev.filter((it) => it.id !== item.id));
       if (editingId === item.id) resetForm();
-      setMessage(`${def.singular} deleted.`);
+      setMessage(`${def.singular} removed from the active view.`);
     } catch (err) {
       setMessage(err instanceof Error ? err.message : 'Could not delete.');
     } finally {
@@ -199,14 +273,16 @@ export default function AdminCollection({
 
   return (
     <div className="ac">
+      {showHeader && (
       <header className="ahead ahead-compact">
         <div>
           <h1 className="display">{def.label.toUpperCase()}</h1>
           <p>{def.description}</p>
         </div>
         <a className="admin-logout" href="/api/admin/logout">Sign Out</a>
-        {!live && <span className="demo-pill">Storage not configured · connect Vercel Blob to save</span>}
+        {!live && <span className="demo-pill">Publishing setup needed before updates can be saved</span>}
       </header>
+      )}
 
       {message && <p className="ac-message">{message}</p>}
 
@@ -216,48 +292,47 @@ export default function AdminCollection({
         ))}
       </datalist>
 
-      <section className="ac-form-card">
-        <h2 className="ac-form-title">{editingId ? `Edit ${def.singular}` : `Add ${def.singular}`}</h2>
-        <div className="ac-form-grid">
+      <ChassisCollectionFormCard>
+        <ChassisCollectionFormTitle>{editingId ? `Improve ${def.singular}` : `Create next ${def.singular.toLowerCase()}`}</ChassisCollectionFormTitle>
+        <ChassisCollectionFormGrid>
           {def.fields.map((field) => (
-            <label
+            <ChassisCollectionField
               key={field.key}
-              className={field.type === 'textarea' ? 'ac-field ac-field-wide' : 'ac-field'}
+              label={field.label}
+              required={field.required}
+              hint={field.hint}
+              wide={field.type === 'textarea'}
             >
-              <span>
-                {field.label}
-                {field.required && <em className="ac-req"> *</em>}
-              </span>
               {renderField(field)}
-              {field.hint && <small className="ac-hint">{field.hint}</small>}
-            </label>
+            </ChassisCollectionField>
           ))}
-        </div>
-        <div className="ac-form-actions">
-          <button className="ac-primary" onClick={submit} disabled={busy}>
-            {busy ? 'Saving…' : editingId ? `Update ${def.singular}` : `Add ${def.singular}`}
-          </button>
+        </ChassisCollectionFormGrid>
+        <ChassisCollectionActions>
+          <ChassisButton variant="primary" onClick={submit} disabled={busy}>
+            {busy ? 'Saving decision…' : editingId ? 'Save decision' : 'Create next step'}
+          </ChassisButton>
           {editingId && (
-            <button className="ac-secondary" onClick={resetForm} disabled={busy}>
+            <ChassisButton variant="secondary" onClick={resetForm} disabled={busy}>
               Cancel
-            </button>
+            </ChassisButton>
           )}
-        </div>
-      </section>
+        </ChassisCollectionActions>
+      </ChassisCollectionFormCard>
 
-      <div className="ac-list-head">
-        <span className="ac-count">{filtered.length} {filtered.length === 1 ? def.singular.toLowerCase() : `${def.singular.toLowerCase()}s`}</span>
-        <input
-          className="ac-search"
+      <ChassisCollectionListHead>
+        <ChassisCollectionCount>{filtered.length} {filtered.length === 1 ? def.singular.toLowerCase() : `${def.singular.toLowerCase()}s`}</ChassisCollectionCount>
+        <ChassisSearchInput
           value={query}
-          placeholder="Search…"
+          placeholder="Find priority item…"
           onChange={(e) => setQuery(e.target.value)}
         />
-      </div>
+      </ChassisCollectionListHead>
 
-      <ul className="ac-list">
+      <ChassisCollectionList>
         {filtered.length === 0 && (
-          <li className="ac-empty">No entries yet. Add your first {def.singular.toLowerCase()} above.</li>
+          <ChassisEmptyState variant="collection" as="li">
+            No action needed right now. Recommended next step: create a {def.singular.toLowerCase()} only if it supports a current owner decision.
+          </ChassisEmptyState>
         )}
         {filtered.map((item) => {
           const subtitle = def.subtitleFields
@@ -266,28 +341,25 @@ export default function AdminCollection({
             .join(' · ');
           const status = def.statusField ? String(item[def.statusField] || '').trim() : '';
           return (
-            <li key={item.id} className="ac-row">
+            <ChassisCollectionCard key={item.id}>
               <div className="ac-row-main">
-                <div className="ac-row-title">
-                  {String(item[def.titleField] || '(untitled)')}
-                  {status && <span className="ac-pill">{status}</span>}
-                </div>
+                <ChassisCollectionTitle title={String(item[def.titleField] || '(untitled)')} badge={status || undefined} />
                 {subtitle && <div className="ac-row-sub">{subtitle}</div>}
               </div>
               <div className="ac-row-actions">
                 {def.id === 'email-templates' && (
-                  <button className="ac-link" onClick={() => copyTemplate(item)}>Copy</button>
+                  <ChassisButton variant="link" onClick={() => copyTemplate(item)}>Copy</ChassisButton>
                 )}
                 {typeof item.fileUrl === 'string' && item.fileUrl && (
                   <a className="ac-link" href={item.fileUrl} target="_blank" rel="noopener noreferrer">File</a>
                 )}
-                <button className="ac-link" onClick={() => startEdit(item)}>Edit</button>
-                <button className="ac-link ac-danger" onClick={() => remove(item)} disabled={busy}>Delete</button>
+                <ChassisButton variant="link" onClick={() => startEdit(item)}>Update details</ChassisButton>
+                <ChassisButton variant="danger" onClick={() => remove(item)} disabled={busy}>Remove from active view</ChassisButton>
               </div>
-            </li>
+            </ChassisCollectionCard>
           );
         })}
-      </ul>
+      </ChassisCollectionList>
     </div>
   );
 }
