@@ -1,5 +1,16 @@
 import path from 'node:path';
-import { currentBranch, currentCommit, ensureDir, generatedAt, posix, reportDir, root, walk, writeJson } from './lib.mjs';
+import {
+  branchPolicy,
+  currentCommit,
+  ensureDir,
+  generatedAt,
+  policySummary,
+  posix,
+  reportDir,
+  root,
+  walk,
+  writeJson,
+} from './lib.mjs';
 
 function routeFromFile(file) {
   const rel = posix(path.relative(path.join(root, 'app'), file));
@@ -18,9 +29,19 @@ function routeFromFile(file) {
 
 const files = walk(path.join(root, 'app'), (file) => /[\\\/](page\.tsx|route\.ts)$/.test(file));
 const routes = files.map(routeFromFile).filter(Boolean).sort((a, b) => a.route.localeCompare(b.route) || a.kind.localeCompare(b.kind));
+const policy = branchPolicy();
+if (!policy.validationEligible) {
+  throw new Error(`Branch is not eligible for governance route validation.\n${policySummary(policy)}`);
+}
+
 const manifest = {
   name: 'EA Route Manifest',
-  branch: currentBranch(),
+  branch: policy.branch,
+  branchClassification: policy.classification,
+  validationStatus: policy.validationEligible ? 'Allowed' : 'Blocked',
+  deploymentEligible: policy.deploymentEligible,
+  mode: policy.mode,
+  productionReadiness: policy.productionReadiness,
   commit: currentCommit(),
   generatedAt: generatedAt(),
   routeCount: routes.length,
@@ -30,4 +51,6 @@ const manifest = {
 writeJson(path.join(root, 'route-manifest.json'), manifest);
 ensureDir(reportDir);
 writeJson(path.join(reportDir, 'route-inventory.json'), manifest);
+console.log(policy.mode);
+console.log(policySummary(policy));
 console.log(`Route inventory generated: ${routes.length} routes`);

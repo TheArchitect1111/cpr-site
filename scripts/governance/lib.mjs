@@ -67,3 +67,47 @@ export function changedFiles() {
 export function generatedAt() {
   return new Date().toISOString();
 }
+
+export function classifyBranch(branch = currentBranch()) {
+  if (branch === 'main') return 'Production';
+  if (branch.startsWith('release/')) return 'Production';
+  if (branch.startsWith('governance/')) return 'Governance';
+  if (branch.startsWith('reconcile/')) return 'Reconciliation';
+  if (branch.startsWith('recovery/')) return 'Recovery';
+  if (branch.startsWith('feature/')) return 'Feature';
+  if (branch.startsWith('preview/')) return 'Preview';
+  if (branch.startsWith('experimental/')) return 'Experimental';
+  return 'Feature';
+}
+
+export function isValidationEligible(classification) {
+  return ['Production', 'Governance', 'Reconciliation', 'Recovery', 'Preview'].includes(classification);
+}
+
+export function isDeploymentEligible(branch = currentBranch()) {
+  return branch === 'main' || branch.startsWith('release/');
+}
+
+export function branchPolicy(branch = currentBranch()) {
+  const classification = classifyBranch(branch);
+  const deploymentEligible = isDeploymentEligible(branch);
+  const validationEligible = isValidationEligible(classification);
+  return {
+    branch,
+    classification,
+    validationEligible,
+    deploymentEligible,
+    mode: deploymentEligible ? 'PRODUCTION MODE' : 'VALIDATION MODE',
+    productionReadiness: deploymentEligible ? 'Deployment eligible' : 'Validation only',
+  };
+}
+
+export function policySummary(policy = branchPolicy()) {
+  return [
+    `Branch Classification: ${policy.classification}`,
+    `Validation Status: ${policy.validationEligible ? 'Allowed' : 'Blocked'}`,
+    `Deployment Eligibility: ${policy.deploymentEligible ? 'YES' : 'NO'}`,
+    `Mode: ${policy.mode}`,
+    `Production Readiness: ${policy.productionReadiness}`,
+  ].join('\n');
+}

@@ -1,6 +1,15 @@
 import fs from 'node:fs';
 import path from 'node:path';
-import { changedFiles, currentBranch, currentCommit, mergeBase, originMainCommit, readJson, root } from './lib.mjs';
+import {
+  branchPolicy,
+  changedFiles,
+  currentCommit,
+  mergeBase,
+  originMainCommit,
+  policySummary,
+  readJson,
+  root,
+} from './lib.mjs';
 
 const allowedExact = new Set([
   '.env.example',
@@ -49,10 +58,9 @@ const files = changedFiles().map(normalize);
 const disallowed = files.filter((file) => !isAllowed(file));
 const applicationDrift = files.filter((file) => forbiddenExact.has(file) || forbiddenPrefixes.some((prefix) => file.startsWith(prefix)));
 
-const branch = currentBranch();
-const allowedBranches = new Set(['governance/baseline-v1.0', 'main']);
-if (!allowedBranches.has(branch)) {
-  throw new Error(`Expected governance/baseline-v1.0 or main, got ${branch}`);
+const policy = branchPolicy();
+if (!policy.validationEligible) {
+  throw new Error(`Branch is not eligible for governance validation.\n${policySummary(policy)}`);
 }
 
 if (mergeBase('HEAD', 'origin/main') !== originMainCommit()) {
@@ -76,4 +84,8 @@ for (const forbidden of ['fix/admin-login-loop', '87187f4']) {
   if (latestRaw.includes(forbidden)) throw new Error(`Forbidden reference found in latest.json: ${forbidden}`);
 }
 
+console.log(policy.mode);
+console.log(policySummary(policy));
+console.log(`Integrity Score: ${applicationDrift.length === 0 ? 100 : 80}`);
+console.log(`Drift Score: ${applicationDrift.length === 0 ? 100 : Math.max(0, 100 - applicationDrift.length * 10)}`);
 console.log(`Governance gates passed: ${files.length} changed files, ${applicationDrift.length} application drift files`);

@@ -18,3 +18,16 @@ Generated report:
 governance/reports/drift-report.json
 ```
 
+The report also records:
+
+- Branch classification
+- Validation status
+- Deployment eligibility
+- Validation or production mode
+- Integrity score
+- Drift score
+- Production readiness
+
+Reconciliation branches are allowed to run drift detection in `VALIDATION MODE`.
+They are not deployment eligible.
+
