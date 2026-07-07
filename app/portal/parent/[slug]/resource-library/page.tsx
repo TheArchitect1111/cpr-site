@@ -2,7 +2,6 @@ import '../../../portal.css';
 import '../../../resources/resources.css';
 import '../../../sections/sections.css';
 import { getParentPortalData } from '@/lib/portal-data';
-import { site } from '@/config/site';
 import { notFound } from 'next/navigation';
 import PortalSubpageLayout from '@/app/portal/components/PortalSubpageLayout';
 import ResourceLibrary from '@/app/portal/sections/ResourceLibrary';

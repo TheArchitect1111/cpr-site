@@ -2,7 +2,6 @@ import '../../../portal.css';
 import '../../parent-portal.css';
 import '../../../resources/resources.css';
 import { getParentPortalData } from '@/lib/portal-data';
-import { site } from '@/config/site';
 import { notFound } from 'next/navigation';
 import PortalSubpageLayout from '@/app/portal/components/PortalSubpageLayout';
 import RecruitingTimeline from '@/app/portal/resources/RecruitingTimeline';

@@ -2,7 +2,6 @@ import '../../../portal.css';
 import '../../../resources/resources.css';
 import '../../../sections/sections.css';
 import { getAthlete } from '@/lib/athletes';
-import { site } from '@/config/site';
 import { notFound } from 'next/navigation';
 import PortalSubpageLayout from '@/app/portal/components/PortalSubpageLayout';
 import VideoLearningCenter from '@/app/portal/sections/VideoLearningCenter';
