@@ -98,10 +98,6 @@ export default function PwaController({ appName }: { appName: string }) {
     };
   }, [onAuthRoute, platform]);
 
-  useEffect(() => {
-    if (onAuthRoute) setShow(false);
-  }, [onAuthRoute]);
-
   function dismiss() {
     try {
       localStorage.setItem(DISMISS_KEY, String(Date.now()));
