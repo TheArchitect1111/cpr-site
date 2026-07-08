@@ -1,6 +1,6 @@
 'use client';
 
-import { FormEvent, useState } from 'react';
+import { FormEvent, useEffect, useRef, useState } from 'react';
 import type { MagicLinkRealm } from '@/lib/magic-link';
 
 type Props = {
@@ -26,6 +26,14 @@ export default function MagicLinkForm({
   const [error, setError] = useState('');
   const [sent, setSent] = useState(false);
   const [loading, setLoading] = useState(false);
+  const emailRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const mobile = window.matchMedia('(max-width: 768px)').matches
+      || /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+    if (!mobile) emailRef.current?.focus();
+  }, []);
 
   async function handleSubmit(e: FormEvent) {
     e.preventDefault();
@@ -76,16 +84,20 @@ export default function MagicLinkForm({
         <label htmlFor="magic-email">EMAIL</label>
         {emailHint ? <p className="pl-sub" style={{ marginBottom: '0.5rem' }}>{emailHint}</p> : null}
         <input
+          ref={emailRef}
           id="magic-email"
+          name="email"
           type="email"
+          inputMode="email"
+          enterKeyHint="send"
           autoComplete="email"
           autoCapitalize="none"
+          autoCorrect="off"
           spellCheck={false}
           placeholder={emailPlaceholder}
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           required
-          autoFocus
         />
       </div>
 

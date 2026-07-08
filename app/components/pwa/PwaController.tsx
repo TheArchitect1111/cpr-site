@@ -1,7 +1,25 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
+import { usePathname } from 'next/navigation';
 import './pwa.css';
+
+/** Never block sign-in flows with the install sheet — families must reach the email field. */
+const AUTH_PATHS = new Set([
+  '/portal/login',
+  '/portal/sign-in',
+  '/portal/forgot-password',
+  '/portal/reset-password',
+  '/admin/login',
+  '/admin/sign-in',
+  '/admin/forgot-password',
+  '/admin/reset-password',
+]);
+
+function isAuthRoute(pathname: string): boolean {
+  if (AUTH_PATHS.has(pathname)) return true;
+  return [...AUTH_PATHS].some((path) => pathname.startsWith(`${path}/`));
+}
 
 type Platform = 'ios' | 'android' | 'desktop';
 
@@ -43,10 +61,12 @@ function recentlyDismissed(): boolean {
 }
 
 export default function PwaController({ appName }: { appName: string }) {
+  const pathname = usePathname();
   const [show, setShow] = useState(false);
   const [platform] = useState<Platform>(() => detectPlatform());
   const [hasNativePrompt, setHasNativePrompt] = useState(false);
   const deferredPrompt = useRef<BeforeInstallPromptEvent | null>(null);
+  const onAuthRoute = isAuthRoute(pathname);
 
   useEffect(() => {
     if ('serviceWorker' in navigator) {
@@ -55,7 +75,7 @@ export default function PwaController({ appName }: { appName: string }) {
   }, []);
 
   useEffect(() => {
-    if (isStandalone() || recentlyDismissed()) return;
+    if (onAuthRoute || isStandalone() || recentlyDismissed()) return;
 
     function onBeforeInstall(e: Event) {
       e.preventDefault();
@@ -76,7 +96,11 @@ export default function PwaController({ appName }: { appName: string }) {
       window.removeEventListener('beforeinstallprompt', onBeforeInstall);
       if (iosTimer) clearTimeout(iosTimer);
     };
-  }, [platform]);
+  }, [onAuthRoute, platform]);
+
+  useEffect(() => {
+    if (onAuthRoute) setShow(false);
+  }, [onAuthRoute]);
 
   function dismiss() {
     try {
@@ -99,7 +123,7 @@ export default function PwaController({ appName }: { appName: string }) {
     setShow(false);
   }
 
-  if (!show) return null;
+  if (onAuthRoute || !show) return null;
 
   const canPrompt = hasNativePrompt && platform !== 'ios';
 
