@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import Stripe from 'stripe';
-import { markAthletePaymentPaid } from '@/lib/athletes';
+import { getAthleteByRecordId, markAthletePaymentPaid } from '@/lib/athletes';
 import { isPaymentStage, paymentStageLabel } from '@/lib/payments';
+import { sendPaymentAdminAlert, sendPaymentConfirmationEmail } from '@/lib/revenue-notifications';
 import { stripe } from '@/lib/stripe';
 
 export async function POST(req: NextRequest) {
@@ -25,7 +26,25 @@ export async function POST(req: NextRequest) {
     const stage = String(session.metadata?.stage || '');
     if (recordId && isPaymentStage(stage)) {
       const amount = typeof session.amount_total === 'number' ? ` ${(session.amount_total / 100).toFixed(2)} ${String(session.currency || '').toUpperCase()}` : '';
-      await markAthletePaymentPaid(recordId, stage, `Stripe confirmed ${paymentStageLabel(stage)} payment${amount}. Session ${session.id}.`);
+      const stageLabel = paymentStageLabel(stage);
+      await markAthletePaymentPaid(recordId, stage, `Stripe confirmed ${stageLabel} payment${amount}. Session ${session.id}.`);
+      const athlete = await getAthleteByRecordId(recordId);
+      if (athlete) {
+        const athleteName = [athlete.firstName, athlete.lastName].filter(Boolean).join(' ') || 'CPR applicant';
+        const notificationInput = {
+          email: athlete.email || session.customer_details?.email || session.customer_email || undefined,
+          parentEmail: athlete.parentEmail,
+          athleteName,
+          stageLabel,
+          amount: amount.trim(),
+          sessionId: session.id,
+          recordId,
+        };
+        await Promise.all([
+          sendPaymentConfirmationEmail(notificationInput),
+          sendPaymentAdminAlert(notificationInput),
+        ]);
+      }
     }
   }
 

@@ -2,10 +2,9 @@ import type { LandingPageConfig } from '@/lib/landing-chassis/types';
 import { site } from './site';
 
 export const PLAYER_APPLICATION_URL =
-  'https://docs.google.com/forms/d/e/1FAIpQLScnS-NAIhJnNDCVMbhFtAPbEtYZT9ZzZytagNu1THa9f80qmg/viewform?usp=publish-editor';
-export const STANDARD_FEE_AGREEMENT_URL = 'https://forms.gle/idrMWqU5FpebA1f46';
-export const INTERNATIONAL_FEE_AGREEMENT_URL =
-  'https://docs.google.com/forms/d/e/1FAIpQLScnS-NAIhJnNDCVMbhFtAPbEtYZT9ZzZytagNu1THa9f80qmg/viewform?usp=publish-editor';
+  '/apply';
+export const STANDARD_FEE_AGREEMENT_URL = '/apply';
+export const INTERNATIONAL_FEE_AGREEMENT_URL = '/apply';
 
 /** CPR instance of EA Landing Page Chassis™ — swap config, keep framework. */
 export const landingConfig: LandingPageConfig = {

@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import { sendAgreementAdminAlert, sendAgreementConfirmationEmail } from '@/lib/revenue-notifications';
 
 const BASE = 'appvVr6MVrJvEY0YJ';
 const TABLE = 'tblZwrZHi3WBR3NHZ';
@@ -17,9 +18,12 @@ export async function POST(req: Request) {
   }
 
   const email = String(b.email).trim();
+  const parentName = String(b.parentName).trim();
+  const playerName = String(b.playerName).trim();
+  const programOption = String(b.programOption).trim();
   const noteLines = [
     `--- Fee Agreement submitted ${new Date().toISOString().slice(0, 16).replace('T', ' ')} ---`,
-    `Selected fee option: ${String(b.programOption).trim()}`,
+    `Selected fee option: ${programOption}`,
     b.transcriptUrl ? `Transcript link: ${String(b.transcriptUrl).trim()}` : '',
     b.filmUrl ? `Game film link: ${String(b.filmUrl).trim()}` : '',
     `Agreement acknowledged by parent/guardian and player: Yes`,
@@ -27,7 +31,7 @@ export async function POST(req: Request) {
 
   const fields: Record<string, unknown> = {
     'Terms Agreed': true,
-    'Parent Name': String(b.parentName).trim(),
+    'Parent Name': parentName,
   };
 
   const headers = { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' };
@@ -52,8 +56,8 @@ export async function POST(req: Request) {
         records: [{
           fields: {
             ...fields, Email: email, Notes: noteLines, Status: 'Pending',
-            'First Name': String(b.playerName).trim().split(' ')[0] || 'Unknown',
-            'Last Name': String(b.playerName).trim().split(' ').slice(1).join(' ') || '-',
+            'First Name': playerName.split(' ')[0] || 'Unknown',
+            'Last Name': playerName.split(' ').slice(1).join(' ') || '-',
             'Submitted At': new Date().toISOString().slice(0, 10),
           },
         }],
@@ -65,5 +69,18 @@ export async function POST(req: Request) {
     console.error('Airtable agreement error:', await res.text());
     return NextResponse.json({ error: 'Could not save agreement' }, { status: 502 });
   }
-  return NextResponse.json({ ok: true, matched: Boolean(found) });
+
+  const notificationInput = {
+    email,
+    parentName,
+    playerName,
+    programOption,
+    matched: Boolean(found),
+  };
+  const [confirmationSent, adminAlertSent] = await Promise.all([
+    sendAgreementConfirmationEmail(notificationInput),
+    sendAgreementAdminAlert(notificationInput),
+  ]);
+
+  return NextResponse.json({ ok: true, matched: Boolean(found), confirmationSent, adminAlertSent });
 }
