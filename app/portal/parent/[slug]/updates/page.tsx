@@ -28,8 +28,7 @@ export default async function ParentUpdatesPage({
     : portalData.slug;
 
   return (
-    <div className="portal-page">
-      <PortalShell portalType="parent" slug={slug} active="updates" />
+    <PortalShell portalType="parent" slug={slug} active="updates">
       <main className="portal-main pp-main">
         <UpdatePortalFeed
           updates={updates}
@@ -45,6 +44,9 @@ export default async function ParentUpdatesPage({
         </p>
       </footer>
       {owner && <PortalOwnerFab href={`/portal/parent/${slug}/updates/new`} />}
-    </div>
+    </PortalShell>
   );
 }
+
+
+

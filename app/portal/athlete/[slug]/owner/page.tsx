@@ -30,8 +30,7 @@ export default async function AthleteOwnerToolsPage({
   const base = `/portal/athlete/${slug}`;
 
   return (
-    <div className="portal-page">
-      <PortalShell portalType="athlete" slug={slug} active="home" />
+    <PortalShell portalType="athlete" slug={slug} active="home">
       <main className="portal-main pp-main">
         <a href={base} className="res-back">&#8592; Back to Dashboard</a>
         <p className="owner-eyebrow">Owner Mode</p>
@@ -58,6 +57,9 @@ export default async function AthleteOwnerToolsPage({
         </p>
       </footer>
       <PortalOwnerFab href={`${base}/updates/new`} />
-    </div>
+    </PortalShell>
   );
 }
+
+
+

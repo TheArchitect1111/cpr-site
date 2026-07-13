@@ -1,0 +1,59 @@
+﻿/* CPR workspace shell — aligned with EA TailAdmin portal chrome */
+.cpr-shell {
+  --cpr-shell-primary: #cc0000;
+  --cpr-shell-header: #0c0c0a;
+  --cpr-shell-bg: #f7f7f5;
+  --cpr-shell-surface: #ffffff;
+  --cpr-shell-text: #101828;
+  --cpr-shell-muted: #667085;
+  --cpr-shell-border: #e4e7ec;
+  --cpr-shell-sidebar-w: 280px;
+  display: flex;
+  min-height: 100vh;
+  min-height: 100dvh;
+  background: var(--cpr-shell-bg);
+  color: var(--cpr-shell-text);
+  font-family: var(--cpr-shell-font, system-ui, sans-serif);
+}
+.cpr-shell-sidebar {
+  width: var(--cpr-shell-sidebar-w);
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 20px 16px;
+  background: var(--cpr-shell-header);
+  color: #fff;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  height: 100dvh;
+  overflow-y: auto;
+}
+.cpr-shell-brand { display: flex; align-items: center; gap: 12px; padding-bottom: 16px; border-bottom: 1px solid rgba(255,255,255,0.12); }
+.cpr-shell-logo { width: 40px; height: 40px; object-fit: contain; border-radius: 8px; background: #fff; }
+.cpr-shell-brand strong { display: block; font-size: 14px; }
+.cpr-shell-brand span { display: block; font-size: 11px; opacity: 0.7; text-transform: uppercase; letter-spacing: 0.08em; }
+.cpr-shell-nav-label { margin: 12px 8px 6px; font-size: 10px; font-weight: 800; letter-spacing: 0.14em; text-transform: uppercase; opacity: 0.55; }
+.cpr-shell-nav ul { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 4px; }
+.cpr-shell-nav a { display: block; padding: 10px 12px; border-radius: 10px; color: rgba(255,255,255,0.82); text-decoration: none; font-size: 13px; font-weight: 600; }
+.cpr-shell-nav a:hover { background: rgba(255,255,255,0.08); color: #fff; }
+.cpr-shell-nav a.is-active { background: var(--cpr-shell-primary); color: #fff; }
+.cpr-shell-promo { margin-top: auto; padding: 14px; border-radius: 12px; background: rgba(255,255,255,0.06); }
+.cpr-shell-promo-title { margin: 0 0 6px; font-size: 12px; font-weight: 800; }
+.cpr-shell-promo-copy { margin: 0; font-size: 11px; line-height: 1.45; opacity: 0.75; }
+.cpr-shell-logout { display: block; margin-top: 8px; padding: 10px 12px; border-radius: 10px; color: rgba(255,255,255,0.7); text-decoration: none; font-size: 12px; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; }
+.cpr-shell-logout:hover { color: #fff; background: rgba(255,255,255,0.08); }
+.cpr-shell-main { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+.cpr-shell-header { display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; padding: 22px 28px 16px; background: var(--cpr-shell-surface); border-bottom: 1px solid var(--cpr-shell-border); }
+.cpr-shell-eyebrow { margin: 0 0 4px; font-size: 11px; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase; color: var(--cpr-shell-primary); }
+.cpr-shell-header h1 { margin: 0; font-size: 1.5rem; line-height: 1.2; }
+.cpr-shell-user { margin: 0; font-size: 13px; color: var(--cpr-shell-muted); }
+.cpr-shell-content { flex: 1; padding: 24px 28px 40px; }
+@media (max-width: 900px) {
+  .cpr-shell { flex-direction: column; }
+  .cpr-shell-sidebar { width: 100%; height: auto; position: relative; }
+  .cpr-shell-nav ul { flex-direction: row; flex-wrap: wrap; }
+  .cpr-shell-promo { display: none; }
+  .cpr-shell-header, .cpr-shell-content { padding-left: 16px; padding-right: 16px; }
+}

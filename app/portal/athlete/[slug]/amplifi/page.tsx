@@ -21,8 +21,7 @@ export default async function AthleteAmplifiPage({
   const opportunities = await getOpportunities(portalData.recordId);
 
   return (
-    <div className="portal-page">
-      <PortalShell portalType="athlete" slug={slug} active="amplifi" />
+    <PortalShell portalType="athlete" slug={slug} active="amplifi">
       <main className="portal-main pp-main">
         <AmplifiExperience
           firstName={portalData.firstName}
@@ -41,6 +40,9 @@ export default async function AthleteAmplifiPage({
           <a href={`mailto:${site.footer.email}`}>{site.footer.email}</a>
         </p>
       </footer>
-    </div>
+    </PortalShell>
   );
 }
+
+
+

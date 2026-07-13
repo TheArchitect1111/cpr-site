@@ -39,9 +39,7 @@ export default async function AthletePortalPage({
   const customSub = content.hero.subtitle.trim();
 
   return (
-    <div className="portal-page">
-      <PortalShell portalType="athlete" slug={slug} active="home" />
-
+    <PortalShell portalType="athlete" slug={slug} active="home" firstName={name}>
       <main className="portal-main pp-main">
         <div className="pp-welcome">
           <div className="pp-welcome-top">
@@ -92,6 +90,8 @@ export default async function AthletePortalPage({
       </footer>
 
       {owner && <PortalOwnerFab href={`/portal/athlete/${slug}/updates/new`} />}
-    </div>
+    </PortalShell>
   );
 }
+
+

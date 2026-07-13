@@ -41,9 +41,7 @@ export default async function ParentPortalPage({
   const customSub = content.hero.subtitle.trim();
 
   return (
-    <div className="portal-page">
-      <PortalShell portalType="parent" slug={slug} active="home" />
-
+    <PortalShell portalType="parent" slug={slug} active="home" firstName={parentName}>
       <main className="portal-main pp-main">
         <div className="pp-welcome">
           <div className="pp-welcome-top">
@@ -94,6 +92,8 @@ export default async function ParentPortalPage({
       </footer>
 
       {owner && <PortalOwnerFab href={`/portal/parent/${slug}/updates/new`} />}
-    </div>
+    </PortalShell>
   );
 }
+
+
