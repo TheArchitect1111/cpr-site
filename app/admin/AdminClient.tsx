@@ -963,7 +963,7 @@ export default function AdminClient({ rows, players, coaches }: { rows: Outreach
         </div>
       </section>
 
-      <section className="player-manager">
+      <section className="player-manager" id="players">
         <div className="pm-head">
           <div>
             <h2 className="display">PLAYER PROFILES</h2>

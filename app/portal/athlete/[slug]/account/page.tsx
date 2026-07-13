@@ -15,11 +15,13 @@ export default async function AthleteAccountPage({
 }) {
   const { slug } = await params;
   return (
-    <div className="portal-page">
-      <PortalShell portalType="athlete" slug={slug} active="account" />
+    <PortalShell portalType="athlete" slug={slug} active="account">
       <main className="portal-main account-main">
         <ChangePasswordForm action="/api/portal/change-password" />
       </main>
-    </div>
+    </PortalShell>
   );
 }
+
+
+
