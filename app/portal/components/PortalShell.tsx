@@ -1,6 +1,6 @@
 ﻿'use client';
 
-import type { CSSProperties, ReactNode } from 'react';
+import type { CSSProperties, MouseEvent, ReactNode } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { eaChassis, portalRoleLabel } from '@/config/ea-chassis';
@@ -52,6 +52,15 @@ export default function PortalShell({
     portalRoleLabel(portalType);
   const brand = eaChassis.organization.shortName;
   const product = eaChassis.product.implementationName || eaChassis.product.name;
+  const homeHref = `/portal/${portalType}/${slug}`;
+  const logoSrc = eaChassis.organization.logo || '/cpr-logo.png';
+
+  function signOut(e: MouseEvent<HTMLAnchorElement>) {
+    e.preventDefault();
+    fetch('/api/portal/login', { method: 'DELETE' }).finally(() => {
+      window.location.href = '/portal/login';
+    });
+  }
 
   const style = {
     '--cpr-shell-primary': eaChassis.theme.primary,
@@ -63,14 +72,24 @@ export default function PortalShell({
   return (
     <div className="cpr-shell" style={style}>
       <aside className="cpr-shell-sidebar" aria-label="Portal menu">
-        <div className="cpr-shell-brand">
+        <Link href={homeHref} className="cpr-shell-brand" aria-label={`${brand} home`}>
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={eaChassis.organization.logo} alt={brand} className="cpr-shell-logo" />
+          <img
+            src={logoSrc}
+            alt=""
+            className="cpr-shell-logo"
+            onError={(e) => {
+              const img = e.currentTarget;
+              if (img.dataset.fallback === '1') return;
+              img.dataset.fallback = '1';
+              img.src = '/cpr-logo.png';
+            }}
+          />
           <div>
             <strong>{brand}</strong>
             <span>{product}</span>
           </div>
-        </div>
+        </Link>
         <nav className="cpr-shell-nav">
           <p className="cpr-shell-nav-label">Portal</p>
           <ul>
@@ -89,21 +108,12 @@ export default function PortalShell({
             })}
           </ul>
         </nav>
-        <div className="cpr-shell-promo">
+        <Link href={homeHref} className="cpr-shell-promo">
           <p className="cpr-shell-promo-title">Faith. Family. Basketball. Future.</p>
           <p className="cpr-shell-promo-copy">Your recruiting home — profiles, updates, and next steps.</p>
-        </div>
+        </Link>
         {showLogout ? (
-          <a
-            className="cpr-shell-logout"
-            href="/portal/login"
-            onClick={(e) => {
-              e.preventDefault();
-              fetch('/api/portal/login', { method: 'DELETE' }).finally(() => {
-                window.location.href = '/portal/login';
-              });
-            }}
-          >
+          <a className="cpr-shell-logout" href="/portal/login" onClick={signOut}>
             Sign out
           </a>
         ) : null}
@@ -115,11 +125,18 @@ export default function PortalShell({
             <p className="cpr-shell-eyebrow">{portalRoleLabel(portalType)}</p>
             <h1>{title}</h1>
           </div>
-          {firstName ? (
-            <p className="cpr-shell-user">
-              Hi, <strong>{firstName}</strong>
-            </p>
-          ) : null}
+          <div className="cpr-shell-header-actions">
+            {firstName ? (
+              <p className="cpr-shell-user">
+                Hi, <strong>{firstName}</strong>
+              </p>
+            ) : null}
+            {showLogout ? (
+              <a className="cpr-shell-header-logout" href="/portal/login" onClick={signOut}>
+                Sign out
+              </a>
+            ) : null}
+          </div>
         </header>
         <div className="cpr-shell-content">{children}</div>
       </div>

@@ -20,30 +20,25 @@ export default async function CreateClientPage() {
   return (
     <div className="admin-shell">
       <aside className="aside">
-        <div className="aside-brand">
+        <a className="aside-brand" href="/admin">
           <img src={site.brand.logo} alt="CPR" />
           <div>
             <div className="ab1 display">CPR GLOBAL PROSPECTS</div>
             <div className="ab2 display">RECRUITMENT</div>
           </div>
-        </div>
+        </a>
         <div className="aside-sec">RECRUITMENT</div>
         <nav>
-          <a className="aitem" href="/admin">&#128226; Coach Outreach</a>
-          <span className="aitem coming-soon" title="Coming soon">&#127979; Schools</span>
-          <span className="aitem coming-soon" title="Coming soon">&#128202; Recruitment Tracker</span>
-          <span className="aitem coming-soon" title="Coming soon">&#128172; Responses</span>
-          <span className="aitem coming-soon" title="Coming soon">&#127942; Offers</span>
+          <a className="aitem" href="/admin">&#128100; Registrants &amp; Progress</a>
+          <a className="aitem" href="/admin?tab=outreach">&#128226; Coach Outreach</a>
+          <a className="aitem" href="/admin?tab=outreach#players">&#127936; Player Profiles</a>
         </nav>
         <div className="aside-sec">MANAGEMENT</div>
         <nav>
           <a className="aitem active" href="/admin/create-client">&#43; Create New Client</a>
           <a className="aitem" href="/admin/account">Account Settings</a>
-          <span className="aitem coming-soon" title="Coming soon">&#128196; Documents</span>
-          <span className="aitem coming-soon" title="Coming soon">&#128221; Fee Agreements</span>
-          <span className="aitem coming-soon" title="Coming soon">&#9993; Email Templates</span>
         </nav>
-        <a className="aitem back" href="/">&#8592; Back to Site</a>
+        <a className="aitem back" href="/admin">&#8592; Back to Admin</a>
       </aside>
       <main className="amain">
         <header className="ahead">
