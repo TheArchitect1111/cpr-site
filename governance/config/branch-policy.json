@@ -1,0 +1,63 @@
+{
+  "branches": {
+    "main": {
+      "type": "production",
+      "deployTarget": "production",
+      "requiresApproval": true,
+      "requiresManifest": true,
+      "requiresGates": true,
+      "mergeSource": ["release/*", "hotfix/*"]
+    },
+    "release/*": {
+      "type": "release-candidate",
+      "deployTarget": "preview",
+      "requiresApproval": true,
+      "requiresManifest": true,
+      "requiresGates": true,
+      "mergeSource": ["feature/*", "fix/*", "develop"]
+    },
+    "develop": {
+      "type": "development",
+      "deployTarget": "preview",
+      "requiresApproval": false,
+      "requiresManifest": false,
+      "requiresGates": false,
+      "mergeSource": ["feature/*", "fix/*"]
+    },
+    "feature/*": {
+      "type": "feature",
+      "deployTarget": "preview",
+      "requiresApproval": false,
+      "requiresManifest": false,
+      "requiresGates": false,
+      "mergeSource": []
+    },
+    "fix/*": {
+      "type": "feature",
+      "deployTarget": "preview",
+      "requiresApproval": false,
+      "requiresManifest": false,
+      "requiresGates": false,
+      "mergeSource": []
+    },
+    "hotfix/*": {
+      "type": "hotfix",
+      "deployTarget": "preview",
+      "requiresApproval": true,
+      "requiresManifest": true,
+      "requiresGates": true,
+      "mergeSource": ["main"],
+      "mergeTarget": "main"
+    }
+  },
+  "rules": {
+    "productionBranchOnly": true,
+    "noDirectPushToProduction": true,
+    "requirePullRequest": true,
+    "requireCiPass": true,
+    "requireReleaseManifestOnProduction": true,
+    "rollbackUsesPreviousManifest": true,
+    "retireBranchAfterMerge": true,
+    "maxBranchAgeDays": 30
+  }
+}

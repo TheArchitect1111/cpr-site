@@ -1,0 +1,36 @@
+{
+  "redirectVersion": "1.0.0",
+  "sourceFile": "vercel.json",
+  "redirects": [
+    {
+      "source": "/:path*",
+      "has": [{ "type": "host", "value": "template-sports-recruitment.vercel.app" }],
+      "destination": "https://cpr-site.vercel.app/:path*",
+      "permanent": true
+    },
+    {
+      "source": "/:path*",
+      "has": [{ "type": "host", "value": "template-sports-recruitment-the-architects-projects-cc813778.vercel.app" }],
+      "destination": "https://cpr-site.vercel.app/:path*",
+      "permanent": true
+    }
+  ],
+  "knownDashboardOnlyRedirects": [
+    {
+      "source": "/story/selena",
+      "destination": "/cpr-experience-lab",
+      "status": "drift-detected",
+      "note": "Must be migrated to vercel.json before next production deploy"
+    },
+    {
+      "source": "/magnifi",
+      "destination": "/cpr-experience-lab",
+      "status": "drift-detected"
+    },
+    {
+      "source": "/amplify",
+      "destination": "/cpr-experience-lab",
+      "status": "drift-detected"
+    }
+  ]
+}

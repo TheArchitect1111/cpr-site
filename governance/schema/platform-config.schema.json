@@ -1,0 +1,36 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "EA Platform Governance Config",
+  "type": "object",
+  "required": ["platformVersion", "application", "modules"],
+  "properties": {
+    "platformVersion": { "type": "string", "pattern": "^\\d+\\.\\d+\\.\\d+$" },
+    "application": {
+      "type": "object",
+      "required": ["id", "name", "slug", "productionBranch", "productionUrl"],
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "slug": { "type": "string" },
+        "repository": { "type": "string" },
+        "productionBranch": { "type": "string" },
+        "productionUrl": { "type": "string", "format": "uri" },
+        "vercelProject": { "type": "string" },
+        "owner": { "type": "string" }
+      }
+    },
+    "modules": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "versions": { "type": "object" },
+    "lintExclude": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "generatedFolders": {
+      "type": "array",
+      "items": { "type": "string" }
+    }
+  }
+}

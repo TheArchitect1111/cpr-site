@@ -1,0 +1,381 @@
+{
+  "schemaVersion": "1.0.0",
+  "generatedAt": "2026-07-07T22:48:20.172Z",
+  "releaseVersion": "1.0.0+6034671",
+  "platformVersion": "1.0.0",
+  "application": {
+    "id": "cpr",
+    "name": "Canadian Prospects Recruitment",
+    "slug": "cpr-site",
+    "repository": "TheArchitect1111/cpr-site",
+    "productionBranch": "main",
+    "productionUrl": "https://cpr-site.vercel.app",
+    "vercelProject": "cpr-site",
+    "owner": "EA Platform Ops"
+  },
+  "git": {
+    "commitSha": "60346712366871276631abef9839242ecd9b4f1b",
+    "branch": "main"
+  },
+  "modules": {
+    "list": [
+      "authentication",
+      "registration",
+      "portal",
+      "admin",
+      "payments",
+      "communications",
+      "documents",
+      "experience-lab"
+    ],
+    "authentication": {
+      "portal": [
+        "magic-link",
+        "password-reset"
+      ],
+      "admin": [
+        "magic-link",
+        "password",
+        "session-cookie"
+      ],
+      "middleware": "middleware.ts",
+      "chassis": "@ea/portal-chassis/hmac"
+    },
+    "routing": {
+      "pages": [
+        "/",
+        "/admin",
+        "/admin/account",
+        "/admin/create-client",
+        "/admin/forgot-password",
+        "/admin/landing",
+        "/admin/login",
+        "/admin/reset-password",
+        "/admin/sign-in",
+        "/admin/sign-in/complete",
+        "/admin/update-portal",
+        "/agreement",
+        "/apply",
+        "/athletes/[param]",
+        "/camps",
+        "/coach/[param]",
+        "/cpr-experience-lab",
+        "/intake",
+        "/login",
+        "/merchandise",
+        "/offline",
+        "/pay",
+        "/portal/athlete/[param]",
+        "/portal/athlete/[param]/account",
+        "/portal/athlete/[param]/amplifi",
+        "/portal/athlete/[param]/ask-cpr",
+        "/portal/athlete/[param]/document-vault",
+        "/portal/athlete/[param]/eligibility-center",
+        "/portal/athlete/[param]/messaging-center",
+        "/portal/athlete/[param]/opportunities-resources",
+        "/portal/athlete/[param]/owner",
+        "/portal/athlete/[param]/recruiting-timeline",
+        "/portal/athlete/[param]/resource-library",
+        "/portal/athlete/[param]/scholarship-center",
+        "/portal/athlete/[param]/upcoming-events",
+        "/portal/athlete/[param]/updates",
+        "/portal/athlete/[param]/updates/new",
+        "/portal/athlete/[param]/video-learning-center",
+        "/portal/forgot-password",
+        "/portal/login",
+        "/portal/owner",
+        "/portal/parent/[param]",
+        "/portal/parent/[param]/account",
+        "/portal/parent/[param]/amplifi",
+        "/portal/parent/[param]/ask-cpr",
+        "/portal/parent/[param]/document-vault",
+        "/portal/parent/[param]/eligibility-center",
+        "/portal/parent/[param]/messaging-center",
+        "/portal/parent/[param]/opportunities-resources",
+        "/portal/parent/[param]/recruiting-timeline",
+        "/portal/parent/[param]/resource-library",
+        "/portal/parent/[param]/scholarship-center",
+        "/portal/parent/[param]/upcoming-events",
+        "/portal/parent/[param]/updates",
+        "/portal/parent/[param]/updates/new",
+        "/portal/parent/[param]/video-learning-center",
+        "/portal/reset-password",
+        "/portal/sign-in",
+        "/portal/sign-in/complete",
+        "/profile/edit",
+        "/recruitment",
+        "/resources",
+        "/sso-callback",
+        "/tribute"
+      ],
+      "api": [
+        "/api/admin/athletes",
+        "/api/admin/athletes/[id]",
+        "/api/admin/athletes/[id]/pending/[updateId]",
+        "/api/admin/change-password",
+        "/api/admin/clerk-bridge",
+        "/api/admin/coaches",
+        "/api/admin/coaches/[id]",
+        "/api/admin/collections/[collection]",
+        "/api/admin/collections/[collection]/[id]",
+        "/api/admin/communication/announcements",
+        "/api/admin/logout",
+        "/api/admin/outreach",
+        "/api/admin/outreach/[id]",
+        "/api/admin/outreach/[id]/send-link",
+        "/api/admin/password-reset/complete",
+        "/api/admin/password-reset/request",
+        "/api/admin/portal-updates/publish",
+        "/api/admin/recovery",
+        "/api/admin/session",
+        "/api/admin/system-checks",
+        "/api/admin/users",
+        "/api/agreement",
+        "/api/apply",
+        "/api/ask-cpr",
+        "/api/athlete-profile/[id]",
+        "/api/auth/forgot-username",
+        "/api/auth/magic-link",
+        "/api/auth/magic-link/verify",
+        "/api/coach-inquiry",
+        "/api/coach/[id]/response",
+        "/api/messages",
+        "/api/payments/checkout",
+        "/api/portal-admin/content",
+        "/api/portal-admin/landing",
+        "/api/portal/change-password",
+        "/api/portal/clerk-bridge",
+        "/api/portal/create-client",
+        "/api/portal/login",
+        "/api/portal/password-reset/complete",
+        "/api/portal/password-reset/request",
+        "/api/upload",
+        "/api/webhooks/resend",
+        "/api/webhooks/stripe"
+      ],
+      "redirects": [
+        {
+          "source": "/:path*",
+          "has": [
+            {
+              "type": "host",
+              "value": "template-sports-recruitment.vercel.app"
+            }
+          ],
+          "destination": "https://cpr-site.vercel.app/:path*",
+          "permanent": true
+        },
+        {
+          "source": "/:path*",
+          "has": [
+            {
+              "type": "host",
+              "value": "template-sports-recruitment-the-architects-projects-cc813778.vercel.app"
+            }
+          ],
+          "destination": "https://cpr-site.vercel.app/:path*",
+          "permanent": true
+        }
+      ],
+      "middlewareMatcher": [
+        "/admin",
+        "/admin/:path*",
+        "/portal/login",
+        "/portal/athlete/:path*",
+        "/portal/parent/:path*"
+      ]
+    },
+    "environment": {
+      "catalogVersion": "1.0.1",
+      "variableCount": 49,
+      "duplicates": [
+        {
+          "names": [
+            "AIRTABLE_TOKEN",
+            "AIRTABLE_API_KEY"
+          ],
+          "canonical": "AIRTABLE_TOKEN"
+        },
+        {
+          "names": [
+            "MAKE_CPR_WEBHOOK",
+            "MAKE_WEBHOOK_URL"
+          ],
+          "canonical": "MAKE_CPR_WEBHOOK"
+        }
+      ],
+      "unused": [
+        "OPENAI_API_KEY"
+      ]
+    },
+    "featureFlags": [
+      {
+        "name": "CPR_STAGING_OPEN",
+        "type": "runtime",
+        "purpose": "Bypass middleware auth and serve sample data across admin/portal",
+        "allowedEnvironments": [
+          "development",
+          "preview"
+        ],
+        "forbiddenEnvironments": [
+          "production"
+        ],
+        "referencedFiles": [
+          "middleware.ts"
+        ],
+        "owner": "EA Platform Ops"
+      },
+      {
+        "name": "NEXT_PUBLIC_CPR_STAGING_OPEN",
+        "type": "runtime-public",
+        "purpose": "Client-side staging mode indicator",
+        "allowedEnvironments": [
+          "development",
+          "preview"
+        ],
+        "forbiddenEnvironments": [
+          "production"
+        ],
+        "referencedFiles": [
+          "middleware.ts"
+        ],
+        "owner": "EA Platform Ops"
+      },
+      {
+        "name": "DEMO_MODE",
+        "type": "runtime",
+        "purpose": "Enable sample athlete/coach data when Airtable is unavailable",
+        "allowedEnvironments": [
+          "development",
+          "preview"
+        ],
+        "forbiddenEnvironments": [
+          "production"
+        ],
+        "referencedFiles": [
+          "vendor/portal-chassis/dist/env.js",
+          "lib/sections-data.ts"
+        ],
+        "owner": "EA Platform Ops"
+      }
+    ],
+    "storage": {
+      "primary": "Airtable",
+      "files": "Vercel Blob",
+      "blobEnvVar": "BLOB_READ_WRITE_TOKEN"
+    },
+    "payments": {
+      "provider": "Stripe",
+      "routes": [
+        "/api/payments/checkout",
+        "/api/webhooks/stripe"
+      ],
+      "configurationVersion": "unconfigured"
+    },
+    "communications": {
+      "email": "Resend",
+      "webhooks": [
+        "Make.com"
+      ],
+      "routes": [
+        "/api/ask-cpr",
+        "/api/messages",
+        "/api/webhooks/resend"
+      ]
+    },
+    "ai": {
+      "openai": {
+        "status": "unused",
+        "envVar": "OPENAI_API_KEY"
+      }
+    },
+    "monitoring": {
+      "sentry": {
+        "envVar": "NEXT_PUBLIC_SENTRY_DSN"
+      },
+      "pulse": {
+        "envVars": [
+          "EA_PULSE_INGEST_URL",
+          "EA_CAPTURE_API_KEY"
+        ]
+      }
+    },
+    "integrations": [
+      {
+        "id": "airtable",
+        "name": "Airtable",
+        "failureImpact": "critical"
+      },
+      {
+        "id": "stripe",
+        "name": "Stripe",
+        "failureImpact": "high"
+      },
+      {
+        "id": "resend",
+        "name": "Resend",
+        "failureImpact": "high"
+      },
+      {
+        "id": "make",
+        "name": "Make.com",
+        "failureImpact": "medium"
+      },
+      {
+        "id": "google-forms",
+        "name": "Google Forms",
+        "failureImpact": "critical"
+      },
+      {
+        "id": "vercel-blob",
+        "name": "Vercel Blob",
+        "failureImpact": "medium"
+      },
+      {
+        "id": "openai",
+        "name": "OpenAI",
+        "failureImpact": "none"
+      },
+      {
+        "id": "ea-pulse",
+        "name": "EA Pulse",
+        "failureImpact": "low"
+      },
+      {
+        "id": "sentry",
+        "name": "Sentry",
+        "failureImpact": "low"
+      },
+      {
+        "id": "vercel",
+        "name": "Vercel",
+        "failureImpact": "critical"
+      }
+    ],
+    "deployment": {
+      "productionBranch": "main",
+      "vercelProject": "cpr-site",
+      "ciWorkflow": ".github/workflows/ci.yml",
+      "governanceWorkflow": ".github/workflows/release-governance.yml"
+    }
+  },
+  "versions": {
+    "application": "0.1.0",
+    "next": "15.5.19",
+    "react": "19.2.4",
+    "node": "v20.19.0",
+    "chassis": "0.3.2",
+    "stripe": "22.2.1",
+    "sentry": "10.59.0",
+    "portalVersion": "0.1.0",
+    "chassisVersion": "0.3.2",
+    "environmentCatalogVersion": "1.0.1",
+    "redirectVersion": "1.0.0"
+  },
+  "checksums": {
+    "vercelJson": "fd60b551961609c08074377de561861addd5e3d3c1773904fcb684b44c44afb0",
+    "middleware": "ae5aab9ec6f9b86ca6f078d0aea43c1b6d43a51db9b0e822f18910f8496bc6b4",
+    "envCatalog": "f06eb2b3ffd859993236b8f6d8beb1d71e34b282cd2bbfbe6eb9f61ccf283ac5",
+    "envExample": "0551b4cd913152b53e89ca3603c66e3a0310cfcc552b8219237f4a4c65302ea0"
+  }
+}
