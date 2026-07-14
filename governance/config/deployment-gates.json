@@ -1,0 +1,107 @@
+{
+  "version": "1.0.0",
+  "productionGates": [
+    {
+      "id": "branch-is-main",
+      "label": "Branch is production branch (main)",
+      "severity": "block",
+      "check": "branchIsProduction"
+    },
+    {
+      "id": "known-commit",
+      "label": "Git commit exists and is reachable",
+      "severity": "block",
+      "check": "knownCommit"
+    },
+    {
+      "id": "release-manifest",
+      "label": "Release manifest generated for this commit",
+      "severity": "block",
+      "check": "releaseManifestExists"
+    },
+    {
+      "id": "smoke-tests",
+      "label": "Smoke tests passed",
+      "severity": "block",
+      "check": "smokeTestsPassed"
+    },
+    {
+      "id": "build-success",
+      "label": "Production build succeeded",
+      "severity": "block",
+      "check": "buildSucceeded"
+    },
+    {
+      "id": "lint-clean",
+      "label": "Lint passed (excluding approved generated folders)",
+      "severity": "block",
+      "check": "lintClean"
+    },
+    {
+      "id": "env-catalog-sync",
+      "label": "All production env vars documented in catalog",
+      "severity": "block",
+      "check": "envCatalogComplete"
+    },
+    {
+      "id": "no-unknown-env",
+      "label": "No undocumented environment variables in .env.example",
+      "severity": "block",
+      "check": "noUnknownEnvVars"
+    },
+    {
+      "id": "redirects-in-git",
+      "label": "All redirects exist in vercel.json (no dashboard-only)",
+      "severity": "block",
+      "check": "redirectsInGit"
+    },
+    {
+      "id": "stripe-configured",
+      "label": "Stripe configuration documented and present for production",
+      "severity": "block",
+      "check": "stripeConfigured"
+    },
+    {
+      "id": "resend-configured",
+      "label": "Resend configuration documented and present for production",
+      "severity": "block",
+      "check": "resendConfigured"
+    },
+    {
+      "id": "airtable-configured",
+      "label": "Required Airtable variables documented",
+      "severity": "block",
+      "check": "airtableConfigured"
+    },
+    {
+      "id": "staging-disabled",
+      "label": "Staging flags not enabled for production",
+      "severity": "block",
+      "check": "stagingDisabled"
+    },
+    {
+      "id": "known-feature-flags",
+      "label": "No unknown feature flags",
+      "severity": "block",
+      "check": "knownFeatureFlags"
+    },
+    {
+      "id": "no-orphan-routes",
+      "label": "All app routes tracked in route manifest",
+      "severity": "warn",
+      "check": "noOrphanRoutes"
+    },
+    {
+      "id": "no-repo-drift",
+      "label": "Repository integrity checks pass",
+      "severity": "block",
+      "check": "noRepositoryDrift"
+    },
+    {
+      "id": "visual-qa",
+      "label": "Visual QA status recorded",
+      "severity": "warn",
+      "check": "visualQaRecorded"
+    }
+  ]
+}

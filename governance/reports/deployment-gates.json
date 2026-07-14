@@ -1,0 +1,130 @@
+{
+  "generatedAt": "2026-07-07T22:48:23.831Z",
+  "isProduction": false,
+  "git": {
+    "sha": "60346712366871276631abef9839242ecd9b4f1b",
+    "branch": "main"
+  },
+  "results": [
+    {
+      "id": "branch-is-main",
+      "label": "Branch is main",
+      "severity": "block",
+      "pass": true,
+      "detail": "Skipped (not production check)"
+    },
+    {
+      "id": "known-commit",
+      "label": "Git commit exists and is reachable",
+      "severity": "block",
+      "pass": true,
+      "detail": "SHA: 6034671"
+    },
+    {
+      "id": "release-manifest",
+      "label": "Release manifest exists for this commit",
+      "severity": "block",
+      "pass": true,
+      "detail": "Manifest matches current commit"
+    },
+    {
+      "id": "smoke-tests",
+      "label": "Smoke tests passed",
+      "severity": "block",
+      "pass": true,
+      "detail": "passed"
+    },
+    {
+      "id": "build-success",
+      "label": "Production build succeeded",
+      "severity": "block",
+      "pass": true,
+      "detail": "passed"
+    },
+    {
+      "id": "lint-clean",
+      "label": "Lint passed",
+      "severity": "block",
+      "pass": true,
+      "detail": "passed"
+    },
+    {
+      "id": "env-catalog-sync",
+      "label": "Required env vars documented in .env.example",
+      "severity": "block",
+      "pass": true,
+      "detail": "All required vars in .env.example"
+    },
+    {
+      "id": "no-unknown-env",
+      "label": "No undocumented variables in .env.example",
+      "severity": "block",
+      "pass": true,
+      "detail": "All .env.example vars in catalog"
+    },
+    {
+      "id": "redirects-in-git",
+      "label": "No dashboard-only redirects pending migration",
+      "severity": "block",
+      "pass": false,
+      "detail": "3 dashboard-only redirect(s) must migrate to vercel.json"
+    },
+    {
+      "id": "stripe-configured",
+      "label": "Stripe configuration documented",
+      "severity": "block",
+      "pass": true,
+      "detail": "2 Stripe vars in catalog"
+    },
+    {
+      "id": "resend-configured",
+      "label": "Resend configuration documented",
+      "severity": "block",
+      "pass": true,
+      "detail": "2 Resend vars in catalog"
+    },
+    {
+      "id": "airtable-configured",
+      "label": "Required Airtable variables documented",
+      "severity": "block",
+      "pass": true,
+      "detail": "AIRTABLE_TOKEN, AIRTABLE_BASE_ID"
+    },
+    {
+      "id": "staging-disabled",
+      "label": "Staging flags not enabled for production",
+      "severity": "block",
+      "pass": true,
+      "detail": "Staging flags off"
+    },
+    {
+      "id": "known-feature-flags",
+      "label": "All runtime flags cataloged",
+      "severity": "block",
+      "pass": true,
+      "detail": "3 flags in catalog"
+    },
+    {
+      "id": "no-orphan-routes",
+      "label": "All routes tracked in route manifest",
+      "severity": "warn",
+      "pass": true,
+      "detail": "Routes tracked"
+    },
+    {
+      "id": "no-repo-drift",
+      "label": "Working tree clean for production deploy",
+      "severity": "block",
+      "pass": true,
+      "detail": "Uncommitted changes detected"
+    },
+    {
+      "id": "visual-qa",
+      "label": "Visual QA status recorded",
+      "severity": "warn",
+      "pass": true,
+      "detail": "skipped"
+    }
+  ],
+  "blocked": true
+}

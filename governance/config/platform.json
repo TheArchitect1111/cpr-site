@@ -1,0 +1,38 @@
+{
+  "$schema": "../schema/platform-config.schema.json",
+  "platformVersion": "1.0.0",
+  "application": {
+    "id": "cpr",
+    "name": "Canadian Prospects Recruitment",
+    "slug": "cpr-site",
+    "repository": "TheArchitect1111/cpr-site",
+    "productionBranch": "main",
+    "productionUrl": "https://cpr-site.vercel.app",
+    "vercelProject": "cpr-site",
+    "owner": "EA Platform Ops"
+  },
+  "modules": [
+    "authentication",
+    "registration",
+    "portal",
+    "admin",
+    "payments",
+    "communications",
+    "documents",
+    "experience-lab"
+  ],
+  "versions": {
+    "portalChassisPackage": "@ea/portal-chassis",
+    "portalChassisPath": "vendor/portal-chassis"
+  },
+  "lintExclude": [
+    "vendor/**",
+    "node_modules/**",
+    ".next/**",
+    "docs/releases/**"
+  ],
+  "generatedFolders": [
+    "vendor/portal-chassis/dist",
+    ".next"
+  ]
+}

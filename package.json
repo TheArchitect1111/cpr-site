@@ -9,7 +9,14 @@
     "lint": "eslint",
     "test:smoke": "playwright test --config=playwright.smoke.config.ts",
     "chassis:clone": "node scripts/create-client.mjs",
-    "sync-chassis": "node scripts/sync-portal-chassis.mjs"
+    "sync-chassis": "node scripts/sync-portal-chassis.mjs",
+    "governance:routes": "node scripts/governance/collect-route-manifest.mjs",
+    "governance:manifest": "node scripts/governance/generate-release-manifest.mjs --write",
+    "governance:platform": "node scripts/governance/generate-platform-manifest.mjs --write",
+    "governance:gates": "node scripts/governance/verify-deployment-gates.mjs",
+    "governance:drift": "node scripts/governance/detect-drift.mjs --write",
+    "governance:all": "node scripts/governance/run-governance.mjs --write",
+    "verify:deploy": "node scripts/governance/verify-deploy.mjs"
   },
   "dependencies": {
     "@clerk/nextjs": "^6.36.4",

@@ -1,0 +1,11 @@
+{
+  "$comment": "Update these when external configuration or schema changes. Used in release manifests.",
+  "environmentCatalogVersion": "1.0.1",
+  "redirectVersion": "1.0.0",
+  "airtableSchemaVersion": "2026-07-01",
+  "stripeConfigurationVersion": "unconfigured",
+  "resendConfigurationVersion": "2026-06-15",
+  "blobStorageVersion": "vercel-blob-v1",
+  "externalIntegrationsVersion": "1.0.0",
+  "portalVersion": "0.1.0"
+}
