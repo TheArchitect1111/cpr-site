@@ -24,6 +24,7 @@ export default function MagicLinkForm({
 }: Props) {
   const [email, setEmail] = useState('');
   const [error, setError] = useState('');
+  const [successMessage, setSuccessMessage] = useState('');
   const [sent, setSent] = useState(false);
   const [loading, setLoading] = useState(false);
 
@@ -41,12 +42,18 @@ export default function MagicLinkForm({
       const data = (await res.json()) as { ok?: boolean; message?: string; error?: string };
 
       if (!res.ok) {
-        setError(data.error ?? 'Could not send login link. Try again.');
+        const message = data.error ?? 'Could not send login link. Try again.';
+        setError(
+          message.includes('domain is not verified')
+            ? 'Login email is blocked: the sender domain is not verified in Resend. Contact CPR support — this is a server configuration issue, not your email.'
+            : message,
+        );
         setLoading(false);
         return;
       }
 
       setSent(true);
+      setSuccessMessage(data.message ?? 'Check your email — your login link is on the way.');
       setLoading(false);
     } catch {
       setError('Something went wrong. Please try again.');
@@ -58,7 +65,7 @@ export default function MagicLinkForm({
     return (
       <div className="pl-sent" role="status">
         <h3>{title}</h3>
-        <p className="pl-success">Check your email — your login link is on the way.</p>
+        <p className="pl-success">{successMessage}</p>
         <p className="pl-sub">Open the email on this device and tap <strong>Sign in</strong>. The link expires in 15 minutes.</p>
         <button type="button" className="pl-btn pl-btn-secondary" onClick={() => setSent(false)}>
           Send another link

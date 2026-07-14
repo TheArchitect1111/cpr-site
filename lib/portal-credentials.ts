@@ -95,18 +95,46 @@ export async function findPortalAccount(identifier: string): Promise<PortalAccou
   return null;
 }
 
-/** Email-only lookup for Google / magic-link sign-in (must match portal email on file). */
+function portalAccountFromEmailRecord(
+  record: AirtableRecord,
+  role: PortalRole,
+): PortalAccount | null {
+  const slug = text(record, 'Slug');
+  if (!slug) return null;
+  const email =
+    role === 'athlete'
+      ? text(record, 'Email') || text(record, 'Athlete Username')
+      : text(record, 'Parent Email') || text(record, 'Parent Username');
+  if (!email) return null;
+  return {
+    recordId: record.id,
+    role,
+    slug,
+    email,
+    displayName:
+      role === 'athlete'
+        ? `${text(record, 'First Name')} ${text(record, 'Last Name')}`.trim() || slug
+        : text(record, 'Parent Name') || 'Parent',
+    passwordHash:
+      role === 'athlete'
+        ? text(record, 'Athlete Password Hash')
+        : text(record, 'Parent Password Hash'),
+    notes: text(record, 'Notes'),
+  };
+}
+
+/** Email-only lookup for magic-link sign-in (must match portal email on file). */
 export async function findPortalAccountByEmail(email: string): Promise<PortalAccount | null> {
   const safe = escapeFormula(email);
   const athleteRecord = await queryOne(`LOWER({Email})='${safe}'`);
-  if (athleteRecord?.fields['Athlete Password Hash']) {
-    const account = accountFromRecord(athleteRecord, 'athlete');
+  if (athleteRecord) {
+    const account = portalAccountFromEmailRecord(athleteRecord, 'athlete');
     if (account) return account;
   }
 
   const parentRecord = await queryOne(`LOWER({Parent Email})='${safe}'`);
-  if (parentRecord?.fields['Parent Password Hash']) {
-    return accountFromRecord(parentRecord, 'parent');
+  if (parentRecord) {
+    return portalAccountFromEmailRecord(parentRecord, 'parent');
   }
   return null;
 }

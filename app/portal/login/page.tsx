@@ -3,6 +3,8 @@ import '../../landing.css';
 import './portal-login.css';
 
 import MagicLinkForm from '@/app/components/auth/MagicLinkForm';
+import { CPR_OWNER_EMAIL } from '@/lib/admin-owner';
+import { magicLinkBlockedReason } from '@/lib/auth-config';
 
 import { site } from '@/config/site';
 
@@ -57,6 +59,7 @@ export default async function PortalLoginPage({
   const params = await searchParams;
 
   const error = errorMessage(params.error);
+  const magicBlocked = magicLinkBlockedReason();
 
 
 
@@ -92,11 +95,23 @@ export default async function PortalLoginPage({
 
           title="Portal sign in"
 
-          subtitle="Athletes and parents: enter your email on file. We will send a one-tap login link — no password needed."
+          subtitle="Athletes and parents: enter the email from your welcome message. We will send a one-tap login link — no password needed."
 
           buttonLabel="Email me a login link"
 
         />
+
+
+
+        {magicBlocked ? (
+          <p className="pl-error" style={{ marginTop: '1rem' }} role="alert">
+            {magicBlocked}
+          </p>
+        ) : null}
+
+        <p className="pl-sub" style={{ marginTop: '1rem', textAlign: 'center' }}>
+          CPR staff: use <a href="/admin/login">admin login</a> with {CPR_OWNER_EMAIL}.
+        </p>
 
 
 
