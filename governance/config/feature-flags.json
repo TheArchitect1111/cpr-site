@@ -1,0 +1,32 @@
+{
+  "catalogVersion": "1.0.0",
+  "flags": [
+    {
+      "name": "CPR_STAGING_OPEN",
+      "type": "runtime",
+      "purpose": "Bypass middleware auth and serve sample data across admin/portal",
+      "allowedEnvironments": ["development", "preview"],
+      "forbiddenEnvironments": ["production"],
+      "referencedFiles": ["middleware.ts"],
+      "owner": "EA Platform Ops"
+    },
+    {
+      "name": "NEXT_PUBLIC_CPR_STAGING_OPEN",
+      "type": "runtime-public",
+      "purpose": "Client-side staging mode indicator",
+      "allowedEnvironments": ["development", "preview"],
+      "forbiddenEnvironments": ["production"],
+      "referencedFiles": ["middleware.ts"],
+      "owner": "EA Platform Ops"
+    },
+    {
+      "name": "DEMO_MODE",
+      "type": "runtime",
+      "purpose": "Enable sample athlete/coach data when Airtable is unavailable",
+      "allowedEnvironments": ["development", "preview"],
+      "forbiddenEnvironments": ["production"],
+      "referencedFiles": ["vendor/portal-chassis/dist/env.js", "lib/sections-data.ts"],
+      "owner": "EA Platform Ops"
+    }
+  ]
+}

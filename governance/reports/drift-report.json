@@ -1,0 +1,269 @@
+{
+  "generatedAt": "2026-07-07T22:35:12.320Z",
+  "git": {
+    "sha": "60346712366871276631abef9839242ecd9b4f1b",
+    "branch": "main",
+    "shortSha": "6034671"
+  },
+  "integrityScore": 53,
+  "summary": {
+    "pass": 5,
+    "warn": 6,
+    "fail": 4
+  },
+  "reports": {
+    "configurationDrift": [
+      {
+        "category": "configuration",
+        "name": "Env var PROFILE_SITE_URL",
+        "status": "warn",
+        "detail": "In catalog/Vercel but missing from .env.example",
+        "expected": null,
+        "actual": null
+      },
+      {
+        "category": "configuration",
+        "name": "Env var ADMIN_SETUP_TOKEN",
+        "status": "warn",
+        "detail": "In catalog/Vercel but missing from .env.example",
+        "expected": null,
+        "actual": null
+      },
+      {
+        "category": "configuration",
+        "name": "Duplicate env: AIRTABLE_TOKEN/AIRTABLE_API_KEY",
+        "status": "warn",
+        "detail": "Canonical: AIRTABLE_TOKEN",
+        "expected": null,
+        "actual": null
+      },
+      {
+        "category": "configuration",
+        "name": "Duplicate env: MAKE_CPR_WEBHOOK/MAKE_WEBHOOK_URL",
+        "status": "warn",
+        "detail": "Canonical: MAKE_CPR_WEBHOOK",
+        "expected": null,
+        "actual": null
+      },
+      {
+        "category": "configuration",
+        "name": "Unused env: OPENAI_API_KEY",
+        "status": "warn",
+        "detail": "Present in Vercel, not referenced in code",
+        "expected": null,
+        "actual": null
+      },
+      {
+        "category": "configuration",
+        "name": "External service registry complete",
+        "status": "warn",
+        "detail": "49 vars cataloged; 1 unused",
+        "expected": null,
+        "actual": null
+      }
+    ],
+    "infrastructureDrift": [
+      {
+        "category": "infrastructure",
+        "name": "vercel.json redirect count",
+        "status": "pass",
+        "detail": "Git: 2, manifest: 2",
+        "expected": null,
+        "actual": null
+      },
+      {
+        "category": "infrastructure",
+        "name": "Dashboard redirect /story/selena",
+        "status": "fail",
+        "detail": "Must migrate to vercel.json → /cpr-experience-lab",
+        "expected": null,
+        "actual": null
+      },
+      {
+        "category": "infrastructure",
+        "name": "Dashboard redirect /magnifi",
+        "status": "fail",
+        "detail": "Must migrate to vercel.json → /cpr-experience-lab",
+        "expected": null,
+        "actual": null
+      },
+      {
+        "category": "infrastructure",
+        "name": "Dashboard redirect /amplify",
+        "status": "fail",
+        "detail": "Must migrate to vercel.json → /cpr-experience-lab",
+        "expected": null,
+        "actual": null
+      },
+      {
+        "category": "infrastructure",
+        "name": "Route manifest sync",
+        "status": "pass",
+        "detail": "All routes tracked",
+        "expected": null,
+        "actual": null
+      }
+    ],
+    "repositoryDrift": [
+      {
+        "category": "repository",
+        "name": "Working tree clean",
+        "status": "fail",
+        "detail": "Uncommitted changes present",
+        "expected": null,
+        "actual": null
+      },
+      {
+        "category": "repository",
+        "name": "On production branch",
+        "status": "pass",
+        "detail": "Branch: main (expected main)",
+        "expected": null,
+        "actual": null
+      }
+    ],
+    "deploymentDrift": [
+      {
+        "category": "deployment",
+        "name": "Manifest matches HEAD",
+        "status": "pass",
+        "detail": "latest.json matches current commit",
+        "expected": "60346712366871276631abef9839242ecd9b4f1b",
+        "actual": "60346712366871276631abef9839242ecd9b4f1b"
+      }
+    ],
+    "runtimeDrift": [
+      {
+        "category": "runtime",
+        "name": "Middleware unchanged since last manifest",
+        "status": "pass",
+        "detail": "Match",
+        "expected": null,
+        "actual": null
+      }
+    ]
+  },
+  "checks": [
+    {
+      "category": "repository",
+      "name": "Working tree clean",
+      "status": "fail",
+      "detail": "Uncommitted changes present",
+      "expected": null,
+      "actual": null
+    },
+    {
+      "category": "repository",
+      "name": "On production branch",
+      "status": "pass",
+      "detail": "Branch: main (expected main)",
+      "expected": null,
+      "actual": null
+    },
+    {
+      "category": "deployment",
+      "name": "Manifest matches HEAD",
+      "status": "pass",
+      "detail": "latest.json matches current commit",
+      "expected": "60346712366871276631abef9839242ecd9b4f1b",
+      "actual": "60346712366871276631abef9839242ecd9b4f1b"
+    },
+    {
+      "category": "configuration",
+      "name": "Env var PROFILE_SITE_URL",
+      "status": "warn",
+      "detail": "In catalog/Vercel but missing from .env.example",
+      "expected": null,
+      "actual": null
+    },
+    {
+      "category": "configuration",
+      "name": "Env var ADMIN_SETUP_TOKEN",
+      "status": "warn",
+      "detail": "In catalog/Vercel but missing from .env.example",
+      "expected": null,
+      "actual": null
+    },
+    {
+      "category": "configuration",
+      "name": "Duplicate env: AIRTABLE_TOKEN/AIRTABLE_API_KEY",
+      "status": "warn",
+      "detail": "Canonical: AIRTABLE_TOKEN",
+      "expected": null,
+      "actual": null
+    },
+    {
+      "category": "configuration",
+      "name": "Duplicate env: MAKE_CPR_WEBHOOK/MAKE_WEBHOOK_URL",
+      "status": "warn",
+      "detail": "Canonical: MAKE_CPR_WEBHOOK",
+      "expected": null,
+      "actual": null
+    },
+    {
+      "category": "configuration",
+      "name": "Unused env: OPENAI_API_KEY",
+      "status": "warn",
+      "detail": "Present in Vercel, not referenced in code",
+      "expected": null,
+      "actual": null
+    },
+    {
+      "category": "infrastructure",
+      "name": "vercel.json redirect count",
+      "status": "pass",
+      "detail": "Git: 2, manifest: 2",
+      "expected": null,
+      "actual": null
+    },
+    {
+      "category": "infrastructure",
+      "name": "Dashboard redirect /story/selena",
+      "status": "fail",
+      "detail": "Must migrate to vercel.json → /cpr-experience-lab",
+      "expected": null,
+      "actual": null
+    },
+    {
+      "category": "infrastructure",
+      "name": "Dashboard redirect /magnifi",
+      "status": "fail",
+      "detail": "Must migrate to vercel.json → /cpr-experience-lab",
+      "expected": null,
+      "actual": null
+    },
+    {
+      "category": "infrastructure",
+      "name": "Dashboard redirect /amplify",
+      "status": "fail",
+      "detail": "Must migrate to vercel.json → /cpr-experience-lab",
+      "expected": null,
+      "actual": null
+    },
+    {
+      "category": "infrastructure",
+      "name": "Route manifest sync",
+      "status": "pass",
+      "detail": "All routes tracked",
+      "expected": null,
+      "actual": null
+    },
+    {
+      "category": "runtime",
+      "name": "Middleware unchanged since last manifest",
+      "status": "pass",
+      "detail": "Match",
+      "expected": null,
+      "actual": null
+    },
+    {
+      "category": "configuration",
+      "name": "External service registry complete",
+      "status": "warn",
+      "detail": "49 vars cataloged; 1 unused",
+      "expected": null,
+      "actual": null
+    }
+  ],
+  "alert": "Production may no longer match Git — review failed checks"
+}

@@ -1,0 +1,40 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "EA Release Manifest",
+  "type": "object",
+  "required": ["schemaVersion", "releaseVersion", "git", "deployment", "platform"],
+  "properties": {
+    "schemaVersion": { "type": "string" },
+    "releaseVersion": { "type": "string" },
+    "git": {
+      "type": "object",
+      "required": ["commitSha", "branch"],
+      "properties": {
+        "commitSha": { "type": "string", "minLength": 40 },
+        "shortSha": { "type": "string" },
+        "branch": { "type": "string" },
+        "commitMessage": { "type": "string" },
+        "author": { "type": "string" },
+        "commitTimestamp": { "type": "string" },
+        "workingTreeClean": { "type": "boolean" }
+      }
+    },
+    "deployment": {
+      "type": "object",
+      "properties": {
+        "vercelDeploymentId": { "type": ["string", "null"] },
+        "buildTimestamp": { "type": "string" },
+        "buildNumber": { "type": "integer" },
+        "buildStatus": { "type": "string" },
+        "deploymentApproval": { "type": "string" },
+        "rollbackVersion": { "type": ["string", "null"] }
+      }
+    },
+    "platform": { "type": "object" },
+    "runtime": { "type": "object" },
+    "components": { "type": "object" },
+    "configurationVersions": { "type": "object" },
+    "featureFlagSnapshot": { "type": "array" },
+    "quality": { "type": "object" }
+  }
+}

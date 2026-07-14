@@ -1,0 +1,265 @@
+{
+  "schemaVersion": "1.0.0",
+  "releaseVersion": "1.0.0+6034671.1",
+  "git": {
+    "commitSha": "60346712366871276631abef9839242ecd9b4f1b",
+    "shortSha": "6034671",
+    "branch": "main",
+    "commitMessage": "Fix CPR portal buttons: commit chassis modules, resolve overlay conflicts, and repair guided tour persistence.",
+    "author": "TheArchitect1111",
+    "commitTimestamp": "2026-07-02T09:36:24-04:00",
+    "workingTreeClean": false
+  },
+  "deployment": {
+    "vercelDeploymentId": null,
+    "vercelEnvironment": "local",
+    "buildTimestamp": "2026-07-07T22:35:08.909Z",
+    "buildNumber": 1,
+    "buildStatus": "passed",
+    "deploymentApproval": "governance-baseline-validation",
+    "rollbackVersion": null
+  },
+  "platform": {
+    "application": "cpr",
+    "applicationName": "Canadian Prospects Recruitment",
+    "platformVersion": "1.0.0",
+    "productionUrl": "https://cpr-site.vercel.app"
+  },
+  "runtime": {
+    "nodeVersion": "v20.19.0",
+    "nextVersion": "15.5.19",
+    "reactVersion": "19.2.4"
+  },
+  "components": {
+    "chassisVersion": "0.3.2",
+    "portalVersion": "0.1.0",
+    "applicationVersion": "0.1.0"
+  },
+  "configurationVersions": {
+    "environmentCatalogVersion": "1.0.1",
+    "redirectVersion": "1.0.0",
+    "airtableSchemaVersion": "2026-07-01",
+    "stripeConfigurationVersion": "unconfigured",
+    "resendConfigurationVersion": "2026-06-15",
+    "blobStorageVersion": "vercel-blob-v1",
+    "externalIntegrationsVersion": "1.0.0"
+  },
+  "featureFlagSnapshot": [
+    {
+      "name": "CPR_STAGING_OPEN",
+      "allowedEnvironments": [
+        "development",
+        "preview"
+      ],
+      "productionEnabled": false
+    },
+    {
+      "name": "NEXT_PUBLIC_CPR_STAGING_OPEN",
+      "allowedEnvironments": [
+        "development",
+        "preview"
+      ],
+      "productionEnabled": false
+    },
+    {
+      "name": "DEMO_MODE",
+      "allowedEnvironments": [
+        "development",
+        "preview"
+      ],
+      "productionEnabled": false
+    }
+  ],
+  "externalIntegrations": [
+    {
+      "id": "airtable",
+      "name": "Airtable",
+      "failureImpact": "critical"
+    },
+    {
+      "id": "stripe",
+      "name": "Stripe",
+      "failureImpact": "high"
+    },
+    {
+      "id": "resend",
+      "name": "Resend",
+      "failureImpact": "high"
+    },
+    {
+      "id": "make",
+      "name": "Make.com",
+      "failureImpact": "medium"
+    },
+    {
+      "id": "google-forms",
+      "name": "Google Forms",
+      "failureImpact": "critical"
+    },
+    {
+      "id": "vercel-blob",
+      "name": "Vercel Blob",
+      "failureImpact": "medium"
+    },
+    {
+      "id": "openai",
+      "name": "OpenAI",
+      "failureImpact": "none"
+    },
+    {
+      "id": "ea-pulse",
+      "name": "EA Pulse",
+      "failureImpact": "low"
+    },
+    {
+      "id": "sentry",
+      "name": "Sentry",
+      "failureImpact": "low"
+    },
+    {
+      "id": "vercel",
+      "name": "Vercel",
+      "failureImpact": "critical"
+    }
+  ],
+  "routes": {
+    "pages": [
+      "/",
+      "/admin",
+      "/admin/account",
+      "/admin/create-client",
+      "/admin/forgot-password",
+      "/admin/landing",
+      "/admin/login",
+      "/admin/reset-password",
+      "/admin/sign-in",
+      "/admin/sign-in/complete",
+      "/admin/update-portal",
+      "/agreement",
+      "/apply",
+      "/athletes/[param]",
+      "/camps",
+      "/coach/[param]",
+      "/cpr-experience-lab",
+      "/intake",
+      "/login",
+      "/merchandise",
+      "/offline",
+      "/pay",
+      "/portal/athlete/[param]",
+      "/portal/athlete/[param]/account",
+      "/portal/athlete/[param]/amplifi",
+      "/portal/athlete/[param]/ask-cpr",
+      "/portal/athlete/[param]/document-vault",
+      "/portal/athlete/[param]/eligibility-center",
+      "/portal/athlete/[param]/messaging-center",
+      "/portal/athlete/[param]/opportunities-resources",
+      "/portal/athlete/[param]/owner",
+      "/portal/athlete/[param]/recruiting-timeline",
+      "/portal/athlete/[param]/resource-library",
+      "/portal/athlete/[param]/scholarship-center",
+      "/portal/athlete/[param]/upcoming-events",
+      "/portal/athlete/[param]/updates",
+      "/portal/athlete/[param]/updates/new",
+      "/portal/athlete/[param]/video-learning-center",
+      "/portal/forgot-password",
+      "/portal/login",
+      "/portal/owner",
+      "/portal/parent/[param]",
+      "/portal/parent/[param]/account",
+      "/portal/parent/[param]/amplifi",
+      "/portal/parent/[param]/ask-cpr",
+      "/portal/parent/[param]/document-vault",
+      "/portal/parent/[param]/eligibility-center",
+      "/portal/parent/[param]/messaging-center",
+      "/portal/parent/[param]/opportunities-resources",
+      "/portal/parent/[param]/recruiting-timeline",
+      "/portal/parent/[param]/resource-library",
+      "/portal/parent/[param]/scholarship-center",
+      "/portal/parent/[param]/upcoming-events",
+      "/portal/parent/[param]/updates",
+      "/portal/parent/[param]/updates/new",
+      "/portal/parent/[param]/video-learning-center",
+      "/portal/reset-password",
+      "/portal/sign-in",
+      "/portal/sign-in/complete",
+      "/profile/edit",
+      "/recruitment",
+      "/resources",
+      "/sso-callback",
+      "/tribute"
+    ],
+    "api": [
+      "/api/admin/athletes",
+      "/api/admin/athletes/[id]",
+      "/api/admin/athletes/[id]/pending/[updateId]",
+      "/api/admin/change-password",
+      "/api/admin/clerk-bridge",
+      "/api/admin/coaches",
+      "/api/admin/coaches/[id]",
+      "/api/admin/collections/[collection]",
+      "/api/admin/collections/[collection]/[id]",
+      "/api/admin/communication/announcements",
+      "/api/admin/logout",
+      "/api/admin/outreach",
+      "/api/admin/outreach/[id]",
+      "/api/admin/outreach/[id]/send-link",
+      "/api/admin/password-reset/complete",
+      "/api/admin/password-reset/request",
+      "/api/admin/portal-updates/publish",
+      "/api/admin/recovery",
+      "/api/admin/session",
+      "/api/admin/system-checks",
+      "/api/admin/users",
+      "/api/agreement",
+      "/api/apply",
+      "/api/ask-cpr",
+      "/api/athlete-profile/[id]",
+      "/api/auth/forgot-username",
+      "/api/auth/magic-link",
+      "/api/auth/magic-link/verify",
+      "/api/coach-inquiry",
+      "/api/coach/[id]/response",
+      "/api/messages",
+      "/api/payments/checkout",
+      "/api/portal-admin/content",
+      "/api/portal-admin/landing",
+      "/api/portal/change-password",
+      "/api/portal/clerk-bridge",
+      "/api/portal/create-client",
+      "/api/portal/login",
+      "/api/portal/password-reset/complete",
+      "/api/portal/password-reset/request",
+      "/api/upload",
+      "/api/webhooks/resend",
+      "/api/webhooks/stripe"
+    ],
+    "pageCount": 64,
+    "apiCount": 43
+  },
+  "checksums": {
+    "vercelJson": "fd60b551961609c08074377de561861addd5e3d3c1773904fcb684b44c44afb0",
+    "envExample": "0551b4cd913152b53e89ca3603c66e3a0310cfcc552b8219237f4a4c65302ea0",
+    "middleware": "fee37aedd8d8e054f33a7b0f75accbd5610669140c971da0db813d96b68f0305",
+    "envCatalog": "39d09522aafce7cff2fc0fb0e7bfcf9cadbba0bdc090bd508e852ba8c1782f40"
+  },
+  "envCatalog": {
+    "version": "1.0.1",
+    "documentedVariables": 49,
+    "exampleVariables": 41
+  },
+  "redirects": {
+    "version": "1.0.0",
+    "gitRedirects": 2,
+    "dashboardOnlyCount": 3
+  },
+  "quality": {
+    "smokeTestResults": {
+      "status": "not-run",
+      "note": "Run npm run test:smoke before manifest generation in CI"
+    },
+    "visualQaStatus": "skipped",
+    "lintStatus": "passed"
+  },
+  "releaseNotes": "Fix CPR portal buttons: commit chassis modules, resolve overlay conflicts, and repair guided tour persistence."
+}

@@ -1,0 +1,186 @@
+{
+  "registryVersion": "1.0.0",
+  "lastUpdated": "2026-07-07",
+  "services": [
+    {
+      "id": "airtable",
+      "name": "Airtable",
+      "purpose": "Primary data store for athletes, coaches, admin users, portal content",
+      "owner": "Mike CPR",
+      "credentials": ["AIRTABLE_TOKEN", "AIRTABLE_BASE_ID", "AIRTABLE_TABLE_ID"],
+      "configuration": {
+        "baseId": "appvVr6MVrJvEY0YJ",
+        "schemaVersion": "2026-07-01",
+        "schemaDoc": "governance/config/version-baseline.json"
+      },
+      "connectedModules": ["registration", "portal", "admin", "communications", "documents"],
+      "failureImpact": "critical",
+      "recoverySteps": [
+        "Verify PAT has read/write on base appvVr6MVrJvEY0YJ",
+        "Confirm table IDs match governance/config/version-baseline.json",
+        "Run admin system checks at /api/admin/system-checks"
+      ],
+      "healthVerification": "GET /api/admin/system-checks (authenticated)",
+      "backupStrategy": "Airtable snapshot export weekly; field IDs documented in app/api/apply/route.ts"
+    },
+    {
+      "id": "stripe",
+      "name": "Stripe",
+      "purpose": "Fee payment checkout and webhook processing",
+      "owner": "Mike CPR",
+      "credentials": ["STRIPE_SECRET_KEY", "STRIPE_WEBHOOK_SECRET", "STRIPE_CURRENCY"],
+      "configuration": {
+        "webhookRoute": "/api/webhooks/stripe",
+        "checkoutRoute": "/api/payments/checkout",
+        "status": "required-but-unconfigured-in-production"
+      },
+      "connectedModules": ["payments"],
+      "failureImpact": "high",
+      "recoverySteps": [
+        "Create Stripe account keys in Vercel Production",
+        "Register webhook endpoint https://cpr-site.vercel.app/api/webhooks/stripe",
+        "Verify POST /api/payments/checkout returns 401 not 503"
+      ],
+      "healthVerification": "lib/system-checks.ts Stripe checks; POST /api/payments/checkout",
+      "backupStrategy": "Stripe Dashboard transaction export; metadata includes recordId"
+    },
+    {
+      "id": "resend",
+      "name": "Resend",
+      "purpose": "Transactional email — apply confirmations, enrollments, admin alerts",
+      "owner": "Mike CPR",
+      "credentials": ["RESEND_API_KEY", "RESEND_FROM_EMAIL", "RESEND_WEBHOOK_SECRET"],
+      "configuration": {
+        "domain": "mississaugamagic.com",
+        "inboundWebhook": "/api/webhooks/resend"
+      },
+      "connectedModules": ["communications", "registration", "admin"],
+      "failureImpact": "high",
+      "recoverySteps": [
+        "Verify domain in Resend dashboard",
+        "Confirm RESEND_API_KEY and RESEND_FROM_EMAIL in Vercel",
+        "Send test apply confirmation via /api/apply"
+      ],
+      "healthVerification": "lib/system-checks.ts Resend check",
+      "backupStrategy": "Resend delivery logs; duplicate alerts via Make optional"
+    },
+    {
+      "id": "make",
+      "name": "Make.com",
+      "purpose": "Automation webhooks for apply and enrollment workflows",
+      "owner": "EA Platform Ops",
+      "credentials": ["MAKE_CPR_WEBHOOK", "CPR_ENROLL_WEBHOOK_URL"],
+      "configuration": {
+        "applyScenario": "MAKE_CPR_WEBHOOK",
+        "enrollScenario": "CPR_ENROLL_WEBHOOK_URL"
+      },
+      "connectedModules": ["registration", "admin"],
+      "failureImpact": "medium",
+      "recoverySteps": [
+        "Verify scenario URLs in Make.com dashboard",
+        "Update Vercel env vars to match active scenario webhooks",
+        "Test with sample apply/enroll payload"
+      ],
+      "healthVerification": "lib/system-checks.ts webhook checks",
+      "backupStrategy": "Make scenario export; in-app Resend as fallback for apply emails"
+    },
+    {
+      "id": "google-forms",
+      "name": "Google Forms",
+      "purpose": "External player application and fee agreement forms (current production UX path)",
+      "owner": "Mike CPR",
+      "credentials": [],
+      "configuration": {
+        "playerApplicationUrl": "config/site.ts PLAYER_APPLICATION_URL",
+        "feeAgreementUrl": "config/site.ts STANDARD_FEE_AGREEMENT_URL"
+      },
+      "connectedModules": ["registration"],
+      "failureImpact": "critical",
+      "recoverySteps": [
+        "Verify form URLs in config/site.ts",
+        "Confirm form ownership under CPR Google account",
+        "Document field mapping if migrating to on-platform apply"
+      ],
+      "healthVerification": "GET /apply returns 307 to expected Google Form URL",
+      "backupStrategy": "Form export in Google Drive; on-platform /api/apply as alternate path"
+    },
+    {
+      "id": "vercel-blob",
+      "name": "Vercel Blob",
+      "purpose": "Photo and document uploads for apply and athlete profiles",
+      "owner": "EA Platform Ops",
+      "credentials": ["BLOB_READ_WRITE_TOKEN"],
+      "configuration": {
+        "storageVersion": "vercel-blob-v1"
+      },
+      "connectedModules": ["documents", "registration"],
+      "failureImpact": "medium",
+      "recoverySteps": [
+        "Regenerate token in Vercel Storage → Blob",
+        "Set BLOB_READ_WRITE_TOKEN in Production env",
+        "Test upload via /api/upload"
+      ],
+      "healthVerification": "lib/system-checks.ts Blob check",
+      "backupStrategy": "Blob objects not in Git; periodic export of critical documents"
+    },
+    {
+      "id": "openai",
+      "name": "OpenAI",
+      "purpose": "Reserved for future AI features — key present in Vercel, unused in codebase",
+      "owner": "EA Platform Ops",
+      "credentials": ["OPENAI_API_KEY"],
+      "configuration": { "status": "unused" },
+      "connectedModules": [],
+      "failureImpact": "none",
+      "recoverySteps": ["Remove OPENAI_API_KEY from Vercel if unused, or wire to Ask CPR module"],
+      "healthVerification": "n/a",
+      "backupStrategy": "n/a"
+    },
+    {
+      "id": "ea-pulse",
+      "name": "EA Pulse",
+      "purpose": "Platform telemetry and event forwarding",
+      "owner": "EA Platform Ops",
+      "credentials": ["EA_PULSE_INGEST_URL", "EA_CAPTURE_API_KEY"],
+      "configuration": { "status": "optional-not-configured" },
+      "connectedModules": ["monitoring"],
+      "failureImpact": "low",
+      "recoverySteps": [
+        "Set EA_PULSE_INGEST_URL and EA_CAPTURE_API_KEY in Vercel",
+        "Verify events from lib/ea-pulse-forward.ts"
+      ],
+      "healthVerification": "Pulse ingest endpoint 200 on test event",
+      "backupStrategy": "Pulse event store on EA platform"
+    },
+    {
+      "id": "sentry",
+      "name": "Sentry",
+      "purpose": "Error monitoring and performance tracing",
+      "owner": "EA Platform Ops",
+      "credentials": ["NEXT_PUBLIC_SENTRY_DSN"],
+      "configuration": { "docs": "docs/sentry-setup.md" },
+      "connectedModules": ["monitoring"],
+      "failureImpact": "low",
+      "recoverySteps": ["Configure NEXT_PUBLIC_SENTRY_DSN per docs/sentry-setup.md"],
+      "healthVerification": "Sentry project receives test error",
+      "backupStrategy": "Sentry retention policy; export critical issues"
+    },
+    {
+      "id": "vercel",
+      "name": "Vercel",
+      "purpose": "Hosting, deployments, env vars, blob storage, domain aliases",
+      "owner": "EA Platform Ops",
+      "credentials": [],
+      "configuration": {
+        "project": "cpr-site",
+        "productionBranch": "main",
+        "aliases": ["cpr-site.vercel.app", "canadianprospectrecruitment.vercel.app"]
+      },
+      "connectedModules": ["deployment"],
+      "failureImpact": "critical",
+      "recoverySteps": ["See docs/RECOVERY-PLAYBOOK.md"],
+      "healthVerification": "Vercel deployment Ready; governance:drift passes",
+      "backupStrategy": "Git as code SSOT; release manifests in docs/releases/"
+    }
+  ]
+}
