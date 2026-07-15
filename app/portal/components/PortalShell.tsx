@@ -7,7 +7,15 @@ import { eaChassis, portalRoleLabel } from '@/config/ea-chassis';
 import CprHelpAssistant from './CprHelpAssistant';
 import './cpr-workspace-shell.css';
 
-export type PortalTab = 'home' | 'parent' | 'amplifi' | 'updates' | 'resources' | 'messages' | 'account';
+export type PortalTab =
+  | 'home'
+  | 'parent'
+  | 'amplifi'
+  | 'updates'
+  | 'resources'
+  | 'messages'
+  | 'payments'
+  | 'account';
 
 type NavItem = { id: PortalTab; label: string; href: string };
 
@@ -31,6 +39,7 @@ function buildTabs(portalType: 'athlete' | 'parent', slug: string): NavItem[] {
     { id: 'updates', label: eaChassis.navigation.tabs.updates, href: `${base}/updates` },
     { id: 'resources', label: eaChassis.navigation.tabs.resources, href: `${base}/resource-library` },
     { id: 'messages', label: eaChassis.navigation.tabs.messages, href: `${base}/messaging-center` },
+    { id: 'payments', label: eaChassis.navigation.tabs.payments, href: `${base}/payments` },
     { id: 'account', label: eaChassis.navigation.tabs.account, href: `${base}/account` },
   ];
 }
