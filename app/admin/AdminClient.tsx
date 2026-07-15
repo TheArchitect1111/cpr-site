@@ -173,7 +173,12 @@ export default function AdminClient({ rows, players, coaches }: { rows: Outreach
   const filteredPlayerRows = useMemo(() => playerRows.filter(p => {
     const haystack = `${p.firstName} ${p.lastName} ${p.email} ${p.parentName} ${p.parentEmail} ${p.position} ${p.school} ${p.location} ${p.gradYear} ${p.status}`.toLowerCase();
     if (playerQ && !haystack.includes(playerQ.toLowerCase())) return false;
-    if (playerStatus !== 'All Statuses' && p.status !== playerStatus) return false;
+    // "All Statuses" hides archived so deletes look like they stuck; pick Archived filter to restore view
+    if (playerStatus === 'All Statuses') {
+      if (p.status === 'Archived') return false;
+    } else if (p.status !== playerStatus) {
+      return false;
+    }
     if (playerClass !== 'All Classes' && p.gradYear !== playerClass) return false;
     if (playerPosition !== 'All Positions' && p.position !== playerPosition) return false;
     if (pendingOnly && p.pendingUpdates.length === 0) return false;
@@ -779,9 +784,18 @@ export default function AdminClient({ rows, players, coaches }: { rows: Outreach
       const res = await fetch(`/api/admin/athletes/${p.id}`, { method: 'DELETE' });
       const json = await res.json();
       if (!res.ok) throw new Error(json.error || 'Delete failed');
-      setPlayerRows(rows => rows.map(row => row.id === p.id ? { ...row, status: 'Archived', slug: `archived-${p.id}` } : row));
-      setDetailPlayer(d => d?.id === p.id ? { ...d, status: 'Archived', slug: `archived-${p.id}` } : d);
-      setPlayerMessage('Player profile deleted from the public portal.');
+      const archived = { status: 'Archived' as const, slug: `archived-${p.id}` };
+      setPlayerRows(rows => rows.map(row => row.id === p.id ? { ...row, ...archived } : row));
+      // Sync draft so a later "Save Full Record" cannot un-archive the profile
+      setDraft(d => ({
+        ...d,
+        [p.id]: { ...(d[p.id] || playerDraftFrom({ ...p, ...archived })), ...archived },
+      }));
+      setDetailPlayer(null);
+      setEditing(null);
+      setPlayerMessage(
+        'Player profile removed from the public portal (hidden from the default list). Choose status “Archived” to see it again.',
+      );
     } catch (err) {
       setPlayerMessage(err instanceof Error ? err.message : 'Could not delete player profile.');
     } finally {

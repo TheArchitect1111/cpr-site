@@ -78,7 +78,12 @@ export default function AdminCollection({
       setItems((prev) =>
         editingId ? prev.map((it) => (it.id === editingId ? saved : it)) : [saved, ...prev],
       );
-      setMessage(editingId ? `${def.singular} updated.` : `${def.singular} added.`);
+      const base = editingId ? `${def.singular} updated.` : `${def.singular} added.`;
+      setMessage(
+        def.id === 'media-library'
+          ? `${base} Stored in Images. To put it on the homepage: Edit Homepage → pick the section → “Pick from photo gallery” → Save changes.`
+          : base,
+      );
       resetForm();
     } catch (err) {
       setMessage(err instanceof Error ? err.message : 'Could not save.');

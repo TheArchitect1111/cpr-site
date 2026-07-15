@@ -247,7 +247,7 @@ export const COLLECTIONS: Record<CollectionId, CollectionDef> = {
     id: 'media-library',
     label: 'Images',
     singular: 'Image',
-    description: 'A reusable media library for site, portal, and social visuals.',
+      description: 'Upload and name images here. To place one on the homepage: Edit Homepage → section → Pick from photo gallery → Save changes.',
     titleField: 'name',
     subtitleFields: ['category', 'usage'],
     statusField: 'category',

@@ -37,6 +37,12 @@ export default async function AdminLandingPage() {
           <a className="aitem active" href="/admin/landing">
             &#127760; Edit Homepage
           </a>
+          <a className="aitem" href="/admin?tab=media-library">
+            &#128247; Photo gallery
+          </a>
+          <a className="aitem" href="/admin/update-portal">
+            Update Portal
+          </a>
           <a className="aitem" href="/admin">
             &#8592; Admin Console
           </a>
@@ -50,7 +56,10 @@ export default async function AdminLandingPage() {
           <div>
             <p className="admin-kicker">Public website</p>
             <h1 className="display">Edit your homepage</h1>
-            <p>Update each homepage section — hero, testimonials, process, results, and more — then save.</p>
+            <p>
+              Use the section list and form fields to edit. The right panel is a live preview only — it is not
+              clickable for editing. Save changes to publish.
+            </p>
           </div>
           <a className="admin-logout" href="/api/admin/logout">
             Sign Out
