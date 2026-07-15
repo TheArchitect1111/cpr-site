@@ -5,6 +5,7 @@ import type { LandingContent } from '@/lib/landing-content';
 import { LANDING_EDITOR_SECTIONS } from '@/lib/landing-editor-sections';
 import type { LandingPageConfig } from '@/lib/landing-chassis/types';
 import { OptimisticSaveBadge, useOptimisticSave } from '@/lib/instant-feel';
+import MediaLibraryPicker from './MediaLibraryPicker';
 import '../admin.css';
 import './landing-editor.css';
 
@@ -19,6 +20,7 @@ export default function AdminLandingEditor({ initialContent, defaults, storageCo
   const [activeSection, setActiveSection] = useState(LANDING_EDITOR_SECTIONS[0].id);
   const [message, setMessage] = useState('');
   const [busy, setBusy] = useState(false);
+  const [showPreview, setShowPreview] = useState(false);
   const previewRef = useRef<HTMLIFrameElement>(null);
   const { status: saveStatus, error: saveError, run: runSave } = useOptimisticSave();
 
@@ -160,6 +162,14 @@ export default function AdminLandingEditor({ initialContent, defaults, storageCo
                 }}
               />
             </label>
+            <MediaLibraryPicker
+              onPick={(url) =>
+                setContent((prev) => ({
+                  ...prev,
+                  possibility: { ...prev.possibility, imageUrl: url },
+                }))
+              }
+            />
             {(content.possibility.imageUrl || ph.image) && (
               <img
                 className="landing-editor-preview"
@@ -280,6 +290,14 @@ export default function AdminLandingEditor({ initialContent, defaults, storageCo
                       }}
                     />
                   </label>
+                  <MediaLibraryPicker
+                    label="Pick photo from gallery"
+                    onPick={(url) => {
+                      const testimonials = [...content.testimonials];
+                      testimonials[i] = { ...testimonials[i], photoUrl: url };
+                      setContent((prev) => ({ ...prev, testimonials }));
+                    }}
+                  />
                   {(slot?.photoUrl || def?.photo) && (
                     <img
                       className="landing-editor-preview landing-editor-preview--thumb"
@@ -454,7 +472,9 @@ export default function AdminLandingEditor({ initialContent, defaults, storageCo
               />
             </label>
             <p className="landing-editor-note">
-              Training gallery photos still rotate automatically. Contact EA if you need to swap gallery images.
+              Training gallery carousels are separate from named Images. Upload or{' '}
+              <a href="/admin?tab=media-library">open the photo gallery</a>, then use “Pick from photo
+              gallery” on Hero / testimonials / camps fields below, and Save changes.
             </p>
           </>
         );
@@ -507,6 +527,14 @@ export default function AdminLandingEditor({ initialContent, defaults, storageCo
                 }}
               />
             </label>
+            <MediaLibraryPicker
+              onPick={(url) =>
+                setContent((prev) => ({
+                  ...prev,
+                  campsExposure: { ...prev.campsExposure, dashboardImageUrl: url },
+                }))
+              }
+            />
             {(content.campsExposure.dashboardImageUrl || defCamps?.dashboardImage) && (
               <img
                 className="landing-editor-preview"
@@ -515,7 +543,8 @@ export default function AdminLandingEditor({ initialContent, defaults, storageCo
               />
             )}
             <p className="landing-editor-note">
-              Camp photo carousel images are managed by EA. You can change the copy and dashboard image here.
+              Camp carousel slides still need EA for multi-image rotation. Dashboard image and section copy you
+              can change here — pick from the photo gallery or upload, then Save.
             </p>
           </>
         );
@@ -631,6 +660,14 @@ export default function AdminLandingEditor({ initialContent, defaults, storageCo
                       }}
                     />
                   </label>
+                  <MediaLibraryPicker
+                    label="Pick photo from gallery"
+                    onPick={(url) => {
+                      const proofs = [...content.results.proofs];
+                      proofs[i] = { ...proofs[i], imageUrl: url };
+                      setContent((prev) => ({ ...prev, results: { ...prev.results, proofs } }));
+                    }}
+                  />
                   {(proof?.imageUrl || def?.image) && (
                     <img
                       className="landing-editor-preview landing-editor-preview--thumb"
@@ -728,12 +765,19 @@ export default function AdminLandingEditor({ initialContent, defaults, storageCo
   }
 
   return (
-    <div className="landing-editor">
+    <div className={`landing-editor${showPreview ? '' : ' landing-editor--form-focus'}`}>
       {!storageConfigured && (
         <p className="landing-editor-warn">
           Storage is not configured on this environment. Saves will fail until Vercel Blob is enabled.
         </p>
       )}
+
+      <div className="landing-editor-banner">
+        <strong>How to edit:</strong> choose a section on the left, change the fields in the middle, then{' '}
+        <strong>Save changes</strong>. The Live preview panel is read-only — it does not open an editor.
+        Photo gallery:{' '}
+        <a href="/admin?tab=media-library">Admin → Images</a>.
+      </div>
 
       <div className="landing-editor-layout">
         <nav className="landing-editor-nav" aria-label="Homepage sections">
@@ -771,34 +815,51 @@ export default function AdminLandingEditor({ initialContent, defaults, storageCo
             <button
               type="button"
               className="admin-btn admin-btn-secondary"
-              onClick={() => scrollPreviewToSection(activeMeta.hash)}
+              onClick={() => setShowPreview((v) => !v)}
             >
-              Jump preview to section
+              {showPreview ? 'Hide live preview' : 'Show live preview'}
             </button>
-            <a className="admin-btn admin-btn-secondary" href={activeMeta.hash} target="_blank" rel="noreferrer">
+            {showPreview && (
+              <button
+                type="button"
+                className="admin-btn admin-btn-secondary"
+                onClick={() => scrollPreviewToSection(activeMeta.hash)}
+              >
+                Jump preview to section
+              </button>
+            )}
+            <a
+              className="admin-btn admin-btn-secondary"
+              href={`/${activeMeta.hash.startsWith('#') ? activeMeta.hash : `#${activeMeta.hash}`}`}
+              target="_blank"
+              rel="noreferrer"
+            >
               Open section on live site
             </a>
           </div>
 
           <p className="landing-editor-hint">
-            Leave a field blank to keep the current published text. The preview panel shows the live homepage — save
-            first to see your edits. Gallery carousels and nav links still require EA support.
+            After you edit fields, click <strong>Save changes</strong> to publish. Then refresh the public
+            homepage (or Show live preview) to confirm. Named photos live in the Images library until you
+            pick them into a section here.
           </p>
         </div>
 
-        <div className="landing-editor-preview-pane">
-          <div className="landing-editor-preview-head">
-            <strong>Live preview</strong>
-            <span>{activeMeta.label}</span>
+        {showPreview && (
+          <div className="landing-editor-preview-pane">
+            <div className="landing-editor-preview-head">
+              <strong>Live preview (read-only)</strong>
+              <span>{activeMeta.label}</span>
+            </div>
+            <iframe
+              ref={previewRef}
+              className="landing-editor-iframe"
+              src="/"
+              title="Homepage preview"
+              onLoad={() => scrollPreviewToSection(activeMeta.hash)}
+            />
           </div>
-          <iframe
-            ref={previewRef}
-            className="landing-editor-iframe"
-            src="/"
-            title="Homepage preview"
-            onLoad={() => scrollPreviewToSection(activeMeta.hash)}
-          />
-        </div>
+        )}
       </div>
     </div>
   );
