@@ -48,13 +48,13 @@ export const LANDING_EDITOR_SECTIONS: LandingEditorSection[] = [
     id: 'chips-and-drip',
     label: 'Chips & Drip',
     hash: '#chips-and-drip',
-    description: 'Training gallery section heading and story (photos rotate automatically).',
+    description: 'Training story and rotating gallery slides — add, reorder, or replace photos.',
   },
   {
     id: 'camps',
     label: 'Camps & exposure',
     hash: '#camps',
-    description: 'Camps copy, rotating camp photos, and dashboard image.',
+    description: 'Camps copy, dashboard image, and rotating camp gallery slides you can manage.',
   },
   {
     id: 'results',

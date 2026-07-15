@@ -1,11 +1,12 @@
 'use client';
 
-import { useCallback, useEffect, useRef, useState } from 'react';
-import type { LandingContent } from '@/lib/landing-content';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import type { LandingContent, LandingGallerySlideSlot } from '@/lib/landing-content';
 import { LANDING_EDITOR_SECTIONS } from '@/lib/landing-editor-sections';
 import type { LandingPageConfig } from '@/lib/landing-chassis/types';
 import { OptimisticSaveBadge, useOptimisticSave } from '@/lib/instant-feel';
 import MediaLibraryPicker from './MediaLibraryPicker';
+import GallerySlidesEditor from './GallerySlidesEditor';
 import '../admin.css';
 import './landing-editor.css';
 
@@ -15,8 +16,40 @@ type Props = {
   storageConfigured: boolean;
 };
 
+function seedSlidesFromDefaults(
+  existing: LandingGallerySlideSlot[] | undefined,
+  defaults: { img: string; caption?: string }[] | undefined,
+): LandingGallerySlideSlot[] {
+  if (existing?.length) return existing;
+  if (!defaults?.length) return [];
+  return defaults.map((s) => ({
+    imageUrl: s.img,
+    caption: s.caption ?? '',
+  }));
+}
+
 export default function AdminLandingEditor({ initialContent, defaults, storageConfigured }: Props) {
-  const [content, setContent] = useState(initialContent);
+  const seededInitial = useMemo((): LandingContent => {
+    return {
+      ...initialContent,
+      chipsAndDrip: {
+        ...initialContent.chipsAndDrip,
+        slides: seedSlidesFromDefaults(
+          initialContent.chipsAndDrip.slides,
+          defaults.chipsAndDrip?.slides,
+        ),
+      },
+      campsExposure: {
+        ...initialContent.campsExposure,
+        slides: seedSlidesFromDefaults(
+          initialContent.campsExposure.slides,
+          defaults.campsExposure?.slides,
+        ),
+      },
+    };
+  }, [initialContent, defaults]);
+
+  const [content, setContent] = useState(seededInitial);
   const [activeSection, setActiveSection] = useState(LANDING_EDITOR_SECTIONS[0].id);
   const [message, setMessage] = useState('');
   const [busy, setBusy] = useState(false);
@@ -471,11 +504,18 @@ export default function AdminLandingEditor({ initialContent, defaults, storageCo
                 placeholder={defChips?.body ?? ''}
               />
             </label>
-            <p className="landing-editor-note">
-              Training gallery carousels are separate from named Images. Upload or{' '}
-              <a href="/admin?tab=media-library">open the photo gallery</a>, then use “Pick from photo
-              gallery” on Hero / testimonials / camps fields below, and Save changes.
-            </p>
+            <GallerySlidesEditor
+              title="Training gallery slides (rotating)"
+              slides={content.chipsAndDrip.slides}
+              busy={busy}
+              onChange={(slides) =>
+                setContent((prev) => ({
+                  ...prev,
+                  chipsAndDrip: { ...prev.chipsAndDrip, slides },
+                }))
+              }
+              onUpload={(file, onUrl) => void uploadImage('landing-chips-slide', file, onUrl)}
+            />
           </>
         );
 
@@ -543,9 +583,20 @@ export default function AdminLandingEditor({ initialContent, defaults, storageCo
               />
             )}
             <p className="landing-editor-note">
-              Camp carousel slides still need EA for multi-image rotation. Dashboard image and section copy you
-              can change here — pick from the photo gallery or upload, then Save.
+              Dashboard image is the static side image. The rotating camp carousel is managed below.
             </p>
+            <GallerySlidesEditor
+              title="Camps & exposure slides (rotating)"
+              slides={content.campsExposure.slides}
+              busy={busy}
+              onChange={(slides) =>
+                setContent((prev) => ({
+                  ...prev,
+                  campsExposure: { ...prev.campsExposure, slides },
+                }))
+              }
+              onUpload={(file, onUrl) => void uploadImage('landing-camps-slide', file, onUrl)}
+            />
           </>
         );
 

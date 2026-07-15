@@ -28,6 +28,11 @@ export type LandingProcessStepSlot = {
   description: string;
 };
 
+export type LandingGallerySlideSlot = {
+  imageUrl: string;
+  caption: string;
+};
+
 export type LandingContent = {
   possibility: {
     announcement: string;
@@ -64,11 +69,15 @@ export type LandingContent = {
   chipsAndDrip: {
     heading: string;
     body: string;
+    /** Owner-managed rotating gallery; empty = keep static config slides */
+    slides: LandingGallerySlideSlot[];
   };
   campsExposure: {
     heading: string;
     body: string;
     dashboardImageUrl: string;
+    /** Owner-managed rotating gallery; empty = keep static config slides */
+    slides: LandingGallerySlideSlot[];
   };
   results: {
     heading: string;
@@ -108,6 +117,20 @@ const emptyProof = (): LandingProofSlot => ({
 
 const emptyStep = (): LandingProcessStepSlot => ({ label: '', description: '' });
 
+const emptySlide = (): LandingGallerySlideSlot => ({ imageUrl: '', caption: '' });
+
+export function normalizeGallerySlides(
+  input: LandingGallerySlideSlot[] | undefined | null,
+): LandingGallerySlideSlot[] {
+  if (!Array.isArray(input) || !input.length) return [];
+  return input
+    .map((slot) => ({
+      imageUrl: String(slot?.imageUrl ?? '').trim(),
+      caption: String(slot?.caption ?? '').trim(),
+    }))
+    .filter((slot) => Boolean(slot.imageUrl));
+}
+
 export const EMPTY_LANDING_CONTENT: LandingContent = {
   possibility: {
     announcement: '',
@@ -144,11 +167,13 @@ export const EMPTY_LANDING_CONTENT: LandingContent = {
   chipsAndDrip: {
     heading: '',
     body: '',
+    slides: [],
   },
   campsExposure: {
     heading: '',
     body: '',
     dashboardImageUrl: '',
+    slides: [],
   },
   results: {
     heading: '',
@@ -244,11 +269,13 @@ function normalize(input: Partial<LandingContent> | null | undefined): LandingCo
     chipsAndDrip: {
       heading: String(input?.chipsAndDrip?.heading ?? base.chipsAndDrip.heading),
       body: String(input?.chipsAndDrip?.body ?? base.chipsAndDrip.body),
+      slides: normalizeGallerySlides(input?.chipsAndDrip?.slides),
     },
     campsExposure: {
       heading: String(input?.campsExposure?.heading ?? base.campsExposure.heading),
       body: String(input?.campsExposure?.body ?? base.campsExposure.body),
       dashboardImageUrl: String(input?.campsExposure?.dashboardImageUrl ?? base.campsExposure.dashboardImageUrl),
+      slides: normalizeGallerySlides(input?.campsExposure?.slides),
     },
     results: {
       heading: String(input?.results?.heading ?? base.results.heading),
