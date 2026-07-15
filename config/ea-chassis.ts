@@ -71,7 +71,7 @@ export const eaChassis = {
     } satisfies Record<PortalRole, string>,
     tabs: {
       amplifi: env('CHASSIS_AMPLIFI_LABEL', 'Amplifi'),
-      updates: env('CHASSIS_UPDATES_LABEL', 'Update Portal'),
+      updates: env('CHASSIS_UPDATES_LABEL', 'Update Hub'),
       resources: env('CHASSIS_RESOURCES_LABEL', 'Resources'),
       messages: env('CHASSIS_MESSAGES_LABEL', 'Messages'),
       account: env('CHASSIS_ACCOUNT_LABEL', 'Account'),
@@ -139,7 +139,7 @@ export const eaChassis = {
     ),
     updatesAnswer: env(
       'CHASSIS_UPDATES_ANSWER',
-      `The Update Portal shows live activity, team actions, messages, opportunities, and important updates in one place.`,
+      `Update Hub™ shows published updates, pending requests, and recruiting activity in one place.`,
     ),
   },
   portalCopy: {
@@ -149,11 +149,11 @@ export const eaChassis = {
       'CHASSIS_DASHBOARD_DESC',
       'Onboarding, priorities, and what deserves attention today.',
     ),
-    updatesTag: env('CHASSIS_UPDATES_TAG', 'Update Portal'),
-    updatesTitle: env('CHASSIS_UPDATES_TITLE', 'Live activity feed'),
+    updatesTag: env('CHASSIS_UPDATES_TAG', 'Update Hub™'),
+    updatesTitle: env('CHASSIS_UPDATES_TITLE', 'Update Hub™'),
     updatesDescription: env(
       'CHASSIS_UPDATES_DESC',
-      'Messages, milestones, actions, and important updates in one timeline.',
+      'Published updates, pending requests, and recruiting activity in one place.',
     ),
     askGuideTag: env('CHASSIS_ASK_GUIDE_TAG', 'Support'),
     askGuideTitle: env('CHASSIS_ASK_GUIDE_TITLE', 'Ask your guide'),

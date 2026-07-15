@@ -227,6 +227,7 @@ export default async function AdminPage({
         <div className="aside-sec">PORTAL</div>
         <nav>
           <a className="aitem" href="/admin/update-portal">&#9889; Update Portal</a>
+          <a className="aitem" href="/admin/content-requests">&#128196; Content Requests</a>
           <a className="aitem" href="/admin/landing">&#127760; Edit Homepage</a>
           <a className="aitem" href="/portal/owner">&#127968; Family Portal (Owner)</a>
           <a className={`aitem${activeTab === 'communication' ? ' active' : ''}`} href="/admin?tab=communication">

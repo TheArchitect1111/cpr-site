@@ -89,7 +89,7 @@ export default async function AthletePortalPage({
         </p>
       </footer>
 
-      {owner && <PortalOwnerFab href={`/portal/athlete/${slug}/updates/new`} />}
+      {owner && <PortalOwnerFab href={`/portal/athlete/${slug}/updates/publish`} />}
     </PortalShell>
   );
 }

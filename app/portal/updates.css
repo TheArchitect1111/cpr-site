@@ -76,3 +76,111 @@
   text-align: center;
   color: var(--gray);
 }
+
+.update-portal-cta-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 14px;
+}
+
+.update-hub-section {
+  margin-top: 28px;
+}
+
+.update-hub-section-title {
+  margin: 0 0 10px;
+  font-size: 15px;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.update-hub-section-sub {
+  margin: -4px 0 12px;
+  color: var(--gray);
+  font-size: 13px;
+}
+
+.update-hub-pending {
+  display: grid;
+  gap: 10px;
+}
+
+.update-hub-pending-item {
+  background: #fff;
+  border: 1px dashed var(--line);
+  border-radius: 10px;
+  padding: 14px 16px;
+}
+
+.update-hub-pending-item h3 {
+  margin: 0 0 4px;
+  font-size: 15px;
+}
+
+.update-hub-pending-item p {
+  margin: 0;
+  color: var(--gray);
+  font-size: 13px;
+}
+
+.update-portal-item-secondary {
+  opacity: 0.92;
+  border-left-color: #9ca3af;
+}
+
+.update-hub-request-form h1 {
+  margin: 0 0 8px;
+  font-size: clamp(22px, 3.5vw, 30px);
+  font-weight: 900;
+}
+
+.update-hub-request-form > p {
+  margin: 0 0 18px;
+  color: var(--gray);
+  line-height: 1.55;
+  max-width: 640px;
+}
+
+.update-hub-request-fields {
+  display: grid;
+  gap: 14px;
+  max-width: 560px;
+}
+
+.update-hub-request-fields label {
+  display: grid;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.update-hub-request-fields input,
+.update-hub-request-fields select,
+.update-hub-request-fields textarea {
+  font: inherit;
+  text-transform: none;
+  letter-spacing: normal;
+  font-weight: 500;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 10px 12px;
+  background: #fff;
+}
+
+.update-hub-request-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+  margin-top: 4px;
+}
+
+.update-hub-error {
+  margin: 0;
+  color: #b91c1c;
+  font-size: 14px;
+}
