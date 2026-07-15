@@ -74,6 +74,7 @@ export const eaChassis = {
       updates: env('CHASSIS_UPDATES_LABEL', 'Update Portal'),
       resources: env('CHASSIS_RESOURCES_LABEL', 'Resources'),
       messages: env('CHASSIS_MESSAGES_LABEL', 'Messages'),
+      payments: env('CHASSIS_PAYMENTS_LABEL', 'Payments'),
       account: env('CHASSIS_ACCOUNT_LABEL', 'Account'),
     },
   },

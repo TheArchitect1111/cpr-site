@@ -27,7 +27,7 @@ npm run governance:platform
 | Registration | Live (Google Forms UX) | `config/site.ts`, `app/apply/page.tsx`, `app/api/apply/route.ts` |
 | Portal | Live | `app/portal/**` |
 | Admin | Live | `app/admin/**`, `app/api/admin/**` |
-| Payments | Code ready, Stripe unconfigured | `app/api/payments/`, `lib/stripe.ts` |
+| Payments | Code ready, Stripe unconfigured | `app/api/payments/`, `app/api/portal/payments/link`, portal Payments tab, `lib/stripe.ts` |
 | Communications | Partial | `lib/email.ts`, `app/api/ask-cpr/`, Resend |
 | Documents | Live | `app/api/upload/`, Vercel Blob |
 | Staging | Env-gated | `lib/staging.ts` |

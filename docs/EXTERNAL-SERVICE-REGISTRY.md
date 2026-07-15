@@ -45,13 +45,13 @@
 
 **Configuration:** Webhook `https://cpr-site.vercel.app/api/webhooks/stripe`
 
-**Connected modules:** Payments
+**Connected modules:** Payments (public `/pay` + in-portal `/portal/{athlete|parent}/[slug]/payments`)
 
-**Failure impact:** High — `POST /api/payments/checkout` returns 503
+**Failure impact:** High — `POST /api/payments/checkout` returns 503 when `STRIPE_SECRET_KEY` is unset. In-portal Pay now still mints `/pay?...` links via `GET|POST /api/portal/payments/link`, but checkout cannot start until Stripe is configured.
 
-**Health verification:** System checks; checkout returns 401 (not 503) when configured
+**Health verification:** System checks; checkout returns 401 (not 503) when configured; portal session can call `/api/portal/payments/link` for unpaid stages
 
-**Recovery:** Create keys → Vercel Production → register webhook → test checkout
+**Recovery:** Create keys → Vercel Production → register webhook → test checkout from admin payment link or portal Payments tab
 
 **Backup:** Stripe Dashboard export; metadata includes `recordId`
 
