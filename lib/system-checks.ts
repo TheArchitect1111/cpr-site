@@ -1,5 +1,6 @@
 import { adminUsers } from './admin-auth';
 import { getAuthReadiness } from './auth-config';
+import { checkResendSender } from './resend-readiness';
 
 const BASE = process.env.AIRTABLE_BASE_ID || 'appvVr6MVrJvEY0YJ';
 const ATHLETES = process.env.AIRTABLE_ATHLETES_TABLE_ID || 'tblZwrZHi3WBR3NHZ';
@@ -64,6 +65,7 @@ async function airtableSchemaChecks(): Promise<SystemCheck[]> {
 
 export async function getSystemChecks(): Promise<SystemCheck[]> {
   const auth = getAuthReadiness();
+  const resendSender = await checkResendSender();
   const admins = adminUsers();
   const usingLegacy = !process.env.ADMIN_USERS && Boolean(process.env.ADMIN_PASSWORD);
   return [
@@ -105,6 +107,11 @@ export async function getSystemChecks(): Promise<SystemCheck[]> {
     },
     { name: 'Portal session secret', ok: auth.portalSecret, detail: auth.portalSecret ? 'PORTAL_SECRET configured.' : 'Missing — portal login will fail in production.' },
     { name: 'Resend API key', ok: auth.emailDelivery, detail: auth.emailDelivery ? 'Application and enrollment emails can send.' : 'RESEND_API_KEY is missing.' },
+    {
+      name: 'Resend sender domain',
+      ok: resendSender.ok,
+      detail: resendSender.detail,
+    },
     { name: 'Apply webhook', ok: Boolean(process.env.MAKE_CPR_WEBHOOK), detail: process.env.MAKE_CPR_WEBHOOK ? 'MAKE_CPR_WEBHOOK configured (optional — in-app Resend also sends apply emails).' : 'Optional Make apply webhook not set.' },
     { name: 'Enroll webhook', ok: Boolean(process.env.CPR_ENROLL_WEBHOOK_URL), detail: process.env.CPR_ENROLL_WEBHOOK_URL ? 'CPR_ENROLL_WEBHOOK_URL configured.' : 'CPR_ENROLL_WEBHOOK_URL is missing.' },
     { name: 'Blob storage', ok: Boolean(process.env.BLOB_READ_WRITE_TOKEN), detail: process.env.BLOB_READ_WRITE_TOKEN ? 'Apply photo and document uploads enabled.' : 'BLOB_READ_WRITE_TOKEN is missing.' },

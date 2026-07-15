@@ -1,4 +1,5 @@
 import { site } from '@/config/site';
+import { fallbackResendFromCandidates, resolveResendFromEmail } from '@/lib/resend-readiness';
 
 type SendEmailInput = {
   to: string | string[];
@@ -8,35 +9,47 @@ type SendEmailInput = {
   idempotencyKey?: string;
 };
 
-const fromEmail = () => process.env.RESEND_FROM_EMAIL || `CPR Global Prospects <${site.footer.email}>`;
-
 export async function sendEmail(input: SendEmailInput) {
   const apiKey = process.env.RESEND_API_KEY;
   if (!apiKey) throw new Error('Missing RESEND_API_KEY');
 
-  const res = await fetch('https://api.resend.com/emails', {
-    method: 'POST',
-    headers: {
-      Authorization: `Bearer ${apiKey}`,
-      'Content-Type': 'application/json',
-      ...(input.idempotencyKey ? { 'Idempotency-Key': input.idempotencyKey } : {}),
-    },
-    body: JSON.stringify({
-      from: fromEmail(),
-      to: input.to,
-      subject: input.subject,
-      html: input.html,
-      text: input.text,
-      reply_to: site.footer.email,
-    }),
-  });
+  const senders = [resolveResendFromEmail(), ...fallbackResendFromCandidates(resolveResendFromEmail())];
+  let lastError = 'Email send failed';
 
-  const data = await res.json().catch(() => ({}));
-  if (!res.ok) {
-    const message = typeof data?.message === 'string' ? data.message : 'Email send failed';
-    throw new Error(message);
+  for (let index = 0; index < senders.length; index += 1) {
+    const from = senders[index];
+    const res = await fetch('https://api.resend.com/emails', {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${apiKey}`,
+        'Content-Type': 'application/json',
+        ...(input.idempotencyKey
+          ? { 'Idempotency-Key': index === 0 ? input.idempotencyKey : `${input.idempotencyKey}-fallback-${index}` }
+          : {}),
+      },
+      body: JSON.stringify({
+        from,
+        to: input.to,
+        subject: input.subject,
+        html: input.html,
+        text: input.text,
+        reply_to: site.footer.email,
+      }),
+    });
+
+    const data = await res.json().catch(() => ({}));
+    if (res.ok) return data as { id?: string };
+
+    lastError = typeof data?.message === 'string' ? data.message : lastError;
+    const retryable =
+      lastError.toLowerCase().includes('domain is not verified') ||
+      lastError.toLowerCase().includes('only send testing emails');
+    if (!retryable || index === senders.length - 1) {
+      throw new Error(lastError);
+    }
   }
-  return data as { id?: string };
+
+  throw new Error(lastError);
 }
 
 export function emailPage(title: string, body: string) {
