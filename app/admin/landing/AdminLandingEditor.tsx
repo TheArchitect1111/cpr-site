@@ -660,6 +660,14 @@ export default function AdminLandingEditor({ initialContent, defaults, storageCo
                       }}
                     />
                   </label>
+                  <MediaLibraryPicker
+                    label="Pick photo from gallery"
+                    onPick={(url) => {
+                      const proofs = [...content.results.proofs];
+                      proofs[i] = { ...proofs[i], imageUrl: url };
+                      setContent((prev) => ({ ...prev, results: { ...prev.results, proofs } }));
+                    }}
+                  />
                   {(proof?.imageUrl || def?.image) && (
                     <img
                       className="landing-editor-preview landing-editor-preview--thumb"
