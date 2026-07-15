@@ -1,11 +1,24 @@
 import { landingConfig } from '@/config/landing';
 import type { LandingPageConfig } from '@/lib/landing-chassis/types';
-import { getLandingContent, type LandingContent, type LandingTestimonialSlot } from '@/lib/landing-content';
+import { getLandingContent, type LandingContent, type LandingTestimonialSlot, type LandingGallerySlideSlot } from '@/lib/landing-content';
 import { listCollection } from '@/lib/admin-collections';
 import type { CollectionItem } from '@/lib/admin-collections-schema';
+import type { GallerySlide } from '@/lib/landing-chassis/types';
 
 function pick<T extends string>(override: T, fallback: T): T {
   return override.trim() ? override : fallback;
+}
+
+function mergeGallerySlides(
+  baseSlides: GallerySlide[] | undefined,
+  overrides: LandingGallerySlideSlot[] | undefined,
+): GallerySlide[] {
+  const owner = (overrides || []).filter((s) => s.imageUrl.trim());
+  if (!owner.length) return baseSlides ?? [];
+  return owner.map((s) => ({
+    img: s.imageUrl,
+    caption: s.caption || undefined,
+  }));
 }
 
 function slotHasOverride(slot: LandingTestimonialSlot | undefined): boolean {
@@ -112,6 +125,7 @@ export function mergeLandingConfig(
           ...base.chipsAndDrip,
           heading: pick(overrides.chipsAndDrip.heading, base.chipsAndDrip.heading),
           body: pick(overrides.chipsAndDrip.body, base.chipsAndDrip.body),
+          slides: mergeGallerySlides(base.chipsAndDrip.slides, overrides.chipsAndDrip.slides),
         }
       : base.chipsAndDrip,
     campsExposure: base.campsExposure
@@ -123,6 +137,7 @@ export function mergeLandingConfig(
             overrides.campsExposure.dashboardImageUrl,
             base.campsExposure.dashboardImage ?? '',
           ),
+          slides: mergeGallerySlides(base.campsExposure.slides, overrides.campsExposure.slides),
         }
       : base.campsExposure,
     results: base.results
