@@ -91,7 +91,7 @@ export default async function ParentPortalPage({
         </p>
       </footer>
 
-      {owner && <PortalOwnerFab href={`/portal/parent/${slug}/updates/new`} />}
+      {owner && <PortalOwnerFab href={`/portal/parent/${slug}/updates/publish`} />}
     </PortalShell>
   );
 }

@@ -3,6 +3,8 @@ import '../../parent-portal.css';
 import '../../../updates.css';
 import { getParentPortalData } from '@/lib/portal-data';
 import { getPortalUpdates } from '@/lib/portal-updates';
+import { listForAthlete } from '@/lib/content-requests';
+import { getPublishedFeedItems, getPendingRequests } from '@/lib/update-hub-feed';
 import { site } from '@/config/site';
 import { notFound } from 'next/navigation';
 import PortalShell from '@/app/portal/components/PortalShell';
@@ -21,20 +23,30 @@ export default async function ParentUpdatesPage({
   const portalData = await getParentPortalData(slug);
   if (!portalData) notFound();
 
-  const { updates, live } = await getPortalUpdates(slug);
-  const owner = await getPortalOwner();
+  const [{ updates, live: activityLive }, contentResult, owner] = await Promise.all([
+    getPortalUpdates(slug),
+    listForAthlete(slug),
+    getPortalOwner(),
+  ]);
+
+  const publishedFeed = getPublishedFeedItems(contentResult.records);
+  const pendingRequests = getPendingRequests(contentResult.records);
   const athleteName = portalData.firstName
     ? `${portalData.firstName} ${portalData.lastName}`.trim()
     : portalData.slug;
+  const base = `/portal/parent/${slug}`;
 
   return (
     <PortalShell portalType="parent" slug={slug} active="updates">
       <main className="portal-main pp-main">
         <UpdatePortalFeed
-          updates={updates}
+          publishedFeed={publishedFeed}
+          pendingRequests={pendingRequests}
+          activityUpdates={updates}
           athleteName={athleteName}
-          live={live}
-          ownerPostUrl={owner ? `/portal/parent/${slug}/updates/new` : undefined}
+          live={contentResult.live || activityLive}
+          requestUrl={`${base}/updates/new`}
+          ownerPostUrl={owner ? `${base}/updates/publish` : undefined}
         />
       </main>
       <footer className="portal-footer">
@@ -43,10 +55,7 @@ export default async function ParentUpdatesPage({
           <a href={`mailto:${site.footer.email}`}>{site.footer.email}</a>
         </p>
       </footer>
-      {owner && <PortalOwnerFab href={`/portal/parent/${slug}/updates/new`} />}
+      {owner && <PortalOwnerFab href={`${base}/updates/publish`} />}
     </PortalShell>
   );
 }
-
-
-

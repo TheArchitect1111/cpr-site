@@ -37,7 +37,7 @@ export default async function AthleteOwnerToolsPage({
         <h1 className="pp-section-title">Advanced owner tools</h1>
         <p className="pp-section-sub">
           Sections, profiles, announcements, and Amplifi settings. For quick publishes, use{' '}
-          <a href={`${base}/updates/new`}>Update Hub</a>.
+          <a href={`${base}/updates/publish`}>Update Hub</a>.
         </p>
         <PortalOwnerHub
           slug={slug}
@@ -56,7 +56,7 @@ export default async function AthleteOwnerToolsPage({
           <a href={`mailto:${site.footer.email}`}>{site.footer.email}</a>
         </p>
       </footer>
-      <PortalOwnerFab href={`${base}/updates/new`} />
+      <PortalOwnerFab href={`${base}/updates/publish`} />
     </PortalShell>
   );
 }

@@ -272,7 +272,7 @@ export default function PortalOwnerHub({
     <>
       {!hideFab && (
         <a
-          href={`${base}/updates/new`}
+          href={`${base}/updates/publish`}
           className="owner-fab"
           aria-label="Open Update Hub"
         >
@@ -297,7 +297,7 @@ export default function PortalOwnerHub({
 
           {!hideFab && (
             <p className="owner-hint">
-              <a href={`${base}/updates/new`}>Post a quick update</a>
+              <a href={`${base}/updates/publish`}>Post a quick update</a>
               {' · '}
               <a href={`${base}/owner`}>Advanced tools</a>
             </p>

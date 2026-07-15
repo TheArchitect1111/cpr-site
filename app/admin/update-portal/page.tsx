@@ -59,6 +59,7 @@ export default async function AdminUpdatePortalPage() {
         <div className="aside-sec">OWNER TOOLS</div>
         <nav>
           <a className="aitem active" href="/admin/update-portal">Update Portal</a>
+          <a className="aitem" href="/admin/content-requests">Content Requests</a>
           <a className="aitem" href="/admin/landing">Edit Homepage</a>
           <a className="aitem" href="/admin?tab=communication">Communication Center</a>
           <a className="aitem" href="/portal/owner">Family Portal Owner</a>

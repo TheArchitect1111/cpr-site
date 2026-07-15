@@ -42,7 +42,7 @@ export default async function PortalSubpageLayout({
           <a href={`mailto:${eaChassis.organization.supportEmail}`}>{eaChassis.organization.supportEmail}</a>
         </p>
       </footer>
-      {owner && <PortalOwnerFab href={`${dash}/updates/new`} />}
+      {owner && <PortalOwnerFab href={`${dash}/updates/publish`} />}
     </PortalShell>
   );
 }

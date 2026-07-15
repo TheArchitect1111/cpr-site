@@ -1,0 +1,87 @@
+.cr-queue-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.cr-queue-count {
+  margin: 0;
+  font-weight: 700;
+  color: var(--ink, #111);
+}
+
+.cr-queue-toolbar select,
+.cr-queue-actions select,
+.cr-queue-publish-label textarea {
+  border: 1px solid var(--line, #ddd);
+  border-radius: 8px;
+  padding: 8px 10px;
+  font: inherit;
+  background: #fff;
+}
+
+.cr-queue-list {
+  display: grid;
+  gap: 14px;
+}
+
+.cr-queue-card {
+  background: #fff;
+  border: 1px solid var(--line, #ddd);
+  border-radius: 12px;
+  padding: 18px 20px;
+}
+
+.cr-queue-card-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.cr-queue-card h2 {
+  margin: 4px 0;
+  font-size: 18px;
+}
+
+.cr-queue-meta,
+.cr-queue-date,
+.cr-queue-status,
+.cr-queue-desc,
+.cr-queue-empty {
+  margin: 0;
+  color: var(--gray, #666);
+  font-size: 13px;
+}
+
+.cr-queue-status {
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--ink, #111);
+}
+
+.cr-queue-desc {
+  margin: 8px 0 12px;
+  line-height: 1.5;
+}
+
+.cr-queue-publish-label {
+  display: grid;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-bottom: 12px;
+}
+
+.cr-queue-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+}
