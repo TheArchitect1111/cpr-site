@@ -1,9 +1,10 @@
 .landing-editor {
   max-width: none;
-}
-
-.landing-editor--form-focus .landing-editor-layout {
-  grid-template-columns: minmax(160px, 200px) minmax(320px, 1fr);
+  background: #0c0c0a;
+  color: #f4f4f5;
+  border-radius: 12px;
+  padding: 1.25rem 1.35rem 1.5rem;
+  border: 1px solid #2a2a2a;
 }
 
 .landing-editor-banner {
@@ -12,14 +13,18 @@
   border-radius: 10px;
   border: 1px solid rgba(168, 29, 32, 0.45);
   background: rgba(168, 29, 32, 0.12);
-  color: rgba(255, 255, 255, 0.92);
+  color: #3d1214;
   font-size: 0.9rem;
   line-height: 1.45;
 }
 
 .landing-editor-banner a {
-  color: #ffb4b4;
+  color: #8b1a1d;
   font-weight: 700;
+}
+
+.landing-editor--form-focus .landing-editor-layout {
+  grid-template-columns: minmax(160px, 200px) minmax(320px, 1fr);
 }
 
 .landing-editor-layout {
@@ -159,6 +164,9 @@
 
 .landing-editor-form-pane {
   min-width: 0;
+  max-height: calc(100dvh - 11rem);
+  overflow-y: auto;
+  padding-right: 0.35rem;
 }
 
 .landing-editor-preview-pane {
@@ -245,7 +253,8 @@
 }
 
 .landing-editor input,
-.landing-editor textarea {
+.landing-editor textarea,
+.landing-editor .admin-textarea {
   display: block;
   width: 100%;
   margin-top: 0.35rem;
@@ -253,8 +262,10 @@
   border: 1px solid rgba(255, 255, 255, 0.15);
   border-radius: 8px;
   background: rgba(0, 0, 0, 0.35);
-  color: inherit;
+  color: #f4f4f5;
   font: inherit;
+  -webkit-user-select: text;
+  user-select: text;
 }
 
 .landing-editor-preview {

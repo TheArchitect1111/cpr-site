@@ -2,6 +2,7 @@ import '../../landing.css';
 import '../../athletes/[slug]/profile.css';
 import { notFound } from 'next/navigation';
 import { embedUrl, getAthlete } from '@/lib/athletes';
+import RichTextContent from '@/app/components/RichTextContent';
 import { getOutreachByRecordId, trackCoachShareView, verifyOutreachShareToken } from '@/lib/outreach';
 import { site } from '@/config/site';
 
@@ -100,7 +101,7 @@ export default async function CoachShareProfile({
           </div>
           <div className="pcard">
             <h3 className="display"><span className="red">&#9658;</span> PLAYER BIO</h3>
-            {athlete.bio && <p className="pbio">{athlete.bio}</p>}
+            {athlete.bio && <RichTextContent className="pbio" html={athlete.bio} as="p" />}
             {athlete.strengths.length > 0 && <div className="chips">{athlete.strengths.map(s => <span className="chip" key={s}>{s}</span>)}</div>}
           </div>
         </div>

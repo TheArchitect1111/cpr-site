@@ -3,6 +3,8 @@ import { useMemo, useState } from 'react';
 import type { Outreach } from '@/lib/outreach';
 import type { AthleteAdmin } from '@/lib/athletes';
 import type { CoachContact } from '@/lib/coaches';
+import AdminTextArea from './components/AdminTextArea';
+import AdminRichText from './components/AdminRichText';
 
 const RESPONSES = ['All Responses', 'Interested', 'Maybe', 'Not Interested', 'Follow Up', 'No Response'];
 const STATUSES = ['All Statuses', 'Active', 'Coach-only', 'Draft', 'Private', 'Pending', 'Closed', 'Waiting', 'Archived'];
@@ -89,6 +91,7 @@ export default function AdminClient({ rows, players, coaches }: { rows: Outreach
   const [showCreate, setShowCreate] = useState(false);
   const [createDraft, setCreateDraft] = useState<PlayerDraft>({ status: 'Pending' });
   const [busyPlayer, setBusyPlayer] = useState('');
+  const [uploadingPhoto, setUploadingPhoto] = useState('');
   const [playerMessage, setPlayerMessage] = useState('');
   const [systemChecks, setSystemChecks] = useState<SystemCheck[]>([]);
   const [systemMessage, setSystemMessage] = useState('');
@@ -776,17 +779,22 @@ export default function AdminClient({ rows, players, coaches }: { rows: Outreach
     }
   };
 
-  const deletePlayer = async (p: AthleteAdmin) => {
-    if (!window.confirm(`Delete ${p.firstName} ${p.lastName}'s player profile from the public site? This removes the public profile link but keeps the database record for Mike.`)) return;
+  const archivePlayer = async (p: AthleteAdmin) => {
+    if (
+      !window.confirm(
+        `Archive ${p.firstName} ${p.lastName}'s profile?\n\nThe profile will be hidden from the public website but kept in your records. You can restore it later by changing the status back to Active.`,
+      )
+    ) {
+      return;
+    }
     setBusyPlayer(p.id);
     setPlayerMessage('');
     try {
       const res = await fetch(`/api/admin/athletes/${p.id}`, { method: 'DELETE' });
       const json = await res.json();
-      if (!res.ok) throw new Error(json.error || 'Delete failed');
+      if (!res.ok) throw new Error(json.error || 'Archive failed');
       const archived = { status: 'Archived' as const, slug: `archived-${p.id}` };
       setPlayerRows(rows => rows.map(row => row.id === p.id ? { ...row, ...archived } : row));
-      // Sync draft so a later "Save Full Record" cannot un-archive the profile
       setDraft(d => ({
         ...d,
         [p.id]: { ...(d[p.id] || playerDraftFrom({ ...p, ...archived })), ...archived },
@@ -794,12 +802,70 @@ export default function AdminClient({ rows, players, coaches }: { rows: Outreach
       setDetailPlayer(null);
       setEditing(null);
       setPlayerMessage(
-        'Player profile removed from the public portal (hidden from the default list). Choose status “Archived” to see it again.',
+        `${p.firstName} ${p.lastName}'s profile has been archived and can be restored later. Filter by status "Archived" to find it, then set status back to Active.`,
       );
     } catch (err) {
-      setPlayerMessage(err instanceof Error ? err.message : 'Could not delete player profile.');
+      setPlayerMessage(err instanceof Error ? err.message : 'Could not archive player profile.');
     } finally {
       setBusyPlayer('');
+    }
+  };
+
+  const restorePlayer = async (p: AthleteAdmin) => {
+    if (
+      !window.confirm(
+        `Restore ${p.firstName} ${p.lastName}'s profile to the public website?\n\nThe profile will become visible again at its previous URL when possible.`,
+      )
+    ) {
+      return;
+    }
+    setBusyPlayer(`restore-${p.id}`);
+    setPlayerMessage('');
+    try {
+      const res = await fetch(`/api/admin/athletes/${p.id}/restore`, { method: 'POST' });
+      const json = await res.json();
+      if (!res.ok) throw new Error(json.error || 'Restore failed');
+      const restoredPlayer = json.athlete
+        ? mergePlayer(p, playerDraftFrom(json.athlete as AthleteAdmin))
+        : mergePlayer(p, {
+            status: 'Active',
+            slug: String(json.slug || p.slug.replace(/^archived-/, '')),
+          });
+      setPlayerRows(rows => rows.map(row => row.id === p.id ? restoredPlayer : row));
+      setDraft(d => ({
+        ...d,
+        [p.id]: playerDraftFrom(restoredPlayer),
+      }));
+      if (detailPlayer?.id === p.id) {
+        setDetailPlayer(restoredPlayer);
+      }
+      setPlayerMessage(
+        `${p.firstName} ${p.lastName}'s profile has been restored and is live on the public site again.`,
+      );
+    } catch (err) {
+      setPlayerMessage(err instanceof Error ? err.message : 'Could not restore player profile.');
+    } finally {
+      setBusyPlayer('');
+    }
+  };
+
+  const uploadPlayerPhoto = async (playerId: string, file: File | undefined) => {
+    if (!file) return;
+    setUploadingPhoto(playerId);
+    setPlayerMessage('');
+    try {
+      const form = new FormData();
+      form.append('file', file);
+      form.append('kind', 'photos');
+      const res = await fetch('/api/upload', { method: 'POST', body: form });
+      const json = await res.json();
+      if (!res.ok) throw new Error(json.error || 'Upload failed');
+      setPlayerField(playerId, 'photoUrl', json.url);
+      setPlayerMessage('Photo uploaded. Click Save to publish the updated profile.');
+    } catch (err) {
+      setPlayerMessage(err instanceof Error ? err.message : 'Could not upload photo.');
+    } finally {
+      setUploadingPhoto('');
     }
   };
 
@@ -1006,7 +1072,7 @@ export default function AdminClient({ rows, players, coaches }: { rows: Outreach
                 {['Pending', 'Active', 'Waiting', 'Closed', 'Archived'].map(s => <option key={s}>{s}</option>)}
               </select>
             </div>
-            <textarea value={String(createDraft.bio || '')} onChange={e => setCreateField('bio', e.target.value)} placeholder="Bio" />
+            <AdminRichText value={String(createDraft.bio || '')} onChange={value => setCreateField('bio', value)} placeholder="Bio" minRows={4} />
             <div className="create-grid two">
               <input value={String(createDraft.strengthsText || '')} onChange={e => setCreateField('strengthsText', e.target.value)} placeholder="Strengths, comma separated" />
               <input value={String(createDraft.videoUrl || '')} onChange={e => setCreateField('videoUrl', e.target.value)} placeholder="Highlight video URL" />
@@ -1103,7 +1169,13 @@ export default function AdminClient({ rows, players, coaches }: { rows: Outreach
                             <button className="ghost" onClick={() => openDetails(p)}>Details</button>
                             {p.slug && p.status === 'Active' && <a href={`/athletes/${p.slug}`} target="_blank">Open</a>}
                             <button className="ghost" onClick={() => copyEditLink(p)}>Copy Edit Link</button>
-                            <button className="danger" onClick={() => deletePlayer(p)} disabled={busyPlayer === p.id}>{busyPlayer === p.id ? 'Deleting...' : 'Delete Player Profile'}</button>
+                            {p.status === 'Archived' ? (
+                              <button onClick={() => restorePlayer(p)} disabled={busyPlayer === `restore-${p.id}`}>
+                                {busyPlayer === `restore-${p.id}` ? 'Restoring...' : 'Restore profile'}
+                              </button>
+                            ) : (
+                              <button className="danger" onClick={() => archivePlayer(p)} disabled={busyPlayer === p.id}>{busyPlayer === p.id ? 'Archiving...' : 'Archive profile'}</button>
+                            )}
                           </>
                         )}
                       </div>
@@ -1125,6 +1197,15 @@ export default function AdminClient({ rows, players, coaches }: { rows: Outreach
               </div>
               <div className="action-row">
                 <button onClick={() => savePlayer(detailPlayer.id)} disabled={busyPlayer === detailPlayer.id}>{busyPlayer === detailPlayer.id ? 'Saving...' : 'Save Full Record'}</button>
+                {detailPlayer.status === 'Archived' ? (
+                  <button onClick={() => restorePlayer(detailPlayer)} disabled={busyPlayer === `restore-${detailPlayer.id}`}>
+                    {busyPlayer === `restore-${detailPlayer.id}` ? 'Restoring...' : 'Restore profile'}
+                  </button>
+                ) : (
+                  <button className="danger" onClick={() => archivePlayer(detailPlayer)} disabled={busyPlayer === detailPlayer.id}>
+                    {busyPlayer === detailPlayer.id ? 'Archiving...' : 'Archive profile'}
+                  </button>
+                )}
                 <button className="ghost" onClick={() => { setDetailPlayer(null); setEditing(null); }}>Close</button>
               </div>
             </div>
@@ -1162,6 +1243,11 @@ export default function AdminClient({ rows, players, coaches }: { rows: Outreach
                 </ul>
               </div>
             )}
+            {detailPlayer.status === 'Archived' && (
+              <p className="archive-note">
+                This profile is archived and hidden from the public site. Click <strong>Restore profile</strong> to publish it again.
+              </p>
+            )}
             <div className="full-grid">
               <label>Slug<input value={String(draft[detailPlayer.id]?.slug || '')} onChange={e => setPlayerField(detailPlayer.id, 'slug', e.target.value)} /></label>
               <label>First Name<input value={String(draft[detailPlayer.id]?.firstName || '')} onChange={e => setPlayerField(detailPlayer.id, 'firstName', e.target.value)} /></label>
@@ -1191,6 +1277,16 @@ export default function AdminClient({ rows, players, coaches }: { rows: Outreach
               <label>Offers<input value={String(draft[detailPlayer.id]?.offers || '')} onChange={e => setPlayerField(detailPlayer.id, 'offers', e.target.value)} /></label>
               <label>Visits<input value={String(draft[detailPlayer.id]?.visits || '')} onChange={e => setPlayerField(detailPlayer.id, 'visits', e.target.value)} /></label>
               <label>Photo URL<input value={String(draft[detailPlayer.id]?.photoUrl || '')} onChange={e => setPlayerField(detailPlayer.id, 'photoUrl', e.target.value)} /></label>
+              <label className="full-upload">
+                Upload photo
+                <input
+                  type="file"
+                  accept="image/*"
+                  disabled={uploadingPhoto === detailPlayer.id}
+                  onChange={e => void uploadPlayerPhoto(detailPlayer.id, e.target.files?.[0])}
+                />
+                <span className="sub">{uploadingPhoto === detailPlayer.id ? 'Uploading...' : draft[detailPlayer.id]?.photoUrl ? 'Photo ready — save to publish' : 'JPG or PNG'}</span>
+              </label>
               <label>Video URL<input value={String(draft[detailPlayer.id]?.videoUrl || '')} onChange={e => setPlayerField(detailPlayer.id, 'videoUrl', e.target.value)} /></label>
               <label>Transcript URL<input value={String(draft[detailPlayer.id]?.transcriptUrl || '')} onChange={e => setPlayerField(detailPlayer.id, 'transcriptUrl', e.target.value)} /></label>
               <label>Gameplay URL<input value={String(draft[detailPlayer.id]?.gameplayVideoUrl || '')} onChange={e => setPlayerField(detailPlayer.id, 'gameplayVideoUrl', e.target.value)} /></label>
@@ -1201,8 +1297,8 @@ export default function AdminClient({ rows, players, coaches }: { rows: Outreach
               <label className="full-check"><input type="checkbox" checked={draft[detailPlayer.id]?.nilInterest === true} onChange={e => setPlayerField(detailPlayer.id, 'nilInterest', e.target.checked)} /> NIL Interest</label>
             </div>
             <div className="full-text">
-              <label>Bio<textarea value={String(draft[detailPlayer.id]?.bio || '')} onChange={e => setPlayerField(detailPlayer.id, 'bio', e.target.value)} /></label>
-              <label>Strengths<textarea value={String(draft[detailPlayer.id]?.strengthsText || '')} onChange={e => setPlayerField(detailPlayer.id, 'strengthsText', e.target.value)} /></label>
+              <label>Bio<AdminRichText value={String(draft[detailPlayer.id]?.bio || '')} onChange={value => setPlayerField(detailPlayer.id, 'bio', value)} minRows={6} /></label>
+              <label>Strengths<AdminTextArea value={String(draft[detailPlayer.id]?.strengthsText || '')} onChange={value => setPlayerField(detailPlayer.id, 'strengthsText', value)} rows={4} /></label>
             </div>
           </div>
         )}
@@ -1233,7 +1329,7 @@ export default function AdminClient({ rows, players, coaches }: { rows: Outreach
                 {['Active', 'Do Not Contact', 'Research', 'Archived'].map(s => <option key={s}>{s}</option>)}
               </select>
             </div>
-            <textarea value={String(createCoachDraft.notes || '')} onChange={e => setCreateCoachField('notes', e.target.value)} placeholder="Notes" />
+            <AdminTextArea value={String(createCoachDraft.notes || '')} onChange={value => setCreateCoachField('notes', value)} placeholder="Notes" rows={3} />
             <div className="create-actions">
               <button onClick={createCoach} disabled={busyCoach === 'new'}>{busyCoach === 'new' ? 'Creating...' : 'Create Coach'}</button>
               <button className="ghost" onClick={() => setShowCreateCoach(false)}>Cancel</button>
@@ -1313,7 +1409,7 @@ export default function AdminClient({ rows, players, coaches }: { rows: Outreach
             </select>
             <input value={outreachSubject} onChange={e => setOutreachSubject(e.target.value)} placeholder="Email subject" />
           </div>
-          <textarea value={outreachBody} onChange={e => setOutreachBody(e.target.value)} placeholder="Email message. Available placeholders: {athleteName}, {coachName}, {school}, {schoolText}, {shareUrl}" />
+          <AdminTextArea value={outreachBody} onChange={setOutreachBody} placeholder="Email message. Available placeholders: {athleteName}, {coachName}, {school}, {schoolText}, {shareUrl}" rows={6} />
           <div className="template-hint">Placeholders: {'{athleteName}'}, {'{coachName}'}, {'{school}'}, {'{schoolText}'}, {'{shareUrl}'}</div>
         </div>
         {showCreateOutreach && (
@@ -1336,7 +1432,7 @@ export default function AdminClient({ rows, players, coaches }: { rows: Outreach
               <label className="check-field"><input type="checkbox" checked={createOutreachDraft.opened === true} onChange={e => setCreateOutreachField('opened', e.target.checked)} /> Opened</label>
               <label className="check-field"><input type="checkbox" checked={createOutreachDraft.viewed === true} onChange={e => setCreateOutreachField('viewed', e.target.checked)} /> Viewed</label>
             </div>
-            <textarea value={String(createOutreachDraft.notes || '')} onChange={e => setCreateOutreachField('notes', e.target.value)} placeholder="Notes" />
+            <AdminTextArea value={String(createOutreachDraft.notes || '')} onChange={value => setCreateOutreachField('notes', value)} placeholder="Notes" rows={3} />
             <div className="create-actions">
               <button onClick={createOutreach} disabled={busyOutreach === 'new'}>{busyOutreach === 'new' ? 'Creating...' : 'Create Outreach'}</button>
               <button className="ghost" onClick={() => setShowCreateOutreach(false)}>Cancel</button>
@@ -1432,7 +1528,7 @@ export default function AdminClient({ rows, players, coaches }: { rows: Outreach
             </tbody></table>
             <div className="dlabel">Notes from Coach</div>
             {editingOutreach === sel.id ? (
-              <textarea className="detail-notes-input" value={String(outreachDraft[sel.id]?.notes || '')} onChange={e => setOutreachField(sel.id, 'notes', e.target.value)} />
+              <AdminTextArea className="detail-notes-input" value={String(outreachDraft[sel.id]?.notes || '')} onChange={value => setOutreachField(sel.id, 'notes', value)} rows={5} />
             ) : (
               <p className="dnotes">{sel.notes || 'No notes yet.'}</p>
             )}

@@ -1,0 +1,147 @@
+.admin-rich-text {
+  border: 1px solid #d7d7d7;
+  border-radius: 5px;
+  background: #fff;
+  overflow: hidden;
+}
+
+.admin-rich-text--loading {
+  padding: 10px 12px;
+  color: #666;
+  font-size: 12px;
+}
+
+.admin-rich-text__toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  padding: 6px;
+  border-bottom: 1px solid #ececec;
+  background: #f8f8f8;
+}
+
+.admin-rich-text__toolbar button {
+  border: 1px solid #d7d7d7;
+  border-radius: 4px;
+  background: #fff;
+  color: #222;
+  min-width: 32px;
+  min-height: 30px;
+  padding: 0 8px;
+  font-size: 12px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.admin-rich-text__toolbar button.is-active {
+  background: #1d4fa8;
+  border-color: #1d4fa8;
+  color: #fff;
+}
+
+.admin-rich-text__toolbar button:hover {
+  border-color: #999;
+}
+
+.admin-rich-text__editable {
+  padding: 8px 9px;
+  font: inherit;
+  font-size: 12px;
+  line-height: 1.45;
+  color: #111;
+  outline: none;
+  -webkit-user-select: text;
+  user-select: text;
+}
+
+.admin-rich-text__editable p {
+  margin: 0 0 0.65em;
+}
+
+.admin-rich-text__editable p:last-child {
+  margin-bottom: 0;
+}
+
+.admin-rich-text__editable ul {
+  margin: 0 0 0.65em;
+  padding-left: 1.25rem;
+}
+
+.admin-rich-text__editable a {
+  color: #1d4fa8;
+  text-decoration: underline;
+}
+
+.admin-rich-text__editable:empty::before {
+  content: attr(data-placeholder);
+  color: #767676;
+  pointer-events: none;
+}
+
+.landing-editor .admin-rich-text {
+  border-color: rgba(255, 255, 255, 0.15);
+  background: rgba(0, 0, 0, 0.35);
+}
+
+.landing-editor .admin-rich-text__toolbar {
+  background: rgba(0, 0, 0, 0.25);
+  border-bottom-color: rgba(255, 255, 255, 0.1);
+}
+
+.landing-editor .admin-rich-text__toolbar button {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.18);
+  color: #f4f4f5;
+}
+
+.landing-editor .admin-rich-text__toolbar button.is-active {
+  background: #a81d20;
+  border-color: #a81d20;
+  color: #fff;
+}
+
+.landing-editor .admin-rich-text__editable {
+  color: #f4f4f5;
+}
+
+.landing-editor .admin-rich-text__editable a {
+  color: #ffb4b4;
+}
+
+.landing-editor .admin-rich-text__editable:empty::before {
+  color: rgba(255, 255, 255, 0.55);
+}
+
+.up .admin-rich-text {
+  border-color: rgba(255, 255, 255, 0.18);
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.up .admin-rich-text__toolbar {
+  background: rgba(0, 0, 0, 0.2);
+  border-bottom-color: rgba(255, 255, 255, 0.1);
+}
+
+.up .admin-rich-text__toolbar button {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.18);
+  color: #fff;
+}
+
+.up .admin-rich-text__toolbar button.is-active {
+  background: #a81d20;
+  border-color: #a81d20;
+}
+
+.up .admin-rich-text__editable {
+  color: #fff;
+}
+
+.up .admin-rich-text__editable:empty::before {
+  color: rgba(255, 255, 255, 0.55);
+}
+
+.rich-text-content a {
+  color: inherit;
+  text-decoration: underline;
+}

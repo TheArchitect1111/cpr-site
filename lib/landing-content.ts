@@ -40,6 +40,8 @@ export type LandingContent = {
     subheadline: string;
     supporting: string;
     imageUrl: string;
+    /** Owner-managed hero slideshow; empty = use imageUrl / static default */
+    heroSlides: LandingGallerySlideSlot[];
   };
   about: {
     heading: string;
@@ -138,6 +140,7 @@ export const EMPTY_LANDING_CONTENT: LandingContent = {
     subheadline: '',
     supporting: '',
     imageUrl: '',
+    heroSlides: [],
   },
   about: {
     heading: '',
@@ -237,6 +240,7 @@ function normalize(input: Partial<LandingContent> | null | undefined): LandingCo
       subheadline: String(input?.possibility?.subheadline ?? base.possibility.subheadline),
       supporting: String(input?.possibility?.supporting ?? base.possibility.supporting),
       imageUrl: String(input?.possibility?.imageUrl ?? base.possibility.imageUrl),
+      heroSlides: normalizeGallerySlides(input?.possibility?.heroSlides),
     },
     about: {
       heading: String(input?.about?.heading ?? base.about.heading),

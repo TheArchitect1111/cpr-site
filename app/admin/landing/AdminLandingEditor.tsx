@@ -7,6 +7,8 @@ import type { LandingPageConfig } from '@/lib/landing-chassis/types';
 import { OptimisticSaveBadge, useOptimisticSave } from '@/lib/instant-feel';
 import MediaLibraryPicker from './MediaLibraryPicker';
 import GallerySlidesEditor from './GallerySlidesEditor';
+import AdminTextArea from '../components/AdminTextArea';
+import AdminRichText from '../components/AdminRichText';
 import '../admin.css';
 import './landing-editor.css';
 
@@ -30,8 +32,19 @@ function seedSlidesFromDefaults(
 
 export default function AdminLandingEditor({ initialContent, defaults, storageConfigured }: Props) {
   const seededInitial = useMemo((): LandingContent => {
+    const heroSeed =
+      initialContent.possibility.heroSlides?.length
+        ? initialContent.possibility.heroSlides
+        : initialContent.possibility.imageUrl
+          ? [{ imageUrl: initialContent.possibility.imageUrl, caption: '' }]
+          : undefined;
+    const defaultHero = defaults.possibility?.image ? [{ img: defaults.possibility.image }] : undefined;
     return {
       ...initialContent,
+      possibility: {
+        ...initialContent.possibility,
+        heroSlides: seedSlidesFromDefaults(heroSeed, defaultHero),
+      },
       chipsAndDrip: {
         ...initialContent.chipsAndDrip,
         slides: seedSlidesFromDefaults(
@@ -165,51 +178,38 @@ export default function AdminLandingEditor({ initialContent, defaults, storageCo
             </label>
             <label>
               Supporting text
-              <textarea
-                rows={3}
+              <AdminRichText
+                minRows={3}
                 value={content.possibility.supporting}
-                onChange={(e) =>
+                onChange={(value) =>
                   setContent((prev) => ({
                     ...prev,
-                    possibility: { ...prev.possibility, supporting: e.target.value },
+                    possibility: { ...prev.possibility, supporting: value },
                   }))
                 }
                 placeholder={ph.supporting}
               />
             </label>
-            <label>
-              Hero photo
-              <input
-                type="file"
-                accept="image/*"
-                onChange={(e) => {
-                  const file = e.target.files?.[0];
-                  if (file) {
-                    void uploadImage('landing-hero', file, (url) =>
-                      setContent((prev) => ({
-                        ...prev,
-                        possibility: { ...prev.possibility, imageUrl: url },
-                      })),
-                    );
-                  }
-                }}
-              />
-            </label>
-            <MediaLibraryPicker
-              onPick={(url) =>
+            <GallerySlidesEditor
+              title="Hero photo gallery"
+              slides={content.possibility.heroSlides}
+              busy={busy}
+              onUpload={(file, onUrl) => void uploadImage('landing-hero', file, onUrl)}
+              onChange={(heroSlides) =>
                 setContent((prev) => ({
                   ...prev,
-                  possibility: { ...prev.possibility, imageUrl: url },
+                  possibility: {
+                    ...prev.possibility,
+                    heroSlides,
+                    imageUrl: heroSlides[0]?.imageUrl ?? prev.possibility.imageUrl,
+                  },
                 }))
               }
             />
-            {(content.possibility.imageUrl || ph.image) && (
-              <img
-                className="landing-editor-preview"
-                src={content.possibility.imageUrl || ph.image}
-                alt="Hero preview"
-              />
-            )}
+            <p className="landing-editor-note">
+              The first slide is the featured hero image. Multiple slides rotate on the homepage with
+              fade transitions and arrow controls.
+            </p>
           </>
         );
 
@@ -271,12 +271,12 @@ export default function AdminLandingEditor({ initialContent, defaults, storageCo
                   <h3>Testimonial {i + 1}</h3>
                   <label>
                     Quote
-                    <textarea
-                      rows={4}
+                    <AdminRichText
+                      minRows={4}
                       value={slot?.quote ?? ''}
-                      onChange={(e) => {
+                      onChange={(value) => {
                         const testimonials = [...content.testimonials];
-                        testimonials[i] = { ...testimonials[i], quote: e.target.value };
+                        testimonials[i] = { ...testimonials[i], quote: value };
                         setContent((prev) => ({ ...prev, testimonials }));
                       }}
                       placeholder={def?.quote ?? ''}
@@ -362,13 +362,13 @@ export default function AdminLandingEditor({ initialContent, defaults, storageCo
             </label>
             <label>
               Quote
-              <textarea
-                rows={3}
+              <AdminRichText
+                minRows={3}
                 value={content.philosophy.quote}
-                onChange={(e) =>
+                onChange={(value) =>
                   setContent((prev) => ({
                     ...prev,
-                    philosophy: { ...prev.philosophy, quote: e.target.value },
+                    philosophy: { ...prev.philosophy, quote: value },
                   }))
                 }
                 placeholder={defPhilosophy?.quote ?? ''}
@@ -394,13 +394,13 @@ export default function AdminLandingEditor({ initialContent, defaults, storageCo
         return (
           <label>
             Band text
-            <textarea
+            <AdminTextArea
               rows={2}
               value={content.pathBand.text}
-              onChange={(e) =>
+              onChange={(value) =>
                 setContent((prev) => ({
                   ...prev,
-                  pathBand: { ...prev.pathBand, text: e.target.value },
+                  pathBand: { ...prev.pathBand, text: value },
                 }))
               }
               placeholder={defPath?.text ?? ''}
@@ -426,13 +426,13 @@ export default function AdminLandingEditor({ initialContent, defaults, storageCo
             </label>
             <label>
               Subheading
-              <textarea
+              <AdminTextArea
                 rows={2}
                 value={content.process.subheading}
-                onChange={(e) =>
+                onChange={(value) =>
                   setContent((prev) => ({
                     ...prev,
-                    process: { ...prev.process, subheading: e.target.value },
+                    process: { ...prev.process, subheading: value },
                   }))
                 }
                 placeholder={defProcess?.subheading ?? ''}
@@ -457,12 +457,12 @@ export default function AdminLandingEditor({ initialContent, defaults, storageCo
                   </label>
                   <label>
                     Description
-                    <textarea
+                    <AdminTextArea
                       rows={2}
                       value={step.description}
-                      onChange={(e) => {
+                      onChange={(value) => {
                         const steps = [...content.process.steps];
-                        steps[i] = { ...steps[i], description: e.target.value };
+                        steps[i] = { ...steps[i], description: value };
                         setContent((prev) => ({ ...prev, process: { ...prev.process, steps } }));
                       }}
                       placeholder={def?.description ?? ''}
@@ -492,13 +492,13 @@ export default function AdminLandingEditor({ initialContent, defaults, storageCo
             </label>
             <label>
               Body copy
-              <textarea
-                rows={5}
+              <AdminRichText
+                minRows={5}
                 value={content.chipsAndDrip.body}
-                onChange={(e) =>
+                onChange={(value) =>
                   setContent((prev) => ({
                     ...prev,
-                    chipsAndDrip: { ...prev.chipsAndDrip, body: e.target.value },
+                    chipsAndDrip: { ...prev.chipsAndDrip, body: value },
                   }))
                 }
                 placeholder={defChips?.body ?? ''}
@@ -537,13 +537,13 @@ export default function AdminLandingEditor({ initialContent, defaults, storageCo
             </label>
             <label>
               Body copy
-              <textarea
-                rows={5}
+              <AdminRichText
+                minRows={5}
                 value={content.campsExposure.body}
-                onChange={(e) =>
+                onChange={(value) =>
                   setContent((prev) => ({
                     ...prev,
-                    campsExposure: { ...prev.campsExposure, body: e.target.value },
+                    campsExposure: { ...prev.campsExposure, body: value },
                   }))
                 }
                 placeholder={defCamps?.body ?? ''}
@@ -618,13 +618,13 @@ export default function AdminLandingEditor({ initialContent, defaults, storageCo
             </label>
             <label>
               Subheading
-              <textarea
+              <AdminTextArea
                 rows={2}
                 value={content.results.subheading}
-                onChange={(e) =>
+                onChange={(value) =>
                   setContent((prev) => ({
                     ...prev,
-                    results: { ...prev.results, subheading: e.target.value },
+                    results: { ...prev.results, subheading: value },
                   }))
                 }
                 placeholder={defResults?.subheading ?? ''}
@@ -769,13 +769,13 @@ export default function AdminLandingEditor({ initialContent, defaults, storageCo
           <>
             <label>
               About line
-              <textarea
-                rows={2}
+              <AdminRichText
+                minRows={2}
                 value={content.footer.about}
-                onChange={(e) =>
+                onChange={(value) =>
                   setContent((prev) => ({
                     ...prev,
-                    footer: { ...prev.footer, about: e.target.value },
+                    footer: { ...prev.footer, about: value },
                   }))
                 }
                 placeholder={defFooter.about}

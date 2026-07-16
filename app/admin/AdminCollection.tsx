@@ -2,6 +2,8 @@
 
 import { useCallback, useMemo, useState } from 'react';
 import type { CollectionDef, CollectionItem, FieldDef } from '@/lib/admin-collections-schema';
+import AdminTextArea from './components/AdminTextArea';
+import AdminRichText from './components/AdminRichText';
 import './admin-collection.css';
 
 type AthleteOption = { label: string; value: string };
@@ -143,12 +145,22 @@ export default function AdminCollection({
   const renderField = (field: FieldDef) => {
     const value = draft[field.key] ?? '';
     if (field.type === 'textarea') {
+      if (field.key === 'body' || field.key === 'quote' || field.key === 'description') {
+        return (
+          <AdminRichText
+            value={value}
+            minRows={field.key === 'body' ? 6 : 3}
+            placeholder={field.placeholder}
+            onChange={(next) => setField(field.key, next)}
+          />
+        );
+      }
       return (
-        <textarea
+        <AdminTextArea
           value={value}
           rows={field.key === 'body' ? 6 : 3}
           placeholder={field.placeholder}
-          onChange={(e) => setField(field.key, e.target.value)}
+          onChange={(next) => setField(field.key, next)}
         />
       );
     }

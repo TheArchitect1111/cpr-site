@@ -59,6 +59,50 @@
 .lc-hero-support { font-size: 17px; line-height: 1.6; max-width: 520px; margin: 0 0 32px; color: #C9C9C9; }
 .lc-hero-btns { display: flex; flex-wrap: wrap; gap: 14px; }
 .lc-hero-img { min-height: 480px; background-size: cover; background-position: center top; }
+.lc-hero-slideshow { position: relative; padding: 0; background: #050505; }
+.lc-hero-img-single { width: 100%; min-height: 480px; background-size: cover; background-position: center top; }
+.lc-hero-rotate.rotate-panel { width: 100%; height: 100%; min-height: 480px; }
+.lc-hero-rotate .rotate-frame { position: relative; width: 100%; min-height: 480px; overflow: hidden; }
+.lc-hero-rotate .rotate-img {
+  position: absolute; inset: 0; width: 100%; height: 100%;
+  object-fit: cover; object-position: center top;
+  opacity: 0; transition: opacity 0.85s ease;
+}
+.lc-hero-rotate .rotate-img.active { opacity: 1; }
+.lc-hero-rotate .rotate-arrow {
+  position: absolute; top: 50%; transform: translateY(-50%);
+  z-index: 2; width: 44px; height: 44px; border: 0; border-radius: 50%;
+  background: rgba(0, 0, 0, 0.55); color: #fff; font-size: 28px; line-height: 1;
+  cursor: pointer; display: grid; place-items: center;
+}
+.lc-hero-rotate .rotate-arrow:hover { background: rgba(168, 29, 32, 0.85); }
+.lc-hero-rotate .rotate-arrow-prev { left: 14px; }
+.lc-hero-rotate .rotate-arrow-next { right: 14px; }
+.lc-hero-rotate .dots {
+  position: absolute; left: 0; right: 0; bottom: 16px; z-index: 2;
+  display: flex; justify-content: center; gap: 8px; margin-top: 0;
+}
+.lc-hero-rotate .dots button {
+  width: 10px; height: 10px; border-radius: 50%; border: 0;
+  background: rgba(255, 255, 255, 0.45); cursor: pointer; padding: 0;
+}
+.lc-hero-rotate .dots button.on { background: #fff; }
+
+.rotate-panel .rotate-frame { position: relative; overflow: hidden; min-height: 280px; }
+.rotate-panel .rotate-img {
+  position: absolute; inset: 0; width: 100%; height: 100%;
+  object-fit: cover; object-position: center top;
+  opacity: 0; transition: opacity 0.8s ease;
+}
+.rotate-panel .rotate-img.active { opacity: 1; }
+.rotate-panel .dots {
+  display: flex; justify-content: center; gap: 8px; margin-top: 12px;
+}
+.rotate-panel .dots button {
+  width: 9px; height: 9px; border-radius: 50%; border: 0;
+  background: rgba(255, 255, 255, 0.4); cursor: pointer; padding: 0;
+}
+.rotate-panel .dots button.on { background: #fff; }
 
 /* SECTIONS */
 .lc-section { padding: 72px 0; }
@@ -164,7 +208,7 @@
   .lc-nav-links { display: none; }
   .lc-nav-mobile-cta { display: flex; }
   .lc-hero-grid, .lc-portal-grid, .lc-founder-grid, .lc-philosophy-grid { grid-template-columns: 1fr; }
-  .lc-hero-img { min-height: 300px; order: -1; }
+  .lc-hero-img, .lc-hero-img-single, .lc-hero-rotate .rotate-frame { min-height: 300px; order: -1; }
   .lc-hero-copy { padding: 40px 20px 48px; text-align: center; }
   .lc-hero-headline { font-size: 36px; }
   .lc-hero-btns { justify-content: center; }

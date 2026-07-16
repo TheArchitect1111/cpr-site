@@ -2,6 +2,7 @@ import '../../landing.css';
 import './profile.css';
 import { notFound } from 'next/navigation';
 import { getAthlete, embedUrl } from '@/lib/athletes';
+import RichTextContent from '@/app/components/RichTextContent';
 import { site } from '@/config/site';
 import CoachInquiryModal from './CoachInquiryModal';
 
@@ -145,7 +146,7 @@ export default async function AthleteProfile({ params }: { params: Promise<{ slu
           </div>
           <div className="pcard">
             <h3 className="display"><span className="red">&#9658;</span> PLAYER BIO</h3>
-            {a.bio && <p className="pbio">{a.bio}</p>}
+            {a.bio && <RichTextContent className="pbio" html={a.bio} as="p" />}
             {a.strengths.length > 0 && (
               <>
                 <div className="hl-label display">STRENGTHS</div>
