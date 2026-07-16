@@ -3,6 +3,7 @@ import { LandingIcon, landingIcons } from './icons';
 import { TributeSection } from './TributeSection';
 import MobileNav from './MobileNav';
 import RotatingImagePanel from '@/app/components/RotatingImagePanel';
+import RichTextContent from '@/app/components/RichTextContent';
 
 type Props = { config: LandingPageConfig };
 
@@ -46,7 +47,7 @@ export function LandingPage({ config: c }: Props) {
             <p className="lc-hero-eyebrow display">{c.brand.tagline}</p>
             <h1 className="display lc-hero-headline">{c.possibility.headline}</h1>
             <p className="lc-hero-sub">{c.possibility.subheadline}</p>
-            <p className="lc-hero-support">{c.possibility.supporting}</p>
+            <RichTextContent className="lc-hero-support" html={c.possibility.supporting} as="p" />
             <div className="lc-hero-btns">
               <a className="lc-btn" href={c.links.apply}>
                 {c.possibility.applyLabel ?? 'APPLY NOW'}
@@ -56,7 +57,23 @@ export function LandingPage({ config: c }: Props) {
               </a>
             </div>
           </div>
-          <div className="lc-hero-img" style={{ backgroundImage: `url('${c.possibility.image}')` }} />
+          <div className="lc-hero-img lc-hero-slideshow">
+            {(c.possibility.heroSlides?.length ?? 0) > 1 ? (
+              <RotatingImagePanel
+                slides={c.possibility.heroSlides!}
+                intervalMs={5500}
+                showArrows
+                className="lc-hero-rotate"
+              />
+            ) : (
+              <div
+                className="lc-hero-img-single"
+                style={{
+                  backgroundImage: `url('${c.possibility.heroSlides?.[0]?.img || c.possibility.image}')`,
+                }}
+              />
+            )}
+          </div>
         </div>
       </section>
 
@@ -85,7 +102,7 @@ export function LandingPage({ config: c }: Props) {
             {c.socialProof.items.map((t) => (
               <div className="lc-testimonial" key={t.name}>
                 <div className="lc-qm">&ldquo;</div>
-                <p>{t.quote}</p>
+                <RichTextContent html={t.quote} as="p" />
                 <div className="lc-testimonial-by">
                   <img src={t.photo} alt={t.name} />
                   <div>
@@ -106,7 +123,7 @@ export function LandingPage({ config: c }: Props) {
             <div>
               <p className="lc-philosophy-label display">{c.philosophy.label}</p>
               <blockquote className="lc-philosophy-quote">
-                &ldquo;{c.philosophy.quote}&rdquo;
+                <RichTextContent html={c.philosophy.quote} />
               </blockquote>
               <p className="lc-philosophy-attr display">{c.philosophy.attribution}</p>
             </div>
@@ -167,7 +184,7 @@ export function LandingPage({ config: c }: Props) {
           <div className="lc-container lc-gallery-grid">
             <div>
               <h2 className="display">{c.chipsAndDrip.heading}</h2>
-              <p className="lc-lead">{c.chipsAndDrip.body}</p>
+              <RichTextContent className="lc-lead" html={c.chipsAndDrip.body} as="p" />
             </div>
             <RotatingImagePanel slides={c.chipsAndDrip.slides} intervalMs={3000} />
           </div>
@@ -201,7 +218,7 @@ export function LandingPage({ config: c }: Props) {
           <div className="lc-container lc-portal-grid">
             <div>
               <h2 className="display">{c.campsExposure.heading}</h2>
-              <p className="lc-lead">{c.campsExposure.body}</p>
+              <RichTextContent className="lc-lead" html={c.campsExposure.body} as="p" />
               <RotatingImagePanel slides={c.campsExposure.slides} intervalMs={3000} />
             </div>
             {c.campsExposure.dashboardImage ? (

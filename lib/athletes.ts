@@ -465,13 +465,39 @@ export async function createAthlete(input: AthleteInput) {
 }
 
 export async function deleteAthlete(recordId: string) {
-  await archiveAthlete(recordId, 'Profile archived by admin');
   const record = await getRawAthleteRecord(recordId);
+  const originalSlug = record ? f(record, 'Slug') : '';
+  await archiveAthlete(recordId, 'Profile archived by admin');
+  const slugToken = originalSlug && !originalSlug.startsWith('archived-')
+    ? ` [cpr-prev-slug:${originalSlug}]`
+    : '';
   await patchAthleteFields(recordId, {
     Status: 'Archived',
     Slug: `archived-${recordId}`,
-    Notes: appendActivityLine(record ? f(record, 'Notes') : '', 'Admin archived profile.'),
+    Notes: appendActivityLine(
+      record ? f(record, 'Notes') : '',
+      `Admin archived profile.${slugToken}`,
+    ),
   });
+}
+
+export async function restoreAthlete(recordId: string) {
+  const record = await getRawAthleteRecord(recordId);
+  if (!record) throw new Error('Player not found');
+  const notes = f(record, 'Notes');
+  const match = notes.match(/\[cpr-prev-slug:([^\]]+)\]/);
+  const restoredSlug =
+    match?.[1] ||
+    slugify([f(record, 'First Name'), f(record, 'Last Name'), f(record, 'Graduation Year')]);
+  const cleanedNotes = notes
+    .replace(/\s*\[cpr-prev-slug:[^\]]+\]/, '')
+    .trim();
+  await patchAthleteFields(recordId, {
+    Status: 'Active',
+    Slug: restoredSlug,
+    Notes: appendActivityLine(cleanedNotes, 'Admin restored profile to the public site.'),
+  });
+  return restoredSlug;
 }
 
 export async function appendAthletePortalActivity(slug: string, message: string): Promise<boolean> {

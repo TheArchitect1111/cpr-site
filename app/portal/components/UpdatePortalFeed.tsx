@@ -2,6 +2,7 @@ import { eaChassis } from '@/config/ea-chassis';
 import type { PortalUpdate } from '@/lib/portal-updates';
 import type { ContentRequestRecord } from '@/lib/content-requests';
 import type { UpdateHubFeedItem } from '@/lib/update-hub-feed';
+import RichTextContent from '@/app/components/RichTextContent';
 
 const CATEGORY_LABEL: Record<PortalUpdate['category'], string> = {
   recruiting: 'Recruiting',
@@ -90,7 +91,7 @@ export default function UpdatePortalFeed({
                   <time dateTime={item.date}>{formatWhen(item.date)}</time>
                 </div>
                 <h2>{item.title}</h2>
-                {item.body ? <p>{item.body}</p> : null}
+                {item.body ? <RichTextContent html={item.body} as="p" /> : null}
               </article>
             ))}
           </div>
@@ -138,7 +139,7 @@ export default function UpdatePortalFeed({
                   <time dateTime={item.date}>{formatWhen(item.date)}</time>
                 </div>
                 <h2>{item.title}</h2>
-                <p>{item.body}</p>
+                <RichTextContent html={item.body} as="p" />
               </article>
             ))}
           </div>

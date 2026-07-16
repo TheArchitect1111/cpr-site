@@ -66,6 +66,19 @@ export function mergeLandingConfig(
 ): LandingPageConfig {
   const testimonialItems = mergeTestimonialItems(base.socialProof.items, overrides);
 
+  const heroSlides = mergeGallerySlides(
+    base.possibility.heroSlides?.length
+      ? base.possibility.heroSlides
+      : base.possibility.image
+        ? [{ img: base.possibility.image }]
+        : [],
+    overrides.possibility.heroSlides?.length
+      ? overrides.possibility.heroSlides
+      : overrides.possibility.imageUrl.trim()
+        ? [{ imageUrl: overrides.possibility.imageUrl, caption: '' }]
+        : [],
+  );
+
   return {
     ...base,
     possibility: {
@@ -74,7 +87,8 @@ export function mergeLandingConfig(
       headline: pick(overrides.possibility.headline, base.possibility.headline),
       subheadline: pick(overrides.possibility.subheadline, base.possibility.subheadline),
       supporting: pick(overrides.possibility.supporting, base.possibility.supporting),
-      image: pick(overrides.possibility.imageUrl, base.possibility.image),
+      image: heroSlides[0]?.img ?? pick(overrides.possibility.imageUrl, base.possibility.image),
+      heroSlides,
     },
     about: base.about
       ? {

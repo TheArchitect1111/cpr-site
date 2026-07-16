@@ -55,6 +55,18 @@ function trimProofs(
   }));
 }
 
+function trimGallerySlides(
+  input: LandingContent['possibility']['heroSlides'] | undefined,
+  current: LandingContent['possibility']['heroSlides'],
+  max = 12,
+) {
+  const source = input ?? current;
+  return (source || []).slice(0, max).map((slot) => ({
+    imageUrl: trim(slot?.imageUrl ?? '', 1000),
+    caption: trim(slot?.caption ?? '', 200),
+  }));
+}
+
 export async function GET(req: NextRequest) {
   if (!isAdminAuthed(req)) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   const content = await getLandingContent();
@@ -74,13 +86,15 @@ export async function POST(req: NextRequest) {
   try {
     const current = await getLandingContent();
     const testimonials = trimTestimonials(body.testimonials, current.testimonials);
+    const heroSlides = trimGallerySlides(body.possibility?.heroSlides, current.possibility.heroSlides);
     const saved = await saveLandingContent({
       possibility: {
         announcement: trim(body.possibility?.announcement ?? current.possibility.announcement, 400),
         headline: trim(body.possibility?.headline ?? current.possibility.headline, 200),
         subheadline: trim(body.possibility?.subheadline ?? current.possibility.subheadline, 300),
         supporting: trim(body.possibility?.supporting ?? current.possibility.supporting, 600),
-        imageUrl: trim(body.possibility?.imageUrl ?? current.possibility.imageUrl, 1000),
+        imageUrl: heroSlides[0]?.imageUrl || trim(body.possibility?.imageUrl ?? current.possibility.imageUrl, 1000),
+        heroSlides,
       },
       about: {
         heading: trim(body.about?.heading ?? current.about.heading, 120),
@@ -113,6 +127,7 @@ export async function POST(req: NextRequest) {
       chipsAndDrip: {
         heading: trim(body.chipsAndDrip?.heading ?? current.chipsAndDrip.heading, 120),
         body: trim(body.chipsAndDrip?.body ?? current.chipsAndDrip.body, 2000),
+        slides: trimGallerySlides(body.chipsAndDrip?.slides, current.chipsAndDrip.slides),
       },
       campsExposure: {
         heading: trim(body.campsExposure?.heading ?? current.campsExposure.heading, 120),
@@ -121,6 +136,7 @@ export async function POST(req: NextRequest) {
           body.campsExposure?.dashboardImageUrl ?? current.campsExposure.dashboardImageUrl,
           1000,
         ),
+        slides: trimGallerySlides(body.campsExposure?.slides, current.campsExposure.slides),
       },
       results: {
         heading: trim(body.results?.heading ?? current.results.heading, 120),

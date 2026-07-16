@@ -9,6 +9,8 @@ import type {
   FieldDef,
 } from '@/lib/admin-collections-schema';
 import { OptimisticSaveBadge, useOptimisticSave } from '@/lib/instant-feel';
+import AdminTextArea from '../components/AdminTextArea';
+import AdminRichText from '../components/AdminRichText';
 import './update-portal.css';
 
 type AthleteOption = { label: string; value: string };
@@ -272,7 +274,24 @@ export default function AdminUpdatePortal({
   function renderField(def: CollectionDef, field: FieldDef) {
     const value = drafts[def.id]?.[field.key] || '';
     if (field.type === 'textarea') {
-      return <textarea rows={field.key === 'body' ? 7 : 4} value={value} placeholder={field.placeholder} onChange={(e) => setDraftField(def.id, field.key, e.target.value)} />;
+      if (field.key === 'body' || field.key === 'quote' || field.key === 'description') {
+        return (
+          <AdminRichText
+            value={value}
+            minRows={field.key === 'body' ? 7 : 4}
+            placeholder={field.placeholder}
+            onChange={(next) => setDraftField(def.id, field.key, next)}
+          />
+        );
+      }
+      return (
+        <AdminTextArea
+          value={value}
+          rows={field.key === 'body' ? 7 : 4}
+          placeholder={field.placeholder}
+          onChange={(next) => setDraftField(def.id, field.key, next)}
+        />
+      );
     }
     if (field.type === 'select') {
       return (
@@ -356,10 +375,10 @@ export default function AdminUpdatePortal({
           <div className="up-form-grid">
             <label>Announcement banner<input value={landingDraft.possibility.announcement} onChange={(e) => patchLanding('possibility', 'announcement', e.target.value)} /></label>
             <label>Hero headline<input value={landingDraft.possibility.headline} onChange={(e) => patchLanding('possibility', 'headline', e.target.value)} /></label>
-            <label className="wide">Hero supporting text<textarea rows={3} value={landingDraft.possibility.supporting} onChange={(e) => patchLanding('possibility', 'supporting', e.target.value)} /></label>
+            <label className="wide">Hero supporting text<AdminRichText value={landingDraft.possibility.supporting} onChange={(value) => patchLanding('possibility', 'supporting', value)} minRows={3} /></label>
             <label>Hero image<input type="file" accept="image/*" onChange={(e) => { const file = e.target.files?.[0]; if (file) void uploadLandingImage(file, 'hero'); }} /></label>
             <label>Featured quote photo<input type="file" accept="image/*" onChange={(e) => { const file = e.target.files?.[0]; if (file) void uploadLandingImage(file, 'quote'); }} /></label>
-            <label className="wide">Featured quote<textarea rows={4} value={landingDraft.socialProof.quote} onChange={(e) => patchLanding('socialProof', 'quote', e.target.value)} /></label>
+            <label className="wide">Featured quote<AdminRichText value={landingDraft.socialProof.quote} onChange={(value) => patchLanding('socialProof', 'quote', value)} minRows={4} /></label>
             <label>Quote name<input value={landingDraft.socialProof.name} onChange={(e) => patchLanding('socialProof', 'name', e.target.value)} /></label>
             <label>Quote role<input value={landingDraft.socialProof.role} onChange={(e) => patchLanding('socialProof', 'role', e.target.value)} /></label>
             {[0, 1, 2].map((index) => (
@@ -384,7 +403,7 @@ export default function AdminUpdatePortal({
           </div>
           {annMessage && <p className="up-message">{annMessage}</p>}
           <label>Title<input value={annTitle} onChange={(e) => setAnnTitle(e.target.value)} placeholder="What changed?" /></label>
-          <label>Message<textarea rows={6} value={annBody} onChange={(e) => setAnnBody(e.target.value)} placeholder="Keep it short, useful, and timely." /></label>
+          <label>Message<AdminRichText value={annBody} onChange={setAnnBody} placeholder="Keep it short, useful, and timely." minRows={6} /></label>
           <div className="up-form-grid compact">
             <label>Audience<select value={annAudience} onChange={(e) => setAnnAudience(e.target.value)}>{['All', 'Families', 'Athletes', 'Parents', 'Coaches'].map((option) => <option key={option}>{option}</option>)}</select></label>
             <label className="up-check"><input type="checkbox" checked={annPinned} onChange={(e) => setAnnPinned(e.target.checked)} /> Pin it</label>

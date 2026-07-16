@@ -85,6 +85,8 @@ export type LandingPageConfig = {
     subheadline: string;
     supporting: string;
     image: string;
+    /** Owner-managed hero slideshow; falls back to single image */
+    heroSlides?: GallerySlide[];
     applyLabel?: string;
     videoLabel?: string;
   };
