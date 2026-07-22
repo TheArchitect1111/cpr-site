@@ -383,8 +383,10 @@
 .cpx-photo {
   width: 100%;
   aspect-ratio: 4 / 5;
-  background-size: cover;
-  background-position: center;
+  background-size: contain;
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-color: #0c0c0a;
   border-radius: var(--cpx-radius);
   box-shadow: 0 30px 70px -30px rgba(0, 0, 0, 0.8);
 }
@@ -563,24 +565,35 @@
 .cpx-camps-gallery .rotate-frame {
   position: relative;
   width: 100%;
-  aspect-ratio: 16 / 10;
   border-radius: var(--cpx-radius);
   overflow: hidden;
   border: 1px solid var(--cpx-line);
+  background: #0c0c0a;
+  line-height: 0;
 }
 
 .cpx-camps-gallery .rotate-img {
-  position: absolute;
-  inset: 0;
+  display: block;
   width: 100%;
-  height: 100%;
-  object-fit: cover;
+  height: auto;
+  object-fit: contain;
+  object-position: center center;
+  background: #0c0c0a;
   opacity: 0;
   transition: opacity 0.8s ease;
 }
 
 .cpx-camps-gallery .rotate-img.active {
+  position: relative;
   opacity: 1;
+}
+
+.cpx-camps-gallery .rotate-img:not(.active) {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
 }
 
 .cpx-camps-gallery .rotate-cap {
@@ -1025,8 +1038,10 @@
 .cpx-meet-photo {
   width: 100%;
   aspect-ratio: 4 / 3;
-  background-size: cover;
-  background-position: center top;
+  background-size: contain;
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-color: #0c0c0a;
 }
 
 .cpx-meet-meta {

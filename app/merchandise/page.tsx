@@ -19,7 +19,18 @@ export default function MerchandisePage() {
             <p>{m.note}</p>
             <p style={{ marginTop: 16, fontWeight: 700 }}>CPR Hoodies · CPR T-Shirts · More coming soon.</p>
           </div>
-          <img src={m.image} alt="CPR merchandise" style={{ width: '100%', borderRadius: 8, height: 320, objectFit: 'cover' }} />
+          <img
+            src={m.image}
+            alt="CPR merchandise"
+            style={{
+              width: '100%',
+              borderRadius: 8,
+              height: 320,
+              objectFit: 'contain',
+              objectPosition: 'center center',
+              background: '#0c0c0a',
+            }}
+          />
         </div>
       </section>
     </main>
