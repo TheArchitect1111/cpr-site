@@ -123,19 +123,6 @@ body {
   justify-content: center;
   padding-left: 40px;
   padding-right: 40px;
-  min-width: 0;
-}
-
-@media (max-width: 900px) {
-  .lc-hero-copy {
-    min-height: 0;
-    padding-left: 20px;
-    padding-right: 20px;
-  }
-
-  .lc-nav-brand .b1 {
-    font-size: clamp(18px, 5vw, 24px);
-  }
 }
 
 .lc-hero-announcement {
@@ -199,32 +186,12 @@ body {
   color: var(--text-muted) !important;
 }
 
-.lc-challenge-intro {
-  color: #ffffff !important;
-  max-width: 760px;
-  margin: 0 auto 1.25rem;
-  line-height: 1.65;
-  font-size: 1.05rem;
-}
-
-/* Chassis defaults quote text to #333 (unreadable on dark CPR cards). Force white. */
+/* Quote text must stay white on dark CPR cards (readability). Not a layout change. */
 .lc-testimonial p,
 .lc-testimonial .rich-text-content,
 .lc-testimonial .rich-text-content p {
   color: #ffffff !important;
   white-space: pre-line;
-}
-
-/* Public site text should remain selectable for copy/paste */
-html,
-body,
-.lc-testimonial,
-.lc-section,
-.lc-hero,
-.lc-challenge,
-main {
-  -webkit-user-select: text;
-  user-select: text;
 }
 
 .lc-testimonial-by {
@@ -283,29 +250,17 @@ main {
 
 .rotate-img,
 .lc-proof img,
-.lc-player-card img,
-.lc-founder-img {
-  object-fit: contain !important;
-  object-position: center center;
-  max-height: none;
-}
-
-.lc-founder-img {
-  border-radius: 12px !important;
-  height: auto !important;
-  width: 100%;
-  max-width: 280px;
-  background: #0c0c0a;
+.lc-player-card img {
+  object-position: center top;
 }
 
 .lc-hero-img {
-  min-height: 0;
-  background-size: contain;
-  background-position: center center;
-  background-repeat: no-repeat;
-  -webkit-mask-image: none;
-  mask-image: none;
-  box-shadow: none;
+  min-height: 520px;
+  background-size: cover;
+  background-position: center top;
+  -webkit-mask-image: linear-gradient(90deg, transparent 0%, #000 18%);
+  mask-image: linear-gradient(90deg, transparent 0%, #000 18%);
+  box-shadow: inset 0 -140px 110px rgba(139,0,0,.38);
 }
 
 .lc-footer {
@@ -318,8 +273,8 @@ main {
   .lc-nav-logo { width: 52px; height: 52px; }
   .lc-nav-brand .b1 { font-size: 24px; }
   .lc-hero-img {
-    order: -1;
-    min-height: 0;
+    order: 0;
+    min-height: 260px;
     -webkit-mask-image: none;
     mask-image: none;
     border-top: 1px solid rgba(215,25,32,.28);

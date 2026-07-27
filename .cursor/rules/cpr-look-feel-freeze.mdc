@@ -1,0 +1,42 @@
+---
+description: CPR public site look and feel is FROZEN — no visual redesign without explicit unfreeze
+globs:
+  - app/landing.css
+  - app/page.tsx
+  - lib/landing-chassis/**
+  - config/landing.ts
+  - app/cpr-experience-lab/**
+  - app/merchandise/**
+  - app/recruitment/**
+  - app/camps/**
+  - app/resources/**
+  - app/athletes/**
+alwaysApply: true
+---
+
+# CPR Look & Feel — FROZEN (Jul 27, 2026)
+
+The CPR public site visual system is **frozen**. Do not change how the site looks or feels unless the user **explicitly** says to redesign, restyle, or unfreeze look-and-feel.
+
+## Allowed without unfreeze
+
+- URL / link destination fixes (e.g. Apply Now → Google Form)
+- Content copy edits when asked (quotes, bullets) **without** changing layout, spacing, imagery treatment, or chrome
+- Contrast-only text color fixes when explicitly requested (e.g. gray → white on testimonials)
+- Auth, portal, admin, deploy, and bug fixes that preserve presentation
+
+## Forbidden without explicit unfreeze
+
+- Hero / gallery / image CSS (`object-fit`, `background-size`, masks, min-heights, order)
+- Typography, color system, section composition, card treatment
+- "Polish", "mobile fix", or photo-crop experiments that alter homepage atmosphere
+- Expanding About / testimonials into new visual patterns
+- Rewriting landing-chassis CSS for aesthetics
+
+## Quarantined
+
+Photo-crop / `object-fit: contain` homepage treatment — see `docs/_quarantine/photo-crop-contain-lookfeel/README.md`.
+
+## If unsure
+
+Ask: **"Does this change how CPR looks or feels?"** If yes → stop and ask the user before coding.
