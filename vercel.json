@@ -2,14 +2,39 @@
   "redirects": [
     {
       "source": "/:path*",
-      "has": [{ "type": "host", "value": "template-sports-recruitment.vercel.app" }],
+      "has": [
+        {
+          "type": "host",
+          "value": "template-sports-recruitment.vercel.app"
+        }
+      ],
       "destination": "https://cpr-site.vercel.app/:path*",
       "permanent": true
     },
     {
       "source": "/:path*",
-      "has": [{ "type": "host", "value": "template-sports-recruitment-the-architects-projects-cc813778.vercel.app" }],
+      "has": [
+        {
+          "type": "host",
+          "value": "template-sports-recruitment-the-architects-projects-cc813778.vercel.app"
+        }
+      ],
       "destination": "https://cpr-site.vercel.app/:path*",
+      "permanent": true
+    },
+    {
+      "source": "/story/selena",
+      "destination": "/cpr-experience-lab",
+      "permanent": true
+    },
+    {
+      "source": "/magnifi",
+      "destination": "/cpr-experience-lab",
+      "permanent": true
+    },
+    {
+      "source": "/amplify",
+      "destination": "/cpr-experience-lab",
       "permanent": true
     }
   ]
