@@ -98,6 +98,7 @@ export async function POST(req: NextRequest) {
       },
       about: {
         heading: trim(body.about?.heading ?? current.about.heading, 120),
+        intro: trim(body.about?.intro ?? current.about.intro ?? '', 600),
         points: (body.about?.points ?? current.about.points).map((p) => trim(p, 200)),
       },
       socialProof: {

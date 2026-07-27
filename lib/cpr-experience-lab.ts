@@ -146,6 +146,46 @@ export const journey = {
   ],
 } as const;
 
+/** Service packages — aligned with CPR international recruiting offerings (NCAA pathway). */
+export const ncaaPackages = {
+  id: 'ncaa-packages',
+  eyebrow: 'Programs & Packages',
+  headline: 'NCAA Pathways Built For Real Families.',
+  intro:
+    'Whether you are in Canada, the United States, or abroad, CPR organizes the recruiting journey with clear packages — from eligibility basics to full-service placement.',
+  items: [
+    {
+      title: 'NCAA Eligibility Essentials',
+      body: 'Clearinghouse registration guidance, core-course planning, GPA targets, and timeline coaching so academics never become a surprise.',
+      highlights: ['Eligibility Center prep', 'Core course review', 'Amateurism checklist'],
+    },
+    {
+      title: 'Recruiting Profile & Film',
+      body: 'Coach-ready athlete profiles, highlight strategy, and presentation standards that help the right programs see your player quickly.',
+      highlights: ['Professional profile build', 'Film review', 'Coach-share package'],
+    },
+    {
+      title: 'Exposure & Coach Outreach',
+      body: 'Structured outreach, camp and showcase placement, and follow-up so opportunities are earned — not left to chance.',
+      highlights: ['Target school mapping', 'Event placement', 'Outreach tracking'],
+    },
+    {
+      title: 'International Student-Athlete',
+      body: 'For families outside North America: pathway planning across NCAA, NAIA, U SPORTS, and prep options with visa-aware family communication.',
+      highlights: ['Global family support', 'Division fit strategy', 'International fee agreement'],
+    },
+    {
+      title: 'Full Journey Support',
+      body: 'Development, academics, exposure, and placement under one connected CPR program — with support that continues after commitment.',
+      highlights: ['End-to-end guidance', 'Parent communication', 'Post-placement check-ins'],
+    },
+  ],
+  cta: {
+    label: 'Start With The Application',
+    href: PLAYER_APPLICATION_URL,
+  },
+} as const;
+
 export const quietWork = {
   id: 'quiet-work',
   eyebrow: 'Behind The Scenes',
@@ -283,10 +323,16 @@ export const explore = {
   cards: [
     {
       title: 'Apply Now',
-      description: 'Start your CPR recruiting journey.',
+      description: 'Start your CPR recruiting journey with the standard application form.',
       href: PLAYER_APPLICATION_URL,
       variant: 'white',
       external: true,
+    },
+    {
+      title: 'NCAA Eligibility Guide',
+      description: 'Division I, II, III, NAIA, and international pathway basics.',
+      href: '#ncaa-packages',
+      variant: 'red',
     },
     {
       title: 'Player Profiles',
@@ -295,8 +341,8 @@ export const explore = {
       variant: 'dark',
     },
     {
-      title: 'Fee Agreement',
-      description: 'Review the standard CPR fee agreement.',
+      title: 'Standard Application',
+      description: 'North American families — same form as Apply Now.',
       href: STANDARD_FEE_AGREEMENT_URL,
       variant: 'red',
       external: true,

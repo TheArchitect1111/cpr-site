@@ -7,6 +7,11 @@ import RichTextContent from '@/app/components/RichTextContent';
 
 type Props = { config: LandingPageConfig };
 
+function externalLinkProps(href: string) {
+  if (!href.startsWith('http')) return {};
+  return { target: '_blank' as const, rel: 'noopener noreferrer' as const };
+}
+
 export function LandingPage({ config: c }: Props) {
   return (
     <>
@@ -25,12 +30,12 @@ export function LandingPage({ config: c }: Props) {
                 {item.label}
               </a>
             ))}
-            <a className="lc-btn" href={c.links.apply}>
+            <a className="lc-btn" href={c.links.apply} {...externalLinkProps(c.links.apply)}>
               APPLY NOW
             </a>
           </nav>
           <div className="lc-nav-mobile-cta">
-            <a className="lc-btn lc-btn-sm" href={c.links.apply}>
+            <a className="lc-btn lc-btn-sm" href={c.links.apply} {...externalLinkProps(c.links.apply)}>
               APPLY NOW
             </a>
           </div>
@@ -49,7 +54,7 @@ export function LandingPage({ config: c }: Props) {
             <p className="lc-hero-sub">{c.possibility.subheadline}</p>
             <RichTextContent className="lc-hero-support" html={c.possibility.supporting} as="p" />
             <div className="lc-hero-btns">
-              <a className="lc-btn" href={c.links.apply}>
+              <a className="lc-btn" href={c.links.apply} {...externalLinkProps(c.links.apply)}>
                 {c.possibility.applyLabel ?? 'APPLY NOW'}
               </a>
               <a className="lc-btn lc-btn-outline" href={c.links.video}>
@@ -84,7 +89,7 @@ export function LandingPage({ config: c }: Props) {
             <h2 className="display lc-challenge-head">{c.about.heading}</h2>
             {c.about.intro ? <p className="lc-challenge-intro">{c.about.intro}</p> : null}
             <ul className="lc-challenge-list">
-              {c.about.points.map((point) => (
+              {c.about.points.filter((point) => point.trim()).map((point) => (
                 <li key={point}>{point}</li>
               ))}
             </ul>
@@ -329,16 +334,24 @@ export function LandingPage({ config: c }: Props) {
               <p>{c.finalCta.subheading}</p>
             </div>
             <div className="lc-final-actions">
-              <a className="lc-btn lc-btn-white" href={c.links.apply}>
+              <a className="lc-btn lc-btn-white" href={c.links.apply} {...externalLinkProps(c.links.apply)}>
                 {c.finalCta.applyLabel} &#10140;
               </a>
               {c.finalCta.agreementLabel && c.links.agreement ? (
-                <a className="lc-btn lc-btn-white-outline" href={c.links.agreement}>
+                <a
+                  className="lc-btn lc-btn-white-outline"
+                  href={c.links.agreement}
+                  {...externalLinkProps(c.links.agreement)}
+                >
                   {c.finalCta.agreementLabel}
                 </a>
               ) : null}
               {c.finalCta.internationalAgreementLabel && c.links.internationalAgreement ? (
-                <a className="lc-btn lc-btn-white-outline" href={c.links.internationalAgreement}>
+                <a
+                  className="lc-btn lc-btn-white-outline"
+                  href={c.links.internationalAgreement}
+                  {...externalLinkProps(c.links.internationalAgreement)}
+                >
                   {c.finalCta.internationalAgreementLabel}
                 </a>
               ) : null}
@@ -381,7 +394,9 @@ export function LandingPage({ config: c }: Props) {
               <ul>
                 {c.footer.resources.map((l) => (
                   <li key={l.href}>
-                    <a href={l.href}>{l.label}</a>
+                    <a href={l.href} {...externalLinkProps(l.href)}>
+                      {l.label}
+                    </a>
                   </li>
                 ))}
               </ul>

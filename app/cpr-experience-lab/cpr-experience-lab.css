@@ -18,6 +18,8 @@
   font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   overflow-x: hidden;
+  -webkit-user-select: text;
+  user-select: text;
 }
 
 .cpx .display {
@@ -461,6 +463,47 @@
   border-radius: var(--cpx-radius);
   background: linear-gradient(120deg, rgba(215, 25, 32, 0.22), rgba(215, 25, 32, 0.05));
   border: 1px solid var(--cpx-red);
+}
+
+.cpx-package-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+  margin-top: 2rem;
+}
+
+.cpx-package-card {
+  padding: 1.4rem 1.35rem;
+  border-radius: var(--cpx-radius);
+  background: linear-gradient(160deg, #161618, #0d0d0f);
+  border: 1px solid var(--cpx-line);
+}
+
+.cpx-package-card h3 {
+  margin: 0 0 0.75rem;
+  font-size: 1.35rem;
+}
+
+.cpx-package-card p {
+  margin: 0 0 1rem;
+  color: rgba(255, 255, 255, 0.88);
+  line-height: 1.6;
+}
+
+.cpx-package-highlights {
+  margin: 0;
+  padding-left: 1.1rem;
+  color: var(--cpx-muted);
+  line-height: 1.55;
+}
+
+.cpx-package-cta {
+  margin-top: 2rem;
+  text-align: center;
+}
+
+.cpx-package-cta .cpx-btn {
+  display: inline-flex;
 }
 
 .cpx-global-note p {
@@ -991,6 +1034,9 @@
     grid-template-columns: repeat(2, 1fr);
   }
   .cpx-belief-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .cpx-package-grid {
     grid-template-columns: repeat(2, 1fr);
   }
   .cpx-timeline {

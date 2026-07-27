@@ -45,6 +45,7 @@ export type LandingContent = {
   };
   about: {
     heading: string;
+    intro?: string;
     points: string[];
   };
   socialProof: {
@@ -144,7 +145,8 @@ export const EMPTY_LANDING_CONTENT: LandingContent = {
   },
   about: {
     heading: '',
-    points: ['', '', ''],
+    intro: '',
+    points: ['', '', '', '', '', ''],
   },
   socialProof: {
     heading: '',
@@ -244,7 +246,8 @@ function normalize(input: Partial<LandingContent> | null | undefined): LandingCo
     },
     about: {
       heading: String(input?.about?.heading ?? base.about.heading),
-      points: [0, 1, 2].map((i) => String(points[i] ?? '')),
+      intro: String(input?.about?.intro ?? base.about.intro ?? ''),
+      points: [0, 1, 2, 3, 4, 5].map((i) => String(points[i] ?? '')),
     },
     socialProof: {
       heading: String(input?.socialProof?.heading ?? base.socialProof.heading),

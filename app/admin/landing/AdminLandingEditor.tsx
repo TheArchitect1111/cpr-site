@@ -226,13 +226,25 @@ export default function AdminLandingEditor({ initialContent, defaults, storageCo
                 placeholder={defAbout?.heading ?? 'About CPR'}
               />
             </label>
-            {[0, 1, 2].map((i) => (
+            <label>
+              Intro paragraph
+              <AdminRichText
+                minRows={3}
+                value={content.about.intro ?? ''}
+                onChange={(value) =>
+                  setContent((prev) => ({ ...prev, about: { ...prev.about, intro: value } }))
+                }
+                placeholder={defAbout?.intro ?? ''}
+              />
+            </label>
+            {[0, 1, 2, 3, 4, 5].map((i) => (
               <label key={i}>
                 Bullet {i + 1}
                 <input
                   value={content.about.points[i] ?? ''}
                   onChange={(e) => {
                     const points = [...content.about.points];
+                    while (points.length <= i) points.push('');
                     points[i] = e.target.value;
                     setContent((prev) => ({ ...prev, about: { ...prev.about, points } }));
                   }}

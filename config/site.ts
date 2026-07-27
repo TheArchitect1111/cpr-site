@@ -1,11 +1,30 @@
 // CPR LaunchPad Template Config
 // Every client-variable lives here. New client = new config, same layout.
 
+/**
+ * Primary Apply Now destination (Mike CPR, Jul 2026).
+ * Uses the North American Google Form — not the International fee agreement.
+ */
 export const PLAYER_APPLICATION_URL =
   "https://docs.google.com/forms/d/e/1FAIpQLSebNeyreO7sVvWF0YToDWJRbkqSJibtL_--UWIaiRGT1PZ2zA/viewform";
-export const STANDARD_FEE_AGREEMENT_URL = "https://forms.gle/idrMWqU5FpebA1f46";
+/** On-platform apply (no Google account) — kept for /apply and intake redirect. */
+export const ON_PLATFORM_APPLICATION_URL = "/apply";
+export const LEGACY_GOOGLE_PLAYER_APPLICATION_URL =
+  "https://docs.google.com/forms/d/e/1FAIpQLScnS-NAIhJnNDCVMbhFtAPbEtYZT9ZzZytagNu1THa9f80qmg/viewform?usp=publish-editor";
+/** North American (standard) fee agreement — same form families use to start with CPR. */
+export const STANDARD_FEE_AGREEMENT_URL = PLAYER_APPLICATION_URL;
+/** International fee agreement — Google Form (Mike CPR, Jul 2026). */
 export const INTERNATIONAL_FEE_AGREEMENT_URL =
   "https://docs.google.com/forms/d/e/1FAIpQLScnS-NAIhJnNDCVMbhFtAPbEtYZT9ZzZytagNu1THa9f80qmg/viewform?usp=publish-editor";
+/** Previous short-link for the North American fee agreement (superseded). */
+export const LEGACY_GOOGLE_STANDARD_FEE_AGREEMENT_URL = "https://forms.gle/idrMWqU5FpebA1f46";
+
+/** Public share URL for The Experience (CPR Experience Lab). */
+export const EXPERIENCE_LAB_PATH = "/cpr-experience-lab";
+const CPR_SITE_ORIGIN =
+  (typeof process !== "undefined" && process.env.NEXT_PUBLIC_CPR_SITE_URL?.replace(/\/$/, "")) ||
+  "https://canadianprospectrecruitment.vercel.app";
+export const EXPERIENCE_LAB_PUBLIC_URL = `${CPR_SITE_ORIGIN}${EXPERIENCE_LAB_PATH}`;
 
 export const site = {
   brand: {
@@ -26,6 +45,7 @@ export const site = {
     apply: PLAYER_APPLICATION_URL,
     standardAgreement: STANDARD_FEE_AGREEMENT_URL,
     internationalAgreement: INTERNATIONAL_FEE_AGREEMENT_URL,
+    experience: EXPERIENCE_LAB_PATH,
     video: "https://youtu.be/iqietCwnCxc",
     instagram: "https://instagram.com/mississaugamagic",
     instagramProspects: "https://instagram.com/prospects.ca",
@@ -93,7 +113,7 @@ export const site = {
     heading: "START YOUR CPR JOURNEY",
     sub: "Review the fee agreement, complete your application, and take the first step.",
     agreementLabel: "FEE AGREEMENT",
-    agreementHref: "/agreement",
+    agreementHref: STANDARD_FEE_AGREEMENT_URL,
     applyLabel: "APPLICATION",
     applyHref: PLAYER_APPLICATION_URL,
   },

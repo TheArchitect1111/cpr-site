@@ -1,11 +1,12 @@
 import type { LandingPageConfig } from '@/lib/landing-chassis/types';
-import { site } from './site';
+import {
+  INTERNATIONAL_FEE_AGREEMENT_URL,
+  PLAYER_APPLICATION_URL,
+  STANDARD_FEE_AGREEMENT_URL,
+  site,
+} from './site';
 
-export const PLAYER_APPLICATION_URL =
-  'https://docs.google.com/forms/d/e/1FAIpQLSebNeyreO7sVvWF0YToDWJRbkqSJibtL_--UWIaiRGT1PZ2zA/viewform';
-export const STANDARD_FEE_AGREEMENT_URL = 'https://forms.gle/idrMWqU5FpebA1f46';
-export const INTERNATIONAL_FEE_AGREEMENT_URL =
-  'https://docs.google.com/forms/d/e/1FAIpQLScnS-NAIhJnNDCVMbhFtAPbEtYZT9ZzZytagNu1THa9f80qmg/viewform?usp=publish-editor';
+export { PLAYER_APPLICATION_URL, STANDARD_FEE_AGREEMENT_URL, INTERNATIONAL_FEE_AGREEMENT_URL };
 
 /** CPR instance of EA Landing Page Chassis™ — swap config, keep framework. */
 export const landingConfig: LandingPageConfig = {
@@ -35,7 +36,7 @@ export const landingConfig: LandingPageConfig = {
   nav: [
     { label: 'HOME', href: '#top', icon: 'home' },
     { label: 'EXPERIENCE', href: '/cpr-experience-lab', icon: 'star' },
-    { label: 'ABOUT', href: '#testimonials', icon: 'user' },
+    { label: 'ABOUT', href: '#about', icon: 'user' },
     { label: 'PROGRAMS', href: '#how-it-works', icon: 'school' },
     { label: 'RECRUITING', href: '/recruitment', icon: 'recruiting' },
     { label: 'EVENTS', href: '#camps', icon: 'calendar' },
@@ -56,10 +57,15 @@ export const landingConfig: LandingPageConfig = {
   },
   about: {
     heading: 'ABOUT CPR',
+    intro:
+      'Canadian Prospects Recruitment helps student-athletes and families turn talent into a clear, organized path to the next level — with honest guidance, real exposure, and relationships that open doors.',
     points: [
-      'Over 40 years of coaching experience',
-      '13 years of recruitment experience',
-      'Established relationships with coaches and Athletic Directors throughout North America',
+      '40+ years of coaching experience shaping complete student-athletes on and off the court',
+      '13+ years of recruiting experience guiding families through every step of the journey',
+      'Trusted relationships with coaches and Athletic Directors across North America — and now worldwide',
+      'Player development, film, profiles, camps, and coach outreach under one connected program',
+      'Support that continues after placement so athletes and parents are never left guessing',
+      'A global mindset: CPR now serves student-athletes pursuing dreams from around the world',
     ],
   },
   socialProof: {
@@ -182,15 +188,17 @@ export const landingConfig: LandingPageConfig = {
   },
   finalCta: {
     heading: 'READY TO TAKE THE NEXT STEP?',
-    subheading: 'Start your application and review the fee agreement.',
+    subheading:
+      'Start your CPR application today. Families outside North America can use the international fee agreement below.',
     applyLabel: 'APPLY NOW',
-    agreementLabel: 'STANDARD FEE AGREEMENT',
+    agreementLabel: 'STANDARD APPLICATION',
     internationalAgreementLabel: 'INTERNATIONAL FEE AGREEMENT',
   },
   footer: {
     about:
       'Developing talent. Building futures. Empowering student-athletes worldwide through basketball.',
     quickLinks: [
+      { label: 'The Experience', href: '/cpr-experience-lab' },
       { label: 'What Families Are Saying', href: '#testimonials' },
       { label: 'How It Works', href: '#how-it-works' },
       { label: 'Camps & Exposure', href: '#camps' },
@@ -200,7 +208,7 @@ export const landingConfig: LandingPageConfig = {
       { label: 'Athlete Profiles', href: '/athletes/jayden-thompson' },
       { label: 'Merchandise', href: '/merchandise' },
       { label: 'George Raveling Tribute', href: '#tribute' },
-      { label: 'Standard Fee Agreement', href: STANDARD_FEE_AGREEMENT_URL },
+      { label: 'Standard Application', href: STANDARD_FEE_AGREEMENT_URL },
       { label: 'International Fee Agreement', href: INTERNATIONAL_FEE_AGREEMENT_URL },
     ],
     email: 'mikecprglobal@mississaugamagic.com',

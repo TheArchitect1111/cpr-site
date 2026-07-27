@@ -1,7 +1,6 @@
 import { expect, test } from '@playwright/test';
 
-const PLAYER_APPLICATION_URL =
-  'https://docs.google.com/forms/d/e/1FAIpQLSebNeyreO7sVvWF0YToDWJRbkqSJibtL_--UWIaiRGT1PZ2zA/viewform';
+const GOOGLE_FORM_HOST = 'docs.google.com/forms';
 
 test('homepage renders EA Landing Page Chassis sections', async ({ page }) => {
   await page.goto('/');
@@ -32,23 +31,22 @@ test('tribute deep link page still works', async ({ page }) => {
   await expect(page.getByRole('heading', { name: /george raveling/i })).toBeVisible();
 });
 
-test('application CTAs point to the Google Form', async ({ page }) => {
+test('application CTAs point to the CPR Google Form', async ({ page }) => {
   await page.goto('/');
-  const applyLinks = page.locator(`a[href="${PLAYER_APPLICATION_URL}"]`);
-  // At least one CTA must be visible on load. The mobile-nav drawer also has an
-  // "Apply Now" link that is intentionally hidden until the drawer is opened, so
-  // assert on a visible CTA rather than whichever happens to be first in the DOM.
-  const visibleApplyLinks = page.locator(`a[href="${PLAYER_APPLICATION_URL}"]:visible`);
-  await expect(visibleApplyLinks.first()).toBeVisible();
+  const applyLinks = page.locator(`a[href*="${GOOGLE_FORM_HOST}"]`);
+  await expect(applyLinks.first()).toBeVisible();
   expect(await applyLinks.count()).toBeGreaterThanOrEqual(3);
 });
 
-test('/apply and legacy intake URLs redirect to the Google Form', async ({ request }) => {
-  for (const path of ['/apply', '/intake']) {
-    const response = await request.get(path, { maxRedirects: 0 });
-    expect([307, 308]).toContain(response.status());
-    expect(response.headers().location).toBe(PLAYER_APPLICATION_URL);
-  }
+test('/apply serves on-platform form; /intake redirects to /apply', async ({ page, request }) => {
+  const apply = await page.goto('/apply');
+  expect(apply?.ok()).toBeTruthy();
+  await expect(page.getByRole('heading', { name: /player application/i }).first()).toBeVisible();
+  await expect(page.getByText(/no google account required/i)).toBeVisible();
+
+  const intake = await request.get('/intake', { maxRedirects: 0 });
+  expect([307, 308]).toContain(intake.status());
+  expect(intake.headers().location).toBe('/apply');
 });
 
 test('admin login page loads', async ({ page }) => {

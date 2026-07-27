@@ -94,8 +94,11 @@ export function mergeLandingConfig(
       ? {
           ...base.about,
           heading: pick(overrides.about.heading, base.about.heading),
+          intro: pick(overrides.about.intro ?? '', base.about.intro ?? ''),
           points: overrides.about.points.some((p) => p.trim())
-            ? overrides.about.points.map((p, i) => pick(p, base.about!.points[i] ?? ''))
+            ? Array.from({ length: Math.max(base.about.points.length, 6) }, (_, i) =>
+                pick(overrides.about.points[i] ?? '', base.about!.points[i] ?? ''),
+              ).filter((p) => p.trim())
             : base.about.points,
         }
       : base.about,

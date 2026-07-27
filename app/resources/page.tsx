@@ -1,10 +1,14 @@
 import '../landing.css';
 import Link from 'next/link';
-import { site } from '@/config/site';
+import { EXPERIENCE_LAB_PATH, site } from '@/config/site';
 
 export const metadata = {
   title: 'Resources | CPR Global Prospects',
 };
+
+function external(href: string) {
+  return href.startsWith('http') ? { target: '_blank' as const, rel: 'noopener noreferrer' as const } : {};
+}
 
 export default function ResourcesPage() {
   return (
@@ -21,15 +25,19 @@ export default function ResourcesPage() {
       <section className="section">
         <div className="container">
           <div className="lc-cards">
-            <a className="lc-card" href={site.links.apply}>
+            <a className="lc-card" href={EXPERIENCE_LAB_PATH}>
+              <h3 className="display">The Experience</h3>
+              <p>Share CPR&apos;s cinematic recruiting journey presentation with families.</p>
+            </a>
+            <a className="lc-card" href={site.links.apply} {...external(site.links.apply)}>
               <h3 className="display">Application</h3>
               <p>Start the CPR journey and share the information needed for next steps.</p>
             </a>
-            <a className="lc-card" href="https://forms.gle/idrMWqU5FpebA1f46">
-              <h3 className="display">Standard Fee Agreement</h3>
-              <p>Review and complete the standard CPR fee agreement.</p>
+            <a className="lc-card" href={site.links.standardAgreement} {...external(site.links.standardAgreement)}>
+              <h3 className="display">Standard Application</h3>
+              <p>North American families — same form as Apply Now.</p>
             </a>
-            <a className="lc-card" href="https://docs.google.com/forms/d/e/1FAIpQLScnS-NAIhJnNDCVMbhFtAPbEtYZT9ZzZytagNu1THa9f80qmg/viewform?usp=publish-editor">
+            <a className="lc-card" href={site.links.internationalAgreement} {...external(site.links.internationalAgreement)}>
               <h3 className="display">International Fee Agreement</h3>
               <p>Review and complete the international fee agreement.</p>
             </a>

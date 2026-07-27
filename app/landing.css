@@ -199,8 +199,32 @@ body {
   color: var(--text-muted) !important;
 }
 
-.lc-testimonial p {
+.lc-challenge-intro {
+  color: #ffffff !important;
+  max-width: 760px;
+  margin: 0 auto 1.25rem;
+  line-height: 1.65;
+  font-size: 1.05rem;
+}
+
+/* Chassis defaults quote text to #333 (unreadable on dark CPR cards). Force white. */
+.lc-testimonial p,
+.lc-testimonial .rich-text-content,
+.lc-testimonial .rich-text-content p {
+  color: #ffffff !important;
   white-space: pre-line;
+}
+
+/* Public site text should remain selectable for copy/paste */
+html,
+body,
+.lc-testimonial,
+.lc-section,
+.lc-hero,
+.lc-challenge,
+main {
+  -webkit-user-select: text;
+  user-select: text;
 }
 
 .lc-testimonial-by {

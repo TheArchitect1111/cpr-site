@@ -12,6 +12,7 @@ import {
   guide,
   hero,
   journey,
+  ncaaPackages,
   profiles,
   question,
   quietWork,
@@ -324,6 +325,42 @@ export default function CprExperienceLab() {
               </Reveal>
             ))}
           </ol>
+        </div>
+      </section>
+
+      {/* 5b. NCAA packages */}
+      <section className="cpx-section cpx-dark" id={ncaaPackages.id} aria-labelledby="cpx-ncaa-title">
+        <div className="cpx-container">
+          <Reveal className="cpx-head">
+            <p className="cpx-eyebrow">{ncaaPackages.eyebrow}</p>
+            <h2 id="cpx-ncaa-title" className="display">
+              {ncaaPackages.headline}
+            </h2>
+            <p className="cpx-lead">{ncaaPackages.intro}</p>
+          </Reveal>
+          <div className="cpx-package-grid">
+            {ncaaPackages.items.map((pkg, i) => (
+              <Reveal as="article" className="cpx-package-card" delay={i * 70} key={pkg.title}>
+                <h3 className="display">{pkg.title}</h3>
+                <p>{pkg.body}</p>
+                <ul className="cpx-package-highlights">
+                  {pkg.highlights.map((h) => (
+                    <li key={h}>{h}</li>
+                  ))}
+                </ul>
+              </Reveal>
+            ))}
+          </div>
+          <Reveal className="cpx-package-cta" delay={120}>
+            <a
+              className="cpx-btn"
+              href={ncaaPackages.cta.href}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              {ncaaPackages.cta.label}
+            </a>
+          </Reveal>
         </div>
       </section>
 
