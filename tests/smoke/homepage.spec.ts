@@ -1,7 +1,7 @@
 import { expect, test } from '@playwright/test';
 
 const PLAYER_APPLICATION_URL =
-  'https://docs.google.com/forms/d/e/1FAIpQLScnS-NAIhJnNDCVMbhFtAPbEtYZT9ZzZytagNu1THa9f80qmg/viewform?usp=publish-editor';
+  'https://docs.google.com/forms/d/e/1FAIpQLSebNeyreO7sVvWF0YToDWJRbkqSJibtL_--UWIaiRGT1PZ2zA/viewform';
 
 test('homepage renders EA Landing Page Chassis sections', async ({ page }) => {
   await page.goto('/');
