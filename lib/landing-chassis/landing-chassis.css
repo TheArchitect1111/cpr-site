@@ -27,7 +27,7 @@
 .lc-nav-links a { color: #fff; font-size: 12px; font-weight: 700; letter-spacing: .6px; padding-bottom: 4px; text-decoration: none; }
 .lc-nav-links a.active { border-bottom: 2px solid var(--lc-primary-bright); }
 .lc-nav-links a:hover { color: var(--lc-primary-bright); }
-.lc-nav-mobile-cta { display: none; margin-left: auto; }
+.lc-nav-mobile-cta { display: none; margin-left: auto; align-items: center; gap: 10px; }
 
 .lc-btn {
   display: inline-block; background: var(--lc-primary); color: #fff; font-weight: 800;
@@ -221,4 +221,218 @@
   .lc-final-band { flex-direction: column; text-align: center; }
   .lc-footer-grid { grid-template-columns: 1fr; }
   .lc-founder-img { margin: 0 auto; }
+}
+
+/* —— MobileNav drawer (must ship with MobileNav.tsx) ——
+ * Closed drawer stays off-screen. Without these rules the drawer paints
+ * in-flow over the homepage (black stack + smashed brand tagline).
+ */
+.lc-burger {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: #fff;
+  cursor: pointer;
+  z-index: 60;
+}
+.lc-burger-box {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 22px;
+  height: 16px;
+}
+.lc-burger-line {
+  display: block;
+  height: 2px;
+  width: 100%;
+  border-radius: 2px;
+  background: currentColor;
+}
+
+.lc-drawer-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 80;
+  background: rgba(0, 0, 0, 0.55);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity 0.22s ease, visibility 0.22s ease;
+}
+.lc-drawer-overlay[data-open='true'] {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+}
+
+.lc-drawer {
+  position: fixed;
+  top: 0;
+  right: 0;
+  z-index: 90;
+  display: flex;
+  flex-direction: column;
+  width: min(86vw, 340px);
+  height: 100dvh;
+  max-height: 100vh;
+  padding: 20px 18px 28px;
+  background: #0b0b0d;
+  color: #f4f4f5;
+  box-shadow: -16px 0 40px rgba(0, 0, 0, 0.35);
+  transform: translateX(105%);
+  visibility: hidden;
+  pointer-events: none;
+  transition: transform 0.24s ease, visibility 0.24s ease;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+.lc-drawer[data-open='true'] {
+  transform: translateX(0);
+  visibility: visible;
+  pointer-events: auto;
+}
+
+.lc-drawer-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+.lc-drawer-brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+.lc-drawer-logo {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+.lc-drawer-brand-text {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+.lc-drawer-brand-name {
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 0.4px;
+  line-height: 1.25;
+  color: #fff;
+}
+.lc-drawer-brand-tag {
+  display: block;
+  font-size: 11px;
+  line-height: 1.35;
+  color: #c9c9c9;
+}
+.lc-drawer-close {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border: 0;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.06);
+  color: #fff;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+.lc-drawer-close-icon,
+.lc-drawer-link-icon svg,
+.lc-drawer-link-chevron svg,
+.lc-drawer-social-link svg {
+  width: 20px;
+  height: 20px;
+  display: block;
+}
+.lc-drawer-divider {
+  height: 1px;
+  margin: 18px 0;
+  background: rgba(255, 255, 255, 0.12);
+}
+.lc-drawer-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.lc-drawer-link {
+  display: grid;
+  grid-template-columns: 28px 1fr 18px;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 10px;
+  border-radius: 10px;
+  color: #f4f4f5;
+  text-decoration: none;
+  font-size: 15px;
+  font-weight: 650;
+}
+.lc-drawer-link:hover,
+.lc-drawer-link:focus-visible {
+  background: rgba(255, 255, 255, 0.06);
+  outline: none;
+}
+.lc-drawer-link-icon,
+.lc-drawer-link-chevron {
+  display: inline-flex;
+  color: var(--lc-primary-bright, #ff2a2a);
+}
+.lc-drawer-link-chevron {
+  opacity: 0.7;
+}
+.lc-drawer-cta {
+  display: block;
+  margin-top: 20px;
+  padding: 14px 16px;
+  border-radius: 8px;
+  background: var(--lc-primary, #d71920);
+  color: #fff;
+  text-align: center;
+  text-decoration: none;
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 0.8px;
+}
+.lc-drawer-social {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 22px;
+}
+.lc-drawer-social-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.06);
+  color: #fff;
+  text-decoration: none;
+}
+
+@media (max-width: 900px) {
+  .lc-burger { display: inline-flex; }
+}
+
+@media (min-width: 901px) {
+  .lc-burger,
+  .lc-drawer,
+  .lc-drawer-overlay {
+    display: none !important;
+  }
 }

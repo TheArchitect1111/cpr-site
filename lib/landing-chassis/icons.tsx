@@ -31,6 +31,8 @@ export function LandingIcon({ d, className = 'icon' }: { d: string; className?: 
     <svg
       className={className}
       viewBox="0 0 24 24"
+      width={24}
+      height={24}
       fill="none"
       stroke="currentColor"
       strokeWidth="1.7"

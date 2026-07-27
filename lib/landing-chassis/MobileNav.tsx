@@ -148,10 +148,7 @@ export default function MobileNav({ config: c }: { config: LandingPageConfig }) 
               <span className="lc-drawer-brand-name">
                 {c.brand.nameLine1} {c.brand.nameLine2}
               </span>
-              <span className="lc-drawer-brand-tag">
-                {' '}
-                {c.brand.tagline}
-              </span>
+              <span className="lc-drawer-brand-tag">{c.brand.tagline}</span>
             </div>
           </div>
           <button type="button" className="lc-drawer-close" aria-label="Close menu" onClick={close}>
