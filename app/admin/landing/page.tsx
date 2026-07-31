@@ -34,6 +34,9 @@ export default async function AdminLandingPage() {
         </div>
         <div className="aside-sec">WEBSITE</div>
         <nav>
+          <a className="aitem" href="/admin/site-editor">
+            Edit Entire Website
+          </a>
           <a className="aitem active" href="/admin/landing">
             &#127760; Edit Homepage
           </a>

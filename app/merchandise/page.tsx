@@ -1,27 +1,31 @@
 import '../landing.css';
 import Link from 'next/link';
-import { site } from '@/config/site';
+import { merchandiseSurface } from '@/lib/surface-editor/registry';
+import { getEditableSurfaceDocument } from '@/lib/surface-editor/store';
 
-export default function MerchandisePage() {
-  const m = site.merchandise;
+export const dynamic = 'force-dynamic';
+
+export default async function MerchandisePage() {
+  const document = await getEditableSurfaceDocument(merchandiseSurface);
+  const { hero, products } = document.content;
+  const sections = document.sections.filter((section) => section.visible).sort((a, b) => a.order - b.order);
   return (
     <main className="subpage">
-      <section className="subpage-hero">
+      {sections.map((section) => section.id === 'hero' ? <section className="subpage-hero" key={section.id}>
         <div className="container">
-          <h1 className="display">{m.heading}</h1>
-          <p>{m.sub}</p>
+          <h1 className="display">{hero.title}</h1>
+          <p>{hero.description}</p>
           <Link href="/" className="subpage-back">← BACK TO HOME</Link>
         </div>
-      </section>
-      <section className="section">
+      </section> : section.id === 'products' ? <section className="section" key={section.id}>
         <div className="container merch-grid">
           <div>
-            <p>{m.note}</p>
-            <p style={{ marginTop: 16, fontWeight: 700 }}>CPR Hoodies · CPR T-Shirts · More coming soon.</p>
+            <p>{products.body}</p>
+            <p style={{ marginTop: 16, fontWeight: 700 }}>{products.productLine}</p>
           </div>
-          <img src={m.image} alt="CPR merchandise" style={{ width: '100%', borderRadius: 8, height: 320, objectFit: 'cover' }} />
+          <img src={products.imageUrl} alt={products.imageAlt} style={{ width: '100%', borderRadius: 8, height: 320, objectFit: 'cover' }} />
         </div>
-      </section>
+      </section> : null)}
     </main>
   );
 }

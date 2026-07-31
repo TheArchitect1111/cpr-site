@@ -1,37 +1,36 @@
 import '../landing.css';
 import Link from 'next/link';
-import { site } from '@/config/site';
+import { recruitmentSurface } from '@/lib/surface-editor/registry';
+import { getEditableSurfaceDocument } from '@/lib/surface-editor/store';
 
 export const metadata = {
   title: 'Recruitment | CPR Global Prospects',
 };
 
-export default function RecruitmentPage() {
+export const dynamic = 'force-dynamic';
+
+export default async function RecruitmentPage() {
+  const document = await getEditableSurfaceDocument(recruitmentSurface);
+  const { hero, overview } = document.content;
+  const sections = document.sections.filter((section) => section.visible).sort((a, b) => a.order - b.order);
   return (
     <main className="subpage">
-      <section className="subpage-hero">
+      {sections.map((section) => section.id === 'hero' ? <section className="subpage-hero" key={section.id}>
         <div className="container">
-          <h1 className="display">Recruitment</h1>
-          <p>
-            CPR helps student-athletes prepare, build their profile, gain exposure, and connect
-            with coaches and Athletic Directors throughout North America.
-          </p>
+          <h1 className="display">{hero.title}</h1>
+          <p>{hero.description}</p>
           <Link href="/" className="subpage-back">BACK TO HOME</Link>
         </div>
-      </section>
-      <section className="section">
+      </section> : section.id === 'overview' ? <section className="section" key={section.id}>
         <div className="container spotlight-grid">
           <div>
-            <h2 className="display">Finding opportunity. Building futures.</h2>
-            <p className="lc-lead">
-              Recruitment support includes profile building, coach outreach, guidance for families,
-              exposure strategy, and ongoing support as athletes navigate the journey to the next level.
-            </p>
-            <a className="btn" href={site.links.apply}>Apply Now</a>
+            <h2 className="display">{overview.heading}</h2>
+            <p className="lc-lead">{overview.body}</p>
+            <a className="btn" href={overview.ctaUrl}>{overview.ctaLabel}</a>
           </div>
-          <img src="/recruiting-dashboard-new.png" alt="CPR recruiting dashboard" className="lc-portal-shot" />
+          <img src={overview.imageUrl} alt={overview.imageAlt} className="lc-portal-shot" />
         </div>
-      </section>
+      </section> : null)}
     </main>
   );
 }

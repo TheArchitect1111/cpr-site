@@ -1,44 +1,39 @@
 import '../landing.css';
 import Link from 'next/link';
-import { site } from '@/config/site';
 import RotatingImagePanel from '@/app/components/RotatingImagePanel';
+import { campsSurface } from '@/lib/surface-editor/registry';
+import { getEditableSurfaceDocument } from '@/lib/surface-editor/store';
 
-export default function CampsPage() {
-  const c = site.camps;
+export const dynamic = 'force-dynamic';
+
+export default async function CampsPage() {
+  const document = await getEditableSurfaceDocument(campsSurface);
+  const { hero, spotlight, houseLeague } = document.content;
+  const sections = document.sections.filter((section) => section.visible).sort((a, b) => a.order - b.order);
   return (
     <main className="subpage">
-      <section className="subpage-hero">
+      {sections.map((section) => section.id === 'hero' ? <section className="subpage-hero" key={section.id}>
         <div className="container">
-          <h1 className="display">{c.eyebrow}</h1>
-          <p>{c.sub}</p>
+          <h1 className="display">{hero.title}</h1>
+          <p>{hero.description}</p>
           <Link href="/" className="subpage-back">← BACK TO HOME</Link>
         </div>
-      </section>
-      <section className="section">
+      </section> : section.id === 'spotlight' ? <section className="section" key={section.id}>
         <div className="container spotlight-grid">
           <div>
-            <h2 className="display">
-              {c.heading[0]}
-              <span style={{ color: 'var(--red)' }}>{c.heading[1]}</span>
-              {c.heading[2]}
-            </h2>
-            <a className="btn" href={site.links.apply} style={{ marginTop: 24 }}>
-              {c.cta}
+            <h2 className="display">{spotlight.heading}</h2>
+            <a className="btn" href={spotlight.ctaUrl} style={{ marginTop: 24 }}>
+              {spotlight.ctaLabel}
             </a>
           </div>
-          <RotatingImagePanel slides={c.slides} />
+          <RotatingImagePanel slides={spotlight.slides.map((slide) => ({ img: slide.imageUrl, caption: slide.caption, objectPosition: slide.objectPosition }))} />
         </div>
-      </section>
-      <section className="section" id="house-league">
+      </section> : section.id === 'house-league' ? <section className="section" id="house-league" key={section.id}>
         <div className="container">
-          <h2 className="display">House League</h2>
-          <p className="lc-lead">
-            CPR uses house league and development environments to help student-athletes build
-            fundamentals, confidence, and game experience before moving into higher exposure
-            opportunities.
-          </p>
+          <h2 className="display">{houseLeague.heading}</h2>
+          <p className="lc-lead">{houseLeague.body}</p>
         </div>
-      </section>
+      </section> : null)}
     </main>
   );
 }
