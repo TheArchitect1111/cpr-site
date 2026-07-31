@@ -379,3 +379,24 @@ export const closing = {
   tagline: 'Finding Opportunity. Building Futures.',
   logo: '/cpr-logo.png',
 } as const;
+
+/** Complete editable content contract for The Experience. */
+export const experienceLabDefaults = {
+  hero,
+  athletes,
+  dream,
+  question,
+  guide,
+  beliefs,
+  journey,
+  ncaaPackages,
+  quietWork,
+  camps,
+  profiles,
+  results,
+  testimonials,
+  explore,
+  closing,
+};
+
+export type CprExperienceLabContent = typeof experienceLabDefaults;

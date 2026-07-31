@@ -100,10 +100,10 @@ const MODULE_CATALOG: Record<
     description: 'Recommended partners, resources, benefits, and support options.',
   },
   'family-calendar': {
-    path: '/upcoming-events',
+    path: '/calendar',
     tag: 'Calendar',
     title: 'Shared calendar',
-    description: 'Shared dates, reminders, and what is coming next.',
+    description: 'Connected appointments, deadlines, events, and reminders in one calendar.',
   },
 };
 

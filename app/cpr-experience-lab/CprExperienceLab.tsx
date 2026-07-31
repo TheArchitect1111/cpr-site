@@ -2,23 +2,8 @@
 
 import { useEffect, useRef, useState, type ReactNode } from 'react';
 import RotatingImagePanel from '@/app/components/RotatingImagePanel';
-import {
-  athletes,
-  beliefs,
-  camps,
-  closing,
-  dream,
-  explore,
-  guide,
-  hero,
-  journey,
-  ncaaPackages,
-  profiles,
-  question,
-  quietWork,
-  results,
-  testimonials,
-} from '@/lib/cpr-experience-lab';
+import type { CprExperienceLabContent } from '@/lib/cpr-experience-lab';
+import type { EditableSectionState } from '@/lib/surface-editor/types';
 
 function Reveal({
   children,
@@ -139,7 +124,12 @@ function ActivityIcon({ name }: { name: string }) {
   }
 }
 
-export default function CprExperienceLab() {
+export default function CprExperienceLab({ content, sectionState }: { content: CprExperienceLabContent; sectionState: EditableSectionState[] }) {
+  const { athletes, beliefs, camps, closing, dream, explore, guide, hero, journey, ncaaPackages, profiles, question, quietWork, results, testimonials } = content;
+  const sectionProps = (id: string) => {
+    const state = sectionState.find((section) => section.id === id);
+    return { hidden: state?.visible === false, style: { order: (state?.order ?? 0) + 1 } };
+  };
   return (
     <main className="cpx" id="main-content">
       {/* Nav */}
@@ -154,7 +144,7 @@ export default function CprExperienceLab() {
       </header>
 
       {/* 0. Hero */}
-      <section className="cpx-hero" aria-labelledby="cpx-hero-title">
+      <section className="cpx-hero" aria-labelledby="cpx-hero-title" {...sectionProps('hero')}>
         <div
           className="cpx-hero-bg"
           style={{ backgroundImage: `url('${hero.image}')` }}
@@ -177,7 +167,7 @@ export default function CprExperienceLab() {
       </section>
 
       {/* Meet the players */}
-      <section className="cpx-section cpx-meet" aria-labelledby="cpx-meet-title">
+      <section className="cpx-section cpx-meet" aria-labelledby="cpx-meet-title" {...sectionProps('athletes')}>
         <div className="cpx-container">
           <Reveal className="cpx-head cpx-head-center">
             <p className="cpx-eyebrow">The Players</p>
@@ -201,7 +191,7 @@ export default function CprExperienceLab() {
       </section>
 
       {/* 1. The Dream */}
-      <section className="cpx-section cpx-dark" id={dream.id} aria-labelledby="cpx-dream-title">
+      <section className="cpx-section cpx-dark" id={dream.id} aria-labelledby="cpx-dream-title" {...sectionProps('dream')}>
         <div className="cpx-container">
           <Reveal className="cpx-head">
             <p className="cpx-eyebrow">{dream.eyebrow}</p>
@@ -239,7 +229,7 @@ export default function CprExperienceLab() {
       </section>
 
       {/* 2. The Question */}
-      <section className="cpx-section cpx-dark" id={question.id} aria-labelledby="cpx-question-title">
+      <section className="cpx-section cpx-dark" id={question.id} aria-labelledby="cpx-question-title" {...sectionProps('question')}>
         <div className="cpx-container">
           <Reveal className="cpx-head">
             <p className="cpx-eyebrow">{question.eyebrow}</p>
@@ -259,7 +249,7 @@ export default function CprExperienceLab() {
       </section>
 
       {/* 3. The Guide */}
-      <section className="cpx-split" id={guide.id} aria-labelledby="cpx-guide-title">
+      <section className="cpx-split" id={guide.id} aria-labelledby="cpx-guide-title" {...sectionProps('guide')}>
         <div className="cpx-container cpx-split-grid">
           <Reveal className="cpx-split-copy">
             <p className="cpx-eyebrow">{guide.eyebrow}</p>
@@ -284,7 +274,7 @@ export default function CprExperienceLab() {
       </section>
 
       {/* 4. What CPR Believes */}
-      <section className="cpx-section cpx-dark" id={beliefs.id} aria-labelledby="cpx-beliefs-title">
+      <section className="cpx-section cpx-dark" id={beliefs.id} aria-labelledby="cpx-beliefs-title" {...sectionProps('beliefs')}>
         <div className="cpx-container">
           <Reveal className="cpx-head">
             <p className="cpx-eyebrow">{beliefs.eyebrow}</p>
@@ -308,7 +298,7 @@ export default function CprExperienceLab() {
       </section>
 
       {/* 5. The Journey */}
-      <section className="cpx-section" id={journey.id} aria-labelledby="cpx-journey-title">
+      <section className="cpx-section" id={journey.id} aria-labelledby="cpx-journey-title" {...sectionProps('journey')}>
         <div className="cpx-container">
           <Reveal className="cpx-head">
             <p className="cpx-eyebrow">{journey.eyebrow}</p>
@@ -329,7 +319,7 @@ export default function CprExperienceLab() {
       </section>
 
       {/* 5b. NCAA packages */}
-      <section className="cpx-section cpx-dark" id={ncaaPackages.id} aria-labelledby="cpx-ncaa-title">
+      <section className="cpx-section cpx-dark" id={ncaaPackages.id} aria-labelledby="cpx-ncaa-title" {...sectionProps('ncaa-packages')}>
         <div className="cpx-container">
           <Reveal className="cpx-head">
             <p className="cpx-eyebrow">{ncaaPackages.eyebrow}</p>
@@ -365,7 +355,7 @@ export default function CprExperienceLab() {
       </section>
 
       {/* 6. Quiet Work Behind The Scenes */}
-      <section className="cpx-scene cpx-quiet" id={quietWork.id} aria-labelledby="cpx-quiet-title">
+      <section className="cpx-scene cpx-quiet" id={quietWork.id} aria-labelledby="cpx-quiet-title" {...sectionProps('quiet-work')}>
         <div className="cpx-scene-bg" style={{ backgroundImage: `url('${quietWork.image}')` }} aria-hidden="true" />
         <div className="cpx-scene-scrim" aria-hidden="true" />
         <div className="cpx-container cpx-quiet-body">
@@ -390,7 +380,7 @@ export default function CprExperienceLab() {
       </section>
 
       {/* 7. Camps & Exposure */}
-      <section className="cpx-section cpx-dark" id={camps.id} aria-labelledby="cpx-camps-title">
+      <section className="cpx-section cpx-dark" id={camps.id} aria-labelledby="cpx-camps-title" {...sectionProps('camps')}>
         <div className="cpx-container">
           <Reveal className="cpx-head">
             <p className="cpx-eyebrow">{camps.eyebrow}</p>
@@ -417,7 +407,7 @@ export default function CprExperienceLab() {
       </section>
 
       {/* 8. Player Profiles */}
-      <section className="cpx-split" id={profiles.id} aria-labelledby="cpx-profiles-title">
+      <section className="cpx-split" id={profiles.id} aria-labelledby="cpx-profiles-title" {...sectionProps('profiles')}>
         <div className="cpx-container cpx-split-grid">
           <Reveal className="cpx-split-copy">
             <p className="cpx-eyebrow">{profiles.eyebrow}</p>
@@ -444,7 +434,7 @@ export default function CprExperienceLab() {
       </section>
 
       {/* 9. Results Speak */}
-      <section className="cpx-section cpx-results" id={results.id} aria-labelledby="cpx-results-title">
+      <section className="cpx-section cpx-results" id={results.id} aria-labelledby="cpx-results-title" {...sectionProps('results')}>
         <div className="cpx-container">
           <Reveal className="cpx-head">
             <p className="cpx-eyebrow">{results.eyebrow}</p>
@@ -482,7 +472,7 @@ export default function CprExperienceLab() {
       </section>
 
       {/* 10. Testimonials */}
-      <section className="cpx-section cpx-dark" id={testimonials.id} aria-labelledby="cpx-testi-title">
+      <section className="cpx-section cpx-dark" id={testimonials.id} aria-labelledby="cpx-testi-title" {...sectionProps('testimonials')}>
         <div className="cpx-container">
           <Reveal className="cpx-head">
             <p className="cpx-eyebrow">{testimonials.eyebrow}</p>
@@ -517,7 +507,7 @@ export default function CprExperienceLab() {
       </section>
 
       {/* 11. Explore CPR */}
-      <section className="cpx-section" id={explore.id} aria-labelledby="cpx-explore-title">
+      <section className="cpx-section" id={explore.id} aria-labelledby="cpx-explore-title" {...sectionProps('explore')}>
         <div className="cpx-container">
           <Reveal className="cpx-head">
             <p className="cpx-eyebrow">{explore.eyebrow}</p>
@@ -546,7 +536,7 @@ export default function CprExperienceLab() {
       </section>
 
       {/* 12. Closing */}
-      <section className="cpx-closing" id={closing.id} aria-labelledby="cpx-closing-title">
+      <section className="cpx-closing" id={closing.id} aria-labelledby="cpx-closing-title" {...sectionProps('closing')}>
         <div className="cpx-container cpx-closing-body">
           <Reveal>
             <h2 id="cpx-closing-title" className="display cpx-closing-head">

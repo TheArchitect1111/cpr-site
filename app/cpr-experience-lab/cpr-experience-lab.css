@@ -1,6 +1,8 @@
 /* CPR Experience Lab — cinematic, mobile-first scroll experience */
 
 .cpx {
+  display: flex;
+  flex-direction: column;
   --cpx-red: #d71920;
   --cpx-red-bright: #ff2a2a;
   --cpx-black: #050505;

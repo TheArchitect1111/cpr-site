@@ -1,6 +1,7 @@
 import '../landing.css';
 import Link from 'next/link';
-import { EXPERIENCE_LAB_PATH, INTERNATIONAL_EXPERIENCE_URL, site } from '@/config/site';
+import { resourcesSurface } from '@/lib/surface-editor/registry';
+import { getEditableSurfaceDocument } from '@/lib/surface-editor/store';
 
 export const metadata = {
   title: 'Resources | CPR Global Prospects',
@@ -10,48 +11,27 @@ function external(href: string) {
   return href.startsWith('http') ? { target: '_blank' as const, rel: 'noopener noreferrer' as const } : {};
 }
 
-export default function ResourcesPage() {
+export const dynamic = 'force-dynamic';
+
+export default async function ResourcesPage() {
+  const document = await getEditableSurfaceDocument(resourcesSurface);
+  const { hero, cards } = document.content;
+  const sections = document.sections.filter((section) => section.visible).sort((a, b) => a.order - b.order);
   return (
     <main className="subpage">
-      <section className="subpage-hero">
+      {sections.map((section) => section.id === 'hero' ? <section className="subpage-hero" key={section.id}>
         <div className="container">
-          <h1 className="display">Resources</h1>
-          <p>
-            Helpful links, forms, profile access, and CPR tools for student-athletes and families.
-          </p>
+          <h1 className="display">{hero.title}</h1>
+          <p>{hero.description}</p>
           <Link href="/" className="subpage-back">BACK TO HOME</Link>
         </div>
-      </section>
-      <section className="section">
+      </section> : section.id === 'cards' ? <section className="section" key={section.id}>
         <div className="container">
           <div className="lc-cards">
-            <a className="lc-card" href={EXPERIENCE_LAB_PATH}>
-              <h3 className="display">The Experience</h3>
-              <p>Share CPR&apos;s cinematic recruiting journey presentation with families.</p>
-            </a>
-            <a className="lc-card" href={site.links.apply} {...external(site.links.apply)}>
-              <h3 className="display">Application</h3>
-              <p>Start the CPR journey and share the information needed for next steps.</p>
-            </a>
-            <a className="lc-card" href={site.links.standardAgreement} {...external(site.links.standardAgreement)}>
-              <h3 className="display">North America Fee Agreement</h3>
-              <p>North American families — same form as Apply Now.</p>
-            </a>
-            <a className="lc-card" href={INTERNATIONAL_EXPERIENCE_URL} {...external(INTERNATIONAL_EXPERIENCE_URL)}>
-              <h3 className="display">International Experience</h3>
-              <p>Explore CPR guidance and opportunities for international student-athletes and families.</p>
-            </a>
-            <a className="lc-card" href={site.links.internationalAgreement} {...external(site.links.internationalAgreement)}>
-              <h3 className="display">International Fee Agreement</h3>
-              <p>Review and complete the international fee agreement.</p>
-            </a>
-            <a className="lc-card" href="/athletes/jayden-thompson">
-              <h3 className="display">Sample Profile</h3>
-              <p>View the sample recruiting profile experience.</p>
-            </a>
+            {cards.map((card) => <a className="lc-card" href={card.url} {...external(card.url)} key={`${card.title}-${card.url}`}><h3 className="display">{card.title}</h3><p>{card.description}</p></a>)}
           </div>
         </div>
-      </section>
+      </section> : null)}
     </main>
   );
 }

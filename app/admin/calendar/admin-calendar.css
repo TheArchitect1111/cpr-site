@@ -1,0 +1,15 @@
+.admin-shared-calendar { padding: 1rem 0 3rem; --fc-border-color: #d9d3ca; --fc-button-bg-color: #171512; --fc-button-border-color: #171512; --fc-button-hover-bg-color: #9c1c20; --fc-button-hover-border-color: #9c1c20; --fc-button-active-bg-color: #9c1c20; --fc-event-bg-color: #9c1c20; --fc-event-border-color: #9c1c20; --fc-today-bg-color: #f7eee1; }
+.calendar-actions { display: flex; align-items: center; justify-content: space-between; gap: 1rem; margin: 0 0 1rem; }
+.calendar-actions p { margin: 0; color: #5f5a53; }
+.calendar-actions button, .calendar-editor button { border: 1px solid #171512; border-radius: 999px; padding: .72rem 1.1rem; background: #fff; color: #171512; font-weight: 800; cursor: pointer; }
+.calendar-actions button, .calendar-editor button.primary { background: #171512; color: #fff; }
+.calendar-editor-backdrop { position: fixed; z-index: 1100; inset: 0; display: grid; place-items: center; padding: 1rem; background: rgba(12, 10, 8, .62); }
+.calendar-editor { position: relative; width: min(94vw, 640px); max-height: 92vh; overflow: auto; padding: 2rem; border-radius: 22px; background: #fff; box-shadow: 0 28px 90px rgba(0,0,0,.35); }
+.calendar-editor h2 { margin: .25rem 0 1.25rem; }
+.calendar-editor label { display: grid; gap: .4rem; margin: 0 0 1rem; font-weight: 800; }
+.calendar-editor input, .calendar-editor textarea { width: 100%; border: 1px solid #cfc7bc; border-radius: 10px; padding: .8rem; background: #fff; color: #171512; font: inherit; }
+.calendar-editor-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+.calendar-editor-close { position: absolute; top: .75rem; right: .75rem; padding: .25rem .7rem !important; border: 0 !important; font-size: 1.5rem; }
+.calendar-editor-buttons { display: flex; justify-content: flex-end; gap: .65rem; margin-top: 1.25rem; }
+.calendar-editor-buttons .danger { margin-right: auto; border-color: #9c1c20; color: #9c1c20; }
+@media (max-width: 720px) { .calendar-actions { align-items: stretch; flex-direction: column; } .admin-shared-calendar .fc-header-toolbar { align-items: stretch; flex-direction: column; gap: .75rem; } .admin-shared-calendar .fc-toolbar-chunk { display: flex; justify-content: center; } .admin-shared-calendar .fc .fc-button { padding: .45rem .6rem; font-size: .75rem; } .calendar-editor-grid { grid-template-columns: 1fr; gap: 0; } .calendar-editor { padding: 1.25rem; } }
