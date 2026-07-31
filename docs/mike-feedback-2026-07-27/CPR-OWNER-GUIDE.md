@@ -6,6 +6,7 @@
 |------|-----|
 | **The Experience** (presentation) | https://canadianprospectrecruitment.vercel.app/cpr-experience-lab |
 | **Apply Now** (standard / North America) | Google Form linked from every Apply Now button |
+| **International Experience** | https://canadian-prospects-international-gu.vercel.app |
 | **International fee agreement** | Footer + Resources → International Fee Agreement |
 | **On-platform application** (optional) | https://canadianprospectrecruitment.vercel.app/apply |
 
@@ -34,7 +35,9 @@ Photos also appear on public profiles at `/athletes/{slug}`.
 
 **Admin → Homepage editor** covers: hero, About, testimonials, philosophy, process, galleries, results, footer.
 
-Secondary pages (Recruitment, Camps, Resources) still use code/config — ask EA to extend the editor if you want those editable too.
+The homepage editor now also includes website and portal menu visibility, testimonial intro content,
+Coach Rav tribute copy/photos, and per-photo focal-position controls. Secondary pages remain code/config
+so this focused update does not replace or restyle unrelated routes.
 
 ## Copy and paste
 

@@ -64,6 +64,7 @@ function trimGallerySlides(
   return (source || []).slice(0, max).map((slot) => ({
     imageUrl: trim(slot?.imageUrl ?? '', 1000),
     caption: trim(slot?.caption ?? '', 200),
+    objectPosition: trim(slot?.objectPosition ?? 'center top', 40),
   }));
 }
 
@@ -103,6 +104,7 @@ export async function POST(req: NextRequest) {
       },
       socialProof: {
         heading: trim(body.socialProof?.heading ?? current.socialProof.heading, 120),
+        intro: trim(body.socialProof?.intro ?? current.socialProof.intro, 500),
         quote: trim(testimonials[0]?.quote ?? body.socialProof?.quote ?? current.socialProof.quote, 4000),
         name: trim(testimonials[0]?.name ?? body.socialProof?.name ?? current.socialProof.name, 120),
         role: trim(testimonials[0]?.role ?? body.socialProof?.role ?? current.socialProof.role, 120),
@@ -112,6 +114,12 @@ export async function POST(req: NextRequest) {
         ),
       },
       testimonials,
+      navigation: {
+        hiddenWebsiteHrefs: (body.navigation?.hiddenWebsiteHrefs ?? current.navigation.hiddenWebsiteHrefs)
+          .map((value) => trim(value, 200)),
+        hiddenPortalTabs: (body.navigation?.hiddenPortalTabs ?? current.navigation.hiddenPortalTabs)
+          .map((value) => trim(value, 80)),
+      },
       philosophy: {
         label: trim(body.philosophy?.label ?? current.philosophy.label, 80),
         quote: trim(body.philosophy?.quote ?? current.philosophy.quote, 600),
@@ -153,6 +161,14 @@ export async function POST(req: NextRequest) {
         about: trim(body.footer?.about ?? current.footer.about, 600),
         email: trim(body.footer?.email ?? current.footer.email, 200),
         location: trim(body.footer?.location ?? current.footer.location, 200),
+      },
+      tribute: {
+        eyebrow: trim(body.tribute?.eyebrow ?? current.tribute.eyebrow, 100),
+        name: trim(body.tribute?.name ?? current.tribute.name, 160),
+        meta: trim(body.tribute?.meta ?? current.tribute.meta, 240),
+        message: [0, 1, 2].map((i) => trim(body.tribute?.message?.[i] ?? current.tribute.message[i] ?? '', 1200)),
+        sign: trim(body.tribute?.sign ?? current.tribute.sign, 200),
+        slides: trimGallerySlides(body.tribute?.slides, current.tribute.slides),
       },
     });
     return NextResponse.json({ content: saved });

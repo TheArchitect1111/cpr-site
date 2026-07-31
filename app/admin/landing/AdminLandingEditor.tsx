@@ -52,6 +52,10 @@ export default function AdminLandingEditor({ initialContent, defaults, storageCo
           defaults.chipsAndDrip?.slides,
         ),
       },
+      tribute: {
+        ...initialContent.tribute,
+        slides: seedSlidesFromDefaults(initialContent.tribute.slides, defaults.tribute?.slides),
+      },
       campsExposure: {
         ...initialContent.campsExposure,
         slides: seedSlidesFromDefaults(
@@ -128,12 +132,63 @@ export default function AdminLandingEditor({ initialContent, defaults, storageCo
   const defPath = defaults.pathBand;
   const defProcess = defaults.process;
   const defChips = defaults.chipsAndDrip;
+  const defTribute = defaults.tribute;
   const defCamps = defaults.campsExposure;
   const defResults = defaults.results;
   const defFooter = defaults.footer;
 
   function renderSectionFields() {
     switch (activeSection) {
+      case 'navigation': {
+        const portalItems = [
+          ['amplifi', 'Amplifi'],
+          ['updates', 'Updates'],
+          ['resources', 'Resources'],
+          ['messages', 'Messages'],
+          ['payments', 'Payments'],
+          ['account', 'Account'],
+        ];
+        const toggle = (key: 'hiddenWebsiteHrefs' | 'hiddenPortalTabs', value: string, visible: boolean) => {
+          setContent((prev) => {
+            const current = prev.navigation[key];
+            return {
+              ...prev,
+              navigation: {
+                ...prev.navigation,
+                [key]: visible ? current.filter((item) => item !== value) : [...new Set([...current, value])],
+              },
+            };
+          });
+        };
+        return (
+          <>
+            <h3>Website menu</h3>
+            {defaults.nav.map((item) => (
+              <label key={item.href} className="landing-editor-checkbox">
+                <input
+                  type="checkbox"
+                  checked={!content.navigation.hiddenWebsiteHrefs.includes(item.href)}
+                  onChange={(e) => toggle('hiddenWebsiteHrefs', item.href, e.target.checked)}
+                />
+                Show {item.label}
+              </label>
+            ))}
+            <h3>Portal menu</h3>
+            {portalItems.map(([id, label]) => (
+              <label key={id} className="landing-editor-checkbox">
+                <input
+                  type="checkbox"
+                  checked={!content.navigation.hiddenPortalTabs.includes(id)}
+                  onChange={(e) => toggle('hiddenPortalTabs', id, e.target.checked)}
+                />
+                Show {label}
+              </label>
+            ))}
+            <p className="landing-editor-note">Home remains available so athletes and parents cannot lose their main portal page.</p>
+          </>
+        );
+      }
+
       case 'top':
         return (
           <>
@@ -269,6 +324,20 @@ export default function AdminLandingEditor({ initialContent, defaults, storageCo
                   }))
                 }
                 placeholder={defSocial.heading}
+              />
+            </label>
+            <label>
+              Hero introduction
+              <AdminRichText
+                minRows={3}
+                value={content.socialProof.intro}
+                onChange={(value) =>
+                  setContent((prev) => ({
+                    ...prev,
+                    socialProof: { ...prev.socialProof, intro: value },
+                  }))
+                }
+                placeholder={defSocial.intro ?? ''}
               />
             </label>
             <p className="landing-editor-note">
@@ -527,6 +596,66 @@ export default function AdminLandingEditor({ initialContent, defaults, storageCo
                 }))
               }
               onUpload={(file, onUrl) => void uploadImage('landing-chips-slide', file, onUrl)}
+            />
+          </>
+        );
+
+      case 'tribute':
+        return (
+          <>
+            <label>
+              Eyebrow
+              <input
+                value={content.tribute.eyebrow}
+                onChange={(e) => setContent((prev) => ({ ...prev, tribute: { ...prev.tribute, eyebrow: e.target.value } }))}
+                placeholder={defTribute?.eyebrow ?? ''}
+              />
+            </label>
+            <label>
+              Name
+              <input
+                value={content.tribute.name}
+                onChange={(e) => setContent((prev) => ({ ...prev, tribute: { ...prev.tribute, name: e.target.value } }))}
+                placeholder={defTribute?.name ?? ''}
+              />
+            </label>
+            <label>
+              Details
+              <input
+                value={content.tribute.meta}
+                onChange={(e) => setContent((prev) => ({ ...prev, tribute: { ...prev.tribute, meta: e.target.value } }))}
+                placeholder={defTribute?.meta ?? ''}
+              />
+            </label>
+            {[0, 1, 2].map((i) => (
+              <label key={i}>
+                Tribute paragraph {i + 1}
+                <AdminRichText
+                  minRows={3}
+                  value={content.tribute.message[i] ?? ''}
+                  onChange={(value) => {
+                    const message = [...content.tribute.message];
+                    message[i] = value;
+                    setContent((prev) => ({ ...prev, tribute: { ...prev.tribute, message } }));
+                  }}
+                  placeholder={defTribute?.message[i] ?? ''}
+                />
+              </label>
+            ))}
+            <label>
+              Signature
+              <input
+                value={content.tribute.sign}
+                onChange={(e) => setContent((prev) => ({ ...prev, tribute: { ...prev.tribute, sign: e.target.value } }))}
+                placeholder={defTribute?.sign ?? ''}
+              />
+            </label>
+            <GallerySlidesEditor
+              title="Coach Rav tribute photos"
+              slides={content.tribute.slides}
+              busy={busy}
+              onUpload={(file, onUrl) => void uploadImage('landing-tribute-slide', file, onUrl)}
+              onChange={(slides) => setContent((prev) => ({ ...prev, tribute: { ...prev.tribute, slides } }))}
             />
           </>
         );

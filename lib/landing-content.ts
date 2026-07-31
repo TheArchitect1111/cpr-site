@@ -31,6 +31,7 @@ export type LandingProcessStepSlot = {
 export type LandingGallerySlideSlot = {
   imageUrl: string;
   caption: string;
+  objectPosition?: string;
 };
 
 export type LandingContent = {
@@ -50,12 +51,17 @@ export type LandingContent = {
   };
   socialProof: {
     heading: string;
+    intro: string;
     quote: string;
     name: string;
     role: string;
     photoUrl: string;
   };
   testimonials: LandingTestimonialSlot[];
+  navigation: {
+    hiddenWebsiteHrefs: string[];
+    hiddenPortalTabs: string[];
+  };
   philosophy: {
     label: string;
     quote: string;
@@ -97,6 +103,14 @@ export type LandingContent = {
     email: string;
     location: string;
   };
+  tribute: {
+    eyebrow: string;
+    name: string;
+    meta: string;
+    message: string[];
+    sign: string;
+    slides: LandingGallerySlideSlot[];
+  };
   updatedAt: string;
 };
 
@@ -120,7 +134,7 @@ const emptyProof = (): LandingProofSlot => ({
 
 const emptyStep = (): LandingProcessStepSlot => ({ label: '', description: '' });
 
-const emptySlide = (): LandingGallerySlideSlot => ({ imageUrl: '', caption: '' });
+const emptySlide = (): LandingGallerySlideSlot => ({ imageUrl: '', caption: '', objectPosition: 'center top' });
 
 export function normalizeGallerySlides(
   input: LandingGallerySlideSlot[] | undefined | null,
@@ -130,6 +144,7 @@ export function normalizeGallerySlides(
     .map((slot) => ({
       imageUrl: String(slot?.imageUrl ?? '').trim(),
       caption: String(slot?.caption ?? '').trim(),
+      objectPosition: String(slot?.objectPosition ?? 'center top').trim() || 'center top',
     }))
     .filter((slot) => Boolean(slot.imageUrl));
 }
@@ -150,12 +165,17 @@ export const EMPTY_LANDING_CONTENT: LandingContent = {
   },
   socialProof: {
     heading: '',
+    intro: '',
     quote: '',
     name: '',
     role: '',
     photoUrl: '',
   },
   testimonials: [emptyTestimonial(), emptyTestimonial(), emptyTestimonial()],
+  navigation: {
+    hiddenWebsiteHrefs: [],
+    hiddenPortalTabs: [],
+  },
   philosophy: {
     label: '',
     quote: '',
@@ -194,6 +214,14 @@ export const EMPTY_LANDING_CONTENT: LandingContent = {
     about: '',
     email: '',
     location: '',
+  },
+  tribute: {
+    eyebrow: '',
+    name: '',
+    meta: '',
+    message: ['', '', ''],
+    sign: '',
+    slides: [],
   },
   updatedAt: '',
 };
@@ -251,12 +279,21 @@ function normalize(input: Partial<LandingContent> | null | undefined): LandingCo
     },
     socialProof: {
       heading: String(input?.socialProof?.heading ?? base.socialProof.heading),
+      intro: String(input?.socialProof?.intro ?? base.socialProof.intro),
       quote: String(input?.socialProof?.quote ?? base.socialProof.quote),
       name: String(input?.socialProof?.name ?? base.socialProof.name),
       role: String(input?.socialProof?.role ?? base.socialProof.role),
       photoUrl: String(input?.socialProof?.photoUrl ?? base.socialProof.photoUrl),
     },
     testimonials: normalizeTestimonials(input),
+    navigation: {
+      hiddenWebsiteHrefs: Array.isArray(input?.navigation?.hiddenWebsiteHrefs)
+        ? input.navigation.hiddenWebsiteHrefs.map(String)
+        : [],
+      hiddenPortalTabs: Array.isArray(input?.navigation?.hiddenPortalTabs)
+        ? input.navigation.hiddenPortalTabs.map(String)
+        : [],
+    },
     philosophy: {
       label: String(input?.philosophy?.label ?? base.philosophy.label),
       quote: String(input?.philosophy?.quote ?? base.philosophy.quote),
@@ -305,6 +342,14 @@ function normalize(input: Partial<LandingContent> | null | undefined): LandingCo
       about: String(input?.footer?.about ?? base.footer.about),
       email: String(input?.footer?.email ?? base.footer.email),
       location: String(input?.footer?.location ?? base.footer.location),
+    },
+    tribute: {
+      eyebrow: String(input?.tribute?.eyebrow ?? base.tribute.eyebrow),
+      name: String(input?.tribute?.name ?? base.tribute.name),
+      meta: String(input?.tribute?.meta ?? base.tribute.meta),
+      message: [0, 1, 2].map((i) => String(input?.tribute?.message?.[i] ?? '')),
+      sign: String(input?.tribute?.sign ?? base.tribute.sign),
+      slides: normalizeGallerySlides(input?.tribute?.slides),
     },
     updatedAt: String(input?.updatedAt ?? base.updatedAt),
   };

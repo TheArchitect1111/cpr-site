@@ -75,6 +75,7 @@ export function LandingPage({ config: c }: Props) {
                 className="lc-hero-img-single"
                 style={{
                   backgroundImage: `url('${c.possibility.heroSlides?.[0]?.img || c.possibility.image}')`,
+                  backgroundPosition: c.possibility.heroSlides?.[0]?.objectPosition || 'center top',
                 }}
               />
             )}
@@ -102,6 +103,7 @@ export function LandingPage({ config: c }: Props) {
         <div className="lc-container">
           <div className="lc-sec-head">
             <h2 className="display">{c.socialProof.heading}</h2>
+            {c.socialProof.intro ? <p>{c.socialProof.intro}</p> : null}
           </div>
           <div className="lc-testimonials">
             {c.socialProof.items.map((t) => (

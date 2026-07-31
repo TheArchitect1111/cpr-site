@@ -20,7 +20,7 @@ export type LandingLinks = {
   phone?: string;
 };
 
-export type GallerySlide = { img: string; caption?: string };
+export type GallerySlide = { img: string; caption?: string; objectPosition?: string };
 
 export type PlayerProfileCard = {
   name: string;
@@ -99,6 +99,7 @@ export type LandingPageConfig = {
   /** 2. SOCIAL PROOF — max 3 testimonials */
   socialProof: {
     heading: string;
+    intro?: string;
     items: Testimonial[];
   };
   /** Optional philosophy quote band (e.g. Coach Pop) */

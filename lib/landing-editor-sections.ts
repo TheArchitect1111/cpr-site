@@ -9,6 +9,12 @@ export type LandingEditorSection = {
 
 export const LANDING_EDITOR_SECTIONS: LandingEditorSection[] = [
   {
+    id: 'navigation',
+    label: 'Menus',
+    hash: '#top',
+    description: 'Show or hide links in the public website and private portal menus.',
+  },
+  {
     id: 'top',
     label: 'Hero',
     hash: '#top',
@@ -73,5 +79,11 @@ export const LANDING_EDITOR_SECTIONS: LandingEditorSection[] = [
     label: 'Footer',
     hash: '#contact',
     description: 'About line, email, and location.',
+  },
+  {
+    id: 'tribute',
+    label: 'Coach Rav tribute',
+    hash: '#tribute',
+    description: 'George Raveling tribute copy and rotating photos.',
   },
 ];

@@ -8,6 +8,7 @@
     "start": "next start",
     "lint": "eslint",
     "test:smoke": "playwright test --config=playwright.smoke.config.ts",
+    "test:cpr-feedback": "node scripts/test-cpr-feedback-completion.mjs",
     "chassis:clone": "node scripts/create-client.mjs",
     "sync-chassis": "node scripts/sync-portal-chassis.mjs",
     "governance:routes": "node scripts/governance/collect-route-manifest.mjs",

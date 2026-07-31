@@ -1,6 +1,6 @@
 import '../landing.css';
 import Link from 'next/link';
-import { EXPERIENCE_LAB_PATH, site } from '@/config/site';
+import { EXPERIENCE_LAB_PATH, INTERNATIONAL_EXPERIENCE_URL, site } from '@/config/site';
 
 export const metadata = {
   title: 'Resources | CPR Global Prospects',
@@ -34,8 +34,12 @@ export default function ResourcesPage() {
               <p>Start the CPR journey and share the information needed for next steps.</p>
             </a>
             <a className="lc-card" href={site.links.standardAgreement} {...external(site.links.standardAgreement)}>
-              <h3 className="display">Standard Application</h3>
+              <h3 className="display">North America Fee Agreement</h3>
               <p>North American families — same form as Apply Now.</p>
+            </a>
+            <a className="lc-card" href={INTERNATIONAL_EXPERIENCE_URL} {...external(INTERNATIONAL_EXPERIENCE_URL)}>
+              <h3 className="display">International Experience</h3>
+              <p>Explore CPR guidance and opportunities for international student-athletes and families.</p>
             </a>
             <a className="lc-card" href={site.links.internationalAgreement} {...external(site.links.internationalAgreement)}>
               <h3 className="display">International Fee Agreement</h3>

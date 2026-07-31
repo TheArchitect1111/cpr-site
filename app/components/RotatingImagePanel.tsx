@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useState } from 'react';
 
-type Slide = { img: string; caption?: string };
+type Slide = { img: string; caption?: string; objectPosition?: string };
 
 export default function RotatingImagePanel({
   slides,
@@ -47,6 +47,7 @@ export default function RotatingImagePanel({
             src={slide.img}
             alt={slide.caption || 'CPR athlete'}
             className={`rotate-img${i === safeIdx ? ' active' : ''}`}
+            style={{ objectPosition: slide.objectPosition || 'center top' }}
           />
         ))}
         {showArrows && slides.length > 1 && (
