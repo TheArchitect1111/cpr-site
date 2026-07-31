@@ -62,6 +62,7 @@ export default async function AdminUpdatePortalPage() {
             Edit Entire Website
           </a>
           <a className="aitem active" href="/admin/update-portal">Update Portal</a>
+          <a className="aitem" href="/admin/calendar">Shared Calendar</a>
           <a className="aitem" href="/admin/content-requests">Content Requests</a>
           <a className="aitem" href="/admin/landing">Edit Homepage</a>
           <a className="aitem" href="/admin?tab=communication">Communication Center</a>
