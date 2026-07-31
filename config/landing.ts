@@ -1,6 +1,7 @@
 import type { LandingPageConfig } from '@/lib/landing-chassis/types';
 import {
   INTERNATIONAL_FEE_AGREEMENT_URL,
+  INTERNATIONAL_EXPERIENCE_URL,
   PLAYER_APPLICATION_URL,
   STANDARD_FEE_AGREEMENT_URL,
   site,
@@ -57,6 +58,8 @@ export const landingConfig: LandingPageConfig = {
   },
   about: {
     heading: 'ABOUT CPR',
+    intro:
+      'CPR helps student-athletes and their families turn ambition into a clear, supported path—from development and exposure to recruitment and the next opportunity.',
     points: [
       'Over 40 years of coaching experience',
       '13 years of recruitment experience',
@@ -65,6 +68,7 @@ export const landingConfig: LandingPageConfig = {
   },
   socialProof: {
     heading: 'Testimonials',
+    intro: 'Real experiences from athletes and families who trusted CPR with the journey.',
     items: [
       {
         quote:
@@ -185,7 +189,7 @@ export const landingConfig: LandingPageConfig = {
     heading: 'READY TO TAKE THE NEXT STEP?',
     subheading: 'Start your application and review the fee agreement.',
     applyLabel: 'APPLY NOW',
-    agreementLabel: 'STANDARD FEE AGREEMENT',
+    agreementLabel: 'NORTH AMERICA FEE AGREEMENT',
     internationalAgreementLabel: 'INTERNATIONAL FEE AGREEMENT',
   },
   footer: {
@@ -201,7 +205,8 @@ export const landingConfig: LandingPageConfig = {
       { label: 'Athlete Profiles', href: '/athletes/jayden-thompson' },
       { label: 'Merchandise', href: '/merchandise' },
       { label: 'George Raveling Tribute', href: '#tribute' },
-      { label: 'Standard Fee Agreement', href: STANDARD_FEE_AGREEMENT_URL },
+      { label: 'North America Fee Agreement', href: STANDARD_FEE_AGREEMENT_URL },
+      { label: 'International Experience', href: INTERNATIONAL_EXPERIENCE_URL },
       { label: 'International Fee Agreement', href: INTERNATIONAL_FEE_AGREEMENT_URL },
     ],
     email: 'mikecprglobal@mississaugamagic.com',

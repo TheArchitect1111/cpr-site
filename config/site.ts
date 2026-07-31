@@ -25,6 +25,9 @@ const CPR_SITE_ORIGIN =
   (typeof process !== "undefined" && process.env.NEXT_PUBLIC_CPR_SITE_URL?.replace(/\/$/, "")) ||
   "https://canadianprospectrecruitment.vercel.app";
 export const EXPERIENCE_LAB_PUBLIC_URL = `${CPR_SITE_ORIGIN}${EXPERIENCE_LAB_PATH}`;
+/** Standalone International Experience guide. */
+export const INTERNATIONAL_EXPERIENCE_URL =
+  "https://canadian-prospects-international-gu.vercel.app";
 
 export const site = {
   brand: {

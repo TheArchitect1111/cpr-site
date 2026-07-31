@@ -96,6 +96,20 @@ export default function GallerySlidesEditor({ title, slides, onChange, onUpload,
             </label>
 
             <label>
+              Photo focus
+              <select
+                value={slide.objectPosition || 'center top'}
+                onChange={(e) => update(index, { objectPosition: e.target.value })}
+              >
+                <option value="center top">Top</option>
+                <option value="center center">Center</option>
+                <option value="center bottom">Bottom</option>
+                <option value="left center">Left</option>
+                <option value="right center">Right</option>
+              </select>
+            </label>
+
+            <label>
               Replace image
               <input
                 type="file"

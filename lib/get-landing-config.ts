@@ -18,6 +18,7 @@ function mergeGallerySlides(
   return owner.map((s) => ({
     img: s.imageUrl,
     caption: s.caption || undefined,
+    objectPosition: s.objectPosition || 'center top',
   }));
 }
 
@@ -81,6 +82,7 @@ export function mergeLandingConfig(
 
   return {
     ...base,
+    nav: base.nav.filter((item) => !overrides.navigation.hiddenWebsiteHrefs.includes(item.href)),
     possibility: {
       ...base.possibility,
       announcement: pick(overrides.possibility.announcement, base.possibility.announcement ?? ''),
@@ -105,6 +107,7 @@ export function mergeLandingConfig(
     socialProof: {
       ...base.socialProof,
       heading: pick(overrides.socialProof.heading, base.socialProof.heading),
+      intro: pick(overrides.socialProof.intro, base.socialProof.intro ?? ''),
       items: testimonialItems,
     },
     philosophy: base.philosophy
@@ -186,6 +189,19 @@ export function mergeLandingConfig(
       heading: pick(overrides.finalCta.heading, base.finalCta.heading),
       subheading: pick(overrides.finalCta.subheading, base.finalCta.subheading),
     },
+    tribute: base.tribute
+      ? {
+          ...base.tribute,
+          eyebrow: pick(overrides.tribute.eyebrow, base.tribute.eyebrow),
+          name: pick(overrides.tribute.name, base.tribute.name),
+          meta: pick(overrides.tribute.meta, base.tribute.meta),
+          message: overrides.tribute.message.some((line) => line.trim())
+            ? overrides.tribute.message.map((line, i) => pick(line, base.tribute!.message[i] ?? '')).filter(Boolean)
+            : base.tribute.message,
+          sign: pick(overrides.tribute.sign, base.tribute.sign ?? ''),
+          slides: mergeGallerySlides(base.tribute.slides, overrides.tribute.slides),
+        }
+      : base.tribute,
     footer: {
       ...base.footer,
       about: pick(overrides.footer.about, base.footer.about),

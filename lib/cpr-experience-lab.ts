@@ -341,7 +341,7 @@ export const explore = {
       variant: 'dark',
     },
     {
-      title: 'Standard Application',
+      title: 'North America Fee Agreement',
       description: 'North American families — same form as Apply Now.',
       href: STANDARD_FEE_AGREEMENT_URL,
       variant: 'red',

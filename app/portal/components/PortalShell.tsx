@@ -1,6 +1,6 @@
 ﻿'use client';
 
-import type { CSSProperties, MouseEvent, ReactNode } from 'react';
+import { useEffect, useState, type CSSProperties, type MouseEvent, type ReactNode } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { eaChassis, portalRoleLabel } from '@/config/ea-chassis';
@@ -54,7 +54,16 @@ export default function PortalShell({
   children,
 }: Props) {
   const pathname = usePathname() || '';
-  const tabs = buildTabs(portalType, slug);
+  const [hiddenTabs, setHiddenTabs] = useState<string[]>([]);
+  useEffect(() => {
+    fetch('/api/site-navigation')
+      .then((response) => (response.ok ? response.json() : null))
+      .then((payload) => {
+        if (Array.isArray(payload?.hiddenPortalTabs)) setHiddenTabs(payload.hiddenPortalTabs);
+      })
+      .catch(() => undefined);
+  }, []);
+  const tabs = buildTabs(portalType, slug).filter((tab) => tab.id === 'home' || !hiddenTabs.includes(tab.id));
   const title =
     pageTitle ||
     tabs.find((t) => t.id === active)?.label ||
