@@ -7,6 +7,9 @@ export const metadata = {
   title: 'Resources | CPR Global Prospects',
 };
 
+const NORTH_AMERICAN_FEE_AGREEMENT =
+  'https://docs.google.com/forms/d/e/1FAIpQLSexOTZti6lP_scn4Igt9wwTmxpA3J2csHYaQ0JMGtTp82Zb5Q/viewform';
+
 function external(href: string) {
   return href.startsWith('http') ? { target: '_blank' as const, rel: 'noopener noreferrer' as const } : {};
 }
@@ -15,7 +18,12 @@ export const dynamic = 'force-dynamic';
 
 export default async function ResourcesPage() {
   const document = await getEditableSurfaceDocument(resourcesSurface);
-  const { hero, cards } = document.content;
+  const { hero } = document.content;
+  const cards = document.content.cards.map((card) =>
+    card.title === 'North America Fee Agreement'
+      ? { ...card, url: NORTH_AMERICAN_FEE_AGREEMENT }
+      : card,
+  );
   const sections = document.sections.filter((section) => section.visible).sort((a, b) => a.order - b.order);
   return (
     <main className="subpage">

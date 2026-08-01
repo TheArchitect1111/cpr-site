@@ -91,12 +91,17 @@ export default function AthleteProfileEditor({ athlete, token }: { athlete: Athl
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'Upload failed');
       set(key, data.url);
-      setMessage('File uploaded. Submit changes when ready.');
+      setMessage('Photo uploaded. Submit changes when ready.');
     } catch (err) {
       setMessage(err instanceof Error ? err.message : 'Could not upload file.');
     } finally {
       setUploading('');
     }
+  };
+
+  const removePhoto = () => {
+    set('photoUrl', '');
+    setMessage('Photo marked for removal. Submit changes when ready.');
   };
 
   return (
@@ -110,6 +115,20 @@ export default function AthleteProfileEditor({ athlete, token }: { athlete: Athl
       </div>
 
       {message && <div className="edit-alert">{message}</div>}
+
+      <div className="edit-section">
+        <h2 className="display">Profile Photo</h2>
+        <div className="profile-photo-manager">
+          {draft.photoUrl ? <img src={draft.photoUrl} alt="Current profile preview" /> : <div className="profile-photo-empty">No profile photo selected</div>}
+          <div>
+            <label>Choose a new profile photo
+              <input type="file" accept="image/*" onChange={e => upload('photoUrl', e.target.files?.[0], 'photos')} />
+              <span>{uploading === 'photoUrl' ? 'Uploading...' : 'Upload a photo to add or replace the current image.'}</span>
+            </label>
+            {draft.photoUrl ? <button type="button" className="remove-photo" onClick={removePhoto}>Remove Profile Photo</button> : null}
+          </div>
+        </div>
+      </div>
 
       <div className="edit-section">
         <h2 className="display">Contact</h2>
@@ -151,12 +170,8 @@ export default function AthleteProfileEditor({ athlete, token }: { athlete: Athl
       </div>
 
       <div className="edit-section">
-        <h2 className="display">Uploads</h2>
-        <div className="edit-grid three">
-          <label>Profile photo
-            <input type="file" accept="image/*" onChange={e => upload('photoUrl', e.target.files?.[0], 'photos')} />
-            <span>{uploading === 'photoUrl' ? 'Uploading...' : draft.photoUrl ? 'Photo uploaded/linked' : 'No photo uploaded'}</span>
-          </label>
+        <h2 className="display">Other Uploads</h2>
+        <div className="edit-grid two">
           <label>Transcript / report card
             <input type="file" accept=".pdf,.jpg,.jpeg,.png,.doc,.docx" onChange={e => upload('transcriptUrl', e.target.files?.[0], 'documents')} />
             <span>{uploading === 'transcriptUrl' ? 'Uploading...' : draft.transcriptUrl ? 'Document uploaded/linked' : 'No document uploaded'}</span>
