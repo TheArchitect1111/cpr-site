@@ -56,15 +56,14 @@ export default async function AdminUpdatePortalPage() {
             <div className="ab2 display">RECRUITMENT</div>
           </div>
         </div>
-        <div className="aside-sec">OWNER TOOLS</div>
+        <div className="aside-sec">EDIT CONTENT</div>
         <nav>
-          <a className="aitem" href="/admin/site-editor">
-            Edit Entire Website
-          </a>
-          <a className="aitem active" href="/admin/update-portal">Update Portal</a>
+          <a className="aitem" href="/admin/landing">Edit Homepage</a>
+          <a className="aitem" href="/admin/landing?scope=pages">Website Pages</a>
+          <a className="aitem" href="/admin/landing?scope=players">Player Pages</a>
+          <a className="aitem active" href="/admin/landing?scope=portal">Portal</a>
           <a className="aitem" href="/admin/calendar">Shared Calendar</a>
           <a className="aitem" href="/admin/content-requests">Content Requests</a>
-          <a className="aitem" href="/admin/landing">Edit Homepage</a>
           <a className="aitem" href="/admin?tab=communication">Communication Center</a>
           <a className="aitem" href="/portal/owner">Family Portal Owner</a>
         </nav>
@@ -81,9 +80,9 @@ export default async function AdminUpdatePortalPage() {
       <main className="amain">
         <header className="ahead">
           <div>
-            <p className="admin-kicker">Signed in as {admin.name || admin.email}</p>
-            <h1 className="display">Update Portal</h1>
-            <p>Premium owner controls for public site, portal updates, announcements, events, quotes, images, and reusable text.</p>
+            <p className="admin-kicker">Guided CPR editor · Portal</p>
+            <h1 className="display">Edit Homepage</h1>
+            <p>Portal content uses the same guided edit, preview, and save pattern as the CPR homepage.</p>
           </div>
           <a className="admin-logout" href="/api/admin/logout">Sign Out</a>
         </header>
