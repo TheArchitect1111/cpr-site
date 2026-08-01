@@ -187,9 +187,27 @@ export default async function AdminPage({
     );
   }
 
+  const playersOpen = ['registrants', 'activity'].includes(activeTab);
+  const recruitingOpen = ['outreach', 'schools', 'recruitment-tracker', 'responses', 'offers'].includes(activeTab);
+  const messagesOpen = ['communication', 'tickets', 'messages', 'email-templates'].includes(activeTab);
+  const websiteOpen = ['content', 'site-updates', 'site-quotes', 'media-library', 'site-text'].includes(activeTab);
+  const documentsOpen = ['documents', 'fee-agreements'].includes(activeTab);
+  const settingsOpen = activeTab === 'team';
+
   return (
     <div className="admin-shell">
       <aside className="aside">
+        <style>{`
+          .admin-menu-group { margin: 0 0 5px; }
+          .admin-menu-group summary { list-style: none; cursor: pointer; padding: 10px; border-radius: 7px; color: #fff; font-size: 13px; font-weight: 800; }
+          .admin-menu-group summary::-webkit-details-marker { display: none; }
+          .admin-menu-group summary::after { content: '+'; float: right; color: #8a8a8a; }
+          .admin-menu-group[open] summary { background: rgba(255,255,255,.08); }
+          .admin-menu-group[open] summary::after { content: '−'; color: #fff; }
+          .admin-menu-group nav { padding: 4px 0 5px 9px; border-left: 1px solid rgba(255,255,255,.14); margin-left: 10px; }
+          .admin-menu-group .aitem { font-size: 12px; padding: 8px 9px; }
+          .admin-menu-help { margin: 4px 8px 14px; color: #9b9b9b; font-size: 11px; line-height: 1.4; }
+        `}</style>
         <div className="aside-brand">
           <img src={site.brand.logo} alt="CPR" />
           <div>
@@ -197,90 +215,83 @@ export default async function AdminPage({
             <div className="ab2 display">RECRUITMENT</div>
           </div>
         </div>
-        <div className="aside-sec">REGISTRANTS</div>
-        <nav>
-          <a className={`aitem${activeTab === 'registrants' ? ' active' : ''}`} href="/admin">
-            &#128100; Registrants &amp; Progress
-          </a>
-        </nav>
-        <div className="aside-sec">RECRUITMENT</div>
-        <nav>
-          <a className={`aitem${activeTab === 'outreach' ? ' active' : ''}`} href="/admin?tab=outreach">
-            &#128226; Coach Outreach
-          </a>
-          <a className={`aitem${activeTab === 'outreach' ? ' active' : ''}`} href="/admin?tab=outreach#players">
-            &#127936; Player Profiles
-          </a>
-          <a className={`aitem${activeTab === 'schools' ? ' active' : ''}`} href="/admin?tab=schools">
-            &#127979; Schools
-          </a>
-          <a className={`aitem${activeTab === 'recruitment-tracker' ? ' active' : ''}`} href="/admin?tab=recruitment-tracker">
-            &#128202; Recruitment Tracker
-          </a>
-          <a className={`aitem${activeTab === 'responses' ? ' active' : ''}`} href="/admin?tab=responses">
-            &#128172; Responses
-          </a>
-          <a className={`aitem${activeTab === 'offers' ? ' active' : ''}`} href="/admin?tab=offers">
-            &#127942; Offers
-          </a>
-        </nav>
-        <div className="aside-sec">PORTAL</div>
-        <nav>
-          <a className="aitem" href="/admin/update-portal">&#9889; Update Portal</a>
-          <a className="aitem" href="/admin/calendar">&#128197; Shared Calendar</a>
-          <a className="aitem" href="/admin/content-requests">&#128196; Content Requests</a>
-          <a className="aitem" href="/admin/landing">&#127760; Edit Homepage</a>
-          <a className="aitem" href="/portal/owner">&#127968; Family Portal (Owner)</a>
-          <a className={`aitem${activeTab === 'communication' ? ' active' : ''}`} href="/admin?tab=communication">
-            &#128227; Communication Center
-          </a>
-          <a className={`aitem${activeTab === 'tickets' ? ' active' : ''}`} href="/admin?tab=tickets">
-            &#10067; Ask CPR Tickets
-          </a>
-          <a className={`aitem${activeTab === 'messages' ? ' active' : ''}`} href="/admin?tab=messages">
-            &#128172; Messaging Center
-          </a>
-        </nav>
-        <div className="aside-sec">ANALYTICS</div>
-        <nav>
-          <a className={`aitem${activeTab === 'activity' ? ' active' : ''}`} href="/admin?tab=activity">
-            &#128200; Athlete Activity
-          </a>
-          <a className={`aitem${activeTab === 'content' ? ' active' : ''}`} href="/admin?tab=content">
-            &#128203; Content Relevance
-          </a>
-        </nav>
-        <div className="aside-sec">MANAGEMENT</div>
-        <nav>
-          <a className={`aitem${activeTab === 'team' ? ' active' : ''}`} href="/admin?tab=team">
-            &#128101; Admin Team
-          </a>
-          <a className="aitem" href="/admin/create-client">&#43; Create New Client</a>
-          <a className={`aitem${activeTab === 'documents' ? ' active' : ''}`} href="/admin?tab=documents">
-            &#128196; Documents
-          </a>
-          <a className={`aitem${activeTab === 'fee-agreements' ? ' active' : ''}`} href="/admin?tab=fee-agreements">
-            &#128221; Fee Agreements
-          </a>
-          <a className={`aitem${activeTab === 'email-templates' ? ' active' : ''}`} href="/admin?tab=email-templates">
-            &#9993; Email Templates
-          </a>
-          <a className={`aitem${activeTab === 'site-updates' ? ' active' : ''}`} href="/admin?tab=site-updates">
-            &#128221; Site Updates
-          </a>
-          <a className={`aitem${activeTab === 'site-events' ? ' active' : ''}`} href="/admin?tab=site-events">
-            &#128197; Site Events
-          </a>
-          <a className={`aitem${activeTab === 'site-quotes' ? ' active' : ''}`} href="/admin?tab=site-quotes">
-            &#10077; Quotes
-          </a>
-          <a className={`aitem${activeTab === 'media-library' ? ' active' : ''}`} href="/admin?tab=media-library">
-            &#128247; Image Library
-          </a>
-          <a className={`aitem${activeTab === 'site-text' ? ' active' : ''}`} href="/admin?tab=site-text">
-            &#9997; Site Text
-          </a>
-        </nav>
+        <p className="admin-menu-help">Choose a category, then select the task you need.</p>
+
+        <details className="admin-menu-group" open={playersOpen}>
+          <summary>👤 Players</summary>
+          <nav>
+            <a className={`aitem${activeTab === 'registrants' ? ' active' : ''}`} href="/admin">Player List &amp; Progress</a>
+            <a className={`aitem${activeTab === 'outreach' ? ' active' : ''}`} href="/admin?tab=outreach#players">Edit Player Profiles</a>
+            <a className="aitem" href="/admin/create-client">Add New Player</a>
+            <a className={`aitem${activeTab === 'activity' ? ' active' : ''}`} href="/admin?tab=activity">Player Activity</a>
+          </nav>
+        </details>
+
+        <details className="admin-menu-group" open={recruitingOpen}>
+          <summary>🏀 Recruiting</summary>
+          <nav>
+            <a className={`aitem${activeTab === 'outreach' ? ' active' : ''}`} href="/admin?tab=outreach">Coach Outreach</a>
+            <a className={`aitem${activeTab === 'schools' ? ' active' : ''}`} href="/admin?tab=schools">Schools</a>
+            <a className={`aitem${activeTab === 'recruitment-tracker' ? ' active' : ''}`} href="/admin?tab=recruitment-tracker">Recruitment Tracker</a>
+            <a className={`aitem${activeTab === 'responses' ? ' active' : ''}`} href="/admin?tab=responses">Coach Responses</a>
+            <a className={`aitem${activeTab === 'offers' ? ' active' : ''}`} href="/admin?tab=offers">Offers</a>
+          </nav>
+        </details>
+
+        <details className="admin-menu-group" open={messagesOpen}>
+          <summary>💬 Messages</summary>
+          <nav>
+            <a className={`aitem${activeTab === 'communication' ? ' active' : ''}`} href="/admin?tab=communication">Announcements &amp; Communication</a>
+            <a className={`aitem${activeTab === 'messages' ? ' active' : ''}`} href="/admin?tab=messages">Direct Messages</a>
+            <a className={`aitem${activeTab === 'tickets' ? ' active' : ''}`} href="/admin?tab=tickets">Questions &amp; Support</a>
+            <a className={`aitem${activeTab === 'email-templates' ? ' active' : ''}`} href="/admin?tab=email-templates">Saved Email Templates</a>
+          </nav>
+        </details>
+
+        <details className="admin-menu-group">
+          <summary>📅 Calendar</summary>
+          <nav>
+            <a className="aitem" href="/admin/calendar">Shared Portal Calendar</a>
+            <a className={`aitem${activeTab === 'site-events' ? ' active' : ''}`} href="/admin?tab=site-events">Website Events</a>
+          </nav>
+        </details>
+
+        <details className="admin-menu-group" open={websiteOpen}>
+          <summary>🌐 Website</summary>
+          <nav>
+            <a className="aitem" href="/admin/landing">Edit Homepage</a>
+            <a className={`aitem${activeTab === 'site-updates' ? ' active' : ''}`} href="/admin?tab=site-updates">Website Announcements</a>
+            <a className={`aitem${activeTab === 'site-quotes' ? ' active' : ''}`} href="/admin?tab=site-quotes">Testimonials &amp; Quotes</a>
+            <a className={`aitem${activeTab === 'media-library' ? ' active' : ''}`} href="/admin?tab=media-library">Image Library</a>
+            <a className={`aitem${activeTab === 'site-text' ? ' active' : ''}`} href="/admin?tab=site-text">Edit Website Wording</a>
+            <a className={`aitem${activeTab === 'content' ? ' active' : ''}`} href="/admin?tab=content">Content Performance</a>
+          </nav>
+        </details>
+
+        <details className="admin-menu-group">
+          <summary>🏠 Portal</summary>
+          <nav>
+            <a className="aitem" href="/admin/update-portal">Post Portal Update</a>
+            <a className="aitem" href="/admin/content-requests">Review Content Requests</a>
+            <a className="aitem" href="/portal/owner">Preview Family Portal</a>
+          </nav>
+        </details>
+
+        <details className="admin-menu-group" open={documentsOpen}>
+          <summary>📄 Documents &amp; Agreements</summary>
+          <nav>
+            <a className={`aitem${activeTab === 'documents' ? ' active' : ''}`} href="/admin?tab=documents">Documents</a>
+            <a className={`aitem${activeTab === 'fee-agreements' ? ' active' : ''}`} href="/admin?tab=fee-agreements">Fee Agreements</a>
+          </nav>
+        </details>
+
+        <details className="admin-menu-group" open={settingsOpen}>
+          <summary>⚙️ Settings</summary>
+          <nav>
+            <a className={`aitem${activeTab === 'team' ? ' active' : ''}`} href="/admin?tab=team">Admin Team &amp; Access</a>
+          </nav>
+        </details>
+
         <a className="aitem back" href="/">&#8592; Back to Site</a>
       </aside>
       <main className="amain">{mainContent}</main>
