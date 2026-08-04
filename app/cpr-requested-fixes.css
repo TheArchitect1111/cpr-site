@@ -72,6 +72,33 @@
   background: #111;
 }
 
+/* CPR request: show every section image in full without changing section sizing or layout. */
+.lc-hero-img-single {
+  background-size: contain !important;
+  background-repeat: no-repeat;
+  background-position: center !important;
+}
+
+.lc-hero-rotate .rotate-img,
+.rotate-panel .rotate-img,
+.lc-proof img,
+.lc-player-card img,
+.lc-portal-shot,
+.lc-founder-img,
+.lc-testimonial-by img {
+  object-fit: contain !important;
+  object-position: center !important;
+}
+
+.lc-hero-rotate .rotate-frame,
+.rotate-panel .rotate-frame,
+.lc-proof,
+.lc-player-card,
+.lc-founder-img,
+.lc-testimonial-by img {
+  background: #111;
+}
+
 @media (max-width: 700px) {
   .profile-photo-manager {
     grid-template-columns: 1fr;
