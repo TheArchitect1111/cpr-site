@@ -55,7 +55,7 @@ type Campaign = {
 };
 
 function pct(value: number | null | undefined) {
-  return value === null || value === undefined ? '—' : `${(value * 100).toFixed(1)}%`;
+  return value === null || value === undefined ? 'Not available' : `${(value * 100).toFixed(1)}%`;
 }
 
 export default function AmplifiCampaignBuilder() {
