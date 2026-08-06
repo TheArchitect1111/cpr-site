@@ -163,7 +163,8 @@
 .amplifi-field.wide { grid-column: 1 / -1; }
 .amplifi-field label { font-weight: 850; }
 .amplifi-field input,
-.amplifi-field textarea {
+.amplifi-field textarea,
+.amplifi-field select {
   width: 100%;
   border: 1px solid rgba(17,17,17,.2);
   border-radius: 12px;
@@ -216,9 +217,42 @@
   font-weight: 800;
   cursor: pointer;
 }
+.amplifi-copy-grid small { display: block; margin-top: 8px; color: #625f58; font-weight: 750; }
+.amplifi-campaign-picker {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-top: 28px;
+  padding: 16px 18px;
+  border: 1px solid rgba(17,17,17,.12);
+  border-radius: 14px;
+  background: #fff;
+}
+.amplifi-campaign-picker select { min-width: min(100%, 320px); border: 1px solid #bbb5aa; border-radius: 10px; padding: 9px 12px; }
+.amplifi-performance { padding: clamp(20px, 4vw, 30px); border: 2px solid #111; border-radius: 20px; background: #fff8e7; }
+.amplifi-performance-head { display: flex; align-items: start; justify-content: space-between; gap: 18px; }
+.amplifi-performance-head h2 { margin: 4px 0 0; }
+.amplifi-performance-head > span { padding: 7px 10px; border-radius: 999px; background: #d8f3df; color: #14532d; font-size: .75rem; font-weight: 850; }
+.amplifi-metric-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 10px; margin: 20px 0; }
+.amplifi-metric-grid > div { display: grid; gap: 5px; padding: 14px; border-radius: 12px; background: #fff; }
+.amplifi-metric-grid strong { font-size: 1.55rem; }
+.amplifi-metric-grid span { color: #625f58; font-size: .75rem; font-weight: 750; }
+.amplifi-tracking-note { color: #49463f; line-height: 1.55; }
+.amplifi-platform-metrics { display: grid; gap: 12px; margin-top: 20px; }
+.amplifi-platform-metrics form { padding: 16px; border: 1px solid rgba(17,17,17,.14); border-radius: 14px; background: #fff; }
+.amplifi-platform-metrics header { display: flex; justify-content: space-between; gap: 12px; text-transform: capitalize; }
+.amplifi-platform-metrics header span { color: #625f58; font-size: .75rem; }
+.amplifi-platform-metrics form > div { display: grid; grid-template-columns: repeat(auto-fit, minmax(90px, 1fr)); gap: 9px; margin: 12px 0; }
+.amplifi-platform-metrics label { display: grid; gap: 4px; }
+.amplifi-platform-metrics label span { color: #625f58; font-size: .68rem; font-weight: 800; text-transform: capitalize; }
+.amplifi-platform-metrics input { width: 100%; border: 1px solid #bbb5aa; border-radius: 8px; padding: 8px; }
+.amplifi-platform-metrics button { border: 0; border-radius: 999px; background: #111; color: #fff; padding: 8px 14px; font-weight: 850; }
 @media (max-width: 720px) {
   .amplifi-builder, .amplifi-copy-grid { grid-template-columns: 1fr; }
   .amplifi-field.wide, .amplifi-generate { grid-column: auto; }
   .amplifi-draft > header { grid-template-columns: 1fr; }
   .amplifi-copy-grid section + section { border-top: 1px solid rgba(17,17,17,.12); border-left: 0; }
+  .amplifi-campaign-picker, .amplifi-performance-head { align-items: stretch; flex-direction: column; }
+  .amplifi-campaign-picker select { width: 100%; }
 }

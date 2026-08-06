@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getAthleteByRecordId, verifyAthleteEditToken } from '@/lib/athletes';
 import { isPaymentStage, paymentAmountCents, paymentDescription, paymentStageLabel } from '@/lib/payments';
 import { stripe } from '@/lib/stripe';
+import { CPR_AMPLIFI_COOKIE, readCPRAttribution } from '@/lib/amplifi/campaign-analytics';
 
 export async function POST(req: NextRequest) {
   if (!stripe) return NextResponse.json({ error: 'Stripe is not configured.' }, { status: 503 });
@@ -19,6 +20,7 @@ export async function POST(req: NextRequest) {
 
   const origin = req.nextUrl.origin;
   const amount = paymentAmountCents(stage, athlete);
+  const attribution = readCPRAttribution(req.cookies.get(CPR_AMPLIFI_COOKIE)?.value);
   const session = await stripe.checkout.sessions.create({
     mode: 'payment',
     customer_email: athlete.email || athlete.parentEmail || undefined,
@@ -37,6 +39,11 @@ export async function POST(req: NextRequest) {
       recordId,
       stage,
       athleteName: [athlete.firstName, athlete.lastName].filter(Boolean).join(' '),
+      ...(attribution ? {
+        amplifiCampaignId: attribution.campaignId,
+        amplifiDraftId: attribution.draftId,
+        amplifiPlatform: attribution.platform,
+      } : {}),
     },
     success_url: `${origin}/pay?status=success&id=${encodeURIComponent(recordId)}&stage=${stage}&token=${encodeURIComponent(token)}`,
     cancel_url: `${origin}/pay?status=cancelled&id=${encodeURIComponent(recordId)}&stage=${stage}&token=${encodeURIComponent(token)}`,

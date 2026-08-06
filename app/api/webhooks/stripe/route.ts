@@ -3,6 +3,7 @@ import Stripe from 'stripe';
 import { markAthletePaymentPaid } from '@/lib/athletes';
 import { isPaymentStage, paymentStageLabel } from '@/lib/payments';
 import { stripe } from '@/lib/stripe';
+import { recordCPRCampaignEvent } from '@/lib/amplifi/campaign-analytics';
 
 export async function POST(req: NextRequest) {
   const secret = process.env.STRIPE_WEBHOOK_SECRET;
@@ -26,6 +27,17 @@ export async function POST(req: NextRequest) {
     if (recordId && isPaymentStage(stage)) {
       const amount = typeof session.amount_total === 'number' ? ` ${(session.amount_total / 100).toFixed(2)} ${String(session.currency || '').toUpperCase()}` : '';
       await markAthletePaymentPaid(recordId, stage, `Stripe confirmed ${paymentStageLabel(stage)} payment${amount}. Session ${session.id}.`);
+    }
+    const campaignId = String(session.metadata?.amplifiCampaignId || '');
+    const draftId = String(session.metadata?.amplifiDraftId || '');
+    const platform = String(session.metadata?.amplifiPlatform || '');
+    if (campaignId && draftId && (platform === 'facebook' || platform === 'instagram')) {
+      await recordCPRCampaignEvent({
+        campaignId,
+        draftId,
+        platform,
+        event: 'conversion',
+      });
     }
   }
 

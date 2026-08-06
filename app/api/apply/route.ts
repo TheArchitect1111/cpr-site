@@ -6,6 +6,11 @@ import { sendApplyAdminAlert, sendApplyConfirmationEmail } from "@/lib/apply-not
 import { forwardPulseEvent } from "@/lib/ea-pulse-forward";
 import { isProductionDeploy } from "@/lib/env";
 import { findApplicantByEmail } from "@/lib/portal-credentials";
+import {
+  CPR_AMPLIFI_COOKIE,
+  readCPRAttribution,
+  recordCPRCampaignEvent,
+} from "@/lib/amplifi/campaign-analytics";
 
 const AIRTABLE_BASE_ID = process.env.AIRTABLE_BASE_ID || "appvVr6MVrJvEY0YJ";
 const AIRTABLE_TABLE_ID = "tblZwrZHi3WBR3NHZ";
@@ -261,7 +266,16 @@ export async function POST(req: NextRequest) {
       });
     }
 
-    return NextResponse.json({
+    const attribution = readCPRAttribution(req.cookies.get(CPR_AMPLIFI_COOKIE)?.value);
+    if (attribution) {
+      try {
+        await recordCPRCampaignEvent({ ...attribution, event: 'conversion' });
+      } catch (trackingError) {
+        console.error('Amplifi application attribution failed:', trackingError);
+      }
+    }
+
+    const response = NextResponse.json({
       ok: true,
       recordId,
       slug,
@@ -269,6 +283,18 @@ export async function POST(req: NextRequest) {
       confirmationSent,
       adminAlertSent,
     });
+    if (attribution) {
+      response.cookies.set({
+        name: CPR_AMPLIFI_COOKIE,
+        value: '',
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'lax',
+        path: '/',
+        maxAge: 0,
+      });
+    }
+    return response;
   } catch (err) {
     console.error("Apply route error:", err);
     return NextResponse.json(
