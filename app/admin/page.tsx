@@ -272,6 +272,7 @@ export default async function AdminPage({
           <summary>🏠 Portal</summary>
           <nav>
             <a className="aitem" href="/admin/update-portal">Post Portal Update</a>
+            <a className="aitem" href="/admin/amplifi">Amplifi Social Campaigns</a>
             <a className="aitem" href="/admin/content-requests">Review Content Requests</a>
             <a className="aitem" href="/portal/owner">Preview Family Portal</a>
           </nav>
