@@ -10,12 +10,15 @@ interface Props {
 }
 
 export default function AdminRegistrants({ athletes, live }: Props) {
+  const [playerRows, setPlayerRows] = useState(athletes);
   const [query, setQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState('All');
+  const [busyId, setBusyId] = useState('');
+  const [message, setMessage] = useState('');
 
   const rows = useMemo(() => {
     const q = query.trim().toLowerCase();
-    return [...athletes]
+    return [...playerRows]
       .filter((a) => a.status !== 'Archived')
       .filter((a) => {
         if (statusFilter === 'All') return true;
@@ -30,10 +33,10 @@ export default function AdminRegistrants({ athletes, live }: Props) {
         return hay.includes(q);
       })
       .sort(sortByNewest);
-  }, [athletes, query, statusFilter]);
+  }, [playerRows, query, statusFilter]);
 
   const stats = useMemo(() => {
-    const active = athletes.filter((a) => a.status !== 'Archived');
+    const active = playerRows.filter((a) => a.status !== 'Archived');
     return {
       total: active.length,
       pending: active.filter((a) => a.status === 'Pending').length,
@@ -41,7 +44,54 @@ export default function AdminRegistrants({ athletes, live }: Props) {
       agreements: active.filter((a) => a.termsAgreed || a.agreementSubmitted).length,
       portalActive: active.filter((a) => a.status === 'Active').length,
     };
-  }, [athletes]);
+  }, [playerRows]);
+
+  async function replacePhoto(athlete: AthleteAdmin, file?: File) {
+    if (!file) return;
+    setBusyId(athlete.id);
+    setMessage('');
+    try {
+      const form = new FormData();
+      form.append('file', file);
+      form.append('kind', 'admin-player-profile');
+      const uploadResponse = await fetch('/api/upload', { method: 'POST', body: form });
+      const upload = await uploadResponse.json() as { url?: string; error?: string };
+      if (!uploadResponse.ok || !upload.url) throw new Error(upload.error || 'Photo upload failed.');
+
+      const updateResponse = await fetch(`/api/admin/athletes/${encodeURIComponent(athlete.id)}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ photoUrl: upload.url }),
+      });
+      const update = await updateResponse.json() as { error?: string };
+      if (!updateResponse.ok) throw new Error(update.error || 'Profile photo could not be updated.');
+
+      setPlayerRows((current) => current.map((row) => row.id === athlete.id ? { ...row, photoUrl: upload.url! } : row));
+      setMessage(`${athlete.firstName} ${athlete.lastName}'s profile photo was updated.`);
+    } catch (error) {
+      setMessage(error instanceof Error ? error.message : 'Profile photo could not be updated.');
+    } finally {
+      setBusyId('');
+    }
+  }
+
+  async function deleteProfile(athlete: AthleteAdmin) {
+    const name = `${athlete.firstName} ${athlete.lastName}`.trim() || 'this player';
+    if (!window.confirm(`Delete ${name}'s player profile? This removes it from the active CPR site and portal.`)) return;
+    setBusyId(athlete.id);
+    setMessage('');
+    try {
+      const response = await fetch(`/api/admin/athletes/${encodeURIComponent(athlete.id)}`, { method: 'DELETE' });
+      const result = await response.json() as { error?: string };
+      if (!response.ok) throw new Error(result.error || 'Player profile could not be deleted.');
+      setPlayerRows((current) => current.filter((row) => row.id !== athlete.id));
+      setMessage(`${name}'s player profile was deleted from the active CPR site and portal.`);
+    } catch (error) {
+      setMessage(error instanceof Error ? error.message : 'Player profile could not be deleted.');
+    } finally {
+      setBusyId('');
+    }
+  }
 
   return (
     <>
@@ -62,6 +112,8 @@ export default function AdminRegistrants({ athletes, live }: Props) {
         <div><span>Portal active</span><b>{stats.portalActive}</b></div>
         <div><span>Pending review</span><b>{stats.pending}</b></div>
       </div>
+
+      {message ? <p className="pm-message" role="status">{message}</p> : null}
 
       <div className="work">
         <div className="table-wrap">
@@ -99,6 +151,7 @@ export default function AdminRegistrants({ athletes, live }: Props) {
                 )}
                 {rows.map((athlete) => {
                   const progress = getRegistrantProgress(athlete);
+                  const busy = busyId === athlete.id;
                   return (
                     <tr key={athlete.id}>
                       <td>
@@ -132,13 +185,33 @@ export default function AdminRegistrants({ athletes, live }: Props) {
                       </td>
                       <td>{progress.currentStep}</td>
                       <td>
-                        {progress.adminProfileUrl ? (
-                          <a href={progress.adminProfileUrl} target="_blank" rel="noopener noreferrer" className="profile-link-btn">
-                            View profile →
-                          </a>
-                        ) : (
-                          <span className="no">—</span>
-                        )}
+                        <div className="inline-grid">
+                          <img className="player-thumb" src={athlete.photoUrl} alt={`${athlete.firstName} ${athlete.lastName} profile`} />
+                          <div className="action-row">
+                            {progress.adminProfileUrl ? (
+                              <a href={progress.adminProfileUrl} target="_blank" rel="noopener noreferrer">
+                                View profile
+                              </a>
+                            ) : null}
+                            <label className="ghost" style={{ cursor: busy ? 'wait' : 'pointer' }}>
+                              {busy ? 'Working…' : 'Change photo'}
+                              <input
+                                type="file"
+                                accept="image/*"
+                                disabled={busy}
+                                style={{ display: 'none' }}
+                                onChange={(event) => {
+                                  const file = event.target.files?.[0];
+                                  event.target.value = '';
+                                  void replacePhoto(athlete, file);
+                                }}
+                              />
+                            </label>
+                            <button type="button" className="danger" disabled={busy} onClick={() => void deleteProfile(athlete)}>
+                              Delete profile
+                            </button>
+                          </div>
+                        </div>
                       </td>
                       <td style={{ whiteSpace: 'nowrap' }}>{athlete.submittedAt || '—'}</td>
                     </tr>
