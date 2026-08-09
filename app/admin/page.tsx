@@ -203,7 +203,7 @@ export default async function AdminPage({
           .admin-menu-group summary::-webkit-details-marker { display: none; }
           .admin-menu-group summary::after { content: '+'; float: right; color: #8a8a8a; }
           .admin-menu-group[open] summary { background: rgba(255,255,255,.08); }
-          .admin-menu-group[open] summary::after { content: 'ΓêÆ'; color: #fff; }
+          .admin-menu-group[open] summary::after { content: '\\2212'; color: #fff; }
           .admin-menu-group nav { padding: 4px 0 5px 9px; border-left: 1px solid rgba(255,255,255,.14); margin-left: 10px; }
           .admin-menu-group .aitem { font-size: 12px; padding: 8px 9px; }
           .admin-menu-help { margin: 4px 8px 14px; color: #9b9b9b; font-size: 11px; line-height: 1.4; }
@@ -218,7 +218,7 @@ export default async function AdminPage({
         <p className="admin-menu-help">Choose a category, then select the task you need.</p>
 
         <details className="admin-menu-group" open={playersOpen}>
-          <summary>≡ƒæñ Players</summary>
+          <summary>&#x1F464; Players</summary>
           <nav>
             <a className={`aitem${activeTab === 'registrants' ? ' active' : ''}`} href="/admin">Player List &amp; Progress</a>
             <a className={`aitem${activeTab === 'outreach' ? ' active' : ''}`} href="/admin?tab=outreach#players">Edit Player Profiles</a>
@@ -228,7 +228,7 @@ export default async function AdminPage({
         </details>
 
         <details className="admin-menu-group" open={recruitingOpen}>
-          <summary>≡ƒÅÇ Recruiting</summary>
+          <summary>&#x1F3C0; Recruiting</summary>
           <nav>
             <a className={`aitem${activeTab === 'outreach' ? ' active' : ''}`} href="/admin?tab=outreach">Coach Outreach</a>
             <a className={`aitem${activeTab === 'schools' ? ' active' : ''}`} href="/admin?tab=schools">Schools</a>
@@ -239,7 +239,7 @@ export default async function AdminPage({
         </details>
 
         <details className="admin-menu-group" open={messagesOpen}>
-          <summary>≡ƒÆ¼ Messages</summary>
+          <summary>&#x1F4AC; Messages</summary>
           <nav>
             <a className={`aitem${activeTab === 'communication' ? ' active' : ''}`} href="/admin?tab=communication">Announcements &amp; Communication</a>
             <a className={`aitem${activeTab === 'messages' ? ' active' : ''}`} href="/admin?tab=messages">Direct Messages</a>
@@ -249,7 +249,7 @@ export default async function AdminPage({
         </details>
 
         <details className="admin-menu-group">
-          <summary>≡ƒôà Calendar</summary>
+          <summary>&#x1F4C5; Calendar</summary>
           <nav>
             <a className="aitem" href="/admin/calendar">Shared Portal Calendar</a>
             <a className={`aitem${activeTab === 'site-events' ? ' active' : ''}`} href="/admin?tab=site-events">Website Events</a>
@@ -257,7 +257,7 @@ export default async function AdminPage({
         </details>
 
         <details className="admin-menu-group" open={websiteOpen}>
-          <summary>≡ƒîÉ Website</summary>
+          <summary>&#x1F310; Website</summary>
           <nav>
             <a className="aitem" href="/admin/landing">Edit Homepage</a>
             <a className={`aitem${activeTab === 'site-updates' ? ' active' : ''}`} href="/admin?tab=site-updates">Website Announcements</a>
@@ -269,7 +269,7 @@ export default async function AdminPage({
         </details>
 
         <details className="admin-menu-group">
-          <summary>≡ƒÅá Portal</summary>
+          <summary>&#x1F3E0; Portal</summary>
           <nav>
             <a className="aitem" href="/admin/update-portal">Post Portal Update</a>
             <a className="aitem" href="/admin/amplifi">Amplifi™ Search &amp; Campaigns</a>
@@ -279,7 +279,7 @@ export default async function AdminPage({
         </details>
 
         <details className="admin-menu-group" open={documentsOpen}>
-          <summary>≡ƒôä Documents &amp; Agreements</summary>
+          <summary>&#x1F4C4; Documents &amp; Agreements</summary>
           <nav>
             <a className={`aitem${activeTab === 'documents' ? ' active' : ''}`} href="/admin?tab=documents">Documents</a>
             <a className={`aitem${activeTab === 'fee-agreements' ? ' active' : ''}`} href="/admin?tab=fee-agreements">Fee Agreements</a>
@@ -287,7 +287,7 @@ export default async function AdminPage({
         </details>
 
         <details className="admin-menu-group" open={settingsOpen}>
-          <summary>ΓÜÖ∩╕Å Settings</summary>
+          <summary>&#x2699;&#xFE0F; Settings</summary>
           <nav>
             <a className={`aitem${activeTab === 'team' ? ' active' : ''}`} href="/admin?tab=team">Admin Team &amp; Access</a>
           </nav>
