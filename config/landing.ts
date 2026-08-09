@@ -208,6 +208,8 @@ export const landingConfig: LandingPageConfig = {
       { label: 'North America Fee Agreement', href: STANDARD_FEE_AGREEMENT_URL },
       { label: 'International Experience', href: INTERNATIONAL_EXPERIENCE_URL },
       { label: 'International Fee Agreement', href: INTERNATIONAL_FEE_AGREEMENT_URL },
+      { label: 'GLOBALPROSPECTS.COM', href: 'http://globalprospects.com/' },
+      { label: 'Website & Portal by Efficiency Architects', href: 'https://efficiencyarchitects.online' },
     ],
     email: 'mikecprglobal@mississaugamagic.com',
     instagramLabel: '@mississaugamagic',
