@@ -35,6 +35,7 @@ export default async function AdminContentRequestsPage() {
         <div className="aside-sec">OWNER TOOLS</div>
         <nav>
           <a className="aitem" href="/admin/update-portal">Update Portal</a>
+          <a className="aitem" href="/admin/amplifi">Amplifi™</a>
           <a className="aitem active" href="/admin/content-requests">Content Requests</a>
           <a className="aitem" href="/admin/landing">Edit Homepage</a>
           <a className="aitem" href="/admin?tab=communication">Communication Center</a>
@@ -47,9 +48,10 @@ export default async function AdminContentRequestsPage() {
         <header className="ahead">
           <div>
             <p className="admin-kicker">Signed in as {admin.name || admin.email}</p>
-            <h1 className="display">Update Hub™ queue</h1>
+            <h1 className="display">Update Hub™ + Amplifi™ queue</h1>
             <p>
-              Review family content requests, set status, and publish to the athlete Update Hub.
+              Review family updates and Amplifi Search social drafts (topic, date window, sources), then publish to the
+              athlete Update Hub. Nothing auto-posts.
               {!result.live && result.error ? ` ${result.error}` : ''}
             </p>
           </div>
