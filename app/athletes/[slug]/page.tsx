@@ -2,6 +2,7 @@ import '../../landing.css';
 import './profile.css';
 import { notFound } from 'next/navigation';
 import { getAthlete, embedUrl } from '@/lib/athletes';
+import { hasAthletePhoto } from '@/lib/athlete-photo';
 import RichTextContent from '@/app/components/RichTextContent';
 import { site } from '@/config/site';
 import CoachInquiryModal from './CoachInquiryModal';
@@ -75,7 +76,11 @@ export default async function AthleteProfile({ params }: { params: Promise<{ slu
       {/* PROFILE HERO */}
       <section className="phero">
         <div className="container phero-grid">
-          <img className="phero-photo" src={a.photoUrl} alt={`${a.firstName} ${a.lastName}`} />
+          {hasAthletePhoto(a.photoUrl) ? (
+            <img className="phero-photo" src={a.photoUrl} alt={`${a.firstName} ${a.lastName}`} />
+          ) : (
+            <div className="phero-photo phero-photo-empty" aria-hidden="true">No profile photo</div>
+          )}
           <div>
             <h1 className="display">{profileTitle.toUpperCase()}</h1>
             <p className="phero-meta">

@@ -88,6 +88,67 @@ a.aitem:hover { background: rgba(255,255,255,.07); }
 .otable input[type="checkbox"] { width: 16px; min-width: 16px; height: 16px; }
 .inline-grid { display: grid; gap: 6px; min-width: 150px; }
 .player-thumb { width: 44px; height: 44px; object-fit: cover; border-radius: 6px; border: 1px solid #DDD; }
+.player-thumb-lg { width: 88px; height: 88px; }
+.player-thumb-empty {
+  width: 44px;
+  height: 44px;
+  border-radius: 6px;
+  border: 1px dashed #BBB;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: .3px;
+  color: #777;
+  background: #F4F4F4;
+  padding: 4px;
+}
+.player-thumb-empty.player-thumb-lg { width: 88px; height: 88px; font-size: 11px; }
+.registrant-edit-panel {
+  background: #FAFAFA;
+  border: 1px solid #E6E6E6;
+  border-radius: 8px;
+  padding: 16px;
+}
+.registrant-edit-heading {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-bottom: 14px;
+}
+.registrant-edit-heading span { font-size: 13px; color: #555; }
+.registrant-photo-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+.registrant-edit-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+  margin-bottom: 12px;
+}
+.registrant-edit-grid label {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .3px;
+}
+.registrant-edit-grid input,
+.registrant-edit-grid textarea {
+  font: inherit;
+  font-weight: 500;
+  padding: 8px 10px;
+  border: 1px solid #DDD;
+  border-radius: 5px;
+}
+.registrant-edit-grid .span-2 { grid-column: span 2; }
+.registrant-edit-grid .span-3 { grid-column: 1 / -1; }
 .action-row { display: flex; flex-wrap: wrap; gap: 6px; }
 .action-row button, .action-row a { border: 0; border-radius: 5px; background: var(--black); color: #fff; padding: 7px 9px; font-size: 11px; font-weight: 800; text-decoration: none; cursor: pointer; }
 .action-row .ghost { background: #EAEAEA; color: #333; }
@@ -933,6 +994,8 @@ a.aitem:hover { background: rgba(255,255,255,.07); }
   .stat-row { grid-template-columns: repeat(2, 1fr); }
   .admission-stats { grid-template-columns: repeat(2, 1fr); }
   .registrant-stats { grid-template-columns: repeat(2, 1fr); }
+  .registrant-edit-grid { grid-template-columns: 1fr; }
+  .registrant-edit-grid .span-2 { grid-column: auto; }
   .check-grid { grid-template-columns: 1fr; }
   .full-grid, .full-text { grid-template-columns: 1fr; }
   .review-fields { grid-template-columns: 1fr; }

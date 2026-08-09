@@ -5,6 +5,8 @@
 import { createHmac, timingSafeEqual } from 'crypto';
 import { allowSampleData } from '@/lib/env';
 
+export { hasAthletePhoto } from '@/lib/athlete-photo';
+
 const BASE = 'appvVr6MVrJvEY0YJ';
 const ATHLETES = 'tblZwrZHi3WBR3NHZ';
 const ARCHIVE = process.env.AIRTABLE_ARCHIVE_TABLE_ID || 'Player Profile Archive';
@@ -225,7 +227,7 @@ const athleteFromRecord = (r: AirtableRecord): AthleteAdmin => ({
   email: f(r, 'Email'), phone: f(r, 'Phone'), parentName: f(r, 'Parent Name'),
   parentEmail: f(r, 'Parent Email'), parentPhone: f(r, 'Parent Phone'),
   bio: f(r, 'Bio'), strengths: f(r, 'Strengths').split(/[,\n]/).map(s => s.trim()).filter(Boolean),
-  videoUrl: f(r, 'Highlight Video URL'), photoUrl: f(r, 'Photo URL') || f(r, 'Photo') || '/hero-athlete.png',
+  videoUrl: f(r, 'Highlight Video URL'), photoUrl: f(r, 'Photo URL') || f(r, 'Photo'),
   status: f(r, 'Status') || 'Pending', team: f(r, 'Club Team'), jersey: f(r, 'Jersey Number'),
   vertical: f(r, 'Vertical Jump'), reach: f(r, 'Standing Reach'), hand: f(r, 'Dominant Hand'),
   ncaa: f(r, 'NCAA Eligibility'), profileViews: f(r, 'Profile Views'),
@@ -422,6 +424,7 @@ export function athleteFieldsFromInput(input: AthleteInput, includeAdminFields =
     Strengths: has('strengths') ? cleanString(input.strengths, true) : undefined,
     'Highlight Video URL': has('videoUrl') ? cleanString(input.videoUrl, true) : undefined,
     'Photo URL': has('photoUrl') ? cleanString(input.photoUrl, true) : undefined,
+    Photo: has('photoUrl') && !String(input.photoUrl || '').trim() ? [] : undefined,
     'Transcript URL': has('transcriptUrl') ? cleanString(input.transcriptUrl, true) : undefined,
     'Gameplay Video URL': has('gameplayVideoUrl') ? cleanString(input.gameplayVideoUrl, true) : undefined,
     'Club Team': has('team') ? cleanString(input.team, true) : undefined,

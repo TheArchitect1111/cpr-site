@@ -2,6 +2,8 @@ import '../../../portal.css';
 import '../../../login/portal-login.css';
 import PortalShell from '@/app/portal/components/PortalShell';
 import ChangePasswordForm from '@/app/portal/components/ChangePasswordForm';
+import PortalProfileEditCard from '@/app/portal/components/PortalProfileEditCard';
+import { getAthletes } from '@/lib/athletes';
 
 export const metadata = {
   title: 'Account Settings · CPR Parent Portal',
@@ -14,14 +16,15 @@ export default async function ParentAccountPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
+  const { rows } = await getAthletes();
+  const athlete = rows.find((row) => row.slug === slug);
+
   return (
     <PortalShell portalType="parent" slug={slug} active="account">
       <main className="portal-main account-main">
+        <PortalProfileEditCard athlete={athlete} />
         <ChangePasswordForm action="/api/portal/change-password" />
       </main>
     </PortalShell>
   );
 }
-
-
-

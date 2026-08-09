@@ -135,9 +135,9 @@ function emailAthlete(
     <div style="margin-bottom:20px">
       <div style="font-size:13px;font-weight:700;letter-spacing:.5px;margin-bottom:10px">YOUR FIRST STEPS</div>
       <ol style="margin:0;padding-left:20px;font-size:14px;line-height:1.8">
-        <li>Complete your athlete profile (name, position, school, stats)</li>
-        <li>Upload your highlight video link (YouTube preferred)</li>
-        <li>Upload your photos (action shots and headshot)</li>
+        <li>Open Account Settings and choose Edit player profile</li>
+        <li>Enter and update your profile text (name, position, school, bio)</li>
+        <li>Add or replace your profile photo and highlight video link</li>
         <li>Upload your transcript (unofficial is fine to start)</li>
       </ol>
     </div>

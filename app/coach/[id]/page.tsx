@@ -2,6 +2,7 @@ import '../../landing.css';
 import '../../athletes/[slug]/profile.css';
 import { notFound } from 'next/navigation';
 import { embedUrl, getAthlete } from '@/lib/athletes';
+import { hasAthletePhoto } from '@/lib/athlete-photo';
 import RichTextContent from '@/app/components/RichTextContent';
 import { getOutreachByRecordId, trackCoachShareView, verifyOutreachShareToken } from '@/lib/outreach';
 import { site } from '@/config/site';
@@ -66,7 +67,11 @@ export default async function CoachShareProfile({
           Private coach share for {outreach.school || outreach.coach || 'coach contact'}
         </div>
         <div className="container phero-grid">
-          <img className="phero-photo" src={athlete.photoUrl} alt={`${athlete.firstName} ${athlete.lastName}`} />
+          {hasAthletePhoto(athlete.photoUrl) ? (
+            <img className="phero-photo" src={athlete.photoUrl} alt={`${athlete.firstName} ${athlete.lastName}`} />
+          ) : (
+            <div className="phero-photo phero-photo-empty" aria-hidden="true">No profile photo</div>
+          )}
           <div>
             <h1 className="display">{athlete.firstName.toUpperCase()} {athlete.lastName.toUpperCase()}</h1>
             <p className="phero-meta">{[athlete.position, athlete.height, athlete.weight].filter(Boolean).join('  |  ')}</p>

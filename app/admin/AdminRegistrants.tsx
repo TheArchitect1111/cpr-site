@@ -1,8 +1,10 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { Fragment, useMemo, useState } from 'react';
 import type { AthleteAdmin } from '@/lib/athletes';
+import { hasAthletePhoto } from '@/lib/athlete-photo';
 import { getRegistrantProgress, sortByNewest } from '@/lib/registrant-progress';
+import AdminRegistrantProfileEditor from './AdminRegistrantProfileEditor';
 
 interface Props {
   athletes: AthleteAdmin[];
@@ -14,6 +16,7 @@ export default function AdminRegistrants({ athletes, live }: Props) {
   const [query, setQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState('All');
   const [busyId, setBusyId] = useState('');
+  const [editingId, setEditingId] = useState('');
   const [message, setMessage] = useState('');
 
   const rows = useMemo(() => {
@@ -75,6 +78,28 @@ export default function AdminRegistrants({ athletes, live }: Props) {
     }
   }
 
+  async function removePhoto(athlete: AthleteAdmin) {
+    const name = `${athlete.firstName} ${athlete.lastName}`.trim() || 'this player';
+    if (!window.confirm(`Remove ${name}'s profile photo?`)) return;
+    setBusyId(athlete.id);
+    setMessage('');
+    try {
+      const response = await fetch(`/api/admin/athletes/${encodeURIComponent(athlete.id)}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ photoUrl: '' }),
+      });
+      const result = await response.json() as { error?: string };
+      if (!response.ok) throw new Error(result.error || 'Profile photo could not be removed.');
+      setPlayerRows((current) => current.map((row) => row.id === athlete.id ? { ...row, photoUrl: '' } : row));
+      setMessage(`${name}'s profile photo was removed.`);
+    } catch (error) {
+      setMessage(error instanceof Error ? error.message : 'Profile photo could not be removed.');
+    } finally {
+      setBusyId('');
+    }
+  }
+
   async function deleteProfile(athlete: AthleteAdmin) {
     const name = `${athlete.firstName} ${athlete.lastName}`.trim() || 'this player';
     if (!window.confirm(`Delete ${name}'s player profile? This removes it from the active CPR site and portal.`)) return;
@@ -99,7 +124,7 @@ export default function AdminRegistrants({ athletes, live }: Props) {
         <div>
           <h1 className="display">REGISTRANTS &amp; PROGRESS</h1>
           <p>
-            Every kid who registers appears here automatically with a recruiting profile and live progress tracking.
+            Every kid who registers appears here automatically. Add, replace, or remove photos and edit profile text from this list.
           </p>
         </div>
         {!live && <span className="demo-pill">SAMPLE DATA · connect Airtable to go live</span>}
@@ -152,12 +177,20 @@ export default function AdminRegistrants({ athletes, live }: Props) {
                 {rows.map((athlete) => {
                   const progress = getRegistrantProgress(athlete);
                   const busy = busyId === athlete.id;
+                  const pendingCount = athlete.pendingUpdates?.length ?? 0;
+                  const showPhoto = hasAthletePhoto(athlete.photoUrl);
                   return (
-                    <tr key={athlete.id}>
+                    <Fragment key={athlete.id}>
+                    <tr>
                       <td>
                         <div className="bold">{athlete.firstName} {athlete.lastName}</div>
                         <div className="sub">{athlete.email || athlete.parentEmail || 'No email'}</div>
                         {athlete.parentName && <div className="sub">Parent: {athlete.parentName}</div>}
+                        {pendingCount > 0 ? (
+                          <div className="sub">
+                            <a href="/admin?tab=outreach#players">{pendingCount} family update{pendingCount === 1 ? '' : 's'} awaiting review</a>
+                          </div>
+                        ) : null}
                       </td>
                       <td>
                         <span className={`pill st ${athlete.status === 'Active' ? 'active' : 'pending'}`}>
@@ -186,15 +219,22 @@ export default function AdminRegistrants({ athletes, live }: Props) {
                       <td>{progress.currentStep}</td>
                       <td>
                         <div className="inline-grid">
-                          <img className="player-thumb" src={athlete.photoUrl} alt={`${athlete.firstName} ${athlete.lastName} profile`} />
+                          {showPhoto ? (
+                            <img className="player-thumb" src={athlete.photoUrl} alt={`${athlete.firstName} ${athlete.lastName} profile`} />
+                          ) : (
+                            <div className="player-thumb-empty">No photo</div>
+                          )}
                           <div className="action-row">
                             {progress.adminProfileUrl ? (
                               <a href={progress.adminProfileUrl} target="_blank" rel="noopener noreferrer">
                                 View profile
                               </a>
                             ) : null}
+                            <button type="button" disabled={busy} onClick={() => setEditingId(editingId === athlete.id ? '' : athlete.id)}>
+                              {editingId === athlete.id ? 'Close editor' : 'Edit profile'}
+                            </button>
                             <label className="ghost" style={{ cursor: busy ? 'wait' : 'pointer' }}>
-                              {busy ? 'Working…' : 'Change photo'}
+                              {busy ? 'Working…' : showPhoto ? 'Replace photo' : 'Add photo'}
                               <input
                                 type="file"
                                 accept="image/*"
@@ -207,6 +247,11 @@ export default function AdminRegistrants({ athletes, live }: Props) {
                                 }}
                               />
                             </label>
+                            {showPhoto ? (
+                              <button type="button" className="ghost" disabled={busy} onClick={() => void removePhoto(athlete)}>
+                                Remove photo
+                              </button>
+                            ) : null}
                             <button type="button" className="danger" disabled={busy} onClick={() => void deleteProfile(athlete)}>
                               Delete profile
                             </button>
@@ -215,6 +260,26 @@ export default function AdminRegistrants({ athletes, live }: Props) {
                       </td>
                       <td style={{ whiteSpace: 'nowrap' }}>{athlete.submittedAt || '—'}</td>
                     </tr>
+                    {editingId === athlete.id ? (
+                      <tr>
+                        <td colSpan={6}>
+                          <AdminRegistrantProfileEditor
+                            athlete={athlete}
+                            onCancel={() => setEditingId('')}
+                            onSaved={(next) => {
+                              setPlayerRows((current) => current.map((row) => (
+                                row.id === athlete.id
+                                  ? { ...row, ...next, pendingUpdates: row.pendingUpdates }
+                                  : row
+                              )));
+                              setEditingId('');
+                              setMessage(`${athlete.firstName} ${athlete.lastName}'s profile was saved.`);
+                            }}
+                          />
+                        </td>
+                      </tr>
+                    ) : null}
+                    </Fragment>
                   );
                 })}
               </tbody>

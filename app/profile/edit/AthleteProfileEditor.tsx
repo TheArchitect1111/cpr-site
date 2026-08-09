@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import type { AthleteAdmin } from '@/lib/athletes';
+import { hasAthletePhoto } from '@/lib/athlete-photo';
 
 type Draft = {
   firstName: string;
@@ -41,7 +42,7 @@ function initial(a: AthleteAdmin): Draft {
     bio: a.bio,
     strengths: a.strengths.join(', '),
     videoUrl: a.videoUrl,
-    photoUrl: a.photoUrl,
+    photoUrl: hasAthletePhoto(a.photoUrl) ? a.photoUrl : '',
     transcriptUrl: a.transcriptUrl,
     gameplayVideoUrl: a.gameplayVideoUrl,
   };
@@ -108,7 +109,7 @@ export default function AthleteProfileEditor({ athlete, token }: { athlete: Athl
     <section className="edit-card">
       <div className="edit-heading">
         <div>
-          <p className="eyebrow">Private athlete profile editor</p>
+          <p className="eyebrow">Edit player profile</p>
           <h1 className="display">{athlete.firstName} {athlete.lastName}</h1>
         </div>
         {athlete.slug && <a className="open-profile" href={`/athletes/${athlete.slug}`} target="_blank">Open Public Profile</a>}
@@ -121,7 +122,7 @@ export default function AthleteProfileEditor({ athlete, token }: { athlete: Athl
         <div className="profile-photo-manager">
           {draft.photoUrl ? <img src={draft.photoUrl} alt="Current profile preview" /> : <div className="profile-photo-empty">No profile photo selected</div>}
           <div>
-            <label>Choose a new profile photo
+            <label>Add or replace profile photo
               <input type="file" accept="image/*" onChange={e => upload('photoUrl', e.target.files?.[0], 'photos')} />
               <span>{uploading === 'photoUrl' ? 'Uploading...' : 'Upload a photo to add or replace the current image.'}</span>
             </label>
@@ -185,8 +186,8 @@ export default function AthleteProfileEditor({ athlete, token }: { athlete: Athl
       </div>
 
       <div className="edit-actions">
-        <span>Changes are sent to CPR for review before they publish.</span>
-        <button onClick={save} disabled={saving || Boolean(uploading)}>{saving ? 'Submitting...' : 'Submit for Review'}</button>
+        <span>Save photo and profile text. CPR reviews family submissions before the public recruiting page updates.</span>
+        <button onClick={save} disabled={saving || Boolean(uploading)}>{saving ? 'Submitting...' : 'Save profile for review'}</button>
       </div>
     </section>
   );

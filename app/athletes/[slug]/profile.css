@@ -13,6 +13,19 @@
 .coach-banner { background: rgba(200,16,46,.18); border: 1px solid rgba(255,255,255,.18); border-radius: 6px; color: #fff; font-size: 12px; font-weight: 800; letter-spacing: .5px; margin-bottom: 18px; padding: 9px 12px; text-transform: uppercase; }
 .phero-grid { display: grid; grid-template-columns: 220px 1fr; gap: 28px; align-items: center; padding-bottom: 30px; }
 .phero-photo { width: 220px; height: 270px; object-fit: cover; object-position: center top; border-radius: 8px; border: 2px solid rgba(255,255,255,.15); }
+.phero-photo-empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 16px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: .4px;
+  color: #9A9A9A;
+  background: #1a1a1a;
+  border-style: dashed;
+}
 .phero h1 { font-size: 44px; margin: 0 0 8px; font-weight: 800; letter-spacing: 1px; }
 .phero-meta { color: #D9D9D9; font-size: 15px; margin: 0 0 12px; }
 .phero-tags { display: flex; gap: 10px; flex-wrap: wrap; margin: 0 0 16px; }

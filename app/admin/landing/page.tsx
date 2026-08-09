@@ -109,8 +109,8 @@ export default async function AdminLandingPage({
           <section className="admin-card">
             <p className="admin-kicker">Player pages</p>
             <h2>Edit player profiles</h2>
-            <p>Choose a player, update their profile information and images, then submit the changes for review.</p>
-            <a className="btn" href="/admin?tab=outreach#players">Open player list</a>
+            <p>Add, replace, or remove photos and edit profile text on the registrants list. Family submissions still appear there for review.</p>
+            <a className="btn" href="/admin">Open registrants</a>
           </section>
         ) : null}
 
