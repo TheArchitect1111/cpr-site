@@ -14,9 +14,13 @@ export type ContentRequestRecord = {
   requestId: string;
   athleteSlug: string;
   athleteName?: string;
+  organizationName?: string;
   requestType: string;
   title: string;
   description?: string;
+  content?: string;
+  videoLink?: string;
+  additionalNotes?: string;
   priority: string;
   status: string;
   dateSubmitted?: string;
@@ -65,9 +69,13 @@ function mapRecord(row: AirtableRow): ContentRequestRecord {
     requestId: text(f, 'Request ID') || row.id,
     athleteSlug: text(f, 'Athlete Slug'),
     athleteName: text(f, 'Athlete Name') || undefined,
+    organizationName: text(f, 'Organization Name') || text(f, 'Organization') || undefined,
     requestType: text(f, 'Request Type') || 'General Update',
     title: text(f, 'Title'),
     description: text(f, 'Description') || undefined,
+    content: text(f, 'Content') || undefined,
+    videoLink: text(f, 'Video Link') || undefined,
+    additionalNotes: text(f, 'Additional Notes') || undefined,
     priority: text(f, 'Priority') || 'Normal',
     status: text(f, 'Status') || 'Pending Review',
     dateSubmitted: text(f, 'Date Submitted') || row.createdTime,
