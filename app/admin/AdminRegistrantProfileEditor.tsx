@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import type { AthleteAdmin } from '@/lib/athletes';
 import { hasAthletePhoto } from '@/lib/athlete-photo';
+import MediaLibraryPicker from './landing/MediaLibraryPicker';
 
 type Draft = {
   firstName: string;
@@ -113,7 +114,7 @@ export default function AdminRegistrantProfileEditor({
     <div className="registrant-edit-panel">
       <div className="registrant-edit-heading">
         <strong>Edit profile — {athlete.firstName} {athlete.lastName}</strong>
-        <span>Add, replace, or remove the photo. Update profile text and save to publish immediately.</span>
+        <span>Choose the player photo from the same CPR photo gallery used by the website editor, then save the profile.</span>
       </div>
 
       <div className="registrant-photo-row">
@@ -123,8 +124,15 @@ export default function AdminRegistrantProfileEditor({
           <div className="player-thumb-empty player-thumb-lg">No photo</div>
         )}
         <div className="action-row">
+          <MediaLibraryPicker
+            label={draft.photoUrl ? 'Replace from photo gallery' : 'Pick from photo gallery'}
+            onPick={(url) => {
+              set('photoUrl', url);
+              setMessage('Photo selected from the gallery. Save profile to publish it.');
+            }}
+          />
           <label className="ghost" style={{ cursor: working ? 'wait' : 'pointer' }}>
-            {busy === 'upload' ? 'Uploading…' : draft.photoUrl ? 'Replace photo' : 'Add photo'}
+            {busy === 'upload' ? 'Uploading…' : 'Upload new photo'}
             <input
               type="file"
               accept="image/*"
