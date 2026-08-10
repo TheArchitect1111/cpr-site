@@ -44,7 +44,7 @@ function mergeTestimonialItems(
     })
     .filter((item): item is NonNullable<typeof item> => Boolean(item?.quote?.trim()));
 
-  if (fromSlots.length) return fromSlots.slice(0, 3);
+  if (fromSlots.length) return fromSlots.slice(0, 7);
 
   if (overrides.socialProof.quote.trim() && baseItems[0]) {
     return [
@@ -55,10 +55,10 @@ function mergeTestimonialItems(
         photo: pick(overrides.socialProof.photoUrl, baseItems[0].photo),
       },
       ...baseItems.slice(1),
-    ];
+    ].slice(0, 7);
   }
 
-  return baseItems;
+  return baseItems.slice(0, 7);
 }
 
 export function mergeLandingConfig(
@@ -215,16 +215,8 @@ export function hasEditorTestimonials(overrides: LandingContent): boolean {
   return overrides.testimonials.some(slotHasOverride);
 }
 
-export async function getLandingPageConfig(): Promise<LandingPageConfig> {
-  const [overrides, quoteItems] = await Promise.all([
-    getLandingContent(),
-    listCollection('site-quotes'),
-  ]);
-  const merged = mergeLandingConfig(landingConfig, overrides);
-
-  if (hasEditorTestimonials(overrides)) return merged;
-
-  const ownerQuotes = quoteItems
+function ownerHomepageQuotes(quoteItems: CollectionItem[]) {
+  return quoteItems
     .filter((item) => {
       const status = String(item.status || '').toLowerCase();
       const placement = String(item.placement || '').toLowerCase();
@@ -241,8 +233,32 @@ export async function getLandingPageConfig(): Promise<LandingPageConfig> {
       photo: String(item.photoUrl || '/testimonial-nikki-blessed.jpg'),
     }))
     .filter((item) => item.quote.trim());
+}
 
-  return ownerQuotes.length
-    ? { ...merged, socialProof: { ...merged.socialProof, items: ownerQuotes.slice(0, 3) } }
-    : merged;
+export async function getLandingPageConfig(): Promise<LandingPageConfig> {
+  const [overrides, quoteItems] = await Promise.all([
+    getLandingContent(),
+    listCollection('site-quotes'),
+  ]);
+  const merged = mergeLandingConfig(landingConfig, overrides);
+  const ownerQuotes = ownerHomepageQuotes(quoteItems);
+
+  if (!ownerQuotes.length) return merged;
+
+  const combined = [...merged.socialProof.items];
+  for (const quote of ownerQuotes) {
+    const duplicate = combined.some(
+      (item) => item.quote.trim() === quote.quote.trim() && item.name.trim() === quote.name.trim(),
+    );
+    if (!duplicate) combined.push(quote);
+    if (combined.length >= 7) break;
+  }
+
+  return {
+    ...merged,
+    socialProof: {
+      ...merged.socialProof,
+      items: combined.slice(0, 7),
+    },
+  };
 }
