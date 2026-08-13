@@ -96,7 +96,7 @@ export type LandingPageConfig = {
     intro?: string;
     points: string[];
   };
-  /** 2. SOCIAL PROOF — max 3 testimonials */
+  /** 2. SOCIAL PROOF — max 7 testimonials */
   socialProof: {
     heading: string;
     intro?: string;

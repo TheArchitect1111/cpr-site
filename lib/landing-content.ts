@@ -12,6 +12,8 @@ export type LandingTestimonialSlot = {
   photoUrl: string;
 };
 
+export const TESTIMONIAL_SLOT_COUNT = 7;
+
 export type LandingStatSlot = {
   value: string;
   label: string;
@@ -171,7 +173,7 @@ export const EMPTY_LANDING_CONTENT: LandingContent = {
     role: '',
     photoUrl: '',
   },
-  testimonials: [emptyTestimonial(), emptyTestimonial(), emptyTestimonial()],
+  testimonials: Array.from({ length: TESTIMONIAL_SLOT_COUNT }, emptyTestimonial),
   navigation: {
     hiddenWebsiteHrefs: [],
     hiddenPortalTabs: [],
@@ -228,7 +230,7 @@ export const EMPTY_LANDING_CONTENT: LandingContent = {
 
 function normalizeTestimonials(input: Partial<LandingContent> | null | undefined): LandingTestimonialSlot[] {
   if (Array.isArray(input?.testimonials) && input.testimonials.length) {
-    return [0, 1, 2].map((i) => {
+    return Array.from({ length: TESTIMONIAL_SLOT_COUNT }, (_, i) => {
       const slot = input.testimonials?.[i];
       return {
         quote: String(slot?.quote ?? ''),
@@ -248,12 +250,11 @@ function normalizeTestimonials(input: Partial<LandingContent> | null | undefined
         role: String(legacy.role ?? ''),
         photoUrl: String(legacy.photoUrl ?? ''),
       },
-      emptyTestimonial(),
-      emptyTestimonial(),
+      ...Array.from({ length: TESTIMONIAL_SLOT_COUNT - 1 }, emptyTestimonial),
     ];
   }
 
-  return [emptyTestimonial(), emptyTestimonial(), emptyTestimonial()];
+  return Array.from({ length: TESTIMONIAL_SLOT_COUNT }, emptyTestimonial);
 }
 
 function normalize(input: Partial<LandingContent> | null | undefined): LandingContent {
