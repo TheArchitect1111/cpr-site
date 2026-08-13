@@ -423,8 +423,11 @@ export function athleteFieldsFromInput(input: AthleteInput, includeAdminFields =
     Bio: has('bio') ? cleanString(input.bio, true) : undefined,
     Strengths: has('strengths') ? cleanString(input.strengths, true) : undefined,
     'Highlight Video URL': has('videoUrl') ? cleanString(input.videoUrl, true) : undefined,
-    'Photo URL': has('photoUrl') ? cleanString(input.photoUrl, true) : undefined,
-    Photo: has('photoUrl') && !String(input.photoUrl || '').trim() ? [] : undefined,
+    Photo: has('photoUrl')
+      ? cleanString(input.photoUrl, true)
+        ? [{ url: cleanString(input.photoUrl, true) }]
+        : []
+      : undefined,
     'Transcript URL': has('transcriptUrl') ? cleanString(input.transcriptUrl, true) : undefined,
     'Gameplay Video URL': has('gameplayVideoUrl') ? cleanString(input.gameplayVideoUrl, true) : undefined,
     'Club Team': has('team') ? cleanString(input.team, true) : undefined,
