@@ -1,6 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { isAdminAuthed } from '@/lib/admin-auth';
-import { getLandingContent, saveLandingContent, type LandingContent } from '@/lib/landing-content';
+import {
+  getLandingContent,
+  saveLandingContent,
+  TESTIMONIAL_SLOT_COUNT,
+  type LandingContent,
+} from '@/lib/landing-content';
 
 export const dynamic = 'force-dynamic';
 
@@ -13,7 +18,7 @@ function trimTestimonials(
   current: LandingContent['testimonials'],
 ) {
   const source = input ?? current;
-  return [0, 1, 2].map((i) => ({
+  return Array.from({ length: TESTIMONIAL_SLOT_COUNT }, (_, i) => ({
     quote: trim(source[i]?.quote ?? '', 4000),
     name: trim(source[i]?.name ?? '', 120),
     role: trim(source[i]?.role ?? '', 120),
