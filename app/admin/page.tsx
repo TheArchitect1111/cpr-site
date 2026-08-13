@@ -192,6 +192,7 @@ export default async function AdminPage({
   const messagesOpen = ['communication', 'tickets', 'messages', 'email-templates'].includes(activeTab);
   const websiteOpen = ['content', 'site-updates', 'site-quotes', 'media-library', 'site-text'].includes(activeTab);
   const documentsOpen = ['documents', 'fee-agreements'].includes(activeTab);
+  const campsOpen = ['camps', 'camp-registrations'].includes(activeTab);
   const settingsOpen = activeTab === 'team';
 
   return (
@@ -235,6 +236,15 @@ export default async function AdminPage({
             <a className={`aitem${activeTab === 'recruitment-tracker' ? ' active' : ''}`} href="/admin?tab=recruitment-tracker">Recruitment Tracker</a>
             <a className={`aitem${activeTab === 'responses' ? ' active' : ''}`} href="/admin?tab=responses">Coach Responses</a>
             <a className={`aitem${activeTab === 'offers' ? ' active' : ''}`} href="/admin?tab=offers">Offers</a>
+          </nav>
+        </details>
+
+        <details className="admin-menu-group" open={campsOpen}>
+          <summary>&#x1F3D5;&#xFE0F; Camps</summary>
+          <nav>
+            <a className={`aitem${activeTab === 'camps' ? ' active' : ''}`} href="/admin?tab=camps">Manage Camps</a>
+            <a className={`aitem${activeTab === 'camp-registrations' ? ' active' : ''}`} href="/admin?tab=camp-registrations">Camp Registrations</a>
+            <a className="aitem" href="/camps" target="_blank" rel="noopener noreferrer">View Camp Page</a>
           </nav>
         </details>
 

@@ -3,11 +3,19 @@ import Link from 'next/link';
 import RotatingImagePanel from '@/app/components/RotatingImagePanel';
 import { campsSurface } from '@/lib/surface-editor/registry';
 import { getEditableSurfaceDocument } from '@/lib/surface-editor/store';
+import { listCollection } from '@/lib/admin-collections';
+import RichTextContent from '@/app/components/RichTextContent';
 
 export const dynamic = 'force-dynamic';
 
 export default async function CampsPage() {
-  const document = await getEditableSurfaceDocument(campsSurface);
+  const [document, campItems] = await Promise.all([
+    getEditableSurfaceDocument(campsSurface),
+    listCollection('camps'),
+  ]);
+  const publishedCamps = campItems
+    .filter((camp) => camp.status === 'Published' || camp.status === 'Registration Closed')
+    .sort((a, b) => String(a.startDate || '').localeCompare(String(b.startDate || '')));
   const { hero, spotlight, houseLeague } = document.content;
   const sections = document.sections.filter((section) => section.visible).sort((a, b) => a.order - b.order);
   return (
@@ -34,6 +42,32 @@ export default async function CampsPage() {
           <p className="lc-lead">{houseLeague.body}</p>
         </div>
       </section> : null)}
+      {publishedCamps.length > 0 && (
+        <section className="section" aria-labelledby="upcoming-camps-title">
+          <div className="container">
+            <h2 id="upcoming-camps-title" className="display">UPCOMING CAMPS</h2>
+            <div className="camp-list" style={{ display: 'grid', gap: 24, marginTop: 28 }}>
+              {publishedCamps.map((camp) => {
+                const registrationOpen = camp.status === 'Published' && Boolean(camp.registrationUrl);
+                return (
+                  <article className="camp-card" key={camp.id} style={{ border: '1px solid rgba(15,15,15,.14)', borderRadius: 18, padding: 24 }}>
+                    <p className="eyebrow">{String(camp.status)}</p>
+                    <h3 className="display">{String(camp.name)}</h3>
+                    <p>{[camp.startDate, camp.endDate, camp.location].filter(Boolean).map(String).join(' · ')}</p>
+                    <p>{[camp.ageGroup, camp.price].filter(Boolean).map(String).join(' · ')}</p>
+                    <RichTextContent html={String(camp.description || '')} />
+                    {registrationOpen ? (
+                      <a className="btn" href={String(camp.registrationUrl)} style={{ marginTop: 18 }}>REGISTER NOW</a>
+                    ) : (
+                      <p style={{ marginTop: 18, fontWeight: 700 }}>Registration is currently closed.</p>
+                    )}
+                  </article>
+                );
+              })}
+            </div>
+          </div>
+        </section>
+      )}
     </main>
   );
 }
