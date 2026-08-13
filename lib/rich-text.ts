@@ -36,6 +36,7 @@ export function sanitizeRichHtml(html: string): string {
   out = out.replace(/<\/?([a-z0-9]+)([^>]*)>/gi, (match, tag: string, attrs: string) => {
     const lower = tag.toLowerCase();
     if (!ALLOWED_TAGS.has(lower)) return '';
+    if (match.startsWith('</')) return `</${lower}>`;
     if (lower === 'a') {
       const href = attrs.match(/href\s*=\s*("([^"]*)"|'([^']*)'|([^\s>]+))/i);
       const url = href?.[2] || href?.[3] || href?.[4] || '';
