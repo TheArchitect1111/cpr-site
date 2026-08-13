@@ -36,6 +36,8 @@ export type CollectionId =
   | 'email-templates'
   | 'site-updates'
   | 'site-events'
+  | 'camps'
+  | 'camp-registrations'
   | 'site-quotes'
   | 'media-library'
   | 'site-text';
@@ -224,6 +226,51 @@ export const COLLECTIONS: Record<CollectionId, CollectionDef> = {
       { key: 'registrationUrl', label: 'Registration link', type: 'text', placeholder: 'https://' },
       { key: 'gradYearRelevance', label: 'Grad-year tags', type: 'text', placeholder: '2026, 2027, senior' },
       { key: 'imageUrl', label: 'Event image', type: 'file' },
+    ],
+  },
+  camps: {
+    id: 'camps',
+    label: 'Camps',
+    singular: 'Camp',
+    description: 'Create, publish, and manage CPR camps from one place.',
+    titleField: 'name',
+    subtitleFields: ['startDate', 'location', 'price'],
+    statusField: 'status',
+    fields: [
+      { key: 'name', label: 'Camp name', type: 'text', required: true, placeholder: 'e.g. CPR Elite Exposure Camp' },
+      { key: 'status', label: 'Status', type: 'select', required: true, options: ['Draft', 'Published', 'Registration Closed', 'Completed', 'Archived'] },
+      { key: 'startDate', label: 'Start date', type: 'date', required: true },
+      { key: 'endDate', label: 'End date', type: 'date' },
+      { key: 'location', label: 'Location', type: 'text', required: true, placeholder: 'Venue, city, province/state' },
+      { key: 'ageGroup', label: 'Age or grade group', type: 'text', placeholder: 'e.g. Grades 8–12' },
+      { key: 'capacity', label: 'Capacity', type: 'number', placeholder: '100' },
+      { key: 'registeredCount', label: 'Registered', type: 'number', placeholder: '0' },
+      { key: 'price', label: 'Price', type: 'text', placeholder: 'e.g. $149 CAD' },
+      { key: 'description', label: 'Description', type: 'textarea', required: true },
+      { key: 'registrationUrl', label: 'Registration link', type: 'text', placeholder: 'https://' },
+      { key: 'imageUrl', label: 'Camp image', type: 'file' },
+      { key: 'internalNotes', label: 'Internal notes', type: 'textarea', hint: 'Only visible in the admin portal.' },
+    ],
+  },
+  'camp-registrations': {
+    id: 'camp-registrations',
+    label: 'Camp Registrations',
+    singular: 'Registration',
+    description: 'Track campers, payment status, waivers, and check-in.',
+    titleField: 'camperName',
+    subtitleFields: ['campName', 'email', 'paymentStatus'],
+    statusField: 'checkInStatus',
+    fields: [
+      { key: 'camperName', label: 'Camper name', type: 'text', required: true },
+      { key: 'campName', label: 'Camp', type: 'text', required: true },
+      { key: 'email', label: 'Email', type: 'text', required: true },
+      { key: 'phone', label: 'Phone', type: 'text' },
+      { key: 'gradYear', label: 'Graduation year', type: 'number' },
+      { key: 'paymentStatus', label: 'Payment', type: 'select', options: ['Pending', 'Paid', 'Refunded', 'Comped'] },
+      { key: 'waiverStatus', label: 'Waiver', type: 'select', options: ['Not Sent', 'Sent', 'Signed'] },
+      { key: 'checkInStatus', label: 'Check-in', type: 'select', options: ['Registered', 'Checked In', 'No Show', 'Cancelled'] },
+      { key: 'registrationDate', label: 'Registration date', type: 'date' },
+      { key: 'notes', label: 'Notes', type: 'textarea' },
     ],
   },
   'site-quotes': {
