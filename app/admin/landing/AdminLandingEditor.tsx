@@ -341,10 +341,10 @@ export default function AdminLandingEditor({ initialContent, defaults, storageCo
               />
             </label>
             <p className="landing-editor-note">
-              Edit up to three quotes shown on the homepage. Leave a slot blank to keep the current quote for that
+              Edit up to seven quotes shown on the homepage. Leave a slot blank to keep the current quote for that
               position.
             </p>
-            {[0, 1, 2].map((i) => {
+            {content.testimonials.map((_, i) => {
               const slot = content.testimonials[i];
               const def = defSocial.items[i];
               return (
