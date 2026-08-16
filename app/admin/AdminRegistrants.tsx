@@ -18,6 +18,8 @@ export default function AdminRegistrants({ athletes, live }: Props) {
   const [busyId, setBusyId] = useState('');
   const [editingId, setEditingId] = useState('');
   const [message, setMessage] = useState('');
+  const [showCreate, setShowCreate] = useState(false);
+  const [newPlayer, setNewPlayer] = useState({ firstName: '', lastName: '', email: '' });
 
   const rows = useMemo(() => {
     const q = query.trim().toLowerCase();
@@ -118,6 +120,33 @@ export default function AdminRegistrants({ athletes, live }: Props) {
     }
   }
 
+  async function createProfile() {
+    if (!newPlayer.firstName.trim() || !newPlayer.lastName.trim()) {
+      setMessage('First and last name are required.');
+      return;
+    }
+    setBusyId('new');
+    setMessage('');
+    try {
+      const response = await fetch('/api/admin/athletes', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ...newPlayer, status: 'Pending' }),
+      });
+      const result = await response.json() as { athlete?: AthleteAdmin; error?: string };
+      if (!response.ok || !result.athlete) throw new Error(result.error || 'Player profile could not be created.');
+      setPlayerRows((current) => [result.athlete!, ...current]);
+      setNewPlayer({ firstName: '', lastName: '', email: '' });
+      setShowCreate(false);
+      setEditingId(result.athlete.id);
+      setMessage('Player profile created without an application. Complete the profile below.');
+    } catch (error) {
+      setMessage(error instanceof Error ? error.message : 'Player profile could not be created.');
+    } finally {
+      setBusyId('');
+    }
+  }
+
   return (
     <>
       <header className="ahead">
@@ -129,6 +158,31 @@ export default function AdminRegistrants({ athletes, live }: Props) {
         </div>
         {!live && <span className="demo-pill">SAMPLE DATA · connect Airtable to go live</span>}
       </header>
+
+      <div className="action-row" style={{ marginBottom: '1rem' }}>
+        <button type="button" onClick={() => setShowCreate((current) => !current)}>
+          {showCreate ? 'Cancel new profile' : 'Create player without application'}
+        </button>
+      </div>
+
+      {showCreate ? (
+        <div className="registrant-edit-panel" style={{ marginBottom: '1rem' }}>
+          <div className="registrant-edit-heading">
+            <strong>Create player profile</strong>
+            <span>The player does not need to submit an application. You can complete the full profile after creating the record.</span>
+          </div>
+          <div className="registrant-edit-grid">
+            <label>First name<input value={newPlayer.firstName} onChange={(event) => setNewPlayer((current) => ({ ...current, firstName: event.target.value }))} /></label>
+            <label>Last name<input value={newPlayer.lastName} onChange={(event) => setNewPlayer((current) => ({ ...current, lastName: event.target.value }))} /></label>
+            <label>Email<input type="email" value={newPlayer.email} onChange={(event) => setNewPlayer((current) => ({ ...current, email: event.target.value }))} /></label>
+          </div>
+          <div className="action-row">
+            <button type="button" disabled={busyId === 'new'} onClick={() => void createProfile()}>
+              {busyId === 'new' ? 'Creating…' : 'Create and edit profile'}
+            </button>
+          </div>
+        </div>
+      ) : null}
 
       <div className="admission-stats registrant-stats">
         <div><span>Total registrants</span><b>{stats.total}</b></div>
