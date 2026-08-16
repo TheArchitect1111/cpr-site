@@ -9,6 +9,7 @@
 
 import { put, list } from '@vercel/blob';
 import { randomUUID } from 'crypto';
+import { createCipheriv, createDecipheriv, createHash, randomBytes } from 'crypto';
 import {
   allowedKeys,
   isCollectionId,
@@ -24,6 +25,44 @@ function blobPath(id: CollectionId) {
 
 function blobConfigured() {
   return Boolean(process.env.BLOB_READ_WRITE_TOKEN);
+}
+
+type EncryptedCollection = { v: 1; iv: string; tag: string; data: string };
+
+function registrationSecret() {
+  return process.env.CAMP_REGISTRATION_ENCRYPTION_KEY
+    || process.env.ADMIN_AUTH_SECRET
+    || process.env.PORTAL_SESSION_SECRET
+    || '';
+}
+
+function encryptionKey() {
+  const secret = registrationSecret();
+  if (!secret) throw new Error('Camp registration encryption is not configured.');
+  return createHash('sha256').update(secret).digest();
+}
+
+function encryptRegistrations(items: CollectionItem[]): string {
+  const iv = randomBytes(12);
+  const cipher = createCipheriv('aes-256-gcm', encryptionKey(), iv);
+  const data = Buffer.concat([cipher.update(JSON.stringify(items), 'utf8'), cipher.final()]);
+  return JSON.stringify({
+    v: 1,
+    iv: iv.toString('base64'),
+    tag: cipher.getAuthTag().toString('base64'),
+    data: data.toString('base64'),
+  } satisfies EncryptedCollection);
+}
+
+function decryptRegistrations(envelope: EncryptedCollection): CollectionItem[] {
+  const decipher = createDecipheriv('aes-256-gcm', encryptionKey(), Buffer.from(envelope.iv, 'base64'));
+  decipher.setAuthTag(Buffer.from(envelope.tag, 'base64'));
+  const value = Buffer.concat([
+    decipher.update(Buffer.from(envelope.data, 'base64')),
+    decipher.final(),
+  ]).toString('utf8');
+  const parsed = JSON.parse(value) as unknown;
+  return Array.isArray(parsed) ? parsed as CollectionItem[] : [];
 }
 
 const cache = new Map<CollectionId, { value: CollectionItem[]; at: number }>();
@@ -59,8 +98,10 @@ export async function listCollection(id: CollectionId): Promise<CollectionItem[]
     }
     const res = await fetch(match.url, { cache: 'no-store' });
     if (!res.ok) return [];
-    const json = (await res.json()) as CollectionItem[];
-    const value = Array.isArray(json) ? json : [];
+    const json = JSON.parse(await res.text()) as CollectionItem[] | EncryptedCollection;
+    const value = id === 'camp-registrations' && !Array.isArray(json) && json.v === 1
+      ? decryptRegistrations(json)
+      : Array.isArray(json) ? json : [];
     cache.set(id, { value, at: Date.now() });
     return value;
   } catch {
@@ -72,7 +113,8 @@ async function persist(id: CollectionId, items: CollectionItem[]): Promise<Colle
   if (!blobConfigured()) {
     throw new Error('Storage is not configured (missing Vercel Blob token).');
   }
-  await put(blobPath(id), JSON.stringify(items, null, 2), {
+  const body = id === 'camp-registrations' ? encryptRegistrations(items) : JSON.stringify(items, null, 2);
+  await put(blobPath(id), body, {
     access: 'public',
     addRandomSuffix: false,
     allowOverwrite: true,

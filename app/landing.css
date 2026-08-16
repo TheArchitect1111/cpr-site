@@ -12,6 +12,26 @@
   --line: var(--lc-line);
 }
 
+.camp-registration-shell { max-width: 860px; }
+.camp-registration-form,
+.camp-registration-complete { padding: clamp(22px, 4vw, 44px); border: 1px solid rgba(15,15,15,.14); border-radius: 22px; background: #fff; }
+.camp-registration-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; margin-bottom: 24px; }
+.camp-registration-grid label { display: grid; gap: 7px; font-weight: 700; }
+.camp-registration-grid input,
+.camp-registration-grid textarea { width: 100%; box-sizing: border-box; border: 1px solid #bbb; border-radius: 10px; padding: 12px; background: #fff; color: #111; font: inherit; }
+.camp-registration-wide { grid-column: 1 / -1; }
+.camp-registration-waiver { grid-template-columns: auto 1fr; align-items: start; font-weight: 500 !important; line-height: 1.5; }
+.camp-registration-waiver input { width: 18px; height: 18px; margin-top: 3px; }
+.camp-registration-error { color: #9b1c1c; font-weight: 700; }
+.camp-registration-complete .btn { display: inline-flex; margin: 18px 12px 18px 0; }
+.camp-registration-complete .subpage-back { display: block; margin-top: 14px; }
+.camp-registration-honeypot { position: absolute !important; left: -10000px !important; width: 1px !important; height: 1px !important; }
+
+@media (max-width: 680px) {
+  .camp-registration-grid { grid-template-columns: 1fr; }
+  .camp-registration-wide { grid-column: auto; }
+}
+
 /* Secondary page shared styles */
 .subpage { padding-top: 88px; }
 .subpage-hero { background: var(--lc-black); color: #fff; padding: 64px 0; text-align: center; }
