@@ -222,7 +222,7 @@ export default async function AdminPage({
           <summary>&#x1F464; Players</summary>
           <nav>
             <a className={`aitem${activeTab === 'registrants' ? ' active' : ''}`} href="/admin">Player List &amp; Progress</a>
-            <a className={`aitem${activeTab === 'outreach' ? ' active' : ''}`} href="/admin?tab=outreach#players">Edit Player Profiles</a>
+            <a className={`aitem${activeTab === 'registrants' ? ' active' : ''}`} href="/admin#player-profiles">Edit Player Profiles</a>
             <a className="aitem" href="/admin/create-client">Add New Player</a>
             <a className={`aitem${activeTab === 'activity' ? ' active' : ''}`} href="/admin?tab=activity">Player Activity</a>
           </nav>
