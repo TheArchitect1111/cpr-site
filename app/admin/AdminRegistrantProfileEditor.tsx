@@ -113,8 +113,8 @@ export default function AdminRegistrantProfileEditor({
   return (
     <div className="registrant-edit-panel">
       <div className="registrant-edit-heading">
-        <strong>Edit profile — {athlete.firstName} {athlete.lastName}</strong>
-        <span>Choose the player photo from the same CPR photo gallery used by the website editor, then save the profile.</span>
+        <strong>Edit text and picture — {athlete.firstName} {athlete.lastName}</strong>
+        <span>Update the saved profile below. Choose a picture from the CPR gallery or upload a new one, then save.</span>
       </div>
 
       <div className="registrant-photo-row">
@@ -176,7 +176,7 @@ export default function AdminRegistrantProfileEditor({
 
       <div className="action-row">
         <button type="button" disabled={working} onClick={() => void save()}>
-          {busy === 'save' ? 'Saving…' : 'Save profile'}
+          {busy === 'save' ? 'Saving…' : 'Save changes'}
         </button>
         <button type="button" className="ghost" disabled={working} onClick={onCancel}>Cancel</button>
       </div>
