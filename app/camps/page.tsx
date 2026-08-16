@@ -5,6 +5,7 @@ import { campsSurface } from '@/lib/surface-editor/registry';
 import { getEditableSurfaceDocument } from '@/lib/surface-editor/store';
 import { listCollection } from '@/lib/admin-collections';
 import RichTextContent from '@/app/components/RichTextContent';
+import { campIsFull } from '@/lib/camp-registration';
 
 export const dynamic = 'force-dynamic';
 
@@ -48,7 +49,10 @@ export default async function CampsPage() {
             <h2 id="upcoming-camps-title" className="display">UPCOMING CAMPS</h2>
             <div className="camp-list" style={{ display: 'grid', gap: 24, marginTop: 28 }}>
               {publishedCamps.map((camp) => {
-                const registrationOpen = camp.status === 'Published' && Boolean(camp.registrationUrl);
+                const full = campIsFull(camp as never, Number(camp.registeredCount || 0));
+                const external = camp.registrationMode === 'External' && Boolean(camp.registrationUrl);
+                const registrationOpen = camp.status === 'Published' && !full;
+                const registrationHref = external ? String(camp.registrationUrl) : `/camps/${encodeURIComponent(camp.id)}/register`;
                 return (
                   <article className="camp-card" key={camp.id} style={{ border: '1px solid rgba(15,15,15,.14)', borderRadius: 18, padding: 24 }}>
                     <p className="eyebrow">{String(camp.status)}</p>
@@ -57,7 +61,7 @@ export default async function CampsPage() {
                     <p>{[camp.ageGroup, camp.price].filter(Boolean).map(String).join(' · ')}</p>
                     <RichTextContent html={String(camp.description || '')} />
                     {registrationOpen ? (
-                      <a className="btn" href={String(camp.registrationUrl)} style={{ marginTop: 18 }}>REGISTER NOW</a>
+                      <a className="btn" href={registrationHref} style={{ marginTop: 18 }}>REGISTER NOW</a>
                     ) : (
                       <p style={{ marginTop: 18, fontWeight: 700 }}>Registration is currently closed.</p>
                     )}
