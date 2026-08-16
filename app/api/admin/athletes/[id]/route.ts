@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { athleteFieldsFromInput, deleteAthlete, updateAthlete } from '@/lib/athletes';
+import { athleteFieldsFromInput, deleteAthlete, getAthleteByRecordId, updateAthlete } from '@/lib/athletes';
 import { isAdminAuthed } from '@/lib/admin-auth';
 
 export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
@@ -12,7 +12,11 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
 
   try {
     await updateAthlete(id, fields);
-    return NextResponse.json({ ok: true });
+    const athlete = await getAthleteByRecordId(id);
+    if (!athlete) {
+      return NextResponse.json({ error: 'Profile saved but could not be verified.' }, { status: 502 });
+    }
+    return NextResponse.json({ ok: true, athlete });
   } catch (err) {
     console.error('Admin athlete update failed:', err);
     return NextResponse.json({ error: 'Could not update player profile.' }, { status: 502 });
