@@ -150,6 +150,7 @@ a.aitem:hover { background: rgba(255,255,255,.07); }
 .registrant-edit-grid .span-2 { grid-column: span 2; }
 .registrant-edit-grid .span-3 { grid-column: 1 / -1; }
 .player-card-manager { width: 100%; }
+.player-card-manager { scroll-margin-top: 18px; }
 .player-entry-list { display: grid; gap: 16px; margin-top: 16px; }
 .player-entry-card { background: #fff; border: 1px solid #E3E3E3; border-radius: 12px; padding: 18px; box-shadow: 0 8px 24px rgba(0,0,0,.045); }
 .player-entry-heading { display: grid; grid-template-columns: 88px 1fr auto; gap: 16px; align-items: center; }
@@ -1025,4 +1026,23 @@ a.aitem:hover { background: rgba(255,255,255,.07); }
   .comm-hero { flex-direction: column; }
   .comm-health { min-height: 96px; }
   .comm-metrics, .comm-channels, .comm-intel, .comm-announcement-layout, .comm-form-row { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 560px) {
+  .amain { padding: 18px 14px 36px; }
+  .ahead { align-items: stretch; flex-direction: column; }
+  .admission-stats.registrant-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .filters input, .filters select { min-width: 0; width: 100%; }
+  .player-entry-card { padding: 14px; }
+  .player-entry-heading { grid-template-columns: 62px minmax(0, 1fr); gap: 12px; }
+  .player-entry-photo img,
+  .player-entry-photo .player-thumb-lg { height: 62px; width: 62px; }
+  .player-entry-identity h3 { font-size: 18px; overflow-wrap: anywhere; }
+  .player-entry-identity p { overflow-wrap: anywhere; }
+  .player-entry-actions { display: grid; grid-template-columns: 1fr; }
+  .player-entry-actions button,
+  .player-entry-actions a { box-sizing: border-box; min-height: 42px; text-align: center; width: 100%; }
+  .registrant-photo-row { align-items: flex-start; flex-direction: column; }
+  .registrant-photo-row .action-row { display: grid; width: 100%; }
+  .registrant-photo-row .action-row > * { box-sizing: border-box; text-align: center; width: 100%; }
 }
