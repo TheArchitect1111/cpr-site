@@ -32,7 +32,7 @@ type EncryptedCollection = { v: 1; iv: string; tag: string; data: string };
 function registrationSecret() {
   return process.env.CAMP_REGISTRATION_ENCRYPTION_KEY
     || process.env.ADMIN_AUTH_SECRET
-    || process.env.PORTAL_SESSION_SECRET
+    || process.env.PORTAL_SECRET
     || '';
 }
 
