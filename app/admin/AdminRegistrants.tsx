@@ -11,6 +11,23 @@ interface Props {
   live: boolean;
 }
 
+function PlayerPhoto({ athlete }: { athlete: AthleteAdmin }) {
+  const [failed, setFailed] = useState(false);
+  const showPhoto = !failed && hasAthletePhoto(athlete.photoUrl);
+
+  if (!showPhoto) {
+    return <div className="player-thumb-empty player-thumb-lg">No photo</div>;
+  }
+
+  return (
+    <img
+      src={athlete.photoUrl}
+      alt={`${athlete.firstName} ${athlete.lastName} profile`}
+      onError={() => setFailed(true)}
+    />
+  );
+}
+
 export default function AdminRegistrants({ athletes, live }: Props) {
   const [playerRows, setPlayerRows] = useState(athletes);
   const [query, setQuery] = useState('');
@@ -144,7 +161,7 @@ export default function AdminRegistrants({ athletes, live }: Props) {
       {message ? <p className="pm-message" role="status">{message}</p> : null}
 
       <div className="work">
-        <div className="player-card-manager">
+        <div className="player-card-manager" id="player-profiles">
           <div className="filters">
             <input
               type="search"
@@ -165,12 +182,11 @@ export default function AdminRegistrants({ athletes, live }: Props) {
                   const progress = getRegistrantProgress(athlete);
                   const busy = busyId === athlete.id;
                   const pendingCount = athlete.pendingUpdates?.length ?? 0;
-                  const showPhoto = hasAthletePhoto(athlete.photoUrl);
                   return (
                     <section className="player-entry-card" key={athlete.id}>
                       <div className="player-entry-heading">
                         <div className="player-entry-photo">
-                          {showPhoto ? <img src={athlete.photoUrl} alt={`${athlete.firstName} ${athlete.lastName} profile`} /> : <div className="player-thumb-empty player-thumb-lg">No photo</div>}
+                          <PlayerPhoto athlete={athlete} />
                         </div>
                         <div className="player-entry-identity">
                           <p className="player-entry-number">Player profile {index + 1}</p>
