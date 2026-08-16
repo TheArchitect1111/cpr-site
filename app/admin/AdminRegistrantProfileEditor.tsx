@@ -94,12 +94,12 @@ export default function AdminRegistrantProfileEditor({
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(draft),
       });
-      const result = await response.json() as { error?: string };
+      const result = await response.json() as { error?: string; athlete?: AthleteAdmin };
       if (!response.ok) throw new Error(result.error || 'Profile could not be saved.');
+      if (!result.athlete) throw new Error('Profile save could not be verified.');
       onSaved({
-        ...draft,
-        strengths: draft.strengths.split(/[,\n]/).map((item) => item.trim()).filter(Boolean),
-        photoUrl: draft.photoUrl,
+        ...result.athlete,
+        photoUrl: result.athlete.photoUrl,
       });
     } catch (error) {
       setMessage(error instanceof Error ? error.message : 'Profile could not be saved.');
