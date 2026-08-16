@@ -50,7 +50,8 @@ export default async function CampsPage() {
             <div className="camp-list" style={{ display: 'grid', gap: 24, marginTop: 28 }}>
               {publishedCamps.map((camp) => {
                 const full = campIsFull(camp as never, Number(camp.registeredCount || 0));
-                const external = camp.registrationMode === 'External' && Boolean(camp.registrationUrl);
+                const external = Boolean(camp.registrationUrl)
+                  && (camp.registrationMode === 'External' || !camp.registrationMode);
                 const registrationOpen = camp.status === 'Published' && !full;
                 const registrationHref = external ? String(camp.registrationUrl) : `/camps/${encodeURIComponent(camp.id)}/register`;
                 return (
