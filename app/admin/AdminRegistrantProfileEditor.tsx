@@ -56,7 +56,8 @@ export default function AdminRegistrantProfileEditor({
   onCancel: () => void;
   onSaved: (next: Partial<AthleteAdmin> & { photoUrl: string }) => void;
 }) {
-  const [draft, setDraft] = useState<Draft>(() => toDraft(athlete));
+  const initial = toDraft(athlete);
+  const [draft, setDraft] = useState<Draft>(() => initial);
   const [busy, setBusy] = useState('');
   const [message, setMessage] = useState('');
 
@@ -89,13 +90,22 @@ export default function AdminRegistrantProfileEditor({
     setBusy('save');
     setMessage('');
     try {
+      const changes = Object.fromEntries(
+        (Object.keys(draft) as Array<keyof Draft>)
+          .filter((key) => draft[key] !== initial[key])
+          .map((key) => [key, draft[key]]),
+      );
+      if (Object.keys(changes).length === 0) {
+        setMessage('No changes to save.');
+        return;
+      }
       const response = await fetch(`/api/admin/athletes/${encodeURIComponent(athlete.id)}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(draft),
+        body: JSON.stringify(changes),
       });
-      const result = await response.json() as { error?: string; athlete?: AthleteAdmin };
-      if (!response.ok) throw new Error(result.error || 'Profile could not be saved.');
+      const result = await response.json() as { error?: string; detail?: string; athlete?: AthleteAdmin };
+      if (!response.ok) throw new Error(result.detail || result.error || 'Profile could not be saved.');
       if (!result.athlete) throw new Error('Profile save could not be verified.');
       onSaved({
         ...result.athlete,

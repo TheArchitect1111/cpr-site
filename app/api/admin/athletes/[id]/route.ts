@@ -19,7 +19,11 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
     return NextResponse.json({ ok: true, athlete });
   } catch (err) {
     console.error('Admin athlete update failed:', err);
-    return NextResponse.json({ error: 'Could not update player profile.' }, { status: 502 });
+    const detail = err instanceof Error ? err.message : String(err);
+    return NextResponse.json(
+      { error: 'Could not update player profile.', detail },
+      { status: 502 },
+    );
   }
 }
 

@@ -118,6 +118,24 @@ export function embedUrl(url: string): string | null {
 
 type AirtableRecord = { id: string; fields: Record<string, unknown> };
 
+const PHOTO_OVERRIDE_RE = /\n?--- CPR profile photo ---\n([^\n]*)\n--- end CPR profile photo ---\n?/;
+
+function profilePhotoOverride(notes: string): string | undefined {
+  const match = notes.match(PHOTO_OVERRIDE_RE);
+  if (!match) return undefined;
+  try {
+    return Buffer.from(match[1], 'base64url').toString('utf8');
+  } catch {
+    return undefined;
+  }
+}
+
+function withProfilePhotoOverride(notes: string, photoUrl: string): string {
+  const cleaned = notes.replace(PHOTO_OVERRIDE_RE, '').trim();
+  const marker = `--- CPR profile photo ---\n${Buffer.from(photoUrl, 'utf8').toString('base64url')}\n--- end CPR profile photo ---`;
+  return [cleaned, marker].filter(Boolean).join('\n\n');
+}
+
 const f = (r: AirtableRecord, name: string): string => {
   const v = r.fields[name];
   if (v === undefined || v === null) return '';
@@ -227,7 +245,7 @@ const athleteFromRecord = (r: AirtableRecord): AthleteAdmin => ({
   email: f(r, 'Email'), phone: f(r, 'Phone'), parentName: f(r, 'Parent Name'),
   parentEmail: f(r, 'Parent Email'), parentPhone: f(r, 'Parent Phone'),
   bio: f(r, 'Bio'), strengths: f(r, 'Strengths').split(/[,\n]/).map(s => s.trim()).filter(Boolean),
-  videoUrl: f(r, 'Highlight Video URL'), photoUrl: f(r, 'Photo URL') || f(r, 'Photo'),
+  videoUrl: f(r, 'Highlight Video URL'), photoUrl: profilePhotoOverride(f(r, 'Notes')) ?? (f(r, 'Photo URL') || f(r, 'Photo')),
   status: f(r, 'Status') || 'Pending', team: f(r, 'Club Team'), jersey: f(r, 'Jersey Number'),
   vertical: f(r, 'Vertical Jump'), reach: f(r, 'Standing Reach'), hand: f(r, 'Dominant Hand'),
   ncaa: f(r, 'NCAA Eligibility'), profileViews: f(r, 'Profile Views'),
@@ -313,9 +331,17 @@ export async function archiveAthlete(recordId: string, reason: string) {
 
 export async function updateAthlete(recordId: string, fields: Record<string, unknown>) {
   const headers = await airtableHeaders();
+  const photoUrl = Object.prototype.hasOwnProperty.call(fields, '__photoUrl')
+    ? String(fields.__photoUrl ?? '')
+    : undefined;
   const cleanFields = Object.fromEntries(
-    Object.entries(fields).filter(([, value]) => value !== undefined),
+    Object.entries(fields).filter(([key, value]) => key !== '__photoUrl' && value !== undefined),
   );
+  if (photoUrl !== undefined) {
+    const record = await getRawAthleteRecord(recordId);
+    if (!record) throw new Error('Profile not found');
+    cleanFields.Notes = withProfilePhotoOverride(f(record, 'Notes'), photoUrl);
+  }
   if (String(cleanFields.Status || '').toLowerCase() === 'active') {
     await archiveAthlete(recordId, 'Profile became active');
   }
@@ -423,11 +449,7 @@ export function athleteFieldsFromInput(input: AthleteInput, includeAdminFields =
     Bio: has('bio') ? cleanString(input.bio, true) : undefined,
     Strengths: has('strengths') ? cleanString(input.strengths, true) : undefined,
     'Highlight Video URL': has('videoUrl') ? cleanString(input.videoUrl, true) : undefined,
-    Photo: has('photoUrl')
-      ? cleanString(input.photoUrl, true)
-        ? [{ url: cleanString(input.photoUrl, true) }]
-        : []
-      : undefined,
+    __photoUrl: has('photoUrl') ? cleanString(input.photoUrl, true) : undefined,
     'Transcript URL': has('transcriptUrl') ? cleanString(input.transcriptUrl, true) : undefined,
     'Gameplay Video URL': has('gameplayVideoUrl') ? cleanString(input.gameplayVideoUrl, true) : undefined,
     'Club Team': has('team') ? cleanString(input.team, true) : undefined,
