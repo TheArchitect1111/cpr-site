@@ -22,6 +22,7 @@ import { getCollectionDef, isCollectionId } from '@/lib/admin-collections-schema
 import AdminTeam from './AdminTeam';
 import { listAdminTeamMembers } from '@/lib/admin-team';
 import { listCollection } from '@/lib/admin-collections';
+import AdminBusinessPresence from './AdminBusinessPresence';
 
 export const dynamic = 'force-dynamic';
 
@@ -160,6 +161,8 @@ export default async function AdminPage({
         />
       </>
     );
+  } else if (tab === 'business-presence') {
+    mainContent = <AdminBusinessPresence />;
   } else if (tab && isCollectionId(tab)) {
     const def = getCollectionDef(tab)!;
     const [athletes, items] = await Promise.all([athletesPromise, listCollection(tab)]);
@@ -193,7 +196,7 @@ export default async function AdminPage({
   const websiteOpen = ['content', 'site-updates', 'site-quotes', 'media-library', 'site-text'].includes(activeTab);
   const documentsOpen = ['documents', 'fee-agreements'].includes(activeTab);
   const campsOpen = ['camps', 'camp-registrations'].includes(activeTab);
-  const settingsOpen = activeTab === 'team';
+  const settingsOpen = ['team', 'business-presence'].includes(activeTab);
 
   return (
     <div className="admin-shell">
@@ -300,6 +303,7 @@ export default async function AdminPage({
           <summary>&#x2699;&#xFE0F; Settings</summary>
           <nav>
             <a className={`aitem${activeTab === 'team' ? ' active' : ''}`} href="/admin?tab=team">Admin Team &amp; Access</a>
+            <a className={`aitem${activeTab === 'business-presence' ? ' active' : ''}`} href="/admin?tab=business-presence">Business Presence</a>
           </nav>
         </details>
 

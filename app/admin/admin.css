@@ -39,6 +39,30 @@ a.aitem:hover { background: rgba(255,255,255,.07); }
 .ahead h1 { font-size: 26px; margin: 0 0 4px; font-weight: 800; letter-spacing: .5px; }
 .ahead p { margin: 0; color: var(--gray); font-size: 13.5px; }
 .admin-logout { background: #EAEAEA; border-radius: 5px; color: #333; font-size: 11px; font-weight: 900; letter-spacing: .7px; padding: 8px 11px; text-decoration: none; text-transform: uppercase; white-space: nowrap; }
+.business-presence-card { background: #fff; border: 1px solid #e2e2e2; border-radius: 14px; box-shadow: 0 12px 36px rgba(0,0,0,.05); padding: 24px; }
+.business-presence-heading { align-items: center; display: grid; gap: 12px; grid-template-columns: auto 1fr auto; }
+.business-presence-heading span { color: #777; font-size: 10px; font-weight: 900; letter-spacing: .9px; text-transform: uppercase; }
+.business-presence-heading h2 { font-size: 22px; margin: 2px 0 0; }
+.business-presence-heading strong { background: #f7e9e9; border-radius: 999px; color: var(--red); font-size: 11px; padding: 7px 10px; }
+.business-presence-mark { align-items: center; background: #111; border-radius: 12px; color: #fff; display: flex; font-size: 24px; font-weight: 800; height: 48px; justify-content: center; width: 48px; }
+.business-presence-summary { color: #555; line-height: 1.6; margin: 20px 0; max-width: 780px; }
+.business-presence-columns { display: grid; gap: 18px; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.business-presence-columns > div { background: #f7f7f7; border-radius: 10px; padding: 16px; }
+.business-presence-columns h3 { font-size: 14px; margin: 0 0 10px; }
+.business-presence-columns ul, .business-presence-checklist ol { color: #4d4d4d; font-size: 13px; line-height: 1.55; margin: 0; padding-left: 20px; }
+.business-presence-checklist { border-top: 1px solid #e7e7e7; margin-top: 20px; padding-top: 18px; }
+.business-presence-checklist summary { cursor: pointer; font-size: 13px; font-weight: 900; }
+.business-presence-checklist ol { margin-top: 14px; }
+.business-presence-checklist p { color: #555; font-size: 12px; }
+.business-presence-actions { align-items: center; display: flex; gap: 16px; margin-top: 20px; }
+.business-presence-actions a { background: var(--red); border-radius: 6px; color: #fff; font-size: 12px; font-weight: 900; padding: 11px 14px; text-decoration: none; text-transform: uppercase; white-space: nowrap; }
+.business-presence-actions p { color: #777; font-size: 11px; line-height: 1.5; margin: 0; max-width: 650px; }
+@media (max-width: 760px) {
+  .business-presence-heading { grid-template-columns: auto 1fr; }
+  .business-presence-heading strong { grid-column: 1 / -1; justify-self: start; }
+  .business-presence-columns { grid-template-columns: 1fr; }
+  .business-presence-actions { align-items: flex-start; flex-direction: column; }
+}
 .demo-pill { background: #FBF0D2; color: #8A6D00; font-size: 11px; font-weight: 700; padding: 7px 12px; border-radius: 20px; white-space: nowrap; }
 .login-shell { align-items: center; background: #F4F4F4; display: grid; min-height: 100vh; padding: 24px; place-items: center; }
 .login-card { background: #fff; border: 1px solid #E7E7E7; border-radius: 8px; display: grid; gap: 12px; max-width: 420px; padding: 26px; width: 100%; }
