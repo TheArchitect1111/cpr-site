@@ -19,6 +19,7 @@ export type PublicCamp = CollectionItem & {
   status: string;
   startDate: string;
   location: string;
+  price?: string;
   capacity?: string;
   registeredCount?: string;
   paymentUrl?: string;
@@ -27,6 +28,13 @@ export type PublicCamp = CollectionItem & {
 
 function clean(value: unknown, max = 500) {
   return String(value ?? '').trim().slice(0, max);
+}
+
+export function campPriceCents(price: unknown) {
+  const match = String(price ?? '').replace(/,/g, '').match(/(\d+(?:\.\d{1,2})?)/);
+  if (!match) return 0;
+  const amount = Number(match[1]);
+  return Number.isFinite(amount) && amount > 0 ? Math.round(amount * 100) : 0;
 }
 
 function escapeHtml(value: unknown) {

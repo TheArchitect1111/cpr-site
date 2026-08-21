@@ -115,8 +115,7 @@ export async function getSystemChecks(): Promise<SystemCheck[]> {
     { name: 'Apply webhook', ok: Boolean(process.env.MAKE_CPR_WEBHOOK), detail: process.env.MAKE_CPR_WEBHOOK ? 'MAKE_CPR_WEBHOOK configured (optional — in-app Resend also sends apply emails).' : 'Optional Make apply webhook not set.' },
     { name: 'Enroll webhook', ok: Boolean(process.env.CPR_ENROLL_WEBHOOK_URL), detail: process.env.CPR_ENROLL_WEBHOOK_URL ? 'CPR_ENROLL_WEBHOOK_URL configured.' : 'CPR_ENROLL_WEBHOOK_URL is missing.' },
     { name: 'Blob storage', ok: Boolean(process.env.BLOB_READ_WRITE_TOKEN), detail: process.env.BLOB_READ_WRITE_TOKEN ? 'Apply photo and document uploads enabled.' : 'BLOB_READ_WRITE_TOKEN is missing.' },
-    { name: 'Stripe secret key', ok: Boolean(process.env.STRIPE_SECRET_KEY), detail: process.env.STRIPE_SECRET_KEY ? 'Stripe checkout can create sessions.' : 'STRIPE_SECRET_KEY is missing.' },
-    { name: 'Stripe webhook secret', ok: Boolean(process.env.STRIPE_WEBHOOK_SECRET), detail: process.env.STRIPE_WEBHOOK_SECRET ? 'Stripe webhook can verify signatures.' : 'STRIPE_WEBHOOK_SECRET is missing.' },
+    { name: 'PayPal recipient', ok: true, detail: 'All CPR checkout links route to dhjarngbo@gmail.com.' },
     ...(await airtableSchemaChecks()),
   ];
 }
