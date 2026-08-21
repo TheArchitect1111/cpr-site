@@ -67,7 +67,7 @@ export default function PortalPaymentsPanel({ snapshot, portalType }: Props) {
       )}
 
       <p style={{ marginTop: 28, fontSize: 14, opacity: 0.8, maxWidth: 560 }}>
-        Checkout opens on CPR&apos;s secure Stripe payment page. You need an active portal session;
+        Checkout opens on CPR&apos;s secure PayPal payment page. You need an active portal session;
         payment tokens are issued by the server only.
       </p>
     </main>

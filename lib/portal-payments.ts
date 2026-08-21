@@ -3,12 +3,11 @@
  *
  * Reuses the same HMAC athlete edit token as admin-generated `/pay?...` links
  * and `POST /api/payments/checkout` (see `athleteEditToken` in lib/athletes.ts).
- * Do not weaken token verification on checkout — portal APIs only mint links
+ * Do not weaken token verification on checkout. Portal APIs only mint links
  * after a valid portal session for that athlete slug.
  *
- * Stripe: `STRIPE_SECRET_KEY` (and related env) must be set in Vercel/production
- * or checkout returns 503. Also requires `ATHLETE_ACCESS_SECRET` or `ADMIN_PASSWORD`
- * so edit tokens can be minted.
+ * Checkout is routed to CPR's PayPal account after the server verifies the token.
+ * `ATHLETE_ACCESS_SECRET` or `ADMIN_PASSWORD` is required so edit tokens can be minted.
  */
 
 import { athleteEditToken, getAthleteByRecordId, type AthleteAdmin } from '@/lib/athletes';

@@ -52,7 +52,7 @@ export default async function PayPage({ searchParams }: { searchParams: Promise<
             </div>
           ) : (
             <>
-              {status === 'success' && <div className="fsuccess"><div className="big">&#9989;</div><h2 className="display">PAYMENT RECEIVED</h2><p>Thank you. Stripe will confirm the payment with CPR automatically.</p></div>}
+              {status === 'success' && <div className="fsuccess"><div className="big">&#9989;</div><h2 className="display">PAYMENT SUBMITTED</h2><p>Thank you. PayPal will confirm the payment with CPR.</p></div>}
               {status === 'cancelled' && <div className="ferror">Checkout was cancelled. You can try again below.</div>}
               <h2 className="display">{stage ? paymentStageLabel(stage) : 'CPR'} PAYMENT</h2>
               <p className="fsub">{athlete.firstName} {athlete.lastName} - {money(amount)}</p>

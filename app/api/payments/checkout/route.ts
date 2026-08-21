@@ -1,11 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getAthleteByRecordId, verifyAthleteEditToken } from '@/lib/athletes';
-import { isPaymentStage, paymentAmountCents, paymentDescription, paymentStageLabel } from '@/lib/payments';
-import { stripe } from '@/lib/stripe';
-import { CPR_AMPLIFI_COOKIE, readCPRAttribution } from '@/lib/amplifi/campaign-analytics';
+import { isPaymentStage, paymentAmountCents, paymentDescription } from '@/lib/payments';
+import { paypalCheckoutUrl } from '@/lib/paypal';
 
 export async function POST(req: NextRequest) {
-  if (!stripe) return NextResponse.json({ error: 'Stripe is not configured.' }, { status: 503 });
   const body = await req.json().catch(() => null);
   const recordId = String(body?.recordId || '');
   const token = String(body?.token || '');
@@ -20,34 +18,12 @@ export async function POST(req: NextRequest) {
 
   const origin = req.nextUrl.origin;
   const amount = paymentAmountCents(stage, athlete);
-  const attribution = readCPRAttribution(req.cookies.get(CPR_AMPLIFI_COOKIE)?.value);
-  const session = await stripe.checkout.sessions.create({
-    mode: 'payment',
-    customer_email: athlete.email || athlete.parentEmail || undefined,
-    line_items: [{
-      quantity: 1,
-      price_data: {
-        currency: process.env.STRIPE_CURRENCY || 'cad',
-        unit_amount: amount,
-        product_data: {
-          name: `CPR ${paymentStageLabel(stage)} Payment`,
-          description: paymentDescription(stage, athlete),
-        },
-      },
-    }],
-    metadata: {
-      recordId,
-      stage,
-      athleteName: [athlete.firstName, athlete.lastName].filter(Boolean).join(' '),
-      ...(attribution ? {
-        amplifiCampaignId: attribution.campaignId,
-        amplifiDraftId: attribution.draftId,
-        amplifiPlatform: attribution.platform,
-      } : {}),
-    },
-    success_url: `${origin}/pay?status=success&id=${encodeURIComponent(recordId)}&stage=${stage}&token=${encodeURIComponent(token)}`,
-    cancel_url: `${origin}/pay?status=cancelled&id=${encodeURIComponent(recordId)}&stage=${stage}&token=${encodeURIComponent(token)}`,
+  const url = paypalCheckoutUrl({
+    amountCents: amount,
+    description: paymentDescription(stage, athlete),
+    returnUrl: `${origin}/pay?status=success&id=${encodeURIComponent(recordId)}&stage=${stage}&token=${encodeURIComponent(token)}`,
+    cancelUrl: `${origin}/pay?status=cancelled&id=${encodeURIComponent(recordId)}&stage=${stage}&token=${encodeURIComponent(token)}`,
   });
 
-  return NextResponse.json({ url: session.url });
+  return NextResponse.json({ url });
 }

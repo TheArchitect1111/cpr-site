@@ -1,6 +1,5 @@
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
-import { stripe } from '@/lib/stripe';
 import { PLAYER_APPLICATION_URL } from '@/config/site';
 import ProfileCheckoutButton from './ProfileCheckoutButton';
 import './profile-create.css';
@@ -18,15 +17,9 @@ export default async function CreateProfilePage({
   searchParams: Promise<Record<string, string | string[] | undefined>>;
 }) {
   const params = await searchParams;
-  const sessionId = typeof params.session_id === 'string' ? params.session_id : '';
   const cancelled = params.status === 'cancelled';
 
-  if (sessionId && stripe) {
-    const session = await stripe.checkout.sessions.retrieve(sessionId).catch(() => null);
-    if (session?.payment_status === 'paid' && session.metadata?.purchaseType === 'player-profile') {
-      redirect(PLAYER_APPLICATION_URL);
-    }
-  }
+  if (params.status === 'success') redirect(PLAYER_APPLICATION_URL);
 
   return (
     <main className="profile-purchase-shell">
@@ -61,7 +54,7 @@ export default async function CreateProfilePage({
 
         {cancelled ? <p className="profile-purchase-error">Checkout was cancelled. No payment was made.</p> : null}
         <ProfileCheckoutButton />
-        <p className="profile-purchase-secure">Secure payment powered by Stripe. After payment, you will continue to the player profile form.</p>
+        <p className="profile-purchase-secure">Secure payment through PayPal. After payment, you will continue to the player profile form.</p>
       </section>
     </main>
   );

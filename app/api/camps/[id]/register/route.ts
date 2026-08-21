@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { registerForCamp, type CampRegistrationInput } from '@/lib/camp-registration';
+import { campPriceCents, registerForCamp, type CampRegistrationInput } from '@/lib/camp-registration';
+import { paypalCheckoutUrl } from '@/lib/paypal';
 
 export const dynamic = 'force-dynamic';
 
@@ -24,10 +25,19 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
 
   try {
     const result = await registerForCamp(id, body);
+    const amountCents = campPriceCents(result.camp.price);
+    const paymentUrl = amountCents
+      ? paypalCheckoutUrl({
+          amountCents,
+          description: `CPR Camp Registration: ${result.camp.name}`,
+          returnUrl: `${request.nextUrl.origin}/camps/${encodeURIComponent(id)}/register?status=payment-submitted`,
+          cancelUrl: `${request.nextUrl.origin}/camps/${encodeURIComponent(id)}/register?status=payment-cancelled`,
+        })
+      : null;
     return NextResponse.json({
       ok: true,
       registrationId: result.registration.id,
-      paymentUrl: result.paymentUrl,
+      paymentUrl,
       confirmationSent: result.confirmationSent,
     }, { status: 201 });
   } catch (error) {

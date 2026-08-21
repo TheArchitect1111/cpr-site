@@ -14,8 +14,8 @@ async function requirePortalSession() {
 
 /**
  * Mint a tokenized `/pay?...` URL for the signed-in athlete (or parent of that athlete).
- * Token is never embedded in client bundles — call this API from the Pay CTA.
- * Checkout still requires Stripe env; missing Stripe → 503 from /api/payments/checkout.
+ * Token is never embedded in client bundles. Call this API from the Pay CTA.
+ * Checkout uses the verified token to open CPR's PayPal payment page.
  */
 async function handle(req: NextRequest) {
   const session = await requirePortalSession();

@@ -190,7 +190,7 @@ export default function AmplifiCampaignBuilder() {
               <div><strong>{pct(campaign.performance?.conversionRate)}</strong><span>Conversion rate</span></div>
             </div>
             <p className="amplifi-tracking-note">
-              Link clicks are automatic. On-platform applications and Stripe profile purchases are counted automatically.
+              Link clicks are automatic. On-platform applications and PayPal profile purchases can be reconciled with CPR payment records.
               CPR's current Google application form cannot report completions back to Amplifi. Enter social Insights totals below until platform connections are active.
             </p>
             <div className="amplifi-platform-metrics">
