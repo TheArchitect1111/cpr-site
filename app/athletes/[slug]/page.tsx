@@ -1,13 +1,25 @@
 import '../../landing.css';
 import './profile.css';
 import { notFound } from 'next/navigation';
-import { getAthlete, embedUrl } from '@/lib/athletes';
+import { getAthlete } from '@/lib/athletes';
 import { hasAthletePhoto } from '@/lib/athlete-photo';
 import RichTextContent from '@/app/components/RichTextContent';
 import { site } from '@/config/site';
 import CoachInquiryModal from './CoachInquiryModal';
 
 export const dynamic = 'force-dynamic';
+
+function uploadedProfileMedia(url: string) {
+  if (!url) return '';
+  try {
+    const host = new URL(url).hostname.toLowerCase().replace(/^www\./, '');
+    const excluded = host === 'youtube.com' || host === 'youtu.be' || host === 'instagram.com' ||
+      host === 'x.com' || host === 'twitter.com';
+    return excluded ? '' : url;
+  } catch {
+    return url.startsWith('/') ? url : '';
+  }
+}
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
@@ -26,7 +38,7 @@ export default async function AthleteProfile({ params }: { params: Promise<{ slu
   if (!a) notFound();
 
   const profileTitle = slug === 'jayden-thompson' ? 'Sample Profile' : `${a.firstName} ${a.lastName}`;
-  const video = a.videoUrl ? embedUrl(a.videoUrl) : null;
+  const uploadedMedia = uploadedProfileMedia(a.gameplayVideoUrl);
   const schools = [...new Set(a.responses.map(r => r.school))];
   const statusClass = (s: string) =>
     'pstat ' + s.toLowerCase().replace(/[^a-z]+/g, '-');
@@ -142,12 +154,11 @@ export default async function AthleteProfile({ params }: { params: Promise<{ slu
         <div className="container duo">
           <div className="pcard">
             <h3 className="display"><span className="red">&#9658;</span> HIGHLIGHT VIDEO</h3>
-            {video ? (
-              <div className="pvideo"><iframe src={video} title="Highlight video" allowFullScreen /></div>
+            {uploadedMedia ? (
+              <div className="pvideo"><video src={uploadedMedia} title="Player media" controls playsInline /></div>
             ) : (
-              <p className="pmuted">Highlight video coming soon.</p>
+              <p className="pmuted">Uploaded player media coming soon.</p>
             )}
-            {a.videoUrl && <a className="plink" href={a.videoUrl} target="_blank" rel="noopener noreferrer">VIEW ON YOUTUBE &#8599;</a>}
           </div>
           <div className="pcard">
             <h3 className="display"><span className="red">&#9658;</span> PLAYER BIO</h3>
