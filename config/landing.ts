@@ -175,6 +175,8 @@ export const landingConfig: LandingPageConfig = {
         meta: 'Example CPR recruiting profile',
       },
     ],
+    profileCta: 'CREATE YOUR PLAYER PROFILE | $75',
+    profileHref: '/profile/create',
   },
   tribute: {
     eyebrow: site.tribute.eyebrow,
@@ -203,6 +205,7 @@ export const landingConfig: LandingPageConfig = {
     ],
     resources: [
       { label: 'Athlete Profiles', href: '/athletes/jayden-thompson' },
+      { label: 'Create Your Player Profile | $75', href: '/profile/create' },
       { label: 'Merchandise', href: '/merchandise' },
       { label: 'George Raveling Tribute', href: '#tribute' },
       { label: 'North America Fee Agreement', href: STANDARD_FEE_AGREEMENT_URL },

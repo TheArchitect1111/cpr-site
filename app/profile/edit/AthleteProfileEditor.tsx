@@ -166,8 +166,7 @@ export default function AthleteProfileEditor({ athlete, token }: { athlete: Athl
         <h2 className="display">Bio & Media</h2>
         <label>Bio<textarea rows={5} value={draft.bio} onChange={e => set('bio', e.target.value)} /></label>
         <label>Strengths<textarea rows={3} value={draft.strengths} onChange={e => set('strengths', e.target.value)} /></label>
-        <label>Highlight video URL<input value={draft.videoUrl} onChange={e => set('videoUrl', e.target.value)} /></label>
-        <label>Gameplay video URL<input value={draft.gameplayVideoUrl} onChange={e => set('gameplayVideoUrl', e.target.value)} /></label>
+        <p className="edit-guidance">Upload player media below. YouTube, Instagram, and X links are not included on public player profiles.</p>
       </div>
 
       <div className="edit-section">
