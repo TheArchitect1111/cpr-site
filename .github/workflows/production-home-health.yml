@@ -1,0 +1,157 @@
+name: CPR Production Home Health
+
+on:
+  schedule:
+    - cron: '*/30 * * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: cpr-production-home-health
+  cancel-in-progress: true
+
+env:
+  BARE_URL: https://cprglobalsports.com/
+  HOME_URL: https://www.cprglobalsports.com/
+  EXPERIENCE_URL: https://www.cprglobalsports.com/cpr-experience-lab
+
+jobs:
+  verify-and-heal:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - name: Verify homepage and routing
+        id: initial
+        continue-on-error: true
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          verify() {
+            home_file="$(mktemp)"
+            experience_file="$(mktemp)"
+
+            home_code="$(curl -sS -L --max-redirs 5 -o "$home_file" -w '%{http_code}' "$HOME_URL")"
+            test "$home_code" = "200"
+            grep -Fq '<title>CPR Global Prospects' "$home_file"
+            grep -Fq 'CANADIAN PROSPECTS' "$home_file"
+            if grep -Fq 'CPR Experience Lab | The Journey to the Next Level' "$home_file"; then
+              echo 'Homepage unexpectedly contains the Experience page title.' >&2
+              return 1
+            fi
+
+            bare_code="$(curl -sS -L --max-redirs 5 -o /dev/null -w '%{http_code}' "$BARE_URL")"
+            bare_effective="$(curl -sS -L --max-redirs 5 -o /dev/null -w '%{url_effective}' "$BARE_URL")"
+            test "$bare_code" = "200"
+            case "$bare_effective" in
+              https://www.cprglobalsports.com/|https://www.cprglobalsports.com/\?*) ;;
+              *)
+                echo "Bare domain resolved to unexpected destination: $bare_effective" >&2
+                return 1
+                ;;
+            esac
+
+            experience_code="$(curl -sS -L --max-redirs 5 -o "$experience_file" -w '%{http_code}' "$EXPERIENCE_URL")"
+            test "$experience_code" = "200"
+            grep -Fq 'CPR Experience Lab | The Journey to the Next Level' "$experience_file"
+
+            echo 'CPR production routing is healthy.'
+          }
+
+          verify
+
+      - name: Trigger recovery deployment
+        if: steps.initial.outcome == 'failure' && env.CPR_VERCEL_DEPLOY_HOOK != ''
+        env:
+          CPR_VERCEL_DEPLOY_HOOK: ${{ secrets.CPR_VERCEL_DEPLOY_HOOK }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo 'Production routing check failed. Triggering recovery deployment.'
+          curl -fsS -X POST "$CPR_VERCEL_DEPLOY_HOOK" >/dev/null
+          sleep 90
+
+      - name: Verify after recovery
+        id: recovery
+        if: steps.initial.outcome == 'failure'
+        continue-on-error: true
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          home_file="$(mktemp)"
+          experience_file="$(mktemp)"
+          home_code="$(curl -sS -L --max-redirs 5 -o "$home_file" -w '%{http_code}' "$HOME_URL")"
+          test "$home_code" = "200"
+          grep -Fq '<title>CPR Global Prospects' "$home_file"
+          grep -Fq 'CANADIAN PROSPECTS' "$home_file"
+          ! grep -Fq 'CPR Experience Lab | The Journey to the Next Level' "$home_file"
+
+          bare_effective="$(curl -sS -L --max-redirs 5 -o /dev/null -w '%{url_effective}' "$BARE_URL")"
+          case "$bare_effective" in
+            https://www.cprglobalsports.com/|https://www.cprglobalsports.com/\?*) ;;
+            *) exit 1 ;;
+          esac
+
+          experience_code="$(curl -sS -L --max-redirs 5 -o "$experience_file" -w '%{http_code}' "$EXPERIENCE_URL")"
+          test "$experience_code" = "200"
+          grep -Fq 'CPR Experience Lab | The Journey to the Next Level' "$experience_file"
+
+      - name: Open production incident
+        if: steps.initial.outcome == 'failure' && steps.recovery.outcome != 'success'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const title = '[Production] CPR homepage routing failed';
+            const body = [
+              'The automated production health guard detected that CPR homepage routing is incorrect or unavailable.',
+              '',
+              `Checked: ${process.env.BARE_URL}`,
+              `Checked: ${process.env.HOME_URL}`,
+              `Control route: ${process.env.EXPERIENCE_URL}`,
+              '',
+              'Expected behavior: the bare domain resolves to the www homepage, and the Experience remains only at /cpr-experience-lab.',
+              '',
+              `Workflow run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
+            ].join('\n');
+
+            const { data: issues } = await github.rest.issues.listForRepo({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: 'open',
+              labels: 'production-health',
+              per_page: 100,
+            });
+            const existing = issues.find((issue) => issue.title === title);
+            if (existing) {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: existing.number,
+                body,
+              });
+            } else {
+              await github.rest.issues.create({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                title,
+                body,
+                labels: ['production-health'],
+              }).catch(async () => {
+                await github.rest.issues.create({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  title,
+                  body,
+                });
+              });
+            }
+
+      - name: Fail unresolved incident
+        if: steps.initial.outcome == 'failure' && steps.recovery.outcome != 'success'
+        run: |
+          echo 'CPR production homepage routing remains unhealthy.' >&2
+          exit 1
