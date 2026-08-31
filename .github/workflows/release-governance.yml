@@ -1,9 +1,15 @@
 name: Release Governance
 
 on:
+  pull_request:
+    branches: [main]
   push:
     branches: [main]
   workflow_dispatch:
+
+concurrency:
+  group: release-governance-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   governance:
@@ -34,7 +40,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: governance-reports
+          name: governance-reports-${{ github.run_id }}
           path: |
             governance/reports/
             docs/releases/latest.json
