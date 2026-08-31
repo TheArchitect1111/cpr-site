@@ -9,17 +9,30 @@ function pick<T extends string>(override: T, fallback: T): T {
   return override.trim() ? override : fallback;
 }
 
+function normalizedImageUrl(value: string | undefined) {
+  return String(value || '').trim().toLowerCase();
+}
+
 function mergeGallerySlides(
   baseSlides: GallerySlide[] | undefined,
   overrides: LandingGallerySlideSlot[] | undefined,
 ): GallerySlide[] {
   const owner = (overrides || []).filter((s) => s.imageUrl.trim());
-  if (!owner.length) return baseSlides ?? [];
-  return owner.map((s) => ({
-    img: s.imageUrl,
-    caption: s.caption || undefined,
-    objectPosition: s.objectPosition || 'center top',
-  }));
+  const source = owner.length
+    ? owner.map((s) => ({
+        img: s.imageUrl,
+        caption: s.caption || undefined,
+        objectPosition: s.objectPosition || 'center top',
+      }))
+    : (baseSlides ?? []);
+
+  const seen = new Set<string>();
+  return source.filter((slide) => {
+    const key = normalizedImageUrl(slide.img);
+    if (!key || seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
 }
 
 function slotHasOverride(slot: LandingTestimonialSlot | undefined): boolean {
@@ -79,6 +92,37 @@ export function mergeLandingConfig(
         ? [{ imageUrl: overrides.possibility.imageUrl, caption: '' }]
         : [],
   );
+
+  const resultProofs = (() => {
+    const seen = new Set<string>();
+    return base.results.proofs.map((proof, i) => {
+      const slot = overrides.results.proofs[i];
+      const requestedImage = slot?.imageUrl.trim() || '';
+      let image = requestedImage || proof.image;
+      const requestedKey = normalizedImageUrl(image);
+
+      // A repeated editor image should never make the public site show the same
+      // photo several times in a row. Fall back to that slot's approved base art.
+      if (requestedKey && seen.has(requestedKey)) image = proof.image;
+
+      let finalKey = normalizedImageUrl(image);
+      if (finalKey && seen.has(finalKey)) {
+        const unusedBase = base.results.proofs.find((candidate) => !seen.has(normalizedImageUrl(candidate.image)));
+        if (unusedBase) image = unusedBase.image;
+        finalKey = normalizedImageUrl(image);
+      }
+      if (finalKey) seen.add(finalKey);
+
+      if (!slot?.imageUrl.trim() && !slot?.athleteName.trim() && !slot?.caption.trim()) {
+        return { ...proof, image };
+      }
+      return {
+        image,
+        athleteName: pick(slot?.athleteName ?? '', proof.athleteName ?? ''),
+        caption: pick(slot?.caption ?? '', proof.caption ?? ''),
+      };
+    });
+  })();
 
   return {
     ...base,
@@ -173,15 +217,7 @@ export function mergeLandingConfig(
               label: pick(slot?.label ?? '', stat.label),
             };
           }),
-          proofs: base.results.proofs.map((proof, i) => {
-            const slot = overrides.results.proofs[i];
-            if (!slot?.imageUrl.trim() && !slot?.athleteName.trim() && !slot?.caption.trim()) return proof;
-            return {
-              image: pick(slot?.imageUrl ?? '', proof.image),
-              athleteName: pick(slot?.athleteName ?? '', proof.athleteName ?? ''),
-              caption: pick(slot?.caption ?? '', proof.caption ?? ''),
-            };
-          }),
+          proofs: resultProofs,
         }
       : base.results,
     finalCta: {
