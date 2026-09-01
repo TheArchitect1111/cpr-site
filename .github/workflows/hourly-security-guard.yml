@@ -1,0 +1,47 @@
+name: CPR Hourly Security Guard
+
+on:
+  schedule:
+    - cron: '17 * * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: cpr-hourly-security-guard
+  cancel-in-progress: true
+
+jobs:
+  guard:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Verify production invariants
+        shell: bash
+        run: |
+          set -euo pipefail
+          URL='https://www.cprglobalsports.com/'
+          BODY="$(mktemp)"
+          HEADERS="$(mktemp)"
+          CODE="$(curl -L -sS --max-time 30 -D "$HEADERS" -o "$BODY" -w '%{http_code}' "$URL")"
+          test "$CODE" = '200'
+          grep -Fq 'CPR Global Prospects' "$BODY"
+          grep -Fq 'CANADIAN PROSPECTS' "$BODY"
+          grep -Fq 'North America Fee Agreement' "$BODY"
+          ! grep -Fq 'CPR Experience Lab | The Journey to the Next Level' "$BODY"
+          grep -Eqi '^x-content-type-options: *nosniff' "$HEADERS" || true
+          grep -Eqi '^referrer-policy:' "$HEADERS" || true
+
+      - name: Open or update incident
+        if: failure()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const title = '[Security Guard] CPR production drift detected';
+            const body = `Hourly guard detected an outage or approved-content drift at ${new Date().toISOString()}. Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`;
+            const {data: issues} = await github.rest.issues.listForRepo({owner: context.repo.owner, repo: context.repo.repo, state:'open', per_page:100});
+            const existing = issues.find(i => i.title === title);
+            if (existing) await github.rest.issues.createComment({owner:context.repo.owner, repo:context.repo.repo, issue_number:existing.number, body});
+            else await github.rest.issues.create({owner:context.repo.owner, repo:context.repo.repo, title, body});
