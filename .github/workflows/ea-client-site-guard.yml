@@ -1,6 +1,11 @@
 name: EA Client Site Guard
 
 on:
+  push:
+    branches: [main]
+    paths:
+      - 'config/ea-site-guard.json'
+      - '.github/workflows/ea-client-site-guard.yml'
   schedule:
     - cron: '23 * * * *'
   workflow_dispatch:
