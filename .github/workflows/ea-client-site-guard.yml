@@ -1,0 +1,45 @@
+name: EA Client Site Guard
+
+on:
+  schedule:
+    - cron: '23 * * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: ea-client-site-guard-cpr
+  cancel-in-progress: true
+
+jobs:
+  guard:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Verify approved production baseline
+        shell: bash
+        run: |
+          set -euo pipefail
+          node <<'NODE'
+          const fs=require('fs'), https=require('https'), http=require('http');
+          const cfg=JSON.parse(fs.readFileSync('config/ea-site-guard.json','utf8'));
+          function get(url,method='GET',redirects=0){return new Promise((resolve,reject)=>{const lib=url.startsWith('https:')?https:http;const req=lib.request(url,{method,headers:{'user-agent':'EA-Client-Site-Guard/1.0'}},res=>{if([301,302,303,307,308].includes(res.statusCode)&&res.headers.location&&redirects<5){const next=new URL(res.headers.location,url).toString();res.resume();return resolve(get(next,method,redirects+1));}let body='';res.on('data',c=>body+=c);res.on('end',()=>resolve({status:res.statusCode,headers:res.headers,body}));});req.setTimeout(30000,()=>req.destroy(new Error('timeout')));req.on('error',reject);req.end();});}
+          (async()=>{const home=await get(cfg.production.home);if(home.status!==200)throw new Error(`home status ${home.status}`);const lower=home.body.toLowerCase();for(const m of cfg.requiredMarkers||[])if(!lower.includes(String(m).toLowerCase()))throw new Error(`missing marker: ${m}`);for(const m of cfg.forbiddenMarkers||[])if(lower.includes(String(m).toLowerCase()))throw new Error(`forbidden marker: ${m}`);for(const h of cfg.securityHeaders||[])if(!home.headers[String(h).toLowerCase()])throw new Error(`missing header: ${h}`);for(const r of cfg.routes||[]){const x=await get(r.url);if(x.status!==r.status)throw new Error(`route ${r.url} returned ${x.status}`);}for(const a of cfg.requiredAssets||[]){const x=await get(a,'HEAD');if(x.status!==200)throw new Error(`asset ${a} returned ${x.status}`);}console.log(`PASS ${cfg.client}`);})().catch(e=>{console.error(e.stack||e);process.exit(1)});
+          NODE
+
+      - name: Open or update production incident
+        if: failure()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const cfg=require(process.cwd()+'/config/ea-site-guard.json');
+            const title=`[EA Site Guard] ${cfg.client} production baseline failure`;
+            const body=`Detected outage, route failure, approved-content drift, or security-header failure at ${new Date().toISOString()}. CPR's existing recovery workflow remains responsible for deterministic redeployment attempts. Last-known-good commit: ${cfg.production.lastKnownGoodCommit}. Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`;
+            const {data:issues}=await github.rest.issues.listForRepo({owner:context.repo.owner,repo:context.repo.repo,state:'open',per_page:100});
+            const existing=issues.find(i=>i.title===title);
+            if(existing) await github.rest.issues.createComment({owner:context.repo.owner,repo:context.repo.repo,issue_number:existing.number,body});
+            else await github.rest.issues.create({owner:context.repo.owner,repo:context.repo.repo,title,body});
