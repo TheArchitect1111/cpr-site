@@ -1,0 +1,12 @@
+{
+  "capability": "eva-mail",
+  "provider": "postal",
+  "tenantId": "cpr",
+  "enabled": true,
+  "addressLocalPart": "participants",
+  "domain": null,
+  "autoReply": false,
+  "requiresVerifiedDomain": true,
+  "requiresHumanEscalationFallback": true,
+  "chassisSource": "TheArchitect1111/ea-payments"
+}
