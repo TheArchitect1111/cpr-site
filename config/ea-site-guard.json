@@ -1,0 +1,32 @@
+{
+  "version": 1,
+  "client": "CPR Global Prospects",
+  "production": {
+    "home": "https://www.cprglobalsports.com/",
+    "portal": "https://www.cprglobalsports.com/cpr-experience-lab",
+    "lastKnownGoodCommit": "26afe8d2b0d4889a7117c7fc7992e4d276237478"
+  },
+  "requiredMarkers": [
+    "CPR Global Prospects",
+    "CANADIAN PROSPECTS",
+    "North America Fee Agreement",
+    "Player"
+  ],
+  "forbiddenMarkers": [
+    "CPR Experience Lab | The Journey to the Next Level"
+  ],
+  "requiredAssets": [],
+  "routes": [
+    {"url": "https://www.cprglobalsports.com/", "status": 200},
+    {"url": "https://www.cprglobalsports.com/cpr-experience-lab", "status": 200}
+  ],
+  "securityHeaders": [
+    "x-content-type-options",
+    "referrer-policy"
+  ],
+  "policy": {
+    "automaticInfrastructureRecovery": true,
+    "automaticContentRollback": false,
+    "openIncidentOnFailure": true
+  }
+}
