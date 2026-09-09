@@ -12,12 +12,14 @@ const NORTH_AMERICAN_FEE_AGREEMENT =
 export default async function Home() {
   const [config, athletes] = await Promise.all([getLandingPageConfig(), getAthletes()]);
   const playerProfiles = athletes.rows
-    .filter((athlete) => athlete.slug && athlete.id !== 'sample')
+    // The public homepage should only feature athletes with a real profile image.
+    // Incomplete/test records belong in admin, not as repeated placeholder cards.
+    .filter((athlete) => athlete.slug && athlete.id !== 'sample' && hasAthletePhoto(athlete.photoUrl))
     .slice(0, 8)
     .map((athlete) => ({
       name: `${athlete.firstName} ${athlete.lastName}`.trim(),
       slug: athlete.slug,
-      photo: hasAthletePhoto(athlete.photoUrl) ? athlete.photoUrl : '/pending-profile-details.jpg',
+      photo: athlete.photoUrl,
       meta: [athlete.position, athlete.gradYear ? `Class of ${athlete.gradYear}` : ''].filter(Boolean).join(' | '),
     }));
   const correctedConfig = {
