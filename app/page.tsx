@@ -9,12 +9,27 @@ export const dynamic = 'force-dynamic';
 const NORTH_AMERICAN_FEE_AGREEMENT =
   'https://docs.google.com/forms/d/e/1FAIpQLSexOTZti6lP_scn4Igt9wwTmxpA3J2csHYaQ0JMGtTp82Zb5Q/viewform';
 
+function isUsablePublicImage(value?: string) {
+  const src = (value || '').trim();
+  if (!src || !hasAthletePhoto(src)) return false;
+  if (src.includes('youtu.be/') || src.includes('youtube.com/')) return false;
+  if (src.includes('drive.google.com/file/')) return false;
+  return src.startsWith('/') || /^https?:\/\//i.test(src);
+}
+
 export default async function Home() {
   const [config, athletes] = await Promise.all([getLandingPageConfig(), getAthletes()]);
+  const seenPhotos = new Set<string>();
+
   const playerProfiles = athletes.rows
-    // The public homepage should only feature athletes with a real profile image.
-    // Incomplete/test records belong in admin, not as repeated placeholder cards.
-    .filter((athlete) => athlete.slug && athlete.id !== 'sample' && hasAthletePhoto(athlete.photoUrl))
+    .filter((athlete) => {
+      const slug = (athlete.slug || '').trim();
+      const photo = (athlete.photoUrl || '').trim();
+      if (!slug || athlete.id === 'sample' || slug.startsWith('archived-')) return false;
+      if (!isUsablePublicImage(photo) || seenPhotos.has(photo)) return false;
+      seenPhotos.add(photo);
+      return true;
+    })
     .slice(0, 8)
     .map((athlete) => ({
       name: `${athlete.firstName} ${athlete.lastName}`.trim(),
@@ -22,6 +37,7 @@ export default async function Home() {
       photo: athlete.photoUrl,
       meta: [athlete.position, athlete.gradYear ? `Class of ${athlete.gradYear}` : ''].filter(Boolean).join(' | '),
     }));
+
   const correctedConfig = {
     ...config,
     results: {
