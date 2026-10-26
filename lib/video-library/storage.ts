@@ -11,8 +11,10 @@ import { getAdminSessionSecret } from '@/lib/admin-session-secret';
 import { PREVIEW_VIDEO_TYPES, type VideoDraft, type VideoRecord } from './schema';
 
 export const MAX_VIDEO_BYTES = 100 * 1024 * 1024;
-const VIDEO_ROOT = 'cpr/videos/encrypted/';
-const META_ROOT = 'cpr/videos/encrypted-records/';
+// Preview drafts remain in their existing namespace; production is isolated.
+const VIDEO_BASE = process.env.VERCEL_ENV === 'production' ? 'cpr-production' : 'cpr';
+const VIDEO_ROOT = VIDEO_BASE + '/videos/encrypted/';
+const META_ROOT = VIDEO_BASE + '/videos/encrypted-records/';
 
 export function videoToken(): string | null {
   return process.env.BLOB_READ_WRITE_TOKEN || null;
@@ -29,7 +31,8 @@ export function videoStorageConfigured(): boolean {
 }
 
 export function isVideoPath(pathname: string): boolean {
-  return /^cpr\/videos\/encrypted\/[a-f0-9-]{36}\/[a-z0-9_-]{1,80}\.enc$/.test(pathname);
+  return pathname.startsWith(VIDEO_ROOT) &&
+    /^[a-f0-9-]{36}\/[a-z0-9_-]{1,80}\.enc$/.test(pathname.slice(VIDEO_ROOT.length));
 }
 
 export function validateVideoFileMeta(name: string, mime: string, bytes: number): string | null {
