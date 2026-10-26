@@ -24,7 +24,7 @@ import { listAdminTeamMembers } from '@/lib/admin-team';
 import { listCollection } from '@/lib/admin-collections';
 import AdminBusinessPresence from './AdminBusinessPresence';
 import VideoLibraryClient from './VideoLibraryClient';
-import { listUploadedVideos, videoToken } from '@/lib/video-library/storage';
+import { listUploadedVideos, videoStorageConfigured } from '@/lib/video-library/storage';
 
 export const dynamic = 'force-dynamic';
 
@@ -166,7 +166,7 @@ export default async function AdminPage({
   } else if (tab === 'business-presence') {
     mainContent = <AdminBusinessPresence />;
   } else if (tab === 'videos') {
-    const storageConfigured = Boolean(videoToken());
+    const storageConfigured = videoStorageConfigured();
     const initialVideos = storageConfigured
       ? await listUploadedVideos().catch(() => [])
       : [];
