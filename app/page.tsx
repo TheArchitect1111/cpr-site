@@ -3,6 +3,7 @@ import { LandingPage } from '@/lib/landing-chassis/LandingPage';
 import { getLandingPageConfig } from '@/lib/get-landing-config';
 import { getAthletes } from '@/lib/athletes';
 import { hasAthletePhoto } from '@/lib/athlete-photo';
+import { getPublishedVideos } from '@/lib/video-library/published';
 
 export const dynamic = 'force-dynamic';
 
@@ -18,7 +19,16 @@ function isUsablePublicImage(value?: string) {
 }
 
 export default async function Home() {
-  const [config, athletes] = await Promise.all([getLandingPageConfig(), getAthletes()]);
+  const [config, athletes, publishedVideos] = await Promise.all([
+    getLandingPageConfig(), getAthletes(),
+    getPublishedVideos().catch((error) => {
+      console.error('CPR published video list unavailable:', error instanceof Error ? error.message : 'unknown');
+      return [];
+    }),
+  ]);
+  const homepageVideos = publishedVideos.filter(video =>
+    video.placement === 'homepage-featured' || video.placement === 'homepage-gallery');
+  const hasFeaturedVideo = homepageVideos.some(video => video.placement === 'homepage-featured');
   const seenPhotos = new Set<string>();
 
   const playerProfiles = athletes.rows
@@ -47,6 +57,7 @@ export default async function Home() {
     links: {
       ...config.links,
       agreement: NORTH_AMERICAN_FEE_AGREEMENT,
+      video: hasFeaturedVideo ? '#cpr-videos' : config.links.video,
     },
     footer: {
       ...config.footer,
@@ -57,5 +68,5 @@ export default async function Home() {
       ),
     },
   };
-  return <LandingPage config={correctedConfig} />;
+  return <LandingPage config={correctedConfig} publishedVideos={homepageVideos} />;
 }
