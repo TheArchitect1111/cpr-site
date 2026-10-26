@@ -38,7 +38,7 @@ export async function issueVideoUpload(pathname: string): Promise<string> {
   if (!token || !isVideoPath(pathname)) throw new Error('Private video storage is unavailable.');
   const signedToken = await issueSignedToken({ token, pathname, operations: ['put'], validUntil: Date.now() + 15 * 60_000 });
   const result = await presignUrl(signedToken, {
-    pathname, operation: 'put', validUntil: Date.now() + 15 * 60_000,
+    pathname, operation: 'put', access: 'private', validUntil: Date.now() + 15 * 60_000,
   });
   return result.presignedUrl;
 }
@@ -60,7 +60,7 @@ export async function issueVideoPreview(pathname: string): Promise<string> {
     token, pathname, operations: ['get'], validUntil: Date.now() + 30 * 60_000,
   });
   const { presignedUrl } = await presignUrl(signedToken, {
-    pathname, operation: 'get', validUntil: Date.now() + 30 * 60_000,
+    pathname, operation: 'get', access: 'private', validUntil: Date.now() + 30 * 60_000,
   });
   return presignedUrl;
 }
