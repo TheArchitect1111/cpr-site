@@ -24,7 +24,8 @@ import { listAdminTeamMembers } from '@/lib/admin-team';
 import { listCollection } from '@/lib/admin-collections';
 import AdminBusinessPresence from './AdminBusinessPresence';
 import VideoLibraryClient from './VideoLibraryClient';
-import { listUploadedVideos, videoStorageConfigured } from '@/lib/video-library/storage';
+import { videoStorageConfigured } from '@/lib/video-library/storage';
+import { listAdminVideos } from '@/lib/video-library/published';
 
 export const dynamic = 'force-dynamic';
 
@@ -168,7 +169,7 @@ export default async function AdminPage({
   } else if (tab === 'videos') {
     const storageConfigured = videoStorageConfigured();
     const initialVideos = storageConfigured
-      ? await listUploadedVideos().catch(() => [])
+      ? await listAdminVideos().catch(() => [])
       : [];
     mainContent = <VideoLibraryClient storageConfigured={storageConfigured} initialVideos={initialVideos} />;
   } else if (tab && isCollectionId(tab)) {
