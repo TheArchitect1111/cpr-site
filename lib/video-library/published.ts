@@ -127,3 +127,16 @@ export async function unpublishPublicVideo(pathname: string) {
   await del(existing.publicPath, { token });
   return { unpublished: true };
 }
+
+/** Add public publication status to the encrypted draft list for admin display. */
+export async function listAdminVideos(): Promise<VideoRecord[]> {
+  const [drafts, published] = await Promise.all([listUploadedVideos(), getPublishedVideos()]);
+  const publishedById = new Map(published.map(v => [v.id, v]));
+  return drafts.map(draft => {
+    const live = publishedById.get(draft.id);
+    return live ? {
+      ...draft, status: 'published' as const, playbackUrl: live.playbackUrl,
+      publishedAt: live.publishedAt,
+    } : draft;
+  });
+}
