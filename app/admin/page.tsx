@@ -23,6 +23,7 @@ import AdminTeam from './AdminTeam';
 import { listAdminTeamMembers } from '@/lib/admin-team';
 import { listCollection } from '@/lib/admin-collections';
 import AdminBusinessPresence from './AdminBusinessPresence';
+import VideoLibraryClient from './VideoLibraryClient';
 
 export const dynamic = 'force-dynamic';
 
@@ -163,6 +164,8 @@ export default async function AdminPage({
     );
   } else if (tab === 'business-presence') {
     mainContent = <AdminBusinessPresence />;
+  } else if (tab === 'videos') {
+    mainContent = <VideoLibraryClient />;
   } else if (tab && isCollectionId(tab)) {
     const def = getCollectionDef(tab)!;
     const [athletes, items] = await Promise.all([athletesPromise, listCollection(tab)]);
@@ -193,7 +196,7 @@ export default async function AdminPage({
   const playersOpen = ['registrants', 'activity'].includes(activeTab);
   const recruitingOpen = ['outreach', 'schools', 'recruitment-tracker', 'responses', 'offers'].includes(activeTab);
   const messagesOpen = ['communication', 'tickets', 'messages', 'email-templates'].includes(activeTab);
-  const websiteOpen = ['content', 'site-updates', 'site-quotes', 'media-library', 'site-text'].includes(activeTab);
+  const websiteOpen = ['content', 'site-updates', 'site-quotes', 'media-library', 'site-text', 'videos'].includes(activeTab);
   const documentsOpen = ['documents', 'fee-agreements'].includes(activeTab);
   const campsOpen = ['camps', 'camp-registrations'].includes(activeTab);
   const settingsOpen = ['team', 'business-presence'].includes(activeTab);
@@ -276,6 +279,7 @@ export default async function AdminPage({
             <a className={`aitem${activeTab === 'site-updates' ? ' active' : ''}`} href="/admin?tab=site-updates">Website Announcements</a>
             <a className={`aitem${activeTab === 'site-quotes' ? ' active' : ''}`} href="/admin?tab=site-quotes">Testimonials &amp; Quotes</a>
             <a className={`aitem${activeTab === 'media-library' ? ' active' : ''}`} href="/admin?tab=media-library">Image Library</a>
+            <a className={`aitem${activeTab === 'videos' ? ' active' : ''}`} href="/admin?tab=videos">Video Library (Draft)</a>
             <a className={`aitem${activeTab === 'site-text' ? ' active' : ''}`} href="/admin?tab=site-text">Edit Website Wording</a>
             <a className={`aitem${activeTab === 'content' ? ' active' : ''}`} href="/admin?tab=content">Content Performance</a>
           </nav>
