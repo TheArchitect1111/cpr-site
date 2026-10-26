@@ -1,12 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { isAdminAuthed } from '@/lib/admin-auth';
-import { issueVideoUpload, newVideoPath, validateVideoFileMeta, videoToken } from '@/lib/video-library/storage';
+import { issueVideoUpload, newVideoPath, validateVideoFileMeta, videoStorageConfigured } from '@/lib/video-library/storage';
 
 export const dynamic = 'force-dynamic';
 
 export async function POST(req: NextRequest) {
   if (!isAdminAuthed(req)) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-  if (!videoToken()) return NextResponse.json({ error: 'Private video storage is not configured.' }, { status: 503 });
+  if (!videoStorageConfigured()) return NextResponse.json({ error: 'CPR media storage is not configured.' }, { status: 503 });
   try {
     const data = await req.json() as { name?: string; mime?: string; size?: number };
     const name = String(data.name || '');
