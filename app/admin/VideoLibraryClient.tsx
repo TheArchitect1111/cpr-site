@@ -11,6 +11,7 @@ import {
   type VideoSourceType,
   type VideoRecord,
 } from '@/lib/video-library/schema';
+import { encryptVideoFile, decryptVideoFile } from '@/lib/video-library/browser-crypto';
 import './video-library.css';
 
 const VIDEO_ACCEPT = '.mp4,.webm,.mov,video/mp4,video/webm,video/quicktime';
@@ -29,7 +30,8 @@ export default function VideoLibraryClient({
   const [reviewed, setReviewed] = useState(false);
   const [uploadedPath, setUploadedPath] = useState<string | null>(null);
   const [items, setItems] = useState<VideoRecord[]>(initialVideos);
-  const [selectedPath, setSelectedPath] = useState<string | null>(null);
+  const [savedPreview, setSavedPreview] = useState<string | null>(null);
+  const savedPreviewUrl = useRef<string | null>(null);
   const [uploading, setUploading] = useState(false);
   const [uploadMessage, setUploadMessage] = useState('');
   const fileInput = useRef<HTMLInputElement>(null);
@@ -37,6 +39,7 @@ export default function VideoLibraryClient({
 
   useEffect(() => () => {
     if (previewUrl.current) URL.revokeObjectURL(previewUrl.current);
+    if (savedPreviewUrl.current) URL.revokeObjectURL(savedPreviewUrl.current);
   }, []);
 
   const selectFile = (next: File | null) => {
@@ -77,6 +80,30 @@ export default function VideoLibraryClient({
     setReviewed(nextErrors.length === 0);
   };
 
+  const openSavedPreview = async (pathname: string) => {
+    try {
+      setUploadMessage('Decrypting saved video for preview…');
+      const result = await fetch('/api/admin/videos/preview?pathname=' + encodeURIComponent(pathname), {
+        cache: 'no-store',
+      });
+      const details = await result.json() as { url?: string; key?: string; iv?: string; mime?: string; error?: string };
+      if (!result.ok || !details.url || !details.key || !details.iv || !details.mime) {
+        throw new Error(details.error || 'Secure preview unavailable.');
+      }
+      const encryptedResult = await fetch(details.url, { cache: 'no-store' });
+      if (!encryptedResult.ok) throw new Error('Encrypted video is temporarily unavailable.');
+      const decryptedUrl = await decryptVideoFile(
+        await encryptedResult.arrayBuffer(), details.key, details.iv, details.mime,
+      );
+      if (savedPreviewUrl.current) URL.revokeObjectURL(savedPreviewUrl.current);
+      savedPreviewUrl.current = decryptedUrl;
+      setSavedPreview(decryptedUrl);
+      setUploadMessage('Secure video preview ready. The video remains unpublished.');
+    } catch (error) {
+      setUploadMessage(error instanceof Error ? error.message : 'Secure preview failed.');
+    }
+  };
+
   const uploadPrivateVideo = async () => {
     if (!storageConfigured || !file || uploading) return;
     const problems = validateVideoDraft(draft, file);
@@ -85,6 +112,9 @@ export default function VideoLibraryClient({
     setUploading(true);
     setUploadMessage('');
     try {
+      if (file.size > 100 * 1024 * 1024) throw new Error('Video must be 100 MB or smaller.');
+      setUploadMessage('Encrypting the video on your device…');
+      const encrypted = await encryptVideoFile(file);
       const authorize = await fetch('/api/admin/videos/upload', {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ name: file.name, mime: file.type, size: file.size }),
@@ -93,20 +123,23 @@ export default function VideoLibraryClient({
       if (!authorize.ok || !permission.pathname || !permission.uploadUrl) {
         throw new Error(permission.error || 'Private upload authorization failed.');
       }
+      setUploadMessage('Uploading protected video…');
       const result = await fetch(permission.uploadUrl, {
-        method: 'PUT', body: file, headers: { 'Content-Type': file.type },
+        method: 'PUT', body: encrypted.data, headers: { 'Content-Type': 'application/octet-stream' },
       });
       if (!result.ok) throw new Error('The video file could not be uploaded.');
       const complete = await fetch('/api/admin/videos/complete', {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ pathname: permission.pathname, draft }),
+        body: JSON.stringify({ pathname: permission.pathname, draft, crypto: {
+          key: encrypted.key, iv: encrypted.iv, size: encrypted.size, mime: encrypted.mime,
+        } }),
       });
       const saved = await complete.json() as { error?: string; record?: VideoRecord };
       if (!complete.ok || !saved.record) throw new Error(saved.error || 'Video upload could not be verified.');
       setItems((previous) => [saved.record!, ...previous.filter(item => item.id !== saved.record!.id)]);
       setUploadedPath(permission.pathname);
-      setSelectedPath(permission.pathname);
-      setUploadMessage('Video uploaded to private storage and saved as a draft. It is not published.');
+      setUploadMessage('Video encrypted and saved as an unpublished draft.');
+      void openSavedPreview(permission.pathname);
     } catch (error) {
       setUploadMessage(error instanceof Error ? error.message : 'Private upload failed.');
     } finally {
@@ -130,10 +163,11 @@ export default function VideoLibraryClient({
       </header>
 
       <div className="video-library-notice" role="status">
-<strong>Step 2: private video uploads and previews.</strong> Videos are stored as
-        unpublished drafts. Nothing is placed on the public CPR website yet.
+<strong>Video drafts are encrypted before upload.</strong> CPR's existing storage
+        holds encrypted files; decryption is available only to authorized admins.
+        No video is published on the website.
         {!storageConfigured && (
-          <span> Private video storage must be connected before uploading is available.</span>
+          <span> CPR's existing Blob connection or admin encryption secret is unavailable.</span>
         )}
       </div>
 
@@ -252,8 +286,8 @@ export default function VideoLibraryClient({
             </div>
           </div>
           <div className="video-library-preview">
-            {selectedPath ? (
-              <video key={selectedPath} src={`/api/admin/videos/preview?pathname=${encodeURIComponent(selectedPath)}`}
+            {savedPreview ? (
+              <video key={savedPreview} src={savedPreview}
                 controls playsInline preload="metadata" />
             ) : draft.sourceType === 'file' && localPreview && file &&
               PREVIEW_VIDEO_TYPES.some((type) => type === file.type) ? (
@@ -303,7 +337,7 @@ export default function VideoLibraryClient({
                 </div>
                 {item.storageKey && (
                   <button type="button" className="video-library-secondary"
-                    onClick={() => { setSelectedPath(item.storageKey); setUploadMessage(''); }}>
+                    onClick={() => { void openSavedPreview(item.storageKey!); }}>
                     Preview
                   </button>
                 )}
