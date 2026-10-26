@@ -33,6 +33,7 @@ export default function VideoLibraryClient({
   const [savedPreview, setSavedPreview] = useState<string | null>(null);
   const savedPreviewUrl = useRef<string | null>(null);
   const [uploading, setUploading] = useState(false);
+  const [actionId, setActionId] = useState<string | null>(null);
   const [uploadMessage, setUploadMessage] = useState('');
   const fileInput = useRef<HTMLInputElement>(null);
   const previewUrl = useRef<string | null>(null);
@@ -78,6 +79,72 @@ export default function VideoLibraryClient({
     const nextErrors = validateVideoDraft(draft, file);
     setErrors(nextErrors);
     setReviewed(nextErrors.length === 0);
+  };
+
+  const refreshLibrary = async () => {
+    const response = await fetch('/api/admin/videos', { cache: 'no-store' });
+    if (!response.ok) throw new Error('Could not refresh video statuses.');
+    const data = await response.json() as { items: VideoRecord[] };
+    setItems(data.items);
+  };
+
+  const publishAction = async (action: 'prepare' | 'commit' | 'unpublish', pathname: string, publicPath?: string) => {
+    const response = await fetch('/api/admin/videos/publish', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action, pathname, publicPath }),
+    });
+    const data = await response.json() as {
+      uploadUrl?: string; publicPath?: string; sizeBytes?: number; mimeType?: string;
+      error?: string;
+    };
+    if (!response.ok) throw new Error(data.error || 'Publishing action failed.');
+    return data;
+  };
+
+  const publishRecord = async (record: VideoRecord) => {
+    if (!record.storageKey || !record.mimeType || !record.sizeBytes || actionId) return;
+    setActionId(record.id);
+    try {
+      setUploadMessage('Preparing video for publication…');
+      const authorization = await publishAction('prepare', record.storageKey);
+      if (!authorization.uploadUrl || !authorization.publicPath) throw new Error('Publication authorization failed.');
+      const decrypted = await fetch('/api/admin/videos/preview?pathname=' +
+        encodeURIComponent(record.storageKey), { cache: 'no-store' });
+      const info = await decrypted.json() as { url?: string; key?: string; iv?: string; mime?: string; error?: string };
+      if (!decrypted.ok || !info.url || !info.key || !info.iv || !info.mime) {
+        throw new Error(info.error || 'Could not open encrypted draft.');
+      }
+      const response = await fetch(info.url, { cache: 'no-store' });
+      if (!response.ok) throw new Error('Could not retrieve encrypted video.');
+      const clearUrl = await decryptVideoFile(await response.arrayBuffer(), info.key, info.iv, info.mime);
+      let clearFile: Blob;
+      try { clearFile = await (await fetch(clearUrl)).blob(); }
+      finally { URL.revokeObjectURL(clearUrl); }
+      if (clearFile.size !== record.sizeBytes) throw new Error('Video size did not match draft.');
+      setUploadMessage('Publishing approved video to CPR homepage…');
+      const upload = await fetch(authorization.uploadUrl, {
+        method: 'PUT', headers: { 'Content-Type': record.mimeType }, body: clearFile,
+      });
+      if (!upload.ok) throw new Error('Could not upload the published video.');
+      await publishAction('commit', record.storageKey, authorization.publicPath);
+      await refreshLibrary();
+      setUploadMessage('Video published to the CPR homepage. Unpublish is available below.');
+    } catch (error) {
+      setUploadMessage(error instanceof Error ? error.message : 'Publication failed.');
+    } finally { setActionId(null); }
+  };
+
+  const unpublishRecord = async (record: VideoRecord) => {
+    if (!record.storageKey || actionId) return;
+    setActionId(record.id);
+    setUploadMessage('Unpublishing video…');
+    try {
+      await publishAction('unpublish', record.storageKey);
+      await refreshLibrary();
+      setUploadMessage('Video unpublished. Your encrypted draft remains saved.');
+    } catch (error) {
+      setUploadMessage(error instanceof Error ? error.message : 'Unpublishing failed.');
+    } finally { setActionId(null); }
   };
 
   const openSavedPreview = async (pathname: string) => {
@@ -163,9 +230,9 @@ export default function VideoLibraryClient({
       </header>
 
       <div className="video-library-notice" role="status">
-<strong>Video drafts are encrypted before upload.</strong> CPR's existing storage
-        holds encrypted files; decryption is available only to authorized admins.
-        No video is published on the website.
+<strong>Upload privately. Publish when approved.</strong> Original files remain encrypted
+        in CPR's admin library. Publishing creates a separate public homepage video.
+        Unpublish removes that public copy.
         {!storageConfigured && (
           <span> CPR's existing Blob connection or admin encryption secret is unavailable.</span>
         )}
@@ -314,8 +381,8 @@ export default function VideoLibraryClient({
           </dl>
           <div className="video-library-disabled">
             <button type="button" disabled>Save draft</button>
-            <button type="button" disabled>Publish video</button>
-            <p>Publishing is intentionally disabled until the website integration is verified in Step 3.</p>
+            <button type="button" disabled>Choose a saved video below</button>
+            <p>Use Publish or Unpublish on a saved video below.</p>
           </div>
         </section>
       </div>
@@ -324,7 +391,7 @@ export default function VideoLibraryClient({
           <span className="video-library-step">03</span>
           <div>
             <h2 id="video-records-heading">Private video drafts</h2>
-            <p>Stored files are only accessible through the authenticated admin preview.</p>
+            <p>Preview drafts, publish approved homepage videos, or remove videos from the public website.</p>
           </div>
         </div>
         {items.length === 0 ? <p>No uploaded video drafts yet.</p> : (
@@ -333,13 +400,31 @@ export default function VideoLibraryClient({
               <div key={item.id} className="video-library-record">
                 <div>
                   <strong>{item.title}</strong>
-                  <small>Draft · {VIDEO_PLACEMENTS.find(p => p.value === item.placement)?.label}</small>
+                  <small>{item.status === 'published' ? 'Published' : 'Private draft'} · {VIDEO_PLACEMENTS.find(p => p.value === item.placement)?.label}</small>
+                  {item.status === 'published' && item.playbackUrl &&
+                    <a href={item.playbackUrl} target="_blank" rel="noopener noreferrer">View published video</a>}
                 </div>
                 {item.storageKey && (
-                  <button type="button" className="video-library-secondary"
-                    onClick={() => { void openSavedPreview(item.storageKey!); }}>
-                    Preview
-                  </button>
+                  <div className="video-library-record-actions">
+                    <button type="button" className="video-library-secondary"
+                      disabled={actionId !== null}
+                      onClick={() => void openSavedPreview(item.storageKey!)}>
+                      Preview
+                    </button>
+                    {item.status === 'published' ? (
+                      <button type="button" className="video-library-secondary"
+                        disabled={actionId !== null}
+                        onClick={() => void unpublishRecord(item)}>
+                        {actionId === item.id ? 'Working…' : 'Unpublish'}
+                      </button>
+                    ) : ['homepage-featured', 'homepage-gallery'].includes(item.placement) ? (
+                      <button type="button" className="video-library-primary"
+                        disabled={actionId !== null}
+                        onClick={() => void publishRecord(item)}>
+                        {actionId === item.id ? 'Publishing…' : 'Publish'}
+                      </button>
+                    ) : <small>Publishing to this section is not yet available.</small>}
+                  </div>
                 )}
               </div>
             ))}
