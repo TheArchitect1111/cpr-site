@@ -1,18 +1,19 @@
 import type { LandingPageConfig } from './types';
+import type { PublicVideo } from '@/lib/video-library/published';
 import { LandingIcon, landingIcons } from './icons';
 import { TributeSection } from './TributeSection';
 import MobileNav from './MobileNav';
 import RotatingImagePanel from '@/app/components/RotatingImagePanel';
 import RichTextContent from '@/app/components/RichTextContent';
 
-type Props = { config: LandingPageConfig };
+type Props = { config: LandingPageConfig; publishedVideos?: PublicVideo[] };
 
 function externalLinkProps(href: string) {
   if (!href.startsWith('http')) return {};
   return { target: '_blank' as const, rel: 'noopener noreferrer' as const };
 }
 
-export function LandingPage({ config: c }: Props) {
+export function LandingPage({ config: c, publishedVideos = [] }: Props) {
   return (
     <>
       <header className="lc-nav">
@@ -82,6 +83,36 @@ export function LandingPage({ config: c }: Props) {
           </div>
         </div>
       </section>
+
+      {publishedVideos.length > 0 ? (
+        <section className="lc-section cpr-video-gallery" id="cpr-videos" aria-labelledby="cpr-videos-title">
+          <div className="lc-container">
+            <div className="lc-sec-head">
+              <p className="cpr-video-kicker">CPR MEDIA LIBRARY</p>
+              <h2 className="display" id="cpr-videos-title">VIDEOS &amp; STORIES</h2>
+              <p>Explore the moments, guidance, and opportunities behind CPR.</p>
+            </div>
+            <div className="cpr-video-grid">
+              {publishedVideos.slice(0, 9).map(video => (
+                <article className="cpr-video-card" key={video.id}>
+                  <video
+                    src={video.playbackUrl || undefined}
+                    poster={video.thumbnailUrl || undefined}
+                    preload="none"
+                    controls
+                    playsInline
+                    aria-label={video.caption || video.title}
+                  />
+                  <div className="cpr-video-body">
+                    <h3>{video.title}</h3>
+                    {video.description ? <p>{video.description}</p> : null}
+                  </div>
+                </article>
+              ))}
+            </div>
+          </div>
+        </section>
+      ) : null}
 
       {/* About CPR credentials band */}
       {c.about ? (
