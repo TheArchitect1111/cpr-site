@@ -46,3 +46,10 @@
 .video-library-record strong { display: block; color: #19191c; font-size: 13px; }
 .video-library-record small { display: block; margin-top: 4px; color: #76767b; font-size: 11px; }
 @media (max-width: 600px) { .video-library-record { align-items: flex-start; flex-direction: column; } }
+
+.video-library-record-actions { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.video-library-record-actions button { padding: 9px 13px; border-radius: 8px; cursor: pointer; font-size: 12px; font-weight: 800; }
+.video-library-record-actions button:disabled { cursor: progress; opacity: .6; }
+.video-library-record a { display: inline-block; margin-top: 5px; color: #9e1620; font-size: 12px; font-weight: 700; text-decoration: underline; }
+.video-library-record-actions small { max-width: 220px; }
+@media(max-width:600px) { .video-library-record-actions { width: 100%; } .video-library-record-actions button { flex: 1; } }
