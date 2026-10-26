@@ -310,3 +310,16 @@ body {
   .lc-hero-copy { padding: 54px 20px 34px; }
   .lc-hero-headline { font-size: 42px; }
 }
+
+/* CPR homepage video gallery, rendered only when an admin publishes media. */
+.cpr-video-gallery { background: #0c0c0e; color: #fff; scroll-margin-top: 80px; }
+.cpr-video-gallery .lc-sec-head h2 { color: #fff; }
+.cpr-video-gallery .lc-sec-head p { color: #d2d2d5; }
+.cpr-video-gallery .cpr-video-kicker { color: #ff5559; font-size: 11px; font-weight: 800; letter-spacing: .16em; }
+.cpr-video-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr)); gap: 18px; }
+.cpr-video-card { min-width: 0; border: 1px solid #333337; border-radius: 14px; overflow: hidden; background: #161619; }
+.cpr-video-card video { display: block; width: 100%; aspect-ratio: 16 / 9; object-fit: contain; background: #050505; }
+.cpr-video-body { padding: 17px 18px 20px; }
+.cpr-video-body h3 { margin: 0; color: #fff; font-size: 18px; line-height: 1.35; }
+.cpr-video-body p { color: #c4c4c8; font-size: 13px; line-height: 1.6; margin: 8px 0 0; }
+@media (max-width: 600px) { .cpr-video-grid { grid-template-columns: 1fr; } .cpr-video-body { padding: 15px; } }
