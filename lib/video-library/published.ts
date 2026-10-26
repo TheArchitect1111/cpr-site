@@ -8,8 +8,10 @@ import { getAdminVideoPreview, isVideoPath, listUploadedVideos, videoToken } fro
 import type { VideoPlacement, VideoRecord } from '@/lib/video-library/schema';
 import { randomUUID } from 'node:crypto';
 
-const PUBLIC_ROOT = 'cpr/videos/published/';
-const INDEX_ROOT = 'cpr/videos/public-index/';
+// Prevent test publications from leaking into the production homepage.
+const PUBLIC_BASE = process.env.VERCEL_ENV === 'production' ? 'cpr-production' : 'cpr';
+const PUBLIC_ROOT = PUBLIC_BASE + '/videos/published/';
+const INDEX_ROOT = PUBLIC_BASE + '/videos/public-index/';
 const ID = '[a-f0-9-]{36}';
 const MEDIA_RE = new RegExp('^' + PUBLIC_ROOT + '(' + ID + ')/(' + ID + ')\\.(mp4|webm|mov)$');
 const HOME_PLACEMENTS: VideoPlacement[] = ['homepage-featured', 'homepage-gallery'];
@@ -122,9 +124,10 @@ export async function unpublishPublicVideo(pathname: string) {
   if (!record) throw new Error('Video draft was not found.');
   const existing = (await getPublishedVideos()).find(entry => entry.id === id);
   if (!existing) return { unpublished: true };
-  await del(indexPath(id), { token });
-  // The catalogue is removed first, so the homepage immediately stops linking it.
+  // Delete the public media first. If the delete fails, the catalogue remains
+  // available for a safe retry rather than orphaning a public video file.
   await del(existing.publicPath, { token });
+  await del(indexPath(id), { token });
   return { unpublished: true };
 }
 
