@@ -21,16 +21,19 @@ export default function VideoLibraryClient() {
   const [errors, setErrors] = useState<string[]>([]);
   const [reviewed, setReviewed] = useState(false);
   const fileInput = useRef<HTMLInputElement>(null);
+  const previewUrl = useRef<string | null>(null);
 
-  useEffect(() => {
-    if (!file) {
-      setLocalPreview(null);
-      return;
-    }
-    const url = URL.createObjectURL(file);
+  useEffect(() => () => {
+    if (previewUrl.current) URL.revokeObjectURL(previewUrl.current);
+  }, []);
+
+  const selectFile = (next: File | null) => {
+    if (previewUrl.current) URL.revokeObjectURL(previewUrl.current);
+    const url = next ? URL.createObjectURL(next) : null;
+    previewUrl.current = url;
+    setFile(next);
     setLocalPreview(url);
-    return () => URL.revokeObjectURL(url);
-  }, [file]);
+  };
 
   const change = <K extends keyof VideoDraft>(key: K, value: VideoDraft[K]) => {
     setDraft((previous) => ({ ...previous, [key]: value }));
@@ -40,7 +43,7 @@ export default function VideoLibraryClient() {
 
   const clearDraft = () => {
     setDraft({ ...EMPTY_VIDEO_DRAFT });
-    setFile(null);
+    selectFile(null);
     setErrors([]);
     setReviewed(false);
     if (fileInput.current) fileInput.current.value = '';
@@ -48,7 +51,7 @@ export default function VideoLibraryClient() {
 
   const changeSource = (next: VideoSourceType) => {
     change('sourceType', next);
-    setFile(null);
+    selectFile(null);
     if (fileInput.current) fileInput.current.value = '';
   };
 
@@ -116,7 +119,7 @@ export default function VideoLibraryClient() {
                 <span>Choose video for local preview <em>*</em></span>
                 <input ref={fileInput} type="file" accept={VIDEO_ACCEPT}
                   onChange={(event) => {
-                    setFile(event.target.files?.[0] ?? null);
+                    selectFile(event.target.files?.[0] ?? null);
                     setReviewed(false);
                     setErrors([]);
                   }} />
