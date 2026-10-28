@@ -285,7 +285,7 @@ export default async function AdminPage({
             <a className={`aitem${activeTab === 'site-updates' ? ' active' : ''}`} href="/admin?tab=site-updates">Website Announcements</a>
             <a className={`aitem${activeTab === 'site-quotes' ? ' active' : ''}`} href="/admin?tab=site-quotes">Testimonials &amp; Quotes</a>
             <a className={`aitem${activeTab === 'media-library' ? ' active' : ''}`} href="/admin?tab=media-library">Image Library</a>
-            <a className={`aitem${activeTab === 'videos' ? ' active' : ''}`} href="/admin?tab=videos">Video Library (Draft)</a>
+            <a className={`aitem${activeTab === 'videos' ? ' active' : ''}`} href="/admin?tab=videos">Video Library</a>
             <a className={`aitem${activeTab === 'site-text' ? ' active' : ''}`} href="/admin?tab=site-text">Edit Website Wording</a>
             <a className={`aitem${activeTab === 'content' ? ' active' : ''}`} href="/admin?tab=content">Content Performance</a>
           </nav>
