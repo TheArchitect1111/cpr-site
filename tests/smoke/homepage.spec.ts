@@ -35,13 +35,13 @@ test('application CTAs point to the CPR Google Form', async ({ page }) => {
   await page.goto('/');
   const applyLinks = page.locator(`a[href*="${GOOGLE_FORM_HOST}"]`);
   expect(await applyLinks.count()).toBeGreaterThan(0);
-  await expect(applyLinks.first()).toHaveAttribute('href', /^https:\\/\\/docs\\.google\\.com\\/forms\\//);
+  await expect(applyLinks.first()).toHaveAttribute('href', new RegExp('^https://docs[.]google[.]com/forms/'));
 });
 
 test('/apply and /intake redirect to the configured CPR application form', async ({ request }) => {
   const apply = await request.get('/apply', { maxRedirects: 0 });
   expect([307, 308]).toContain(apply.status());
-  expect(apply.headers().location).toMatch(/^https:\\/\\/docs\\.google\\.com\\/forms\\//);
+  expect(apply.headers().location).toMatch(new RegExp('^https://docs[.]google[.]com/forms/'));
 
   const intake = await request.get('/intake', { maxRedirects: 0 });
   expect([307, 308]).toContain(intake.status());
