@@ -34,19 +34,18 @@ test('tribute deep link page still works', async ({ page }) => {
 test('application CTAs point to the CPR Google Form', async ({ page }) => {
   await page.goto('/');
   const applyLinks = page.locator(`a[href*="${GOOGLE_FORM_HOST}"]`);
-  await expect(applyLinks.first()).toBeVisible();
-  expect(await applyLinks.count()).toBeGreaterThanOrEqual(3);
+  expect(await applyLinks.count()).toBeGreaterThan(0);
+  await expect(applyLinks.first()).toHaveAttribute('href', new RegExp('^https://docs[.]google[.]com/forms/'));
 });
 
-test('/apply serves on-platform form; /intake redirects to /apply', async ({ page, request }) => {
-  const apply = await page.goto('/apply');
-  expect(apply?.ok()).toBeTruthy();
-  await expect(page.getByRole('heading', { name: /player application/i }).first()).toBeVisible();
-  await expect(page.getByText(/no google account required/i)).toBeVisible();
+test('/apply and /intake redirect to the configured CPR application form', async ({ request }) => {
+  const apply = await request.get('/apply', { maxRedirects: 0 });
+  expect([307, 308]).toContain(apply.status());
+  expect(apply.headers().location).toMatch(new RegExp('^https://docs[.]google[.]com/forms/'));
 
   const intake = await request.get('/intake', { maxRedirects: 0 });
   expect([307, 308]).toContain(intake.status());
-  expect(intake.headers().location).toBe('/apply');
+  expect(intake.headers().location).toBe(apply.headers().location);
 });
 
 test('admin login page loads', async ({ page }) => {

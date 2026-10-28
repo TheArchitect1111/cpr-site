@@ -224,7 +224,7 @@ export default function VideoLibraryClient({
         <div>
           <p className="video-library-eyebrow">WEBSITE / MEDIA</p>
           <h1 className="display">VIDEO LIBRARY</h1>
-          <p>Prepare a video, choose its placement, and review it before publishing.</p>
+          <p>Upload a video, review it, then publish it to CPR's homepage.</p>
         </div>
         <a className="admin-logout" href="/api/admin/logout">Sign Out</a>
       </header>
@@ -266,8 +266,6 @@ export default function VideoLibraryClient({
               <select value={draft.sourceType}
                 onChange={(event) => changeSource(event.target.value as VideoSourceType)}>
                 <option value="file">Upload a video file</option>
-                <option value="youtube">YouTube link</option>
-                <option value="vimeo">Vimeo link</option>
               </select>
             </label>
             {draft.sourceType === 'file' ? (
@@ -294,10 +292,10 @@ export default function VideoLibraryClient({
               </label>
             )}
             <label>
-              <span>Where should it appear?</span>
+              <span>Homepage placement</span>
               <select value={draft.placement}
                 onChange={(event) => change('placement', event.target.value as VideoDraft['placement'])}>
-                {VIDEO_PLACEMENTS.map((placement) => (
+                {VIDEO_PLACEMENTS.filter((placement) => ['homepage-featured', 'homepage-gallery'].includes(placement.value)).map((placement) => (
                   <option key={placement.value} value={placement.value}>{placement.label}</option>
                 ))}
               </select>
@@ -338,7 +336,7 @@ export default function VideoLibraryClient({
           </div>
           {reviewed && (
             <p className="video-library-reviewed" role="status">
-              Draft details verified. File uploads can be stored privately; website publishing is not enabled.
+              Video details verified. Choose Upload privately, then use Publish on the saved video below.
             </p>
           )}
           {uploadMessage && <p className="video-library-reviewed" role="status">{uploadMessage}</p>}
@@ -379,11 +377,7 @@ export default function VideoLibraryClient({
             <div><dt>Placement</dt><dd>{VIDEO_PLACEMENTS.find((item) => item.value === draft.placement)?.label}</dd></div>
             <div><dt>Status</dt><dd>{uploadedPath ? 'Private uploaded draft' : 'Unsaved local draft'}</dd></div>
           </dl>
-          <div className="video-library-disabled">
-            <button type="button" disabled>Save draft</button>
-            <button type="button" disabled>Choose a saved video below</button>
-            <p>Use Publish or Unpublish on a saved video below.</p>
-          </div>
+          <p className="video-library-reviewed">After uploading, choose Publish on the saved video below.</p>
         </section>
       </div>
       <section className="video-library-panel" aria-labelledby="video-records-heading" style={{ marginTop: 18 }}>
