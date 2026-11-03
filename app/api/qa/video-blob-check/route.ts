@@ -1,5 +1,5 @@
 import { createCipheriv, createDecipheriv, randomBytes } from 'node:crypto';
-import { del } from '@vercel/blob';
+import { del, head, list } from '@vercel/blob';
 import { NextRequest, NextResponse } from 'next/server';
 import {
   getAdminVideoPreview, issueVideoUpload, newVideoPath,
@@ -34,6 +34,7 @@ export async function GET(req: NextRequest) {
   let metaPath = '';
   let publicPath = '';
   let indexPath = '';
+  let uploadReport: { status?: number; createdPath?: string; siblings?: string[]; headOk?: boolean; contentType?: string } = {};
 
   try {
     const key = randomBytes(32);
@@ -58,6 +59,25 @@ export async function GET(req: NextRequest) {
       body: encrypted,
     });
     if (!upload.ok) throw new Error('Signed encrypted upload HTTP ' + upload.status);
+    uploadReport.status = upload.status;
+    const body = await upload.text();
+    try {
+      const data = JSON.parse(body) as { pathname?: string };
+      uploadReport.createdPath = data.pathname;
+    } catch { /* empty response */ }
+    const siblings = await list({ prefix: 'cpr/videos/encrypted/' + id + '/', token, limit: 10 });
+    uploadReport.siblings = siblings.blobs.map(x => x.pathname);
+    for (const p of [path, uploadReport.createdPath].filter((p): p is string => Boolean(p))) {
+      try {
+        const details = await head(p, { token });
+        uploadReport.headOk = true;
+        uploadReport.contentType = details.contentType;
+        if (p !== path) throw new Error('Signed upload has changed pathname');
+        break;
+      } catch (e) {
+        if (e instanceof Error && e.message === 'Signed upload has changed pathname') throw e;
+      }
+    }
     steps.push(stage);
 
     stage = 'persist-metadata';
@@ -118,7 +138,7 @@ export async function GET(req: NextRequest) {
   } catch (error) {
     return NextResponse.json({
       ok: false, stage, completed: steps,
-      error: error instanceof Error ? error.message : 'Unknown failure',
+      error: error instanceof Error ? error.message : 'Unknown failure', uploadReport,
     }, { status: 500, headers: { 'Cache-Control': 'no-store' } });
   } finally {
     // Remove only paths created by this test. Never enumerate/delete client media.
