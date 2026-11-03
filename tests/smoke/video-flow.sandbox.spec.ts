@@ -135,12 +135,12 @@ test('sandbox: real WebM file goes through upload, encrypted draft, preview, pub
   });
   await page.getByRole('button', { name: 'Review draft', exact: true }).click();
   await expect(page.getByText('Video details verified.', { exact: false })).toBeVisible();
-  await page.getByRole('button', { name: 'Upload privately' }).click();
+  await page.getByRole('button', { name: 'Upload privately', exact: true }).click();
 
   await expect(page.getByText('Video saved securely.', { exact: false })).toBeVisible();
   expect(state.completed).toBe(true);
   expect(state.encryptedBytes?.equals(sampleVideo)).toBe(false);
-  await expect(page.getByRole('button', { name: 'Upload privately' })).toBeDisabled();
+  await expect(page.getByRole('button', { name: 'Upload privately', exact: true })).toBeDisabled();
   await expect(page.getByText('CPR sandbox sample').first()).toBeVisible();
 
   await page.getByRole('button', { name: 'Preview', exact: true }).click();
@@ -175,7 +175,7 @@ test('sandbox: real WebM file goes through upload, encrypted draft, preview, pub
   expect(playback.height).toBeGreaterThan(0);
   expect(playback.duration).toBeGreaterThan(0);
 
-  await page.getByRole('button', { name: 'Unpublish' }).click();
+  await page.getByRole('button', { name: 'Unpublish', exact: true }).click();
   await expect(page.getByText('Video unpublished.', { exact: false })).toBeVisible();
   await expect(page.getByRole('link', { name: 'View published video' })).toHaveCount(0);
   await expect(page.getByRole('button', { name: 'Publish', exact: true })).toBeVisible();
