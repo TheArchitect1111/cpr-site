@@ -10,7 +10,7 @@ test('sandbox: real WebM file goes through upload, encrypted draft, preview, pub
 
   const id = '11111111-1111-4111-8111-111111111111';
   const encryptedPath = 'cpr-production/videos/encrypted/' + id + '/sample-webm.enc';
-  const publicPath = 'cpr-production/videos/state.published/' + id + '/22222222-2222-4222-8222-222222222222.webm';
+  const publicPath = 'cpr-production/videos/published/' + id + '/22222222-2222-4222-8222-222222222222.webm';
 
   const state: {
     encryptedBytes: Buffer | null;
@@ -60,7 +60,7 @@ test('sandbox: real WebM file goes through upload, encrypted draft, preview, pub
       createdAt: now, updatedAt: now, publishedAt: null,
     };
     state.completed = true;
-    await route.fulfill(json({ state.record }, 201));
+    await route.fulfill(json({ record: state.record }, 201));
   });
 
   await page.route('**/api/admin/videos/preview?**', async route => {
@@ -78,7 +78,7 @@ test('sandbox: real WebM file goes through upload, encrypted draft, preview, pub
     expect(request.pathname).toBe(encryptedPath);
     if (request.action === 'prepare') {
       await route.fulfill(json({
-        uploadUrl: '/__sandbox/blob/state.published',
+        uploadUrl: '/__sandbox/blob/published',
         publicPath, mimeType: 'video/webm', sizeBytes: sampleVideo.length,
       }));
     } else if (request.action === 'commit') {
@@ -86,7 +86,7 @@ test('sandbox: real WebM file goes through upload, encrypted draft, preview, pub
       expect(state.publishedBytes?.equals(sampleVideo)).toBe(true);
       state.published = true;
       state.publishedCount++;
-      await route.fulfill(json({ video: { id, publicPath, playbackUrl: '/__sandbox/blob/state.published' } }));
+      await route.fulfill(json({ video: { id, publicPath, playbackUrl: '/__sandbox/blob/published' } }));
     } else if (request.action === 'unpublish') {
       state.published = false;
       await route.fulfill(json({ unpublished: true }));
@@ -97,8 +97,8 @@ test('sandbox: real WebM file goes through upload, encrypted draft, preview, pub
 
   await page.route('**/api/admin/videos', async route => {
     const items = state.record
-      ? [{ ...state.record, status: state.published ? 'state.published' as const : 'draft' as const,
-          playbackUrl: state.published ? '/__sandbox/blob/state.published' : null,
+      ? [{ ...state.record, status: state.published ? 'published' as const : 'draft' as const,
+          playbackUrl: state.published ? '/__sandbox/blob/published' : null,
           publishedAt: state.published ? new Date().toISOString() : null }]
       : [];
     await route.fulfill(json({ items, configured: true }));
@@ -106,7 +106,7 @@ test('sandbox: real WebM file goes through upload, encrypted draft, preview, pub
 
   await page.route('**/__sandbox/blob/**', async route => {
     const url = new URL(route.request().url());
-    const isPublic = url.pathname.endsWith('/state.published');
+    const isPublic = url.pathname.endsWith('/published');
     if (route.request().method() === 'PUT') {
       const body = route.request().postDataBuffer();
       if (isPublic) state.publishedBytes = body;
@@ -151,18 +151,18 @@ test('sandbox: real WebM file goes through upload, encrypted draft, preview, pub
   });
 
   await page.getByRole('button', { name: 'Publish', exact: true }).click();
-  await expect(page.getByText('Video state.published to the CPR homepage.', { exact: false })).toBeVisible();
+  await expect(page.getByText('Video published to the CPR homepage.', { exact: false })).toBeVisible();
   expect(state.publishedCount).toBe(1);
   expect(state.publishedBytes?.equals(sampleVideo)).toBe(true);
-  const liveLink = page.getByRole('link', { name: 'View state.published video' });
-  await expect(liveLink).toHaveAttribute('href', '/__sandbox/blob/state.published');
+  const liveLink = page.getByRole('link', { name: 'View published video' });
+  await expect(liveLink).toHaveAttribute('href', '/__sandbox/blob/published');
 
-  // Check the state.published bytes actually decode in a browser video element.
+  // Check the published bytes actually decode in a browser video element.
   const playback = await page.evaluate(async () => {
     const media = document.createElement('video');
     media.muted = true;
     media.preload = 'auto';
-    media.src = '/__sandbox/blob/state.published';
+    media.src = '/__sandbox/blob/published';
     document.body.appendChild(media);
     await new Promise<void>((resolve, reject) => {
       media.addEventListener('loadedmetadata', () => resolve(), { once: true });
@@ -177,7 +177,7 @@ test('sandbox: real WebM file goes through upload, encrypted draft, preview, pub
 
   await page.getByRole('button', { name: 'Unpublish' }).click();
   await expect(page.getByText('Video unpublished.', { exact: false })).toBeVisible();
-  await expect(page.getByRole('link', { name: 'View state.published video' })).toHaveCount(0);
+  await expect(page.getByRole('link', { name: 'View published video' })).toHaveCount(0);
   await expect(page.getByRole('button', { name: 'Publish', exact: true })).toBeVisible();
   expect(state.published).toBe(false);
 });
