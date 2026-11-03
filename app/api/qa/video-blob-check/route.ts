@@ -72,12 +72,11 @@ export async function GET(req: NextRequest) {
         const details = await head(p, { token });
         uploadReport.headOk = true;
         uploadReport.contentType = details.contentType;
-        if (p !== path) throw new Error('Signed upload has changed pathname');
         break;
-      } catch (e) {
-        if (e instanceof Error && e.message === 'Signed upload has changed pathname') throw e;
-      }
+      } catch { /* candidate not present */ }
     }
+    if (!uploadReport.createdPath) throw new Error('Missing encrypted upload receipt pathname');
+    path = uploadReport.createdPath;
     steps.push(stage);
 
     stage = 'persist-metadata';
@@ -113,6 +112,9 @@ export async function GET(req: NextRequest) {
       body: SAMPLE,
     });
     if (!publishedUpload.ok) throw new Error('Signed published upload HTTP ' + publishedUpload.status);
+    const receipt = await publishedUpload.json() as { pathname?: string };
+    if (!receipt.pathname) throw new Error('Missing public upload receipt pathname');
+    publicPath = receipt.pathname;
     steps.push(stage);
 
     stage = 'commit-and-list-publication';
