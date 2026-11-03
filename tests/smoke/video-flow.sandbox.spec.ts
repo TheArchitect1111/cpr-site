@@ -127,7 +127,7 @@ test('sandbox: real WebM file goes through upload, encrypted draft, preview, pub
     });
   });
 
-  await page.goto('/__sandbox/video');
+  await page.goto('/cpr-video-sandbox');
   await expect(page.getByRole('heading', { name: 'VIDEO LIBRARY' })).toBeVisible();
   await page.getByPlaceholder('e.g. What CPR can do for your future').fill('CPR sandbox sample');
   await page.locator('input[type="file"]').setInputFiles({
