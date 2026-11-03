@@ -32,5 +32,7 @@ jobs:
       - name: Install Playwright browsers
         run: npx playwright install --with-deps chromium
 
-      - name: Smoke tests
+      - name: Smoke tests (including isolated CPR video upload sandbox)
         run: npm run test:smoke
+        env:
+          CPR_SANDBOX_VIDEO_E2E: '1'
