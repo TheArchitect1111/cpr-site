@@ -34,7 +34,7 @@ export async function GET(req: NextRequest) {
   let metaPath = '';
   let publicPath = '';
   let indexPath = '';
-  let uploadReport: { status?: number; createdPath?: string; siblings?: string[]; headOk?: boolean; contentType?: string } = {};
+  const uploadReport: { status?: number; createdPath?: string; siblings?: string[]; headOk?: boolean; contentType?: string } = {};
 
   try {
     const key = randomBytes(32);
