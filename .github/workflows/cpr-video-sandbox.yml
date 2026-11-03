@@ -1,0 +1,34 @@
+name: CPR Video Sandbox E2E
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'tests/smoke/video-flow.sandbox.spec.ts'
+      - 'app/cpr-video-sandbox/page.tsx'
+      - 'playwright.cpr-sandbox.config.ts'
+      - '.github/workflows/cpr-video-sandbox.yml'
+  workflow_dispatch:
+
+jobs:
+  video-sandbox:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: read
+    env:
+      CPR_SANDBOX_VIDEO_E2E: '1'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - name: Install app
+        run: npm ci
+      - name: Install browser
+        run: npx playwright install --with-deps chromium
+      - name: Run isolated video upload and publish browser test
+        run: npx playwright test --config=playwright.cpr-sandbox.config.ts
