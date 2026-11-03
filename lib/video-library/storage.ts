@@ -32,7 +32,7 @@ export function videoStorageConfigured(): boolean {
 
 export function isVideoPath(pathname: string): boolean {
   return pathname.startsWith(VIDEO_ROOT) &&
-    /^[a-f0-9-]{36}\/[a-z0-9_-]{1,80}\.enc$/.test(pathname.slice(VIDEO_ROOT.length));
+    /^[a-f0-9-]{36}\/[a-zA-Z0-9_-]{1,120}\.enc$/.test(pathname.slice(VIDEO_ROOT.length));
 }
 
 export function validateVideoFileMeta(name: string, mime: string, bytes: number): string | null {
