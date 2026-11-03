@@ -9,8 +9,10 @@ test('sandbox: real WebM file goes through upload, encrypted draft, preview, pub
   test.skip(process.env.CPR_SANDBOX_VIDEO_E2E !== '1', 'Only run in isolated local sandbox');
 
   const id = '11111111-1111-4111-8111-111111111111';
-  const encryptedPath = 'cpr-production/videos/encrypted/' + id + '/sample-webm.enc';
-  const publicPath = 'cpr-production/videos/published/' + id + '/22222222-2222-4222-8222-222222222222.webm';
+  const requestedEncryptedPath = 'cpr-production/videos/encrypted/' + id + '/sample-webm.enc';
+  const encryptedPath = 'cpr-production/videos/encrypted/' + id + '/sample-webm-ChBlKwZaA0m2YAOGOc3JecyekkjQc1.enc';
+  const requestedPublicPath = 'cpr-production/videos/published/' + id + '/22222222-2222-4222-8222-222222222222.webm';
+  const publicPath = 'cpr-production/videos/published/' + id + '/22222222-2222-4222-8222-222222222222-Qwerty1234567890Asdfgh456789.webm';
 
   const state: {
     encryptedBytes: Buffer | null;
@@ -34,7 +36,7 @@ test('sandbox: real WebM file goes through upload, encrypted draft, preview, pub
   await page.route('**/api/admin/videos/upload', async route => {
     const data = route.request().postDataJSON() as { name: string; mime: string; size: number };
     expect(data).toEqual({ name: 'sample.webm', mime: 'video/webm', size: sampleVideo.length });
-    await route.fulfill(json({ pathname: encryptedPath, uploadUrl: '/__sandbox/blob/encrypted' }));
+    await route.fulfill(json({ pathname: requestedEncryptedPath, uploadUrl: '/__sandbox/blob/encrypted' }));
   });
 
   await page.route('**/api/admin/videos/complete', async route => {
@@ -79,7 +81,7 @@ test('sandbox: real WebM file goes through upload, encrypted draft, preview, pub
     if (request.action === 'prepare') {
       await route.fulfill(json({
         uploadUrl: '/__sandbox/blob/published',
-        publicPath, mimeType: 'video/webm', sizeBytes: sampleVideo.length,
+        publicPath: requestedPublicPath, mimeType: 'video/webm', sizeBytes: sampleVideo.length,
       }));
     } else if (request.action === 'commit') {
       expect(request.publicPath).toBe(publicPath);
@@ -111,7 +113,7 @@ test('sandbox: real WebM file goes through upload, encrypted draft, preview, pub
       const body = route.request().postDataBuffer();
       if (isPublic) state.publishedBytes = body;
       else state.encryptedBytes = body;
-      await route.fulfill({ status: 200, body: '', headers: { 'access-control-allow-origin': '*' } });
+      await route.fulfill(json({ pathname: isPublic ? publicPath : encryptedPath }));
       return;
     }
     const bytes = isPublic ? state.publishedBytes : state.encryptedBytes;
