@@ -319,6 +319,7 @@ body {
 .cpr-video-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr)); gap: 18px; }
 .cpr-video-card { min-width: 0; border: 1px solid #333337; border-radius: 14px; overflow: hidden; background: #161619; }
 .cpr-video-card video { display: block; width: 100%; aspect-ratio: 16 / 9; object-fit: contain; background: #050505; }
+.cpr-video-card iframe { display: block; width: 100%; aspect-ratio: 16 / 9; border: 0; background: #050505; }
 .cpr-video-body { padding: 17px 18px 20px; }
 .cpr-video-body h3 { margin: 0; color: #fff; font-size: 18px; line-height: 1.35; }
 .cpr-video-body p { color: #c4c4c8; font-size: 13px; line-height: 1.6; margin: 8px 0 0; }
