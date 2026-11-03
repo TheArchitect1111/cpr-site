@@ -19,9 +19,11 @@ const VIDEO_ACCEPT = '.mp4,.webm,.mov,video/mp4,video/webm,video/quicktime';
 export default function VideoLibraryClient({
   storageConfigured,
   initialVideos,
+  libraryError,
 }: {
   storageConfigured: boolean;
   initialVideos: VideoRecord[];
+  libraryError?: string | null;
 }) {
   const [draft, setDraft] = useState<VideoDraft>({ ...EMPTY_VIDEO_DRAFT });
   const [file, setFile] = useState<File | null>(null);
@@ -205,8 +207,9 @@ export default function VideoLibraryClient({
       if (!complete.ok || !saved.record) throw new Error(saved.error || 'Video upload could not be verified.');
       setItems((previous) => [saved.record!, ...previous.filter(item => item.id !== saved.record!.id)]);
       setUploadedPath(permission.pathname);
-      setUploadMessage('Video encrypted and saved as an unpublished draft.');
-      void openSavedPreview(permission.pathname);
+      // Preview is an optional, separate operation. A failed preview must not
+      // overwrite the successful upload confirmation or hide the Publish action.
+      setUploadMessage('Video saved securely. Find it under Private video drafts below, then choose Publish.');
     } catch (error) {
       setUploadMessage(error instanceof Error ? error.message : 'Private upload failed.');
     } finally {
@@ -234,8 +237,9 @@ export default function VideoLibraryClient({
         in CPR's admin library. Publishing creates a separate public homepage video.
         Unpublish removes that public copy.
         {!storageConfigured && (
-          <span> CPR's existing Blob connection or admin encryption secret is unavailable.</span>
+          <span> CPR's existing Blob connection or admin encryption secret is unavailable. Upload is disabled until the connection is restored.</span>
         )}
+        {libraryError && <p role="alert">{libraryError}</p>}
       </div>
 
       <div className="video-library-layout">
@@ -325,7 +329,7 @@ export default function VideoLibraryClient({
             </button>
             {draft.sourceType === 'file' && (
               <button type="button" className="video-library-primary"
-                disabled={!storageConfigured || uploading || !file}
+                disabled={!storageConfigured || uploading || !file || uploadedPath !== null}
                 onClick={() => void uploadPrivateVideo()}>
                 {uploading ? 'Uploading…' : 'Upload privately'}
               </button>

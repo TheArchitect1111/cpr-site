@@ -168,10 +168,24 @@ export default async function AdminPage({
     mainContent = <AdminBusinessPresence />;
   } else if (tab === 'videos') {
     const storageConfigured = videoStorageConfigured();
-    const initialVideos = storageConfigured
-      ? await listAdminVideos().catch(() => [])
-      : [];
-    mainContent = <VideoLibraryClient storageConfigured={storageConfigured} initialVideos={initialVideos} />;
+    const videoResult = storageConfigured
+      ? await listAdminVideos()
+          .then((items) => ({ items, error: null as string | null }))
+          .catch((error: unknown) => {
+            console.error('CPR video library read failed:', error instanceof Error ? error.name : 'unknown');
+            return {
+              items: [],
+              error: 'Saved video records could not be loaded. Your existing videos have not been removed. Please retry later.',
+            };
+          })
+      : { items: [], error: null };
+    mainContent = (
+      <VideoLibraryClient
+        storageConfigured={storageConfigured}
+        initialVideos={videoResult.items}
+        libraryError={videoResult.error}
+      />
+    );
   } else if (tab && isCollectionId(tab)) {
     const def = getCollectionDef(tab)!;
     const [athletes, items] = await Promise.all([athletesPromise, listCollection(tab)]);
