@@ -100,6 +100,7 @@ export async function GET(req: NextRequest) {
     if (published.id !== record.id) throw new Error('Published record mismatch');
     const current = await getPublishedVideos();
     if (!current.some(video => video.id === record.id)) throw new Error('Video not visible in public index');
+    if (!published.playbackUrl) throw new Error('Published playback URL missing');
     const playback = await fetch(published.playbackUrl, { cache: 'no-store' });
     if (!playback.ok || !Buffer.from(await playback.arrayBuffer()).equals(SAMPLE)) {
       throw new Error('Published video bytes mismatch');
