@@ -95,14 +95,25 @@ export function LandingPage({ config: c, publishedVideos = [] }: Props) {
             <div className="cpr-video-grid">
               {publishedVideos.slice(0, 9).map(video => (
                 <article className="cpr-video-card" key={video.id}>
-                  <video
-                    src={video.playbackUrl || undefined}
-                    poster={video.thumbnailUrl || undefined}
-                    preload="none"
-                    controls
-                    playsInline
-                    aria-label={video.caption || video.title}
-                  />
+                  {video.sourceType === 'youtube' ? (
+                    <iframe
+                      src={video.playbackUrl || undefined}
+                      title={video.caption || video.title}
+                      loading="lazy"
+                      allow="accelerometer; encrypted-media; gyroscope; picture-in-picture; web-share"
+                      referrerPolicy="strict-origin-when-cross-origin"
+                      allowFullScreen
+                    />
+                  ) : (
+                    <video
+                      src={video.playbackUrl || undefined}
+                      poster={video.thumbnailUrl || undefined}
+                      preload="none"
+                      controls
+                      playsInline
+                      aria-label={video.caption || video.title}
+                    />
+                  )}
                   <div className="cpr-video-body">
                     <h3>{video.title}</h3>
                     {video.description ? <p>{video.description}</p> : null}
