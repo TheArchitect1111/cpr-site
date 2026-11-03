@@ -8,7 +8,7 @@
 import { createCipheriv, createDecipheriv, createHash, randomBytes, randomUUID } from 'node:crypto';
 import { head, issueSignedToken, list, presignUrl, put } from '@vercel/blob';
 import { getAdminSessionSecret } from '@/lib/admin-session-secret';
-import { PREVIEW_VIDEO_TYPES, type VideoDraft, type VideoRecord } from './schema';
+import { PREVIEW_VIDEO_TYPES, getValidatedVideoLink, validateVideoDraft, type VideoDraft, type VideoRecord } from './schema';
 
 export const MAX_VIDEO_BYTES = 100 * 1024 * 1024;
 // Preview drafts remain in their existing namespace; production is isolated.
@@ -139,6 +139,36 @@ export async function persistUploadedVideo(
   return record;
 }
 
+/** Save only a metadata draft for YouTube links. No client video bytes are downloaded. */
+export async function persistYouTubeDraft(draft: VideoDraft): Promise<VideoRecord> {
+  const token = videoToken();
+  if (!token || !videoStorageConfigured()) throw new Error('CPR video storage unavailable.');
+  if (draft.sourceType !== 'youtube' ||
+      !['homepage-featured', 'homepage-gallery'].includes(draft.placement)) {
+    throw new Error('Unsupported external video source or placement.');
+  }
+  const errors = validateVideoDraft(draft, null);
+  if (errors.length) throw new Error(errors[0]);
+  const url = getValidatedVideoLink(draft.externalUrl, 'youtube');
+  if (!url) throw new Error('Invalid YouTube link.');
+
+  const id = randomUUID();
+  const now = new Date().toISOString();
+  const record: VideoRecord = {
+    id, title: draft.title.trim(), description: draft.description.trim(),
+    sourceType: 'youtube', externalUrl: url, placement: draft.placement,
+    status: 'draft', playbackUrl: null, storageKey: null,
+    thumbnailUrl: draft.thumbnailUrl.trim() || null, caption: draft.caption.trim(),
+    mimeType: null, sizeBytes: null, createdAt: now, updatedAt: now, publishedAt: null,
+  };
+  await put(META_ROOT + id + '.json',
+    encryptRecord({ record, key: '', iv: '', publicUrl: '' }), {
+      access: 'public', token, contentType: 'application/octet-stream',
+      addRandomSuffix: false, allowOverwrite: false,
+    });
+  return record;
+}
+
 async function readSecureRecord(pathname: string): Promise<SecureRecord> {
   const token = videoToken();
   if (!token || !isVideoPath(pathname)) throw new Error('Invalid video reference.');
@@ -172,7 +202,12 @@ export async function listUploadedVideos(): Promise<VideoRecord[]> {
         const res = await fetch(blob.url, { cache: 'no-store' });
         if (!res.ok) return null;
         const { record } = decryptRecord(await res.text());
-        return record.storageKey && isVideoPath(record.storageKey) ? record : null;
+        if (record.sourceType === 'youtube') {
+          return record.externalUrl && getValidatedVideoLink(record.externalUrl, 'youtube') &&
+            !record.storageKey && ['homepage-featured', 'homepage-gallery'].includes(record.placement)
+            ? record : null;
+        }
+        return record.sourceType === 'file' && record.storageKey && isVideoPath(record.storageKey) ? record : null;
       } catch { return null; }
     }));
     records.push(...rows.filter((record): record is VideoRecord => record !== null));
