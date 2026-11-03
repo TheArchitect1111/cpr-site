@@ -13,7 +13,7 @@ const PUBLIC_BASE = process.env.VERCEL_ENV === 'production' ? 'cpr-production' :
 const PUBLIC_ROOT = PUBLIC_BASE + '/videos/published/';
 const INDEX_ROOT = PUBLIC_BASE + '/videos/public-index/';
 const ID = '[a-f0-9-]{36}';
-const MEDIA_RE = new RegExp('^' + PUBLIC_ROOT + '(' + ID + ')/(' + ID + ')\\.(mp4|webm|mov)$');
+const MEDIA_RE = new RegExp('^' + PUBLIC_ROOT + '(' + ID + ')/(' + ID + ')(?:-[A-Za-z0-9]{10,64})?\\.(mp4|webm|mov)$');
 const HOME_PLACEMENTS: VideoPlacement[] = ['homepage-featured', 'homepage-gallery'];
 export type PublicVideo = Pick<VideoRecord,
   'id' | 'title' | 'description' | 'placement' | 'thumbnailUrl' | 'caption' | 'publishedAt' | 'playbackUrl'
@@ -59,7 +59,7 @@ export async function preparePublicVideo(pathname: string) {
     token, pathname: publicPath, operations: ['put'], validUntil,
   });
   const { presignedUrl } = await presignUrl(signedToken, {
-    pathname: publicPath, operation: 'put', access: 'public', validUntil,
+    pathname: publicPath, operation: 'put', access: 'public', validUntil, addRandomSuffix: false,
   });
   return { publicPath, uploadUrl: presignedUrl, mimeType: record.mimeType, sizeBytes: record.sizeBytes };
 }
