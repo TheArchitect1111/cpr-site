@@ -133,7 +133,7 @@ test('sandbox: real WebM file goes through upload, encrypted draft, preview, pub
   await page.locator('input[type="file"]').setInputFiles({
     name: 'sample.webm', mimeType: 'video/webm', buffer: sampleVideo,
   });
-  await page.getByRole('button', { name: 'Review draft' }).click();
+  await page.getByRole('button', { name: 'Review draft', exact: true }).click();
   await expect(page.getByText('Video details verified.', { exact: false })).toBeVisible();
   await page.getByRole('button', { name: 'Upload privately' }).click();
 
