@@ -61,7 +61,7 @@ export async function issueVideoUpload(pathname: string): Promise<string> {
   const validUntil = Date.now() + 15 * 60_000;
   const signedToken = await issueSignedToken({ token, pathname, operations: ['put'], validUntil });
   const result = await presignUrl(signedToken, {
-    pathname, operation: 'put', access: 'public', validUntil,
+    pathname, operation: 'put', access: 'public', validUntil, addRandomSuffix: false,
   });
   return result.presignedUrl;
 }
