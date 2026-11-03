@@ -130,7 +130,7 @@ export default function VideoLibraryClient({
       if (!upload.ok) throw new Error('Could not upload the published video.');
       const publishedReceipt = await upload.json() as { pathname?: string };
       if (!publishedReceipt.pathname ||
-          !publishedReceipt.pathname.startsWith(authorization.publicPath.replace(/\\.[^.]+$/, ''))) {
+          !publishedReceipt.pathname.startsWith(authorization.publicPath.replace(/\.[^.]+$/, ''))) {
         throw new Error('Published video receipt did not match the authorized upload.');
       }
       await publishAction('commit', record.storageKey, publishedReceipt.pathname);
