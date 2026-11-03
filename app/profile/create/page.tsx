@@ -8,7 +8,7 @@ export const dynamic = 'force-dynamic';
 
 export const metadata = {
   title: 'Create Your Player Profile | CPR Global Prospects',
-  description: 'Create a coach-visible CPR player profile for $75.',
+  description: 'Create a coach-visible CPR player profile for $100.',
 };
 
 export default async function CreateProfilePage({
@@ -27,7 +27,7 @@ export default async function CreateProfilePage({
         <Link className="profile-purchase-back" href="/">Back to CPR</Link>
         <p className="profile-purchase-eyebrow">PLAYER PROFILE</p>
         <h1>Create a coach-visible profile</h1>
-        <p className="profile-purchase-price">$75 one-time profile fee</p>
+        <p className="profile-purchase-price">$100 one-time profile fee</p>
         <p className="profile-purchase-lead">
           Build a CPR player profile that coaches can view from the homepage. Add photos, uploaded media,
           player information, and text, then submit updates as your season progresses.
@@ -49,7 +49,7 @@ export default async function CreateProfilePage({
             player records are not sent to coaches until the player begins CPR recruitment, signs the required
             fee agreement, and makes the first payment required by that agreement.
           </p>
-          <p>The $75 profile fee does not include CPR recruitment services.</p>
+          <p>The $100 profile fee does not include CPR recruitment services.</p>
         </div>
 
         {cancelled ? <p className="profile-purchase-error">Checkout was cancelled. No payment was made.</p> : null}

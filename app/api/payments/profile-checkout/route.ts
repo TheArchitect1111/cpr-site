@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { paypalCheckoutUrl } from '@/lib/paypal';
 
-const PROFILE_PRICE_CENTS = 7500;
+const PROFILE_PRICE_CENTS = 10000;
 
 export async function POST(req: NextRequest) {
   const origin = req.nextUrl.origin;

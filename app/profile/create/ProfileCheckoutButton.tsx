@@ -24,7 +24,7 @@ export default function ProfileCheckoutButton() {
     <>
       {error ? <p className="profile-purchase-error">{error}</p> : null}
       <button className="profile-purchase-button" type="button" onClick={checkout} disabled={busy}>
-        {busy ? 'OPENING SECURE CHECKOUT...' : 'CREATE YOUR PLAYER PROFILE | $75'}
+        {busy ? 'OPENING SECURE CHECKOUT...' : 'CREATE YOUR PLAYER PROFILE | $100'}
       </button>
     </>
   );
