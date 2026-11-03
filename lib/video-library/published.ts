@@ -59,7 +59,7 @@ export async function preparePublicVideo(pathname: string) {
     token, pathname: publicPath, operations: ['put'], validUntil,
   });
   const { presignedUrl } = await presignUrl(signedToken, {
-    pathname: publicPath, operation: 'put', access: 'public', validUntil,
+    pathname: publicPath, operation: 'put', access: 'public', validUntil, addRandomSuffix: false,
   });
   return { publicPath, uploadUrl: presignedUrl, mimeType: record.mimeType, sizeBytes: record.sizeBytes };
 }
