@@ -5,7 +5,7 @@
  */
 import { del, head, issueSignedToken, list, presignUrl, put } from '@vercel/blob';
 import { getAdminVideoPreview, isVideoPath, listUploadedVideos, videoToken } from '@/lib/video-library/storage';
-import type { VideoPlacement, VideoRecord } from '@/lib/video-library/schema';
+import { getYouTubeEmbedUrl, type VideoPlacement, type VideoRecord } from '@/lib/video-library/schema';
 import { randomUUID } from 'node:crypto';
 
 // Prevent test publications from leaking into the production homepage.
@@ -17,7 +17,7 @@ const MEDIA_RE = new RegExp('^' + PUBLIC_ROOT + '(' + ID + ')/(' + ID + ')(?:-[A
 const HOME_PLACEMENTS: VideoPlacement[] = ['homepage-featured', 'homepage-gallery'];
 export type PublicVideo = Pick<VideoRecord,
   'id' | 'title' | 'description' | 'placement' | 'thumbnailUrl' | 'caption' | 'publishedAt' | 'playbackUrl'
-> & { mimeType: string; publicPath: string };
+> & { sourceType: 'file' | 'youtube'; mimeType: string | null; publicPath: string | null };
 
 export function supportsHomepagePublication(placement: VideoPlacement) {
   return HOME_PLACEMENTS.includes(placement);
@@ -76,10 +76,19 @@ export async function getPublishedVideos(): Promise<PublicVideo[]> {
         const response = await fetch(blob.url, { cache: 'no-store' });
         if (!response.ok) return null;
         const entry = await response.json() as PublicVideo;
-        if (!entry || typeof entry.id !== 'string' || !publishedMediaMatches(entry.publicPath, entry.id) ||
+        if (!entry || typeof entry.id !== 'string' ||
           blob.pathname !== indexPath(entry.id) || !supportsHomepagePublication(entry.placement) ||
-          !entry.playbackUrl?.startsWith('https://') || !entry.publishedAt) return null;
-        return entry;
+          !entry.publishedAt) return null;
+        if (entry.sourceType === 'youtube') {
+          if (entry.publicPath !== null ||
+              !/^https:\/\/www\.youtube-nocookie\.com\/embed\/[A-Za-z0-9_-]{11}$/.test(entry.playbackUrl || '')) return null;
+          return entry;
+        }
+        // Existing file publications predate the sourceType field.
+        if (entry.sourceType && entry.sourceType !== 'file') return null;
+        if (!entry.publicPath || !publishedMediaMatches(entry.publicPath, entry.id) ||
+            !entry.playbackUrl?.startsWith('https://')) return null;
+        return { ...entry, sourceType: 'file' as const };
       } catch { return null; }
     }));
     items.push(...rows.filter((entry): entry is PublicVideo => entry !== null));
@@ -101,14 +110,14 @@ export async function publishPublicVideo(pathname: string, publicPath: string): 
   const entry: PublicVideo = {
     id: record.id, title: record.title, description: record.description,
     placement: record.placement, thumbnailUrl: record.thumbnailUrl,
-    caption: record.caption, playbackUrl: clear.url, publicPath,
+    caption: record.caption, playbackUrl: clear.url, publicPath, sourceType: 'file',
     publishedAt: new Date().toISOString(), mimeType: record.mimeType,
   };
   await put(indexPath(record.id), JSON.stringify(entry), {
     access: 'public', token, contentType: 'application/json',
     allowOverwrite: true, addRandomSuffix: false, cacheControlMaxAge: 60,
   });
-  if (previous && previous.publicPath !== publicPath) {
+  if (previous?.publicPath && previous.publicPath !== publicPath) {
     // Old public copy is no longer referenced. Retry cleanup separately if deletion fails.
     try { await del(previous.publicPath, { token }); } catch { /* no impact on new publication */ }
   }
@@ -126,8 +135,46 @@ export async function unpublishPublicVideo(pathname: string) {
   if (!existing) return { unpublished: true };
   // Delete the public media first. If the delete fails, the catalogue remains
   // available for a safe retry rather than orphaning a public video file.
+  if (!existing.publicPath || existing.sourceType !== 'file') throw new Error('Invalid file video record.');
   await del(existing.publicPath, { token });
   await del(indexPath(id), { token });
+  return { unpublished: true };
+}
+
+/** Publishing an external video only adds its validated embed URL to the public index. */
+export async function publishYouTubeVideo(id: string): Promise<PublicVideo> {
+  const token = videoToken();
+  if (!token) throw new Error('Video storage is unavailable.');
+  const record = (await listUploadedVideos()).find(row => row.id === id && row.sourceType === 'youtube');
+  if (!record || !record.externalUrl || !supportsHomepagePublication(record.placement)) {
+    throw new Error('Saved YouTube draft was not found.');
+  }
+  const embed = getYouTubeEmbedUrl(record.externalUrl);
+  if (!embed) throw new Error('Invalid YouTube link in draft.');
+  const entry: PublicVideo = {
+    id: record.id, title: record.title, description: record.description,
+    sourceType: 'youtube', placement: record.placement,
+    thumbnailUrl: record.thumbnailUrl, caption: record.caption,
+    playbackUrl: embed, publishedAt: new Date().toISOString(),
+    mimeType: null, publicPath: null,
+  };
+  await put(indexPath(record.id), JSON.stringify(entry), {
+    access: 'public', token, contentType: 'application/json',
+    allowOverwrite: true, addRandomSuffix: false, cacheControlMaxAge: 60,
+  });
+  return entry;
+}
+
+export async function unpublishYouTubeVideo(id: string): Promise<{ unpublished: true }> {
+  const token = videoToken();
+  if (!token) throw new Error('Video storage is unavailable.');
+  const record = (await listUploadedVideos()).find(row => row.id === id && row.sourceType === 'youtube');
+  if (!record) throw new Error('Saved YouTube draft was not found.');
+  const live = (await getPublishedVideos()).find(row => row.id === id);
+  if (live) {
+    if (live.sourceType !== 'youtube') throw new Error('Mismatched video type.');
+    await del(indexPath(id), { token });
+  }
   return { unpublished: true };
 }
 
