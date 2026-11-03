@@ -128,7 +128,12 @@ export default function VideoLibraryClient({
         method: 'PUT', headers: { 'Content-Type': record.mimeType }, body: clearFile,
       });
       if (!upload.ok) throw new Error('Could not upload the published video.');
-      await publishAction('commit', record.storageKey, authorization.publicPath);
+      const publishedReceipt = await upload.json() as { pathname?: string };
+      if (!publishedReceipt.pathname ||
+          !publishedReceipt.pathname.startsWith(authorization.publicPath.replace(/\\.[^.]+$/, ''))) {
+        throw new Error('Published video receipt did not match the authorized upload.');
+      }
+      await publishAction('commit', record.storageKey, publishedReceipt.pathname);
       await refreshLibrary();
       setUploadMessage('Video published to the CPR homepage. Unpublish is available below.');
     } catch (error) {
@@ -197,16 +202,21 @@ export default function VideoLibraryClient({
         method: 'PUT', body: encrypted.data, headers: { 'Content-Type': 'application/octet-stream' },
       });
       if (!result.ok) throw new Error('The video file could not be uploaded.');
+      const uploadedReceipt = await result.json() as { pathname?: string };
+      const folder = permission.pathname.slice(0, permission.pathname.lastIndexOf('/') + 1);
+      if (!uploadedReceipt.pathname || !uploadedReceipt.pathname.startsWith(folder)) {
+        throw new Error('Private upload receipt did not match the authorized video folder.');
+      }
       const complete = await fetch('/api/admin/videos/complete', {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ pathname: permission.pathname, draft, crypto: {
+        body: JSON.stringify({ pathname: uploadedReceipt.pathname, draft, crypto: {
           key: encrypted.key, iv: encrypted.iv, size: encrypted.size, mime: encrypted.mime,
         } }),
       });
       const saved = await complete.json() as { error?: string; record?: VideoRecord };
       if (!complete.ok || !saved.record) throw new Error(saved.error || 'Video upload could not be verified.');
       setItems((previous) => [saved.record!, ...previous.filter(item => item.id !== saved.record!.id)]);
-      setUploadedPath(permission.pathname);
+      setUploadedPath(uploadedReceipt.pathname);
       // Preview is an optional, separate operation. A failed preview must not
       // overwrite the successful upload confirmation or hide the Publish action.
       setUploadMessage('Video saved securely. Find it under Private video drafts below, then choose Publish.');
