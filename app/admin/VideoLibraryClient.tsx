@@ -6,6 +6,7 @@ import {
   PREVIEW_VIDEO_TYPES,
   VIDEO_PLACEMENTS,
   getValidatedVideoLink,
+  getYouTubeEmbedUrl,
   validateVideoDraft,
   type VideoDraft,
   type VideoSourceType,
@@ -103,8 +104,49 @@ export default function VideoLibraryClient({
     return data;
   };
 
+  const externalAction = async (action: 'save' | 'publish' | 'unpublish', payload: { draft?: VideoDraft; id?: string }) => {
+    const response = await fetch('/api/admin/videos/external', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action, ...payload }),
+    });
+    const data = await response.json() as { error?: string; record?: VideoRecord };
+    if (!response.ok) throw new Error(data.error || 'YouTube action failed.');
+    return data;
+  };
+
+  const saveYouTubeLink = async () => {
+    if (!storageConfigured || uploading || uploadedPath) return;
+    const problems = validateVideoDraft(draft, null);
+    setErrors(problems);
+    if (problems.length) return;
+    setUploading(true);
+    setUploadMessage('Saving YouTube link…');
+    try {
+      const response = await externalAction('save', { draft });
+      if (!response.record) throw new Error('The YouTube link could not be saved.');
+      setItems(previous => [response.record!, ...previous.filter(row => row.id !== response.record!.id)]);
+      setUploadedPath('youtube:' + response.record.id);
+      setUploadMessage('YouTube link saved as a draft. Choose Publish below when approved.');
+    } catch (error) {
+      setUploadMessage(error instanceof Error ? error.message : 'Could not save YouTube link.');
+    } finally { setUploading(false); }
+  };
+
   const publishRecord = async (record: VideoRecord) => {
-    if (!record.storageKey || !record.mimeType || !record.sizeBytes || actionId) return;
+    if (actionId) return;
+    if (record.sourceType === 'youtube') {
+      setActionId(record.id);
+      setUploadMessage('Publishing YouTube video…');
+      try {
+        await externalAction('publish', { id: record.id });
+        await refreshLibrary();
+        setUploadMessage('YouTube video published to the CPR homepage.');
+      } catch (error) {
+        setUploadMessage(error instanceof Error ? error.message : 'YouTube publication failed.');
+      } finally { setActionId(null); }
+      return;
+    }
+    if (!record.storageKey || !record.mimeType || !record.sizeBytes) return;
     setActionId(record.id);
     try {
       setUploadMessage('Preparing video for publication…');
@@ -142,7 +184,20 @@ export default function VideoLibraryClient({
   };
 
   const unpublishRecord = async (record: VideoRecord) => {
-    if (!record.storageKey || actionId) return;
+    if (actionId) return;
+    if (record.sourceType === 'youtube') {
+      setActionId(record.id);
+      setUploadMessage('Unpublishing YouTube video…');
+      try {
+        await externalAction('unpublish', { id: record.id });
+        await refreshLibrary();
+        setUploadMessage('YouTube video unpublished. Its draft remains saved.');
+      } catch (error) {
+        setUploadMessage(error instanceof Error ? error.message : 'Unpublish failed.');
+      } finally { setActionId(null); }
+      return;
+    }
+    if (!record.storageKey) return;
     setActionId(record.id);
     setUploadMessage('Unpublishing video…');
     try {
@@ -230,6 +285,7 @@ export default function VideoLibraryClient({
   const externalVideoUrl = draft.sourceType === 'file'
     ? null
     : getValidatedVideoLink(draft.externalUrl, draft.sourceType);
+  const youtubeEmbed = draft.sourceType === 'youtube' ? getYouTubeEmbedUrl(draft.externalUrl) : null;
 
   return (
     <div className="video-library">
@@ -237,15 +293,15 @@ export default function VideoLibraryClient({
         <div>
           <p className="video-library-eyebrow">WEBSITE / MEDIA</p>
           <h1 className="display">VIDEO LIBRARY</h1>
-          <p>Upload a video, review it, then publish it to CPR's homepage.</p>
+          <p>Upload a video file or add a YouTube Short, then publish to CPR's homepage.</p>
         </div>
         <a className="admin-logout" href="/api/admin/logout">Sign Out</a>
       </header>
 
       <div className="video-library-notice" role="status">
-<strong>Upload privately. Publish when approved.</strong> Original files remain encrypted
-        in CPR's admin library. Publishing creates a separate public homepage video.
-        Unpublish removes that public copy.
+<strong>Save first. Publish when approved.</strong> File uploads remain encrypted
+        until published. YouTube and Shorts links are embedded without uploading a file.
+        Unpublish removes the public entry but preserves the saved draft.
         {!storageConfigured && (
           <span> CPR's existing Blob connection or admin encryption secret is unavailable. Upload is disabled until the connection is restored.</span>
         )}
@@ -280,6 +336,7 @@ export default function VideoLibraryClient({
               <select value={draft.sourceType}
                 onChange={(event) => changeSource(event.target.value as VideoSourceType)}>
                 <option value="file">Upload a video file</option>
+                <option value="youtube">YouTube video or Short (paste a link)</option>
               </select>
             </label>
             {draft.sourceType === 'file' ? (
@@ -302,7 +359,7 @@ export default function VideoLibraryClient({
                 <input type="url" inputMode="url" placeholder="https://"
                   value={draft.externalUrl}
                   onChange={(event) => change('externalUrl', event.target.value)} />
-                <small>Only HTTPS links from the selected video provider are accepted.</small>
+                <small>Paste a YouTube video or Shorts URL, for example https://youtube.com/shorts/hd-Lfve3otA. No video file is needed.</small>
               </label>
             )}
             <label>
@@ -337,20 +394,26 @@ export default function VideoLibraryClient({
             <button type="button" className="video-library-primary" onClick={reviewDraft}>
               Review draft
             </button>
-            {draft.sourceType === 'file' && (
+            {draft.sourceType === 'file' ? (
               <button type="button" className="video-library-primary"
                 disabled={!storageConfigured || uploading || !file || uploadedPath !== null}
                 onClick={() => void uploadPrivateVideo()}>
                 {uploading ? 'Uploading…' : 'Upload privately'}
               </button>
-            )}
+            ) : draft.sourceType === 'youtube' ? (
+              <button type="button" className="video-library-primary"
+                disabled={!storageConfigured || uploading || uploadedPath !== null}
+                onClick={() => void saveYouTubeLink()}>
+                {uploading ? 'Saving…' : 'Save YouTube link'}
+              </button>
+            ) : null}
             <button type="button" className="video-library-secondary" onClick={clearDraft}>
               Clear form
             </button>
           </div>
           {reviewed && (
             <p className="video-library-reviewed" role="status">
-              Video details verified. Choose Upload privately, then use Publish on the saved video below.
+              Video details verified. Choose {draft.sourceType === 'youtube' ? 'Save YouTube link' : 'Upload privately'}, then Publish on the saved video below.
             </p>
           )}
           {uploadMessage && <p className="video-library-reviewed" role="status">{uploadMessage}</p>}
@@ -371,6 +434,15 @@ export default function VideoLibraryClient({
             ) : draft.sourceType === 'file' && localPreview && file &&
               PREVIEW_VIDEO_TYPES.some((type) => type === file.type) ? (
                 <video src={localPreview} controls playsInline preload="metadata" />
+              ) : youtubeEmbed ? (
+                <iframe
+                  src={youtubeEmbed}
+                  title={draft.title.trim() || 'YouTube video preview'}
+                  loading="lazy"
+                  allow="accelerometer; encrypted-media; gyroscope; picture-in-picture; web-share"
+                  allowFullScreen
+                  referrerPolicy="strict-origin-when-cross-origin"
+                />
               ) : externalVideoUrl ? (
                 <div className="video-library-link-preview">
                   <span>▶</span>
@@ -389,9 +461,9 @@ export default function VideoLibraryClient({
           <dl className="video-library-summary">
             <div><dt>Title</dt><dd>{draft.title.trim() || 'Untitled video'}</dd></div>
             <div><dt>Placement</dt><dd>{VIDEO_PLACEMENTS.find((item) => item.value === draft.placement)?.label}</dd></div>
-            <div><dt>Status</dt><dd>{uploadedPath ? 'Private uploaded draft' : 'Unsaved local draft'}</dd></div>
+            <div><dt>Status</dt><dd>{uploadedPath ? 'Saved unpublished draft' : 'Unsaved draft'}</dd></div>
           </dl>
-          <p className="video-library-reviewed">After uploading, choose Publish on the saved video below.</p>
+          <p className="video-library-reviewed">After saving, choose Publish on the saved video below.</p>
         </section>
       </div>
       <section className="video-library-panel" aria-labelledby="video-records-heading" style={{ marginTop: 18 }}>
@@ -399,10 +471,10 @@ export default function VideoLibraryClient({
           <span className="video-library-step">03</span>
           <div>
             <h2 id="video-records-heading">Private video drafts</h2>
-            <p>Preview drafts, publish approved homepage videos, or remove videos from the public website.</p>
+            <p>Review saved files and YouTube links, publish to the homepage, or unpublish.</p>
           </div>
         </div>
-        {items.length === 0 ? <p>No uploaded video drafts yet.</p> : (
+        {items.length === 0 ? <p>No saved video drafts yet.</p> : (
           <div className="video-library-records">
             {items.map(item => (
               <div key={item.id} className="video-library-record">
@@ -412,13 +484,17 @@ export default function VideoLibraryClient({
                   {item.status === 'published' && item.playbackUrl &&
                     <a href={item.playbackUrl} target="_blank" rel="noopener noreferrer">View published video</a>}
                 </div>
-                {item.storageKey && (
+                {(item.storageKey || item.sourceType === 'youtube') && (
                   <div className="video-library-record-actions">
-                    <button type="button" className="video-library-secondary"
-                      disabled={actionId !== null}
-                      onClick={() => void openSavedPreview(item.storageKey!)}>
-                      Preview
-                    </button>
+                    {item.sourceType === 'youtube' && item.externalUrl ? (
+                      <a href={item.externalUrl} target="_blank" rel="noopener noreferrer">Preview on YouTube</a>
+                    ) : (
+                      <button type="button" className="video-library-secondary"
+                        disabled={actionId !== null}
+                        onClick={() => void openSavedPreview(item.storageKey!)}>
+                        Preview
+                      </button>
+                    )}
                     {item.status === 'published' ? (
                       <button type="button" className="video-library-secondary"
                         disabled={actionId !== null}
