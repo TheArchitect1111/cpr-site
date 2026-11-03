@@ -35,6 +35,8 @@ export type VideoRecord = {
   status: VideoStatus;
   /** An approved embed/playback URL, not an unvalidated user-submitted string. */
   playbackUrl: string | null;
+  /** Canonical external source URL. Only admin-authenticated drafts expose this field. */
+  externalUrl?: string | null;
   /** Private storage key or video-hosting asset identifier. */
   storageKey: string | null;
   thumbnailUrl: string | null;
@@ -59,12 +61,44 @@ export const EMPTY_VIDEO_DRAFT: VideoDraft = {
 /** Accepted for in-browser preview only. Hosting/encoding rules belong to Step 2. */
 export const PREVIEW_VIDEO_TYPES = ['video/mp4', 'video/webm', 'video/quicktime'] as const;
 
+/** Parse only actual YouTube video URLs; query-string sharing parameters are ignored. */
+export function getYouTubeVideoId(value: string): string | null {
+  try {
+    const url = new URL(value.trim());
+    if (url.protocol !== 'https:' || url.username || url.password || url.port) return null;
+    const host = url.hostname.toLowerCase();
+    let id: string | null = null;
+    if (host === 'youtu.be') {
+      const match = /^\/([A-Za-z0-9_-]{11})\/?$/.exec(url.pathname);
+      id = match?.[1] ?? null;
+    } else if (['youtube.com', 'www.youtube.com', 'm.youtube.com'].includes(host)) {
+      if (url.pathname === '/watch') id = url.searchParams.get('v');
+      else {
+        const match = /^\/(?:shorts|embed|live)\/([A-Za-z0-9_-]{11})\/?$/.exec(url.pathname);
+        id = match?.[1] ?? null;
+      }
+    }
+    return id && /^[A-Za-z0-9_-]{11}$/.test(id) ? id : null;
+  } catch {
+    return null;
+  }
+}
+
+/** A canonical, restricted embed origin for verified YouTube/Shorts URLs. */
+export function getYouTubeEmbedUrl(value: string): string | null {
+  const id = getYouTubeVideoId(value);
+  return id ? 'https://www.youtube-nocookie.com/embed/' + id : null;
+}
+
 export function getValidatedVideoLink(value: string, source: 'youtube' | 'vimeo'): string | null {
+  if (source === 'youtube') {
+    const id = getYouTubeVideoId(value);
+    return id ? 'https://www.youtube.com/watch?v=' + id : null;
+  }
   try {
     const url = new URL(value.trim());
     if (url.protocol !== 'https:' || url.username || url.password) return null;
     const host = url.hostname.toLowerCase();
-    if (source === 'youtube' && !['youtube.com', 'www.youtube.com', 'm.youtube.com', 'youtu.be'].includes(host)) return null;
     if (source === 'vimeo' && !['vimeo.com', 'www.vimeo.com', 'player.vimeo.com'].includes(host)) return null;
     return url.href;
   } catch {
