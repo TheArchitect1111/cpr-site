@@ -54,7 +54,7 @@ export default async function CreateProfilePage({
 
         {cancelled ? <p className="profile-purchase-error">Checkout was cancelled. No payment was made.</p> : null}
         <ProfileCheckoutButton />
-        <p className="profile-purchase-secure">Secure payment through PayPal. After payment, you will continue to the player profile form.</p>
+        <p className="profile-purchase-secure">Paid profiles use PayPal. Approved complimentary profiles can use a CPR-issued code. Both continue to the player application form.</p>
       </section>
     </main>
   );
