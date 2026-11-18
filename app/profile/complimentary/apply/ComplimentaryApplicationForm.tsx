@@ -12,6 +12,7 @@ type ApplicationData = {
   country: string;
   city: string;
   position: string;
+  sport: string;
   parentName: string;
   parentEmail: string;
   parentPhone: string;
@@ -27,7 +28,7 @@ type SubmitResult = {
 const initial: ApplicationData = {
   firstName: '', lastName: '', dateOfBirth: '', phone: '',
   currentSchool: '', gradYear: '', country: '', city: '',
-  position: '', parentName: '', parentEmail: '', parentPhone: '',
+  position: '', sport: 'Basketball', parentName: '', parentEmail: '', parentPhone: '',
 };
 
 function yearsOld(dateText: string): number | null {
@@ -41,8 +42,9 @@ function yearsOld(dateText: string): number | null {
   return age;
 }
 
-export default function ComplimentaryApplicationForm({ email }: { email: string }) {
+export default function ComplimentaryApplicationForm({ email, complimentary = true }: { email?: string; complimentary?: boolean }) {
   const [form, setForm] = useState<ApplicationData>(initial);
+  const [athleteEmail, setAthleteEmail] = useState(email || '');
   const [guardianApproved, setGuardianApproved] = useState(false);
   const [termsAgreed, setTermsAgreed] = useState(false);
   const [busy, setBusy] = useState(false);
@@ -67,6 +69,10 @@ export default function ComplimentaryApplicationForm({ email }: { email: string 
       setError('A parent or guardian must provide contact details and approve the application.');
       return;
     }
+    if (!/^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/.test(athleteEmail.trim())) {
+      setError('Please enter a valid athlete email address.');
+      return;
+    }
     if (!termsAgreed) {
       setError('Please acknowledge the terms before submitting.');
       return;
@@ -78,10 +84,10 @@ export default function ComplimentaryApplicationForm({ email }: { email: string 
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           ...form,
-          email,
-          sport: 'Basketball',
+          email: athleteEmail.trim().toLowerCase(),
           gradYear: form.gradYear ? Number(form.gradYear) : undefined,
-          complimentaryProfile: true,
+          onSiteApplication: true,
+          complimentaryProfile: complimentary,
           parentConsent: minor ? guardianApproved : false,
           termsAgreed: true,
         }),
@@ -103,11 +109,16 @@ export default function ComplimentaryApplicationForm({ email }: { email: string 
       <div className="complimentary-result" role="status">
         <h2>Application received</h2>
         <p>Your athlete application was saved for CPR review.</p>
-        {completed.profileWaiverReconciled ? (
-          <p><strong>Complimentary profile fee: $0. Your waiver and application are linked.</strong></p>
+        {complimentary ? (
+          completed.profileWaiverReconciled ? (
+            <p><strong>Complimentary profile fee: $0. Your waiver and application are linked.</strong></p>
+          ) : (
+            <p><strong>Your application was saved, but CPR must review the fee waiver linkage.</strong>
+              {' '}Please do not submit a duplicate application.</p>
+          )
         ) : (
-          <p><strong>Your application was saved, but CPR must review the fee waiver linkage.</strong>
-            {' '}Please do not submit a duplicate application.</p>
+          <p><strong>Profile payment is not verified.</strong> CPR will verify any PayPal payment
+            before approving profile activation. Do not submit another application.</p>
         )}
         <p>Reference: <span className="complimentary-receipt">{completed.recordId}</span></p>
       </div>
@@ -129,8 +140,10 @@ export default function ComplimentaryApplicationForm({ email }: { email: string 
             autoComplete="family-name" maxLength={80} required />
         </label>
         <label className="complimentary-full">
-          Athlete email (verified with the code)
-          <input type="email" value={email} readOnly aria-readonly="true" />
+          {complimentary ? 'Athlete email (from your complimentary code)' : 'Athlete email address'}
+          <input type="email" value={athleteEmail} readOnly={complimentary} aria-readonly={complimentary}
+            onChange={(e) => { if (!complimentary) setAthleteEmail(e.target.value); }}
+            autoComplete="email" maxLength={254} required />
         </label>
         <label>
           Date of birth <span aria-hidden="true">*</span>
@@ -163,9 +176,16 @@ export default function ComplimentaryApplicationForm({ email }: { email: string 
             min="2026" max="2050" step="1" placeholder="2029" />
         </label>
         <label className="complimentary-full">
-          Basketball position
+          Sport
+          <select value={form.sport} onChange={(e) => update('sport', e.target.value)} required>
+            <option>Basketball</option><option>Football</option><option>Soccer</option>
+            <option>Baseball</option><option>Volleyball</option><option>Lacrosse</option>
+          </select>
+        </label>
+        <label className="complimentary-full">
+          Playing position
           <input type="text" value={form.position} onChange={(e) => update('position', e.target.value)}
-            maxLength={80} placeholder="Guard, forward, center, or undecided" />
+            maxLength={80} placeholder="Position, if known" />
         </label>
       </div>
 
@@ -209,16 +229,18 @@ export default function ComplimentaryApplicationForm({ email }: { email: string 
         <input type="checkbox" checked={termsAgreed} onChange={(e) => setTermsAgreed(e.target.checked)}
           required />
         I confirm the information is accurate and agree that CPR may review the submitted
-        athlete details for profile creation. I understand recruiting services and
-        scholarship opportunities are not included in this complimentary profile.
+        athlete details for profile creation. I understand that submitting this form does
+        not verify payment, activate a paid profile, or include recruitment services,
+        and it does not guarantee scholarships or placement.
       </label>
       {error && <p className="profile-purchase-error" role="alert">{error}</p>}
       <button className="profile-purchase-button" type="submit" disabled={busy || tooYoung || age === null}>
-        {busy ? 'SAVING YOUR APPLICATION...' : 'SUBMIT COMPLIMENTARY PROFILE | $0'}
+        {busy ? 'SAVING YOUR APPLICATION...' : complimentary ? 'SUBMIT COMPLIMENTARY PROFILE | $0' : 'SUBMIT APPLICATION FOR CPR REVIEW'}
       </button>
       <p className="profile-purchase-secure">
         Profile submissions are reviewed by CPR before promotion.
-        No payment information is collected on this form.
+        No payment information is collected on this form. Paid profile fees
+        must be independently verified before activation.
       </p>
     </form>
   );
