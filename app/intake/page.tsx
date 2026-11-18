@@ -1,7 +1,6 @@
 import { redirect } from 'next/navigation';
-import { PLAYER_APPLICATION_URL } from '@/config/site';
 
-/** Legacy intake URL — applications now use /apply. */
+/** Legacy /intake link continues into CPR's own player registration form. */
 export default function IntakeRedirectPage() {
-  redirect(PLAYER_APPLICATION_URL);
+  redirect('/apply');
 }
