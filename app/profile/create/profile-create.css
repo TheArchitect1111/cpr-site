@@ -29,3 +29,44 @@
 .profile-purchase-button:disabled { cursor: wait; opacity: .7; }
 .profile-purchase-error { margin-top: 22px; padding: 12px 14px; border-radius: 8px; background: #4c1115; color: #fff; }
 .profile-purchase-secure { margin: 12px 0 0; color: #a9a9aa; font-size: 13px; text-align: center; }
+
+.profile-promo-form {
+  margin-top: 28px;
+  padding: 24px;
+  border: 1px solid rgba(255,255,255,.18);
+  border-radius: 14px;
+  background: #17171a;
+}
+.profile-promo-form h2 { margin: 0 0 8px; font-size: 20px; }
+.profile-promo-form p { color: #d6d6d6; line-height: 1.5; }
+.profile-promo-form label { display: block; margin: 16px 0 6px; font-weight: 700; }
+.profile-promo-form input {
+  display: block;
+  width: 100%;
+  min-height: 48px;
+  padding: 12px;
+  border: 1px solid #898989;
+  border-radius: 8px;
+  background: #fff;
+  color: #111;
+  font: inherit;
+}
+.profile-promo-form input:focus-visible, .profile-promo-button:focus-visible {
+  outline: 3px solid #ff7777;
+  outline-offset: 3px;
+}
+.profile-promo-button {
+  display: block;
+  width: 100%;
+  margin-top: 20px;
+  padding: 15px 20px;
+  border: 1px solid #ff454b;
+  border-radius: 8px;
+  background: transparent;
+  color: #fff;
+  font: inherit;
+  font-weight: 800;
+  cursor: pointer;
+}
+.profile-promo-button:disabled { opacity: .6; cursor: wait; }
+.profile-promo-form .profile-promo-note { margin-bottom: 0; font-size: 13px; color: #a9a9aa; }
