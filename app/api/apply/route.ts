@@ -305,6 +305,9 @@ export async function POST(req: NextRequest) {
       currentSchool: str(body.currentSchool),
       gradYear: str(String(body.gradYear ?? "")),
       parentEmail: str(body.parentEmail),
+      profileFeeStatus: complimentary
+        ? (profileWaiverReconciled ? 'Complimentary fee waived and linked' : 'Complimentary waiver pending manual review')
+        : (onSiteApplication ? 'Standard profile fee unverified' : undefined),
     };
 
     const [confirmationSent, adminAlertSent] = recordId
