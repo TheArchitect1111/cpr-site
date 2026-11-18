@@ -14,6 +14,7 @@ type ApplyEmailInput = {
   currentSchool?: string;
   gradYear?: string;
   parentEmail?: string;
+  profileFeeStatus?: string;
 };
 
 export async function sendApplyConfirmationEmail(input: ApplyEmailInput): Promise<boolean> {
@@ -26,14 +27,15 @@ export async function sendApplyConfirmationEmail(input: ApplyEmailInput): Promis
         'Application received',
         `
           <p>Hi ${input.firstName},</p>
-          <p>Thank you for applying to CPR Global Prospects. We received your application and created your recruiting profile.</p>
+          <p>Thank you for applying to CPR Global Prospects. We received your application. Your player profile is pending CPR review and is not yet active.</p>
           <p><strong>What happens next:</strong></p>
           <ul>
-            <li>Coach Mike will review your application in the CPR admin portal.</li>
+            <li>Coach Mike will review your application in the CPR admin portal. Any required player-profile payment must be verified separately.</li>
             <li>You will receive updates as your profile moves through the recruiting process.</li>
           </ul>
           <p>Your profile reference: <strong>${input.slug}</strong></p>
-          <p><a href="${input.profileUrl}">View your public profile page</a></p>
+          ${input.profileFeeStatus ? `<p>Profile fee status: <strong>${input.profileFeeStatus}</strong></p>` : ''}
+          <p><a href="${input.profileUrl}">Profile link (may remain unavailable until approval)</a></p>
         `,
       ),
     });
@@ -64,6 +66,7 @@ export async function sendApplyAdminAlert(input: ApplyEmailInput): Promise<boole
             <tr><td style="padding:6px 0;color:#666">Grad year</td><td>${input.gradYear || '—'}</td></tr>
             <tr><td style="padding:6px 0;color:#666">Parent email</td><td>${input.parentEmail || '—'}</td></tr>
             <tr><td style="padding:6px 0;color:#666">Record ID</td><td>${input.recordId}</td></tr>
+            <tr><td style="padding:6px 0;color:#666">Profile fee status</td><td>${input.profileFeeStatus || 'Not specified'}</td></tr>
           </table>
           <p><a href="${getSiteUrl()}/admin">Open CPR admin portal</a></p>
         `,
