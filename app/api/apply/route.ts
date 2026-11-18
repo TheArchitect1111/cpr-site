@@ -6,6 +6,7 @@ import { sendApplyAdminAlert, sendApplyConfirmationEmail } from "@/lib/apply-not
 import { forwardPulseEvent } from "@/lib/ea-pulse-forward";
 import { isProductionDeploy } from "@/lib/env";
 import { findApplicantByEmail } from "@/lib/portal-credentials";
+import { reconcileProfileWaiver } from "@/lib/profile-waiver-reconcile";
 import {
   CPR_AMPLIFI_COOKIE,
   readCPRAttribution,
@@ -210,6 +211,22 @@ export async function POST(req: NextRequest) {
     const recordId: string | undefined = airtableData?.records?.[0]?.id;
     const publicProfileUrl = profileUrl(slug);
 
+    // Link a previously issued complimentary-profile waiver only when this
+    // brand-new athlete application was actually saved in Airtable.
+    // This does not treat a Google Forms redirect as proof of submission.
+    let profileWaiverReconciled = false;
+    if (recordId) {
+      try {
+        profileWaiverReconciled = await reconcileProfileWaiver({
+          applicantEmail: email,
+          applicantRecordId: recordId,
+          token,
+        });
+      } catch (waiverError) {
+        console.error('CPR profile waiver matching failed:', waiverError);
+      }
+    }
+
     const emailInput = {
       recordId: recordId || slug,
       firstName,
@@ -280,6 +297,7 @@ export async function POST(req: NextRequest) {
       recordId,
       slug,
       profileUrl: publicProfileUrl,
+      profileWaiverReconciled,
       confirmationSent,
       adminAlertSent,
     });
