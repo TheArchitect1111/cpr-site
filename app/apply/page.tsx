@@ -26,6 +26,24 @@ export default async function ApplyPage({
   const complimentary = Boolean(waiver);
   const returnedFromCheckout = params.from === 'paypal';
 
+  // An invalid or temporarily unverifiable code must not silently turn into
+  // a paid application. Keep the athlete on a safe recovery screen.
+  if (id && !waiver) {
+    return (
+      <main className="profile-purchase-shell">
+        <section className="profile-purchase-card">
+          <Link className="profile-purchase-back" href="/">Back to CPR</Link>
+          <h1>Check your complimentary code</h1>
+          <p className="profile-purchase-lead">
+            We cannot currently verify your complimentary registration.
+            Your profile fee has not been changed and no application was submitted.
+          </p>
+          <Link href="/profile/create">Re-enter the complimentary profile code</Link>
+        </section>
+      </main>
+    );
+  }
+
   return (
     <main className="profile-purchase-shell">
       <section className="profile-purchase-card complimentary-card">
