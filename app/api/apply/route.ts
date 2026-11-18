@@ -6,7 +6,11 @@ import { sendApplyAdminAlert, sendApplyConfirmationEmail } from "@/lib/apply-not
 import { forwardPulseEvent } from "@/lib/ea-pulse-forward";
 import { isProductionDeploy } from "@/lib/env";
 import { findApplicantByEmail } from "@/lib/portal-credentials";
-import { reconcileProfileWaiver } from "@/lib/profile-waiver-reconcile";
+import {
+  CPR_PROFILE_WAIVER_COOKIE,
+  findIssuedProfileWaiver,
+  reconcileProfileWaiver,
+} from "@/lib/profile-waiver-reconcile";
 import {
   CPR_AMPLIFI_COOKIE,
   readCPRAttribution,
@@ -72,6 +76,17 @@ function str(v: unknown): string | undefined {
   return t.length > 0 ? t : undefined;
 }
 
+function ageFromDate(dateOfBirth: unknown): number | null {
+  if (typeof dateOfBirth !== 'string' || !/^\d{4}-\d{2}-\d{2}$/.test(dateOfBirth)) return null;
+  const birth = new Date(`${dateOfBirth}T00:00:00Z`);
+  if (!Number.isFinite(birth.getTime()) || birth.toISOString().slice(0, 10) !== dateOfBirth) return null;
+  const now = new Date();
+  let years = now.getUTCFullYear() - birth.getUTCFullYear();
+  const month = now.getUTCMonth() - birth.getUTCMonth();
+  if (month < 0 || (month === 0 && now.getUTCDate() < birth.getUTCDate())) years -= 1;
+  return years >= 0 && years <= 115 ? years : null;
+}
+
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
@@ -101,6 +116,43 @@ export async function POST(req: NextRequest) {
     }
     if (isProductionDeploy() && !process.env.PORTAL_SECRET?.trim()) {
       console.error("Missing PORTAL_SECRET in production.");
+    }
+
+    // The ordinary applicant route and paid pathway retain their previous behavior.
+    // Only the explicit complimentary pathway requires a valid, unspent waiver.
+    const complimentary = body.complimentaryProfile === true;
+    const waiverToken = req.cookies.get(CPR_PROFILE_WAIVER_COOKIE)?.value || '';
+    if (complimentary) {
+      const requestOrigin = req.headers.get('origin');
+      if (requestOrigin && requestOrigin !== req.nextUrl.origin) {
+        return NextResponse.json({ error: 'Invalid request origin.' }, { status: 403 });
+      }
+      let authorization;
+      try {
+        authorization = await findIssuedProfileWaiver({
+          redemptionId: waiverToken,
+          token: process.env.AIRTABLE_TOKEN,
+        });
+      } catch {
+        return NextResponse.json({ error: 'We could not verify this fee waiver. Please retry.' }, { status: 503 });
+      }
+      if (!authorization || authorization.email !== email.toLowerCase()) {
+        return NextResponse.json({ error: 'This complimentary profile authorization is invalid or has already been used.' }, { status: 403 });
+      }
+      const years = ageFromDate(body.dateOfBirth);
+      if (years === null) {
+        return NextResponse.json({ error: 'Enter a valid birth date.' }, { status: 400 });
+      }
+      if (years < 13) {
+        return NextResponse.json({ error: 'For athletes under 13, please contact CPR to arrange guardian-assisted enrollment.' }, { status: 400 });
+      }
+      if (years < 18 && (
+        !str(body.parentName) ||
+        !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(str(body.parentEmail) || '') ||
+        body.parentConsent !== true
+      )) {
+        return NextResponse.json({ error: 'A parent or guardian must approve this application for a minor.' }, { status: 400 });
+      }
     }
 
     const existingApplicant = await findApplicantByEmail(email);
@@ -211,15 +263,15 @@ export async function POST(req: NextRequest) {
     const recordId: string | undefined = airtableData?.records?.[0]?.id;
     const publicProfileUrl = profileUrl(slug);
 
-    // Link a previously issued complimentary-profile waiver only when this
-    // brand-new athlete application was actually saved in Airtable.
-    // This does not treat a Google Forms redirect as proof of submission.
+    // A confirmed Airtable athlete record is the only trigger for linking.
+    // Other application traffic cannot consume complimentary waivers.
     let profileWaiverReconciled = false;
-    if (recordId) {
+    if (recordId && complimentary) {
       try {
         profileWaiverReconciled = await reconcileProfileWaiver({
           applicantEmail: email,
           applicantRecordId: recordId,
+          redemptionId: waiverToken,
           token,
         });
       } catch (waiverError) {
@@ -301,6 +353,17 @@ export async function POST(req: NextRequest) {
       confirmationSent,
       adminAlertSent,
     });
+    if (complimentary && profileWaiverReconciled) {
+      response.cookies.set({
+        name: CPR_PROFILE_WAIVER_COOKIE,
+        value: '',
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'lax',
+        path: '/',
+        maxAge: 0,
+      });
+    }
     if (attribution) {
       response.cookies.set({
         name: CPR_AMPLIFI_COOKIE,

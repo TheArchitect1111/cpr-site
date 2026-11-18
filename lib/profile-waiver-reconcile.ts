@@ -1,60 +1,78 @@
 /**
- * Reconcile a complimentary CPR player-profile waiver only after a *new*
- * Athlete Intake record has actually been saved. External Google Forms
- * responses do not pass through this function unless separately imported.
+ * Complimentary profile waivers are bearer authorizations issued by CPR
+ * after a valid promo code is redeemed. The opaque redemption UUID is stored
+ * only in a SameSite, HttpOnly cookie. It is never included in a URL.
+ *
+ * A waiver is matched only after a new applicant record has been saved.
+ * The public Google Form remains outside this workflow.
  */
+export const CPR_PROFILE_WAIVER_COOKIE = 'cpr_profile_waiver';
+export const CPR_PROFILE_WAIVER_PATH = '/profile/complimentary/apply';
+
 const CPR_BASE = process.env.AIRTABLE_BASE_ID || 'appvVr6MVrJvEY0YJ';
 const WAIVER_TABLE = 'tbl6KJoZtclYZvR6O';
-const WAIVER_EMAIL = 'Athlete Email';
-const WAIVER_STATUS = 'Status';
-const WAIVER_REDEEMED_AT = 'Redeemed At';
+const API_ROOT = `https://api.airtable.com/v0/${CPR_BASE}/${WAIVER_TABLE}`;
+const REDEMPTION_ID = 'Redemption ID';
+const EMAIL = 'Athlete Email';
+const STATUS = 'Status';
 const VERIFIED_APPLICATION = 'Verified Athlete Application';
 
-type Waiver = { id: string; fields: Record<string, unknown> };
-type AirtablePage = { records?: Waiver[]; offset?: string };
+type WaiverRecord = { id: string; fields: Record<string, unknown> };
+type AirtablePage = { records?: WaiverRecord[] };
+
+export type IssuedProfileWaiver = {
+  recordId: string;
+  redemptionId: string;
+  email: string;
+};
+
+const validRedemptionId = (id: string) =>
+  /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(id);
+
+export async function findIssuedProfileWaiver(input: {
+  redemptionId: string;
+  token: string;
+}): Promise<IssuedProfileWaiver | null> {
+  if (!validRedemptionId(input.redemptionId) || !input.token) return null;
+
+  const formula = `AND({${REDEMPTION_ID}}=${JSON.stringify(input.redemptionId)},{${STATUS}}="Issued")`;
+  const url = new URL(API_ROOT);
+  url.searchParams.set('filterByFormula', formula);
+  url.searchParams.set('maxRecords', '2');
+  const result = await fetch(url, {
+    headers: { Authorization: `Bearer ${input.token}` },
+    cache: 'no-store',
+  });
+  if (!result.ok) throw new Error('Unable to verify complimentary profile authorization');
+
+  const { records = [] } = await result.json() as AirtablePage;
+  // Never accept ambiguous records or an already linked application.
+  if (records.length !== 1) return null;
+  const record = records[0];
+  const email = String(record.fields[EMAIL] ?? '').trim().toLowerCase();
+  if (record.fields[REDEMPTION_ID] !== input.redemptionId ||
+      record.fields[STATUS] !== 'Issued' ||
+      !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) ||
+      (record.fields[VERIFIED_APPLICATION] as unknown[] | undefined)?.length) {
+    return null;
+  }
+  return { recordId: record.id, redemptionId: input.redemptionId, email };
+}
 
 export async function reconcileProfileWaiver(input: {
   applicantEmail: string;
   applicantRecordId: string;
+  redemptionId: string;
   token: string;
 }): Promise<boolean> {
-  const email = input.applicantEmail.trim().toLowerCase();
-  if (!email || !/^rec[A-Za-z0-9]{14}$/.test(input.applicantRecordId)) {
-    return false;
-  }
+  if (!/^rec[A-Za-z0-9]{14}$/.test(input.applicantRecordId)) return false;
+  const waiver = await findIssuedProfileWaiver({
+    redemptionId: input.redemptionId,
+    token: input.token,
+  });
+  if (!waiver || waiver.email !== input.applicantEmail.trim().toLowerCase()) return false;
 
-  // JSON strings are valid Airtable formula strings and correctly escape
-  // untrusted characters from the applicant's email address.
-  const formula = `AND({${WAIVER_STATUS}}="Issued",LOWER({${WAIVER_EMAIL}})=${JSON.stringify(email)})`;
-  const waivers: Waiver[] = [];
-  let offset: string | undefined;
-  const root = `https://api.airtable.com/v0/${CPR_BASE}/${WAIVER_TABLE}`;
-  do {
-    const url = new URL(root);
-    url.searchParams.set('filterByFormula', formula);
-    url.searchParams.set('pageSize', '100');
-    if (offset) url.searchParams.set('offset', offset);
-    const response = await fetch(url, {
-      headers: { Authorization: `Bearer ${input.token}` },
-      cache: 'no-store',
-    });
-    if (!response.ok) throw new Error('CPR waiver lookup failed');
-    const body = await response.json() as AirtablePage;
-    waivers.push(...(body.records ?? []));
-    offset = body.offset;
-  } while (offset && waivers.length < 1000);
-
-  const now = Date.now();
-  const eligible = waivers
-    .filter((waiver) => {
-      const issued = Date.parse(String(waiver.fields[WAIVER_REDEEMED_AT] ?? ''));
-      return Number.isFinite(issued) && issued <= now;
-    })
-    .sort((a, b) => String(b.fields[WAIVER_REDEEMED_AT]).localeCompare(String(a.fields[WAIVER_REDEEMED_AT])));
-  const candidate = eligible[0];
-  if (!candidate) return false;
-
-  const response = await fetch(`https://api.airtable.com/v0/${CPR_BASE}/${WAIVER_TABLE}/${candidate.id}`, {
+  const response = await fetch(`${API_ROOT}/${waiver.recordId}`, {
     method: 'PATCH',
     headers: {
       Authorization: `Bearer ${input.token}`,
@@ -62,7 +80,7 @@ export async function reconcileProfileWaiver(input: {
     },
     body: JSON.stringify({
       fields: {
-        [WAIVER_STATUS]: 'Matched to Application',
+        [STATUS]: 'Matched to Application',
         [VERIFIED_APPLICATION]: [input.applicantRecordId],
       },
       typecast: false,

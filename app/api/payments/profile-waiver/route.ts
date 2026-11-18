@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { PLAYER_APPLICATION_URL } from '@/config/site';
+import { CPR_PROFILE_WAIVER_COOKIE, CPR_PROFILE_WAIVER_PATH } from '@/lib/profile-waiver-reconcile';
 
 const BASE_ID = 'appvVr6MVrJvEY0YJ';
 const CODE_TABLE = 'tbleSmCpbQ9VmfRg4';
@@ -8,6 +8,21 @@ const API_ROOT = `https://api.airtable.com/v0/${BASE_ID}`;
 
 type AirtableRecord = { id: string; fields: Record<string, unknown> };
 type AirtableList = { records?: AirtableRecord[]; offset?: string };
+
+function authorizedWaiverResponse(redemptionId: string) {
+  const response = NextResponse.json(
+    { url: CPR_PROFILE_WAIVER_PATH, waived: true },
+    { headers: { 'Cache-Control': 'no-store' } },
+  );
+  response.cookies.set(CPR_PROFILE_WAIVER_COOKIE, redemptionId, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: 'lax',
+    path: '/',
+    maxAge: 60 * 60 * 2,
+  });
+  return response;
+}
 
 function failure(message: string, status: number) {
   return NextResponse.json({ error: message }, { status, headers: { 'Cache-Control': 'no-store' } });
@@ -64,14 +79,22 @@ export async function POST(req: NextRequest) {
     const alreadyIssued = waivers.find((r) => String(r.fields['Athlete Email'] ?? '').toLowerCase() === email
       && r.fields['Status'] !== 'Voided');
     if (alreadyIssued) {
-      return NextResponse.json({ url: PLAYER_APPLICATION_URL, waived: true },
-        { headers: { 'Cache-Control': 'no-store' } });
+      // A completed waiver cannot be reused to open a second application.
+      if (alreadyIssued.fields['Status'] !== 'Issued') {
+        return failure('A complimentary profile has already been registered for this email.', 409);
+      }
+      const redemptionId = String(alreadyIssued.fields['Redemption ID'] ?? '');
+      if (!/^[0-9a-f-]{36}$/i.test(redemptionId)) {
+        return failure('This code cannot be resumed. Please contact CPR.', 409);
+      }
+      return authorizedWaiverResponse(redemptionId);
     }
 
     const limit = Number(promotion.fields['Max Uses']);
     if (Number.isFinite(limit) && limit > 0 && waivers.filter((r) => r.fields['Status'] !== 'Voided').length >= limit) {
       return failure('This promotion code has reached its usage limit.', 400);
     }
+    const redemptionId = crypto.randomUUID();
     const record = await fetch(`${API_ROOT}/${WAIVER_TABLE}`, {
       method: 'POST',
       headers: {
@@ -80,7 +103,7 @@ export async function POST(req: NextRequest) {
       },
       body: JSON.stringify({
         records: [{ fields: {
-          'Redemption ID': crypto.randomUUID(),
+          'Redemption ID': redemptionId,
           'Promo Code': code,
           'Athlete Email': email,
           'Redeemed At': new Date().toISOString(),
@@ -91,11 +114,12 @@ export async function POST(req: NextRequest) {
       cache: 'no-store',
     });
     if (!record.ok) throw new Error('Could not record waiver');
+    const created = await record.json() as { records?: Array<{ id: string }> };
+    if (!created.records?.[0]?.id) throw new Error('Waiver creation was not confirmed');
 
-    // The current CPR application is an external Google Form. Staff must reconcile
-    // 'Issued' waivers to submissions; this response does not prove application completion.
-    return NextResponse.json({ url: PLAYER_APPLICATION_URL, waived: true },
-      { headers: { 'Cache-Control': 'no-store' } });
+    // Keep the Google Form unchanged. The approved athlete completes the
+    // on-site application with an HttpOnly bearer cookie, not a URL token.
+    return authorizedWaiverResponse(redemptionId);
   } catch {
     return failure('We could not verify the code right now. Please try again.', 502);
   }
