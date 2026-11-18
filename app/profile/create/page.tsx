@@ -1,6 +1,5 @@
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
-import { PLAYER_APPLICATION_URL } from '@/config/site';
 import ProfileCheckoutButton from './ProfileCheckoutButton';
 import './profile-create.css';
 
@@ -19,7 +18,9 @@ export default async function CreateProfilePage({
   const params = await searchParams;
   const cancelled = params.status === 'cancelled';
 
-  if (params.status === 'success') redirect(PLAYER_APPLICATION_URL);
+  // PayPal's legacy return URL is not proof of payment.
+  // Always let CPR verify the payment separately before activation.
+  if (params.status === 'success') redirect('/apply?from=paypal');
 
   return (
     <main className="profile-purchase-shell">
@@ -54,7 +55,7 @@ export default async function CreateProfilePage({
 
         {cancelled ? <p className="profile-purchase-error">Checkout was cancelled. No payment was made.</p> : null}
         <ProfileCheckoutButton />
-        <p className="profile-purchase-secure">Paid profiles use PayPal and the current CPR application. Approved complimentary profiles use CPR's secure, on-site application. The code only waives profile creation.</p>
+        <p className="profile-purchase-secure">Both paid and complimentary profiles use CPR's own application. PayPal payments must be verified by CPR before a paid profile is activated.</p>
       </section>
     </main>
   );

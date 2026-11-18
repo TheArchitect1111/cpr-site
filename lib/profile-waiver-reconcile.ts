@@ -4,10 +4,10 @@
  * only in a SameSite, HttpOnly cookie. It is never included in a URL.
  *
  * A waiver is matched only after a new applicant record has been saved.
- * The public Google Form remains outside this workflow.
+ * The standard CPR application shares this route; Google Forms are not required.
  */
 export const CPR_PROFILE_WAIVER_COOKIE = 'cpr_profile_waiver';
-export const CPR_PROFILE_WAIVER_PATH = '/profile/complimentary/apply';
+export const CPR_PROFILE_WAIVER_PATH = '/apply';
 
 const CPR_BASE = process.env.AIRTABLE_BASE_ID || 'appvVr6MVrJvEY0YJ';
 const WAIVER_TABLE = 'tbl6KJoZtclYZvR6O';

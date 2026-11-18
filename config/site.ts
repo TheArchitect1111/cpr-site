@@ -1,18 +1,16 @@
 // CPR LaunchPad Template Config
 // Every client-variable lives here. New client = new config, same layout.
 
-/**
- * Primary Apply Now destination (Mike CPR, Jul 2026).
- * Uses the North American Google Form — not the International fee agreement.
- */
-export const PLAYER_APPLICATION_URL =
-  "https://docs.google.com/forms/d/e/1FAIpQLSebNeyreO7sVvWF0YToDWJRbkqSJibtL_--UWIaiRGT1PZ2zA/viewform";
-/** On-platform apply (no Google account) — kept for /apply and intake redirect. */
+/** CPR's on-site application is the single public intake for all athletes. */
+export const PLAYER_APPLICATION_URL = "/apply";
 export const ON_PLATFORM_APPLICATION_URL = "/apply";
+/** Historical North American application; not used for active registration. */
+export const HISTORICAL_GOOGLE_PLAYER_APPLICATION_URL =
+  "https://docs.google.com/forms/d/e/1FAIpQLSebNeyreO7sVvWF0YToDWJRbkqSJibtL_--UWIaiRGT1PZ2zA/viewform";
 export const LEGACY_GOOGLE_PLAYER_APPLICATION_URL =
   "https://docs.google.com/forms/d/e/1FAIpQLScnS-NAIhJnNDCVMbhFtAPbEtYZT9ZzZytagNu1THa9f80qmg/viewform?usp=publish-editor";
-/** North American (standard) fee agreement — same form families use to start with CPR. */
-export const STANDARD_FEE_AGREEMENT_URL = PLAYER_APPLICATION_URL;
+/** CPR's existing on-site standard recruitment fee agreement. */
+export const STANDARD_FEE_AGREEMENT_URL = "/agreement";
 /** International fee agreement — Google Form (Mike CPR, Jul 2026). */
 export const INTERNATIONAL_FEE_AGREEMENT_URL =
   "https://docs.google.com/forms/d/e/1FAIpQLScnS-NAIhJnNDCVMbhFtAPbEtYZT9ZzZytagNu1THa9f80qmg/viewform?usp=publish-editor";
