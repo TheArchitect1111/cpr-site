@@ -118,26 +118,21 @@ export async function POST(req: NextRequest) {
       console.error("Missing PORTAL_SECRET in production.");
     }
 
-    // The ordinary applicant route and paid pathway retain their previous behavior.
-    // Only the explicit complimentary pathway requires a valid, unspent waiver.
+    // Both standard and complimentary on-site applications have the same
+    // intake validation. Only an actual issued waiver can bypass the $100 fee.
+    const onSiteApplication = body.onSiteApplication === true;
     const complimentary = body.complimentaryProfile === true;
     const waiverToken = req.cookies.get(CPR_PROFILE_WAIVER_COOKIE)?.value || '';
-    if (complimentary) {
+    if (onSiteApplication || complimentary) {
       const requestOrigin = req.headers.get('origin');
       if (requestOrigin && requestOrigin !== req.nextUrl.origin) {
         return NextResponse.json({ error: 'Invalid request origin.' }, { status: 403 });
       }
-      let authorization;
-      try {
-        authorization = await findIssuedProfileWaiver({
-          redemptionId: waiverToken,
-          token: process.env.AIRTABLE_TOKEN,
-        });
-      } catch {
-        return NextResponse.json({ error: 'We could not verify this fee waiver. Please retry.' }, { status: 503 });
-      }
-      if (!authorization || authorization.email !== email.toLowerCase()) {
-        return NextResponse.json({ error: 'This complimentary profile authorization is invalid or has already been used.' }, { status: 403 });
+      if (email.length > 254 || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) ||
+          firstName.length > 80 || lastName.length > 80 ||
+          !str(body.currentSchool) || !str(body.country) ||
+          str(body.currentSchool)!.length > 150 || str(body.country)!.length > 100) {
+        return NextResponse.json({ error: 'Please provide a valid email, name, country, and school.' }, { status: 400 });
       }
       const years = ageFromDate(body.dateOfBirth);
       if (years === null) {
@@ -152,6 +147,20 @@ export async function POST(req: NextRequest) {
         body.parentConsent !== true
       )) {
         return NextResponse.json({ error: 'A parent or guardian must approve this application for a minor.' }, { status: 400 });
+      }
+    }
+    if (complimentary) {
+      let authorization;
+      try {
+        authorization = await findIssuedProfileWaiver({
+          redemptionId: waiverToken,
+          token: process.env.AIRTABLE_TOKEN,
+        });
+      } catch {
+        return NextResponse.json({ error: 'We could not verify this fee waiver. Please retry.' }, { status: 503 });
+      }
+      if (!authorization || authorization.email !== email.toLowerCase()) {
+        return NextResponse.json({ error: 'This complimentary profile authorization is invalid or has already been used.' }, { status: 403 });
       }
     }
 
@@ -169,7 +178,12 @@ export async function POST(req: NextRequest) {
 
     const token = process.env.AIRTABLE_TOKEN;
     const slug = await uniqueAthleteSlug(token, firstName, lastName);
-    const activityLine = `${ACTIVITY_PREFIX} ${new Date().toISOString()} Application submitted online. Recruiting profile created.`;
+    const feeNote = complimentary
+      ? 'Complimentary profile application; check waiver linkage before activation.'
+      : onSiteApplication
+        ? 'Standard player profile application; fee not verified. Verify PayPal separately before activation.'
+        : 'Legacy application flow; payment status not established here.';
+    const activityLine = `${ACTIVITY_PREFIX} ${new Date().toISOString()} Application submitted online. Pending CPR review. ${feeNote}`;
 
     const normalizedPhotoUrl = await normalizePhotoUrl(str(body.photoUrl), slug);
 
